@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Marcos Renan | Portfólio</title>
+
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
     body {
@@ -12,6 +16,7 @@
       color: white;
     }
 
+    /* MENU */
     nav {
       background: #020617;
       padding: 15px;
@@ -29,6 +34,7 @@
       color: #38bdf8;
     }
 
+    /* HEADER */
     header {
       display: flex;
       flex-direction: column;
@@ -41,14 +47,10 @@
     .foto {
       width: 150px;
       height: 150px;
-      background: #1e293b;
       border-radius: 50%;
+      object-fit: cover;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: #94a3b8;
+      border: 3px solid #38bdf8;
     }
 
     header h1 {
@@ -61,27 +63,41 @@
       color: #94a3b8;
     }
 
-    section {
+    /* CONTEÚDO */
+    main {
       max-width: 800px;
       margin: auto;
       padding: 40px 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
     }
 
     h2 {
       color: #38bdf8;
     }
 
-    .contato a {
-      display: block;
-      margin: 10px 0;
+    /* SOCIAL */
+    .social {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .social a {
+      color: white;
+      font-size: 22px;
+      margin: 0 10px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .social a:hover {
       color: #38bdf8;
-      text-decoration: none;
+      transform: scale(1.2);
     }
 
-    .contato a:hover {
-      text-decoration: underline;
-    }
-
+    /* FOOTER */
     footer {
       text-align: center;
       padding: 20px;
@@ -100,40 +116,54 @@
 
   <!-- TOPO -->
   <header>
-
-    <!-- FOTO -->
-<img src="renan.jpeg" class="foto">
+    <img src="renan.jpeg" class="foto" alt="Foto de Marcos Renan">
 
     <h1>Marcos Renan</h1>
     <p>Analista de Redes Sênior</p>
     <p>Focado em monitoramento e redes</p>
-
   </header>
 
-  <!-- SOBRE -->
-  <section>
-    <h2>Sobre mim</h2>
-    <p>
-      Sou Analista de Redes Sênior com foco em monitoramento, infraestrutura e desempenho de redes.
-      Tenho interesse em tecnologia, automação e melhoria contínua de ambientes.
-    </p>
-  </section>
+  <!-- CONTEÚDO -->
+  <main>
 
-  <!-- CONTATO -->
-  <section class="contato">
-    <h2>Contato</h2>
+    <!-- SOBRE -->
+    <section>
+      <h2>Sobre mim</h2>
+      <p>
+        Sou Analista de Redes Sênior com foco em monitoramento, infraestrutura e desempenho de redes.
+        Tenho interesse em tecnologia, automação e melhoria contínua de ambientes.
+      </p>
+    </section>
 
-    <a href="mailto:marcosrenan@outlook.com">📧 marcosrenan@outlook.com</a>
+    <!-- CONTATO -->
+    <section>
+      <h2>Contato</h2>
 
-    <a href="https://instagram.com/marcosrm_" target="_blank">
-      📸 Instagram: @marcosrm_
-    </a>
+      <div class="social">
+        <a href="mailto:marcosrenan@outlook.com">
+          <i class="fas fa-envelope"></i>
+        </a>
 
-    <a href="https://linkedin.com/in/marcosrenan" target="_blank">
-      💼 LinkedIn: marcosrenan
-    </a>
+        <a href="https://github.com/" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
 
-  </section>
+        <a href="https://twitter.com/" target="_blank">
+          <i class="fab fa-twitter"></i>
+        </a>
+
+        <a href="https://instagram.com/marcosrm_" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+
+        <a href="https://linkedin.com/in/marcosrenan" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+
+    </section>
+
+  </main>
 
   <!-- RODAPÉ -->
   <footer>
