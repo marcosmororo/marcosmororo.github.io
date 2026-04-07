@@ -2,99 +2,144 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Marcos | Portfólio</title>
+  <title>Marcos Renan | Portfólio</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #0f172a;
       color: white;
     }
 
-    header {
-      text-align: center;
-      padding: 100px 20px;
+    nav {
       background: #020617;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #38bdf8;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .foto {
+      width: 150px;
+      height: 150px;
+      background: #1e293b;
+      border-radius: 50%;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #94a3b8;
     }
 
     header h1 {
-      font-size: 40px;
+      margin: 10px 0;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 5px 0;
+      color: #94a3b8;
     }
 
     section {
-      padding: 60px 20px;
       max-width: 800px;
       margin: auto;
+      padding: 40px 20px;
     }
 
     h2 {
       color: #38bdf8;
     }
 
-    .projeto {
-      background: #1e293b;
-      padding: 15px;
-      margin-top: 10px;
-      border-radius: 10px;
+    .contato a {
+      display: block;
+      margin: 10px 0;
+      color: #38bdf8;
+      text-decoration: none;
+    }
+
+    .contato a:hover {
+      text-decoration: underline;
     }
 
     footer {
       text-align: center;
-      padding: 30px;
+      padding: 20px;
       background: #020617;
-    }
-
-    a {
-      color: #38bdf8;
-      text-decoration: none;
+      margin-top: 40px;
     }
   </style>
 </head>
 
 <body>
 
+  <!-- MENU -->
+  <nav>
+    <a href="#">Home</a>
+  </nav>
+
   <!-- TOPO -->
   <header>
-    <h1>Marcos Mororo</h1>
-    <p>Desenvolvedor Web</p>
+
+    <!-- FOTO -->
+    <div class="foto">
+      SUA FOTO
+    </div>
+
+    <h1>Marcos Renan</h1>
+    <p>Analista de Redes Sênior</p>
+    <p>Focado em monitoramento e redes</p>
+
   </header>
 
   <!-- SOBRE -->
   <section>
     <h2>Sobre mim</h2>
     <p>
-      Olá! Sou um desenvolvedor apaixonado por tecnologia.
-      Estou aprendendo e criando projetos web com HTML, CSS e JavaScript.
+      Sou Analista de Redes Sênior com foco em monitoramento, infraestrutura e desempenho de redes.
+      Tenho interesse em tecnologia, automação e melhoria contínua de ambientes.
     </p>
   </section>
 
-  <!-- PROJETOS -->
-  <section>
-    <h2>Projetos</h2>
-
-    <div class="projeto">
-      <h3>Projeto 1</h3>
-      <p>Descrição do seu projeto aqui.</p>
-    </div>
-
-    <div class="projeto">
-      <h3>Projeto 2</h3>
-      <p>Outro projeto legal que você fez.</p>
-    </div>
-
-  </section>
-
   <!-- CONTATO -->
-  <section>
+  <section class="contato">
     <h2>Contato</h2>
-    <p>Email: seuemail@email.com</p>
-    <p>GitHub: <a href="https://github.com/marcosmororo">Clique aqui</a></p>
+
+    <a href="mailto:marcosrenan@outlook.com">📧 marcosrenan@outlook.com</a>
+
+    <a href="https://instagram.com/marcosrm_" target="_blank">
+      📸 Instagram: @marcosrm_
+    </a>
+
+    <a href="https://linkedin.com/in/marcosrenan" target="_blank">
+      💼 LinkedIn: marcosrenan
+    </a>
+
   </section>
 
   <!-- RODAPÉ -->
   <footer>
-    <p>© 2026 - Marcos</p>
+    <p>© 2026 - Marcos Renan</p>
   </footer>
 
 </body>
