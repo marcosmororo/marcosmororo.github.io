@@ -2,62 +2,54 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <!-- Ícones (Font Awesome) -->
+
+  <!-- RESPONSIVO (IMPORTANTE) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <title>Sobre</title>
 
   <style>
     body {
       font-family: Arial;
       background: #0f172a;
       color: white;
-      text-align: center;
       margin: 0;
     }
 
     header {
-      padding: 40px 20px;
-    }
-
-    h1 {
-      margin-bottom: 30px;
-    }
-
-    .contato {
-      max-width: 400px;
-      margin: auto;
-    }
-
-    .item {
-      background: #1e293b;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: 0.3s;
+      min-height: 80vh;
+      padding: 20px;
+      text-align: center;
     }
 
-    .item:hover {
-      background: #334155;
-      transform: translateY(-2px);
+    .container {
+      max-width: 600px;
     }
 
-    .item i {
-      font-size: 20px;
-      color: #38bdf8;
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #cbd5f5;
     }
 
-    .item a {
+    strong {
       color: white;
-      text-decoration: none;
+    }
+
+    .highlight {
+      color: #38bdf8;
     }
 
     .voltar {
       display: inline-block;
       margin-top: 30px;
-      padding: 10px 20px;
+      padding: 12px 25px;
       background: #38bdf8;
       color: #020617;
       border-radius: 8px;
@@ -69,21 +61,29 @@
     .voltar:hover {
       background: #0ea5e9;
     }
+
+    footer {
+      text-align: center;
+      padding-bottom: 30px;
+    }
   </style>
 </head>
 
 <body>
 
 <header>
+  <div class="container">
     <p>
       Olá! Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
       <span class="highlight">Online Telecom</span>. 
       Sou apaixonado por redes, monitoramento e infraestrutura. Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo e projetos que desenvolvo ou apoio.
     </p>
+  </div>
 </header>
 
-<a href="index.html" class="voltar">← Voltar para Home</a>
+<footer>
+  <a href="index.html" class="voltar">← Voltar para Home</a>
+</footer>
 
 </body>
 </html>
-
