@@ -2,33 +2,147 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
 <title>Métodos de Estudo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body { font-family: Arial; background:#0f172a; color:white; margin:0; }
-nav { background:#020617; padding:15px; text-align:center; }
-nav a { color:white; margin:0 10px; text-decoration:none; }
-section { max-width:800px; margin:auto; padding:40px; }
-.card { background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px; }
+:root {
+  --primary: #38bdf8;
+  --bg-dark: #0f172a;
+  --bg-light: #f1f5f9;
+  --card-dark: #020617;
+  --card-light: #ffffff;
+}
+
+* { transition: 0.3s; }
+
+body {
+  font-family: Arial;
+  background: var(--bg-dark);
+  color: white;
+  margin: 0;
+}
+
+body.light {
+  background: var(--bg-light);
+  color: #111;
+}
+
+/* NAV */
+nav {
+  background: rgba(2,6,23,0.9);
+  padding: 15px;
+  text-align: center;
+}
+
+body.light nav {
+  background: rgba(255,255,255,0.9);
+}
+
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+body.light nav a {
+  color: #111;
+}
+
+/* BOTÃO */
+.theme-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* CONTEÚDO */
+section {
+  max-width: 800px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  background: var(--card-dark);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+body.light .card {
+  background: var(--card-light);
+  color: #111;
+}
+
+/* PROGRESSO */
+.progress-container {
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 20px;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  background: var(--primary);
+}
+
+/* POMODORO */
+.timer {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.timer h2 {
+  font-size: 2rem;
+}
+
+.timer button {
+  margin: 5px;
+  padding: 10px 15px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- MENU -->
-  <nav>
-    <a href="https://marcosmororo.github.io/">Home</a>
-    <a href="organizacao.html">Organização</a>
-    <a href="ferramentas.html">Ferramentas</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="contato.html">Contato</a>
-  </nav>
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+<nav>
+  <a href="https://marcosmororo.github.io/">Home</a>
+  <a href="organizacao.html">Organização</a>
+  <a href="ferramentas.html">Ferramentas</a>
+  <a href="sobre.html">Sobre</a>
+  <a href="contato.html">Contato</a>
+</nav>
 
 <section>
+
 <h1>📚 Métodos de Estudo</h1>
 
 <div class="card">
@@ -51,14 +165,85 @@ section { max-width:800px; margin:auto; padding:40px; }
 <p>Monte labs com VLAN, roteamento e troubleshooting.</p>
 </div>
 
+<!-- PROGRESSO -->
+<div class="card">
+<h3>📊 Progresso de estudo</h3>
+
+<div class="progress-container">
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+</div>
+
+<br>
+<button onclick="aumentarProgresso()">Estudei ✔️</button>
+</div>
+
+<!-- POMODORO -->
+<div class="card timer">
+<h3>⏱️ Timer Pomodoro</h3>
+<h2 id="tempo">25:00</h2>
+
+<button onclick="iniciar()">Iniciar</button>
+<button onclick="pausar()">Pausar</button>
+<button onclick="resetar()">Resetar</button>
+</div>
+
 </section>
-  <script>
-    function toggleTheme() {
-      document.body.classList.toggle('light');
-      const btn = document.querySelector('.theme-btn');
-      btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
-    }
+
+<script>
+/* TEMA */
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const btn = document.querySelector('.theme-btn');
+  btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
+}
+
+/* PROGRESSO */
+let progresso = 0;
+
+function aumentarProgresso() {
+  if (progresso < 100) {
+    progresso += 10;
+    document.getElementById('progress').style.width = progresso + '%';
+  }
+}
+
+/* POMODORO */
+let tempo = 1500; // 25 min
+let intervalo;
+
+function atualizarTempo() {
+  let min = Math.floor(tempo / 60);
+  let seg = tempo % 60;
+  document.getElementById('tempo').innerText =
+    `${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
+}
+
+function iniciar() {
+  if (!intervalo) {
+    intervalo = setInterval(() => {
+      if (tempo > 0) {
+        tempo--;
+        atualizarTempo();
+      }
+    }, 1000);
+  }
+}
+
+function pausar() {
+  clearInterval(intervalo);
+  intervalo = null;
+}
+
+function resetar() {
+  pausar();
+  tempo = 1500;
+  atualizarTempo();
+}
+
+atualizarTempo();
 </script>
-  
+
 </body>
 </html>
