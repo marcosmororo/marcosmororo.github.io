@@ -9,10 +9,8 @@
   <link rel="manifest" href="/site.webmanifest">
   <title>marcosrenan</title>
 
-  <!-- RESPONSIVO -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
@@ -21,9 +19,9 @@
       font-family: Arial, sans-serif;
       background: #0f172a;
       color: white;
+      scroll-behavior: smooth;
     }
 
-    /* ANIMAÇÃO */
     @keyframes fadeUp {
       from {
         opacity: 0;
@@ -45,12 +43,14 @@
     .delay-3 { animation-delay: 0.9s; }
     .delay-4 { animation-delay: 1.2s; }
 
-    /* MENU */
     nav {
       background: #020617;
       padding: 15px;
       text-align: center;
-      animation: fadeUp 1s ease;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
     }
 
     nav a {
@@ -65,13 +65,12 @@
       color: #38bdf8;
     }
 
-    /* HEADER */
     header {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 80px 20px;
+      padding: 60px 20px;
       text-align: center;
     }
 
@@ -82,6 +81,11 @@
       object-fit: cover;
       margin-bottom: 20px;
       border: 3px solid #38bdf8;
+      transition: 0.3s;
+    }
+
+    .foto:hover {
+      transform: scale(1.05);
     }
 
     header h1 {
@@ -94,11 +98,10 @@
       color: #94a3b8;
     }
 
-    /* CONTEÚDO */
     main {
       max-width: 800px;
       margin: auto;
-      padding: 40px 20px;
+      padding: 20px;
     }
 
     section {
@@ -109,7 +112,40 @@
       color: #38bdf8;
     }
 
-    /* SOCIAL */
+    .container {
+      text-align: center;
+    }
+
+    .highlight {
+      color: #38bdf8;
+      font-weight: bold;
+    }
+
+    .card {
+      background: #020617;
+      padding: 20px;
+      border-radius: 15px;
+      margin-top: 20px;
+      box-shadow: 0 0 15px rgba(56,189,248,0.2);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .voltar {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      color: #38bdf8;
+      transition: 0.3s;
+    }
+
+    .voltar:hover {
+      color: white;
+    }
+
     .social {
       margin-top: 20px;
       text-align: center;
@@ -128,7 +164,6 @@
       transform: scale(1.2);
     }
 
-    /* FOOTER */
     footer {
       text-align: center;
       padding: 20px;
@@ -140,7 +175,6 @@
 
 <body>
 
-  <!-- MENU -->
   <nav>
     <a href="https://marcosmororo.github.io/">Home</a>
     <a href="metodos.html">Métodos de Estudo</a>
@@ -150,71 +184,63 @@
     <a href="contato.html">Contato</a>
   </nav>
 
-  <!-- TOPO -->
   <header>
     <img src="renan.jpeg" class="foto fade" alt="Foto de Marcos Renan">
-
     <h1 class="fade delay-1">Marcos Renan</h1>
     <p class="fade delay-2">🏎️ Fã de F1</p>
   </header>
 
-  <!-- CONTEÚDO -->
   <main>
 
-  <!-- ATUAÇÃO -->
-  <section class="bloco fade delay-2">
-    <h2>👋 Bem-vindo(a) à minha página inicial!</h2>
- </section>
+    <section class="fade delay-2">
+      <h2>👋 Bem-vindo(a) à minha página inicial!</h2>
+    </section>
     
-<header>
-  <div class="container">
+    <section class="fade delay-3">
+      <div class="container">
 
-    <h1>👨‍💻 Sobre Mim</h1>
+        <h1>👨‍💻 Sobre Mim</h1>
 
-    <p>
-      Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
-      <span class="highlight">Online Telecom</span>. 
-      Sou apaixonado por redes, monitoramento e infraestrutura.
-    </p>
+        <p>
+          Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
+          <span class="highlight">Online Telecom</span>. 
+          Sou apaixonado por redes, monitoramento e infraestrutura.
+        </p>
 
-    <p>
-      Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo 
-      e projetos que desenvolvo ou apoio.
-    </p>
+        <p>
+          Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo 
+          e projetos que desenvolvo ou apoio.
+        </p>
 
-    <!-- CARD MODERNO -->
-    <div class="card">
-      <p>🚀 Foco em alta disponibilidade</p>
-      <p>📡 Monitoramento de redes e sistemas</p>
-      <p>⚡ Resolução de incidentes e troubleshooting</p>
-    </div>
+        <div class="card">
+          <p>🚀 Foco em alta disponibilidade</p>
+          <p>📡 Monitoramento de redes e sistemas</p>
+          <p>⚡ Resolução de incidentes e troubleshooting</p>
+        </div>
 
-    <a href="index.html" class="voltar">← Voltar para Home</a>
+        <a href="index.html" class="voltar">← Voltar para Home</a>
 
-  </div>
-</header>
+      </div>
+    </section>
 
-  <!-- CONTATO -->
-  <section class="fade delay-3">
-    
-    <div class="social">
-      <a href="mailto:marcosrenan@outlook.com">
-        <i class="fas fa-envelope"></i>
-      </a>
+    <section class="fade delay-4">
+      <div class="social">
+        <a href="mailto:marcosrenan@outlook.com">
+          <i class="fas fa-envelope"></i>
+        </a>
 
-      <a href="https://instagram.com/marcosrm_" target="_blank">
-        <i class="fab fa-instagram"></i>
-      </a>
+        <a href="https://instagram.com/marcosrm_" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
 
-      <a href="https://linkedin.com/in/marcosrenan" target="_blank">
-        <i class="fab fa-linkedin"></i>
-      </a>
-    </div>
-  </section>
+        <a href="https://linkedin.com/in/marcosrenan" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+    </section>
 
   </main>
 
-  <!-- RODAPÉ -->
   <footer class="fade delay-4">
     <p>Buscando o meu melhor a cada dia!</p>
   </footer>
