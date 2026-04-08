@@ -139,7 +139,7 @@ button {
 
 <h1>📚 Métodos de Estudo</h1>
 
-<!-- 🔥 POMODORO AGORA NO TOPO -->
+<!-- 🔥 POMODORO NO TOPO -->
 <div class="card">
 <h3>⏱️ Controle Pomodoro</h3>
 
@@ -162,10 +162,10 @@ button {
 <h3>✅ Sessão de estudo</h3>
 
 <div class="checklist">
-  <label><input type="checkbox"> Entendi o conteúdo</label>
-  <label><input type="checkbox"> Fiz prática</label>
-  <label><input type="checkbox"> Revisei</label>
-  <label><input type="checkbox"> Expliquei sozinho</label>
+  <label><input type="checkbox" id="check1"> Entendi o conteúdo</label>
+  <label><input type="checkbox" id="check2"> Fiz prática</label>
+  <label><input type="checkbox" id="check3"> Revisei</label>
+  <label><input type="checkbox" id="check4"> Expliquei sozinho</label>
 </div>
 
 </div>
@@ -247,6 +247,21 @@ function resetar() {
 
 if (rodando) iniciar();
 atualizarTempo();
+
+/* ===== CHECKLIST SALVANDO ===== */
+
+const checks = document.querySelectorAll('.checklist input');
+
+checks.forEach(check => {
+  const salvo = localStorage.getItem(check.id);
+  if (salvo === "true") {
+    check.checked = true;
+  }
+
+  check.addEventListener('change', () => {
+    localStorage.setItem(check.id, check.checked);
+  });
+});
 
 </script>
 
