@@ -2,23 +2,43 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-
-  <!-- RESPONSIVO (IMPORTANTE) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sobre</title>
 
   <!-- Ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-  <title>Sobre</title>
-
   <style>
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       background: #0f172a;
       color: white;
       margin: 0;
     }
 
+    /* NAV */
+    nav {
+      background: #020617;
+      padding: 15px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+    }
+
+    nav a {
+      color: white;
+      margin: 0 12px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #38bdf8;
+    }
+
+    /* CONTEÚDO */
     header {
       display: flex;
       align-items: center;
@@ -26,26 +46,44 @@
       min-height: 80vh;
       padding: 20px;
       text-align: center;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .container {
-      max-width: 600px;
+      max-width: 650px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 28px;
     }
 
     p {
       font-size: 16px;
-      line-height: 1.6;
+      line-height: 1.7;
       color: #cbd5f5;
-    }
-
-    strong {
-      color: white;
     }
 
     .highlight {
       color: #38bdf8;
+      font-weight: bold;
     }
 
+    /* CARD EXTRA */
+    .card {
+      margin-top: 30px;
+      padding: 20px;
+      background: #1e293b;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      background: #334155;
+    }
+
+    /* BOTÃO */
     .voltar {
       display: inline-block;
       margin-top: 30px;
@@ -66,33 +104,57 @@
       text-align: center;
       padding-bottom: 30px;
     }
+
+    /* ANIMAÇÃO */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 
 <body>
-  
-  <!-- MENU -->
-  <nav>
-    <a href="https://marcosmororo.github.io/">Home</a>
-    <a href="metodos.html">Métodos de Estudo</a>
-    <a href="organizacao.html">Organização</a>
-    <a href="ferramentas.html">Ferramentas</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="contato.html">Contato</a>
-  </nav>
-  
+
+<!-- MENU -->
+<nav>
+  <a href="index.html">Home</a>
+  <a href="metodos.html">Métodos</a>
+  <a href="organizacao.html">Organização</a>
+  <a href="ferramentas.html">Ferramentas</a>
+  <a href="contato.html">Contato</a>
+</nav>
+
+<!-- CONTEÚDO -->
 <header>
   <div class="container">
+
+    <h1>👨‍💻 Sobre Mim</h1>
+
     <p>
       Olá! Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
       <span class="highlight">Online Telecom</span>. 
-      Sou apaixonado por redes, monitoramento e infraestrutura. Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo e projetos que desenvolvo ou apoio.
+      Sou apaixonado por redes, monitoramento e infraestrutura.
     </p>
+
+    <p>
+      Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo 
+      e projetos que desenvolvo ou apoio.
+    </p>
+
+    <!-- CARD MODERNO -->
+    <div class="card">
+      <p>🚀 Foco em alta disponibilidade</p>
+      <p>📡 Monitoramento de redes e sistemas</p>
+      <p>⚡ Resolução de incidentes e troubleshooting</p>
+    </div>
+
+    <a href="index.html" class="voltar">← Voltar para Home</a>
+
   </div>
 </header>
 
 <footer>
-  <a href="index.html" class="voltar">← Voltar para Home</a>
+  <p>© 2026 - Marcos Renan</p>
 </footer>
 
 </body>
