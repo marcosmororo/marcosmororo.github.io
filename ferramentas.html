@@ -2,52 +2,114 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
 <title>Ferramentas</title>
 
 <style>
 body { font-family: Arial; background:#0f172a; color:white; margin:0; }
 nav { background:#020617; padding:15px; text-align:center; }
 nav a { color:white; margin:0 10px; text-decoration:none; }
-section { max-width:800px; margin:auto; padding:40px; }
-.card { background:#1e293b; padding:20px; border-radius:10px; margin-bottom:20px; }
+
+section { max-width:900px; margin:auto; padding:40px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background:#1e293b;
+  padding:20px;
+  border-radius:10px;
+  text-align:center;
+  transition:0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card img {
+  width:60px;
+  margin-bottom:10px;
+}
+
 </style>
 </head>
 
 <body>
-  <!-- MENU -->
-  <nav>
-    <a href="https://marcosmororo.github.io/">Home</a>
-    <a href="metodos.html">Métodos de Estudo</a>
-    <a href="organizacao.html">Organização</a>
-    <a href="sobre.html">Sobre</a>
-    <a href="contato.html">Contato</a>
-  </nav>
+
+<nav>
+  <a href="https://marcosmororo.github.io/">Home</a>
+  <a href="metodos.html">Métodos de Estudo</a>
+  <a href="organizacao.html">Organização</a>
+  <a href="sobre.html">Sobre</a>
+  <a href="contato.html">Contato</a>
+</nav>
 
 <section>
 <h1>🛠️ Ferramentas Úteis</h1>
 
+<div class="grid">
+
 <div class="card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/7/71/Zabbix_logo.svg">
 <h3>Zabbix</h3>
 <p>Monitoramento de redes e servidores.</p>
 </div>
 
 <div class="card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Grafana_icon.svg">
 <h3>Grafana</h3>
 <p>Dashboards para visualização de dados.</p>
 </div>
 
 <div class="card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/db/Wireshark_Logo.svg">
 <h3>Wireshark</h3>
 <p>Análise de tráfego de rede.</p>
 </div>
 
 <div class="card">
-<h3>Putty / SSH</h3>
+<img src="https://cdn-icons-png.flaticon.com/512/906/906324.png">
+<h3>PuTTY / SSH</h3>
 <p>Acesso remoto a equipamentos.</p>
+</div>
+
+<div class="card">
+<img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/PRTG_Logo.png">
+<h3>PRTG</h3>
+<p>Monitoramento completo de redes.</p>
+</div>
+
+<div class="card">
+<img src="https://phpipam.net/images/logo.png">
+<h3>phpIPAM</h3>
+<p>Gerenciamento de endereçamento IP.</p>
+</div>
+
+<div class="card">
+<img src="https://www.librenms.org/images/logo.png">
+<h3>LibreNMS</h3>
+<p>Monitoramento de rede open source.</p>
+</div>
+
+<div class="card">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png">
+<h3>GitHub</h3>
+<p>Controle de versão e projetos.</p>
+</div>
+
+<div class="card">
+<img src="https://www.padtec.com.br/wp-content/uploads/2021/09/logo-padtec.png">
+<h3>Padtec</h3>
+<p>Soluções de redes ópticas e telecom.</p>
+</div>
+
 </div>
 
 </section>
