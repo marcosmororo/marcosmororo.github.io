@@ -20,10 +20,9 @@ section { max-width:900px; margin:auto; padding:40px; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
-  align-items: stretch; /* garante mesma altura na linha */
+  align-items: stretch;
 }
 
-/* links não afetarem layout */
 .grid a {
   text-decoration: none;
   color: inherit;
@@ -41,6 +40,7 @@ section { max-width:900px; margin:auto; padding:40px; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  align-items: center; /* CENTRALIZA TUDO */
   width: 100%;
 }
 
@@ -51,6 +51,9 @@ section { max-width:900px; margin:auto; padding:40px; }
 .card img {
   width:60px;
   margin-bottom:10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .card h3 {
