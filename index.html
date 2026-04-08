@@ -3,122 +3,179 @@
 
 <head>
   <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <title>marcosrenan</title>
-
+  <title>Marcos Renan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
+    :root {
+      --primary: #38bdf8;
+      --bg-dark: #0f172a;
+      --bg-light: #f1f5f9;
+      --card-dark: #020617;
+      --card-light: #ffffff;
+    }
+
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--bg-dark);
       color: white;
-      scroll-behavior: smooth;
-      transition: background 0.3s, color 0.3s;
+      transition: 0.3s;
     }
 
     body.light {
-      background: #f0f0f0;
+      background: var(--bg-light);
       color: #111;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .fade { animation: fadeUp 1s ease forwards; opacity: 0; }
-    .delay-1 { animation-delay: 0.3s; }
-    .delay-2 { animation-delay: 0.6s; }
-    .delay-3 { animation-delay: 0.9s; }
-    .delay-4 { animation-delay: 1.2s; }
-
+    /* NAV */
     nav {
-      background: #020617;
-      padding: 15px;
-      text-align: center;
       position: sticky;
       top: 0;
+      background: rgba(2, 6, 23, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 15px;
+      text-align: center;
       z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      transition: background 0.3s;
     }
 
-    body.light nav { background: #ddd; }
-    nav a { color: white; margin: 0 15px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-    body.light nav a { color: #111; }
-    nav a:hover { color: #38bdf8; }
-
-    header { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
-    .foto { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 3px solid #38bdf8; transition: 0.3s; }
-    .foto:hover { transform: scale(1.05); }
-
-    main { max-width: 900px; margin: auto; padding: 20px; }
-    section { margin-bottom: 40px; }
-    h2 { color: #38bdf8; }
-
-    .container { text-align: center; }
-    .highlight { color: #38bdf8; font-weight: bold; }
-
-    .card {
-      background: #020617;
-      padding: 20px;
-      border-radius: 15px;
-      margin-top: 20px;
-      box-shadow: 0 0 15px rgba(56,189,248,0.2);
-      transition: 0.3s;
+    nav a {
       color: white;
+      margin: 0 12px;
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      left: 0;
+      bottom: -4px;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    body.light nav {
+      background: rgba(255,255,255,0.9);
+    }
+
+    body.light nav a {
+      color: #111;
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .foto {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid var(--primary);
+      transition: 0.3s;
+    }
+
+    .foto:hover {
+      transform: scale(1.08) rotate(2deg);
+    }
+
+    h1 {
+      margin-top: 15px;
+      font-size: 2rem;
+    }
+
+    .subtitle {
+      opacity: 0.7;
+      margin-top: 5px;
+    }
+
+    /* BOTÃO */
+    .theme-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary);
+      border: none;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* SOCIAL */
+    .social {
+      margin-top: 25px;
+    }
+
+    .social a {
+      font-size: 24px;
+      margin: 0 10px;
+      color: inherit;
+      transition: 0.3s;
+    }
+
+    .social a:hover {
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    /* CARD */
+    .card {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 15px;
+      background: var(--card-dark);
+      text-align: center;
+      box-shadow: 0 0 20px rgba(56,189,248,0.1);
     }
 
     body.light .card {
-      background: #fff;
-      color: #111;
-      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      background: var(--card-light);
     }
 
-    .card:hover { transform: translateY(-5px); }
-    .voltar { display: inline-block; margin-top: 20px; text-decoration: none; color: #38bdf8; transition: 0.3s; }
-    body.light .voltar { color: #0ea5e9; }
-    .voltar:hover { color: white; }
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.7;
+    }
 
-    .social { margin-top: 20px; text-align: center; }
-    .social a { color: white; font-size: 22px; margin: 0 10px; display: inline-block; transition: 0.3s; }
-    body.light .social a { color: #111; }
-    .social a:hover { color: #38bdf8; transform: scale(1.2); }
+    /* ANIMAÇÃO */
+    .fade {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s forwards;
+    }
 
-    footer { text-align: center; padding: 20px; background: #020617; margin-top: 40px; transition: background 0.3s; }
-    body.light footer { background: #ddd; color: #111; }
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
-    /* Habilidades animadas */
-    .skill { margin: 10px 0; text-align: left; }
-    .skill-name { margin-bottom: 5px; font-weight: bold; }
-    .skill-bar { background: #333; border-radius: 10px; overflow: hidden; height: 20px; }
-    body.light .skill-bar { background: #ccc; }
-    .skill-level { height: 100%; background: #38bdf8; width: 0; transition: width 1.5s ease-in-out; }
-
-    /* Projetos clicáveis */
-    .projects { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-    .project-card { background: #020617; padding: 15px; border-radius: 15px; width: 220px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; color: white; }
-    body.light .project-card { background: #fff; color: #111; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
-    .project-card:hover { transform: translateY(-5px); box-shadow: 0 0 20px rgba(56,189,248,0.5); }
-
-    /* Botão tema */
-    .theme-btn { position: fixed; top: 20px; right: 20px; background: #38bdf8; border: none; color: white; padding: 10px 15px; border-radius: 10px; cursor: pointer; z-index: 2000; transition: 0.3s; }
-    .theme-btn:hover { background: #0ea5e9; }
   </style>
 </head>
 
 <body>
+
   <button class="theme-btn" onclick="toggleTheme()">🌙</button>
 
   <nav>
-    <a href="https://marcosmororo.github.io/">Home</a>
-    <a href="metodos.html">Métodos de Estudo</a>
+    <a href="#">Home</a>
+    <a href="metodos.html">Métodos</a>
     <a href="organizacao.html">Organização</a>
     <a href="ferramentas.html">Ferramentas</a>
     <a href="sobre.html">Sobre</a>
@@ -126,25 +183,27 @@
   </nav>
 
   <header>
-    <img src="renan.jpeg" class="foto fade" alt="Foto de Marcos Renan">
-    <h1 class="fade delay-1">Marcos Renan</h1>
+    <img src="renan.jpeg" class="foto fade">
+    <h1 class="fade">Marcos Renan</h1>
+    <p class="subtitle fade">Estudante • Tecnologia • Evolução constante 🚀</p>
+
+    <div class="social fade">
+      <a href="mailto:marcosrenan@outlook.com"><i class="fas fa-envelope"></i></a>
+      <a href="https://instagram.com/marcosrm_" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://linkedin.com/in/marcosrenan" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
   </header>
-  <main>
-    <section class="fade delay-2">
-      <h2>👋 Bem-vindo(a) à minha página inicial!</h2>
-    </section>
-    <section class="fade delay-4">
-      <div class="social">
-        <a href="mailto:marcosrenan@outlook.com"><i class="fas fa-envelope"></i></a>
-        <a href="https://instagram.com/marcosrm_" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://linkedin.com/in/marcosrenan" target="_blank"><i class="fab fa-linkedin"></i></a>
-      </div>
-    </section>
 
-  </main>
+  <div class="card fade">
+    <h2>👋 Bem-vindo!</h2>
+    <p>
+      Este é meu espaço pessoal onde compartilho conhecimento sobre estudos,
+      organização e ferramentas que me ajudam a evoluir todos os dias.
+    </p>
+  </div>
 
-  <footer class="fade delay-4">
-    <p>Buscando o meu melhor a cada dia!</p>
+  <footer>
+    <p>Buscando o meu melhor a cada dia 💡</p>
   </footer>
 
   <script>
@@ -154,5 +213,6 @@
       btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
     }
   </script>
+
 </body>
 </html>
