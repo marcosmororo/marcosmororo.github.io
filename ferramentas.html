@@ -10,6 +10,7 @@
 
 <style>
 body { font-family: Arial; background:#0f172a; color:white; margin:0; }
+
 nav { background:#020617; padding:15px; text-align:center; }
 nav a { color:white; margin:0 10px; text-decoration:none; }
 
@@ -19,12 +20,14 @@ section { max-width:900px; margin:auto; padding:40px; }
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+  align-items: stretch; /* garante mesma altura na linha */
 }
 
-/* ajuste para links */
+/* links não afetarem layout */
 .grid a {
   text-decoration: none;
   color: inherit;
+  display: flex;
 }
 
 .card {
@@ -34,6 +37,11 @@ section { max-width:900px; margin:auto; padding:40px; }
   text-align:center;
   transition:0.3s;
   cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .card:hover {
@@ -43,6 +51,14 @@ section { max-width:900px; margin:auto; padding:40px; }
 .card img {
   width:60px;
   margin-bottom:10px;
+}
+
+.card h3 {
+  margin: 10px 0 5px;
+}
+
+.card p {
+  font-size: 14px;
 }
 </style>
 </head>
