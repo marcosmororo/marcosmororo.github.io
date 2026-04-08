@@ -1,53 +1,174 @@
-<main>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-  <!-- SOBRE -->
-  <section class="bloco">
-    <h2>👨‍💻 Sobre mim</h2>
-    <p>
-      Olá! Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
-      <span class="highlight">Online Telecom</span>. 
-      Sou apaixonado por redes, monitoramento e infraestrutura. Aqui você encontrará um pouco sobre minhas habilidades, 
-      ferramentas que utilizo e projetos que desenvolvo ou apoio.
-    </p>
-  </section>
+<head>
+  <meta charset="UTF-8">
+  <title>Marcos Renan | Portfólio</title>
 
-  <!-- ATUAÇÃO -->
-  <section class="bloco">
-    <h2>🛰️ Atuação</h2>
-    <p>
-      Atualmente atuo com tecnologias de transporte óptico, redes e monitoramento de sistemas. Meu dia a dia envolve:
-    </p>
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <ul>
-      <li>Suporte e gestão de redes de alta disponibilidade</li>
-      <li>Monitoramento proativo de equipamentos e links</li>
-      <li>Diagnóstico de falhas e análise de desempenho</li>
-      <li>Implantação e manutenção de ferramentas de monitoramento e gestão de IPs</li>
-    </ul>
-  </section>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
 
-  <!-- CONTATO -->
-  <section>
-    <h2>Contato</h2>
+    /* MENU */
+    nav {
+      background: #020617;
+      padding: 15px;
+      text-align: center;
+    }
 
-    <div class="social">
-      <a href="mailto:marcosrenan@outlook.com">
-        <i class="fas fa-envelope"></i>
-      </a>
+    nav a {
+      color: white;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-      <a href="https://github.com/marcosmororo" target="_blank">
-        <i class="fab fa-github"></i>
-      </a>
+    nav a:hover {
+      color: #38bdf8;
+    }
 
-      <a href="https://instagram.com/marcosrm_" target="_blank">
-        <i class="fab fa-instagram"></i>
-      </a>
+    /* HEADER */
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      text-align: center;
+    }
 
-      <a href="https://linkedin.com/in/marcosrenan" target="_blank">
-        <i class="fab fa-linkedin"></i>
-      </a>
-    </div>
+    .foto {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 3px solid #38bdf8;
+    }
 
-  </section>
+    header h1 {
+      margin: 10px 0;
+      font-size: 32px;
+    }
 
-</main>
+    header p {
+      margin: 5px 0;
+      color: #94a3b8;
+    }
+
+    /* CONTEÚDO */
+    main {
+      max-width: 800px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      color: #38bdf8;
+    }
+
+    /* SOCIAL */
+    .social {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .social a {
+      color: white;
+      font-size: 22px;
+      margin: 0 10px;
+      display: inline-block;
+      transition: 0.3s;
+    }
+
+    .social a:hover {
+      color: #38bdf8;
+      transform: scale(1.2);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #020617;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- MENU -->
+  <nav>
+    <a href="#">Home</a>
+  </nav>
+
+  <!-- TOPO -->
+  <header>
+    <img src="renan.jpeg" class="foto" alt="Foto de Marcos Renan">
+
+    <h1>Marcos Renan</h1>
+    <p>Analista de Redes Sênior</p>
+    <p>Focado em monitoramento e redes</p>
+  </header>
+
+  <!-- CONTEÚDO -->
+  <main>
+
+    <!-- SOBRE -->
+    <section>
+      <h2>Sobre mim</h2>
+      <p>
+        Sou Analista de Redes Sênior com foco em monitoramento, infraestrutura e desempenho de redes.
+        Tenho interesse em tecnologia, automação e melhoria contínua de ambientes.
+      </p>
+    </section>
+
+    <!-- CONTATO -->
+    <section>
+      <h2>Contato</h2>
+
+      <div class="social">
+        <a href="mailto:marcosrenan@outlook.com">
+          <i class="fas fa-envelope"></i>
+        </a>
+
+        <a href="https://github.com/" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+
+        <a href="https://twitter.com/" target="_blank">
+          <i class="fab fa-twitter"></i>
+        </a>
+
+        <a href="https://instagram.com/marcosrm_" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
+
+        <a href="https://linkedin.com/in/marcosrenan" target="_blank">
+          <i class="fab fa-linkedin"></i>
+        </a>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer>
+    <p>© 2026 - Marcos Renan</p>
+  </footer>
+
+</body>
+</html>
