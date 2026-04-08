@@ -1,24 +1,105 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Contato</title>
+  <meta charset="UTF-8">
+  <title>Contato</title>
 
-<style>
-body { font-family: Arial; background:#0f172a; color:white; text-align:center; padding:50px; }
-a { color:#38bdf8; display:block; margin:10px; }
-</style>
+  <!-- Ícones (Font Awesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+      margin: 0;
+    }
+
+    header {
+      padding: 40px 20px;
+    }
+
+    h1 {
+      margin-bottom: 30px;
+    }
+
+    .contato {
+      max-width: 400px;
+      margin: auto;
+    }
+
+    .item {
+      background: #1e293b;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: 0.3s;
+    }
+
+    .item:hover {
+      background: #334155;
+      transform: translateY(-2px);
+    }
+
+    .item i {
+      font-size: 20px;
+      color: #38bdf8;
+    }
+
+    .item a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .voltar {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #38bdf8;
+      color: #020617;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .voltar:hover {
+      background: #0ea5e9;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>📞 Contato</h1>
+<header>
+  <h1>📞 Contato</h1>
+</header>
 
-<a href="mailto:marcosrenan@outlook.com">Email</a>
-<a href="https://instagram.com/marcosrm_">Instagram</a>
-<a href="https://linkedin.com/in/marcosrenan">LinkedIn</a>
+<div class="contato">
 
-<a href="index.html">← Voltar</a>
+  <div class="item">
+    <i class="fas fa-envelope"></i>
+    <a href="mailto:marcosrenan@outlook.com">marcosrenan@outlook.com</a>
+  </div>
+
+  <div class="item">
+    <i class="fab fa-instagram"></i>
+    <a href="https://instagram.com/marcosrm_" target="_blank">@marcosrm_</a>
+  </div>
+
+  <div class="item">
+    <i class="fab fa-linkedin"></i>
+    <a href="https://linkedin.com/in/marcosrenan" target="_blank">marcosrenan</a>
+  </div>
+
+</div>
+
+<a href="index.html" class="voltar">← Voltar para Home</a>
 
 </body>
 </html>
