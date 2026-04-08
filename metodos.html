@@ -139,6 +139,15 @@ button {
 
 <h1>📚 Métodos de Estudo</h1>
 
+<!-- 🔥 POMODORO AGORA NO TOPO -->
+<div class="card">
+<h3>⏱️ Controle Pomodoro</h3>
+
+<button onclick="iniciar()">Iniciar</button>
+<button onclick="pausar()">Pausar</button>
+<button onclick="resetar()">Resetar</button>
+</div>
+
 <div class="card">
 <h3>📌 Estudo prático</h3>
 <p>Aprenda configurando redes reais ou simuladas.</p>
@@ -161,20 +170,11 @@ button {
 
 </div>
 
-<div class="card">
-<h3>⏱️ Controle Pomodoro</h3>
-
-<button onclick="iniciar()">Iniciar</button>
-<button onclick="pausar()">Pausar</button>
-<button onclick="resetar()">Resetar</button>
-</div>
-
 </section>
 
 <script>
 /* ===== TEMA GLOBAL ===== */
 
-/* Aplicar tema ANTES de renderizar */
 (function() {
   const tema = localStorage.getItem("tema");
   if (tema === "light") {
@@ -192,13 +192,12 @@ function toggleTheme() {
   btn.textContent = isLight ? '🌙' : '☀️';
 }
 
-/* Corrigir ícone ao carregar */
 window.onload = () => {
   const btn = document.querySelector('.theme-btn');
   btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
 };
 
-/* ===== POMODORO COM SALVAMENTO ===== */
+/* ===== POMODORO ===== */
 
 let tempo = localStorage.getItem("tempo") 
   ? parseInt(localStorage.getItem("tempo")) 
@@ -246,7 +245,6 @@ function resetar() {
   salvar();
 }
 
-/* AUTO RETOMAR */
 if (rodando) iniciar();
 atualizarTempo();
 
