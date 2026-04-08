@@ -16,7 +16,7 @@
   --card-light: #ffffff;
 }
 
-* { transition: 0.3s; }
+* { transition: background 0.3s, color 0.3s; }
 
 body {
   font-family: Arial;
@@ -62,6 +62,7 @@ body.light nav a {
   padding: 10px;
   border-radius: 10px;
   cursor: pointer;
+  z-index: 1000;
 }
 
 /* TIMER TOPO */
@@ -144,21 +145,18 @@ button {
 <p>Explique o conteúdo como se estivesse ensinando alguém.</p>
 </div>
 
-<!-- CHECKLIST -->
 <div class="card">
-<h3>✅ Sessão de estudo (marque enquanto estuda)</h3>
+<h3>✅ Sessão de estudo</h3>
 
 <div class="checklist">
   <label><input type="checkbox"> Entendi o conteúdo</label>
-  <label><input type="checkbox"> Fiz prática/lab</label>
-  <label><input type="checkbox"> Revisei anotações</label>
-  <label><input type="checkbox"> Consegui explicar sozinho</label>
+  <label><input type="checkbox"> Fiz prática</label>
+  <label><input type="checkbox"> Revisei</label>
+  <label><input type="checkbox"> Expliquei sozinho</label>
 </div>
 
-<p><small>Dica: só considere o estudo completo quando marcar tudo ✔️</small></p>
 </div>
 
-<!-- CONTROLE POMODORO -->
 <div class="card">
 <h3>⏱️ Controle Pomodoro</h3>
 
@@ -170,12 +168,31 @@ button {
 </section>
 
 <script>
-/* TEMA */
+/* ===== TEMA GLOBAL ===== */
+
+/* Aplicar tema ANTES de renderizar */
+(function() {
+  const tema = localStorage.getItem("tema");
+  if (tema === "light") {
+    document.body.classList.add("light");
+  }
+})();
+
 function toggleTheme() {
   document.body.classList.toggle('light');
+
+  const isLight = document.body.classList.contains('light');
+  localStorage.setItem("tema", isLight ? "light" : "dark");
+
+  const btn = document.querySelector('.theme-btn');
+  btn.textContent = isLight ? '🌙' : '☀️';
+}
+
+/* Corrigir ícone ao carregar */
+window.onload = () => {
   const btn = document.querySelector('.theme-btn');
   btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
-}
+};
 
 /* ===== POMODORO COM SALVAMENTO ===== */
 
@@ -186,7 +203,6 @@ let tempo = localStorage.getItem("tempo")
 let rodando = localStorage.getItem("rodando") === "true";
 let intervalo;
 
-/* Atualiza tela */
 function atualizarTempo() {
   let min = Math.floor(tempo / 60);
   let seg = tempo % 60;
@@ -194,13 +210,11 @@ function atualizarTempo() {
     `${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
 }
 
-/* Salvar estado */
 function salvar() {
   localStorage.setItem("tempo", tempo);
   localStorage.setItem("rodando", rodando);
 }
 
-/* Iniciar */
 function iniciar() {
   if (!intervalo) {
     rodando = true;
@@ -214,7 +228,6 @@ function iniciar() {
   }
 }
 
-/* Pausar */
 function pausar() {
   clearInterval(intervalo);
   intervalo = null;
@@ -222,7 +235,6 @@ function pausar() {
   salvar();
 }
 
-/* Resetar */
 function resetar() {
   pausar();
   tempo = 1500;
@@ -231,11 +243,9 @@ function resetar() {
 }
 
 /* AUTO RETOMAR */
-if (rodando) {
-  iniciar();
-}
-
+if (rodando) iniciar();
 atualizarTempo();
+
 </script>
 
 </body>
