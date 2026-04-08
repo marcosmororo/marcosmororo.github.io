@@ -64,16 +64,20 @@ body.light nav a {
   cursor: pointer;
 }
 
+/* TIMER TOPO */
+.top-timer {
+  text-align: center;
+  font-size: 2rem;
+  padding: 15px;
+  font-weight: bold;
+  background: rgba(56,189,248,0.1);
+}
+
 /* CONTEÚDO */
 section {
   max-width: 800px;
   margin: auto;
-  padding: 40px 20px;
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 30px;
+  padding: 20px;
 }
 
 .card {
@@ -88,50 +92,35 @@ body.light .card {
   color: #111;
 }
 
-/* PROGRESSO */
-.progress-container {
-  margin-top: 20px;
+/* CHECKLIST */
+.checklist label {
+  display: block;
+  margin: 10px 0;
+  cursor: pointer;
 }
 
-.progress-bar {
-  height: 20px;
-  background: #333;
-  border-radius: 10px;
-  overflow: hidden;
+.checklist input {
+  margin-right: 10px;
 }
 
-.progress {
-  height: 100%;
-  width: 0%;
-  background: var(--primary);
-}
-
-/* POMODORO */
-.timer {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.timer h2 {
-  font-size: 2rem;
-}
-
-.timer button {
-  margin: 5px;
-  padding: 10px 15px;
+/* BOTÕES */
+button {
+  margin-top: 10px;
+  padding: 10px;
   border: none;
   background: var(--primary);
   color: white;
   border-radius: 8px;
   cursor: pointer;
 }
-
 </style>
 </head>
 
 <body>
 
 <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+<div class="top-timer" id="tempo">25:00</div>
 
 <nav>
   <a href="https://marcosmororo.github.io/">Home</a>
@@ -147,7 +136,7 @@ body.light .card {
 
 <div class="card">
 <h3>📌 Estudo prático</h3>
-<p>Aprenda configurando redes reais ou simuladas (Packet Tracer, GNS3).</p>
+<p>Aprenda configurando redes reais ou simuladas.</p>
 </div>
 
 <div class="card">
@@ -155,34 +144,23 @@ body.light .card {
 <p>Explique o conteúdo como se estivesse ensinando alguém.</p>
 </div>
 
+<!-- CHECKLIST -->
 <div class="card">
-<h3>⏱️ Técnica Pomodoro</h3>
-<p>25 minutos focado + 5 minutos descanso.</p>
+<h3>✅ Sessão de estudo (marque enquanto estuda)</h3>
+
+<div class="checklist">
+  <label><input type="checkbox"> Entendi o conteúdo</label>
+  <label><input type="checkbox"> Fiz prática/lab</label>
+  <label><input type="checkbox"> Revisei anotações</label>
+  <label><input type="checkbox"> Consegui explicar sozinho</label>
 </div>
 
+<p><small>Dica: só considere o estudo completo quando marcar tudo ✔️</small></p>
+</div>
+
+<!-- CONTROLE POMODORO -->
 <div class="card">
-<h3>💻 Laboratórios</h3>
-<p>Monte labs com VLAN, roteamento e troubleshooting.</p>
-</div>
-
-<!-- PROGRESSO -->
-<div class="card">
-<h3>📊 Progresso de estudo</h3>
-
-<div class="progress-container">
-  <div class="progress-bar">
-    <div class="progress" id="progress"></div>
-  </div>
-</div>
-
-<br>
-<button onclick="aumentarProgresso()">Estudei ✔️</button>
-</div>
-
-<!-- POMODORO -->
-<div class="card timer">
-<h3>⏱️ Timer Pomodoro</h3>
-<h2 id="tempo">25:00</h2>
+<h3>⏱️ Controle Pomodoro</h3>
 
 <button onclick="iniciar()">Iniciar</button>
 <button onclick="pausar()">Pausar</button>
@@ -199,20 +177,16 @@ function toggleTheme() {
   btn.textContent = document.body.classList.contains('light') ? '🌙' : '☀️';
 }
 
-/* PROGRESSO */
-let progresso = 0;
+/* ===== POMODORO COM SALVAMENTO ===== */
 
-function aumentarProgresso() {
-  if (progresso < 100) {
-    progresso += 10;
-    document.getElementById('progress').style.width = progresso + '%';
-  }
-}
+let tempo = localStorage.getItem("tempo") 
+  ? parseInt(localStorage.getItem("tempo")) 
+  : 1500;
 
-/* POMODORO */
-let tempo = 1500; // 25 min
+let rodando = localStorage.getItem("rodando") === "true";
 let intervalo;
 
+/* Atualiza tela */
 function atualizarTempo() {
   let min = Math.floor(tempo / 60);
   let seg = tempo % 60;
@@ -220,26 +194,45 @@ function atualizarTempo() {
     `${String(min).padStart(2,'0')}:${String(seg).padStart(2,'0')}`;
 }
 
+/* Salvar estado */
+function salvar() {
+  localStorage.setItem("tempo", tempo);
+  localStorage.setItem("rodando", rodando);
+}
+
+/* Iniciar */
 function iniciar() {
   if (!intervalo) {
+    rodando = true;
     intervalo = setInterval(() => {
       if (tempo > 0) {
         tempo--;
         atualizarTempo();
+        salvar();
       }
     }, 1000);
   }
 }
 
+/* Pausar */
 function pausar() {
   clearInterval(intervalo);
   intervalo = null;
+  rodando = false;
+  salvar();
 }
 
+/* Resetar */
 function resetar() {
   pausar();
   tempo = 1500;
   atualizarTempo();
+  salvar();
+}
+
+/* AUTO RETOMAR */
+if (rodando) {
+  iniciar();
 }
 
 atualizarTempo();
