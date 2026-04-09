@@ -1,109 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <title>Contato</title>
-
-  <!-- Ícones (Font Awesome) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      margin: 0;
-    }
-
-    header {
-      padding: 40px 20px;
-    }
-
-    h1 {
-      margin-bottom: 30px;
-    }
-
-    .contato {
-      max-width: 400px;
-      margin: auto;
-    }
-
-    .item {
-      background: #1e293b;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: 0.3s;
-    }
-
-    .item:hover {
-      background: #334155;
-      transform: translateY(-2px);
-    }
-
-    .item i {
-      font-size: 20px;
-      color: #38bdf8;
-    }
-
-    .item a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .voltar {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 10px 20px;
-      background: #38bdf8;
-      color: #020617;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .voltar:hover {
-      background: #0ea5e9;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Contato</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-<header>
-  <h1>📞 Contato</h1>
-</header>
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+<div class="top-timer" id="tempo">25:00</div>
 
-<div class="contato">
+<nav>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
+</nav>
 
-  <div class="item">
-    <i class="fas fa-envelope"></i>
-    <a href="mailto:marcosrenan@outlook.com">marcosrenan@outlook.com</a>
-  </div>
+<section>
+<h1>Contato</h1>
+<div class="card"><p>Conteúdo da página Contato</p></div>
 
-  <div class="item">
-    <i class="fab fa-instagram"></i>
-    <a href="https://instagram.com/marcosrm_" target="_blank">marcosrm_</a>
-  </div>
-
-  <div class="item">
-    <i class="fab fa-linkedin"></i>
-    <a href="https://linkedin.com/in/marcosrenan" target="_blank">marcosrenan</a>
-  </div>
-
+<div class="card">
+<h3>⏱️ Pomodoro</h3>
+<button onclick="iniciar()">Iniciar</button>
+<button onclick="pausar()">Pausar</button>
+<button onclick="resetar()">Resetar</button>
 </div>
+</section>
 
-<a href="index.html" class="voltar">← Voltar para Home</a>
-
+<script src="js/script.js"></script>
 </body>
 </html>
