@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Organizacao</title>
+<title>Organização</title>
 
 <style>
 body {
@@ -12,71 +12,88 @@ body {
   margin: 0;
 }
 
+/* NAV */
 nav {
   background: #020617;
   padding: 10px;
+  text-align: center;
 }
 
 nav a {
   color: #38bdf8;
-  margin-right: 10px;
+  margin: 0 8px;
   text-decoration: none;
 }
 
+/* CENTRALIZAÇÃO */
 section {
-  padding: 20px;
+  display: flex;
+  justify-content: center;
+  padding: 30px 10px;
 }
 
+/* CARD COMPACTO */
 .card {
   background: #020617;
   padding: 15px;
   border-radius: 10px;
-  margin-bottom: 20px;
+  width: 100%;
+  max-width: 500px;
 }
 
+/* ÁRVORE */
 ul {
   list-style: none;
-  padding-left: 20px;
+  padding-left: 15px;
 }
 
 li {
-  margin: 6px 0;
-  padding: 5px;
-  border-radius: 6px;
+  margin: 4px 0;
 }
 
-li.dragging {
-  opacity: 0.4;
-}
-
+/* ITEM */
 .item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: grab;
+  font-size: 14px;
 }
 
 .item span {
   flex: 1;
 }
 
+/* BOTÕES */
 button {
   background: #1e293b;
   border: none;
   color: #e2e8f0;
-  padding: 4px 8px;
+  padding: 3px 6px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 12px;
 }
 
+/* INPUT */
 input {
-  padding: 6px;
+  padding: 5px;
   border-radius: 5px;
   border: none;
+  width: 65%;
+  margin-bottom: 10px;
 }
 
-.icon {
-  width: 20px;
+/* DRAG */
+.dragging {
+  opacity: 0.4;
+}
+
+/* TOGGLE */
+.toggle {
+  cursor: pointer;
+  width: 15px;
+  display: inline-block;
 }
 </style>
 </head>
@@ -84,16 +101,15 @@ input {
 <body>
 
 <nav>
-<a href="index.html">Home</a>
-<a href="metodos.html">Métodos</a>
-<a href="organizacao.html">Organização</a>
-<a href="ferramentas.html">Ferramentas</a>
-<a href="sobre.html">Sobre</a>
-<a href="contato.html">Contato</a>
+<a href="#">Home</a>
+<a href="#">Métodos</a>
+<a href="#">Organização</a>
+<a href="#">Ferramentas</a>
+<a href="#">Sobre</a>
+<a href="#">Contato</a>
 </nav>
 
 <section>
-<h1>Organizacao</h1>
 
 <div class="card">
   <h3>🌐 Estrutura de Hosts</h3>
@@ -110,9 +126,11 @@ input {
 let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
   {
     nome: "Core",
+    aberto: true,
     filhos: [
       {
         nome: "Vendors",
+        aberto: true,
         filhos: [
           { nome: "Juniper", filhos: [] },
           { nome: "Huawei", filhos: [] }
@@ -122,9 +140,11 @@ let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
   },
   {
     nome: "Distribution",
+    aberto: true,
     filhos: [
       {
         nome: "Vendors",
+        aberto: true,
         filhos: [
           { nome: "Juniper", filhos: [] },
           { nome: "Huawei", filhos: [] },
@@ -163,7 +183,6 @@ function render() {
 
 function criar(item) {
   const li = document.createElement("li");
-
   li.draggable = true;
 
   li.addEventListener("dragstart", () => {
@@ -175,9 +194,7 @@ function criar(item) {
     li.classList.remove("dragging");
   });
 
-  li.addEventListener("dragover", (e) => {
-    e.preventDefault();
-  });
+  li.addEventListener("dragover", (e) => e.preventDefault());
 
   li.addEventListener("drop", () => {
     if (dragItem !== item) {
@@ -190,6 +207,21 @@ function criar(item) {
 
   const div = document.createElement("div");
   div.className = "item";
+
+  // TOGGLE
+  const toggle = document.createElement("span");
+  toggle.className = "toggle";
+
+  if (item.filhos && item.filhos.length) {
+    toggle.textContent = item.aberto ? "▼" : "▶";
+    toggle.onclick = () => {
+      item.aberto = !item.aberto;
+      salvar();
+      render();
+    };
+  } else {
+    toggle.textContent = "";
+  }
 
   const icon = document.createElement("span");
   icon.textContent = getIcon(item.nome);
@@ -211,13 +243,14 @@ function criar(item) {
     render();
   };
 
+  div.appendChild(toggle);
   div.appendChild(icon);
   div.appendChild(span);
   div.appendChild(btn);
 
   li.appendChild(div);
 
-  if (item.filhos.length) {
+  if (item.filhos && item.filhos.length && item.aberto) {
     const ul = document.createElement("ul");
     item.filhos.forEach(f => ul.appendChild(criar(f)));
     li.appendChild(ul);
@@ -232,7 +265,7 @@ function adicionarItem() {
 
   if (!nome) return;
 
-  const novo = { nome, filhos: [] };
+  const novo = { nome, aberto: true, filhos: [] };
 
   if (selecionado) {
     selecionado.filhos.push(novo);
