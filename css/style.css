@@ -1,72 +1,4 @@
-/* ===== GRID DE FERRAMENTAS ESPECÍFICO ===== */
-body .grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colunas fixas */
-  gap: 20px;
-  align-items: stretch;
-  margin-top: 20px;
-}
-
-body .grid a {
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-}
-
-body .grid .card {
-  background: var(--card-dark); /* mantém tema escuro/claro */
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center; /* centraliza tudo */
-  width: 100%;
-}
-
-body.light .grid .card {
-  background: var(--card-light); /* mantém tema claro */
-}
-
-body .grid .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-}
-
-body .grid .card img {
-  width: 60px;
-  margin-bottom: 10px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-body .grid .card h3 {
-  margin: 10px 0 5px;
-}
-
-body .grid .card p {
-  font-size: 14px;
-}
-
-/* ===== RESPONSIVIDADE ===== */
-@media (max-width: 1024px) {
-  body .grid {
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas em tablets */
-  }
-}
-
-@media (max-width: 600px) {
-  body .grid {
-    grid-template-columns: 1fr; /* 1 coluna em celulares */
-  }
-}
 /* ===== GRID DA PAGINA FERRAMENTAS ===== */
-/* CSS específico para a página Ferramentas */
 body.ferramentas .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr); /* 3 colunas */
@@ -92,11 +24,11 @@ body.ferramentas .grid .card {
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.3s, box-shadow 0.3s;
-  background: var(--card-dark);
+  background: var(--card-dark); /* tema escuro */
 }
 
 body.light.ferramentas .grid .card {
-  background: var(--card-light);
+  background: var(--card-light); /* tema claro */
 }
 
 body.ferramentas .grid .card:hover {
