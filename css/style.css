@@ -75,3 +75,15 @@ section {
 body.light .card {
   background: var(--card-light);
 }
+
+.card .timer {
+  font-size: 2rem;        /* tamanho do número */
+  text-align: center;     /* centraliza dentro do card */
+  margin-bottom: 1rem;    /* espaço entre timer e botões */
+}
+
+.card button {
+  margin: 0 5px;          /* espaço entre os botões */
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
