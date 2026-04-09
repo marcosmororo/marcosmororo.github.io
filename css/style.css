@@ -65,3 +65,67 @@ body .grid .card p {
     grid-template-columns: 1fr; /* 1 coluna em celulares */
   }
 }
+/* ===== GRID DA PAGINA FERRAMENTAS ===== */
+/* CSS específico para a página Ferramentas */
+body.ferramentas .grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 20px;
+}
+
+body.ferramentas .grid a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+}
+
+body.ferramentas .grid .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+  background: var(--card-dark);
+}
+
+body.light.ferramentas .grid .card {
+  background: var(--card-light);
+}
+
+body.ferramentas .grid .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+body.ferramentas .grid .card img {
+  width: 60px;
+  margin-bottom: 10px;
+}
+
+body.ferramentas .grid .card h3 {
+  margin: 10px 0 5px;
+}
+
+body.ferramentas .grid .card p {
+  font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  body.ferramentas .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  body.ferramentas .grid {
+    grid-template-columns: 1fr;
+  }
+}
