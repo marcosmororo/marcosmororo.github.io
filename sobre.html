@@ -1,165 +1,37 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Sobre</title>
-
-  <!-- Ícones -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      margin: 0;
-    }
-
-    /* NAV */
-    nav {
-      background: #020617;
-      padding: 15px;
-      text-align: center;
-      position: sticky;
-      top: 0;
-    }
-
-    nav a {
-      color: white;
-      margin: 0 12px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      color: #38bdf8;
-    }
-
-    /* CONTEÚDO */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 80vh;
-      padding: 20px;
-      text-align: center;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    .container {
-      max-width: 650px;
-    }
-
-    h1 {
-      margin-bottom: 20px;
-      font-size: 28px;
-    }
-
-    p {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #cbd5f5;
-    }
-
-    .highlight {
-      color: #38bdf8;
-      font-weight: bold;
-    }
-
-    /* CARD EXTRA */
-    .card {
-      margin-top: 30px;
-      padding: 20px;
-      background: #1e293b;
-      border-radius: 10px;
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      background: #334155;
-    }
-
-    /* BOTÃO */
-    .voltar {
-      display: inline-block;
-      margin-top: 30px;
-      padding: 12px 25px;
-      background: #38bdf8;
-      color: #020617;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .voltar:hover {
-      background: #0ea5e9;
-    }
-
-    footer {
-      text-align: center;
-      padding-bottom: 30px;
-    }
-
-    /* ANIMAÇÃO */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Sobre</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
 
-<!-- MENU -->
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+<div class="top-timer" id="tempo">25:00</div>
+
 <nav>
-  <a href="index.html">Home</a>
-  <a href="metodos.html">Métodos</a>
-  <a href="organizacao.html">Organização</a>
-  <a href="ferramentas.html">Ferramentas</a>
-  <a href="contato.html">Contato</a>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
 </nav>
 
-<!-- CONTEÚDO -->
-<header>
-  <div class="container">
+<section>
+<h1>Sobre</h1>
+<div class="card"><p>Conteúdo da página Sobre</p></div>
 
-    <h1>👨‍💻 Sobre Mim</h1>
+<div class="card">
+<h3>⏱️ Pomodoro</h3>
+<button onclick="iniciar()">Iniciar</button>
+<button onclick="pausar()">Pausar</button>
+<button onclick="resetar()">Resetar</button>
+</div>
+</section>
 
-    <p>
-      Olá! Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
-      <span class="highlight">Online Telecom</span>. 
-      Sou apaixonado por redes, monitoramento e infraestrutura.
-    </p>
-
-    <p>
-      Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo 
-      e projetos que desenvolvo ou apoio.
-    </p>
-
-    <!-- CARD MODERNO -->
-    <div class="card">
-      <p>🚀 Foco em alta disponibilidade</p>
-      <p>📡 Monitoramento de redes e sistemas</p>
-      <p>⚡ Resolução de incidentes e troubleshooting</p>
-    </div>
-
-    <a href="index.html" class="voltar">← Voltar para Home</a>
-
-  </div>
-</header>
-
-<footer>
-  <p>© 2026 - Marcos Renan</p>
-</footer>
-
+<script src="js/script.js"></script>
 </body>
 </html>
