@@ -64,3 +64,114 @@ function resetar() {
 
 if (rodando) iniciar();
 setInterval(atualizarTempo,500);
+
+let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
+  {
+    nome: "Core",
+    filhos: [
+      {
+        nome: "Vendors",
+        filhos: [
+          { nome: "Juniper", filhos: [] },
+          { nome: "Huawei", filhos: [] }
+        ]
+      }
+    ]
+  },
+  {
+    nome: "Distribution",
+    filhos: [
+      {
+        nome: "Vendors",
+        filhos: [
+          { nome: "Juniper", filhos: [] },
+          { nome: "Huawei", filhos: [] },
+          { nome: "ZTE", filhos: [] }
+        ]
+      }
+    ]
+  }
+];
+
+let itemSelecionado = null;
+
+function salvar() {
+  localStorage.setItem("estruturaZabbix", JSON.stringify(estrutura));
+}
+
+function renderizar() {
+  const ul = document.getElementById("arvore");
+  ul.innerHTML = "";
+  estrutura.forEach(item => ul.appendChild(criarElemento(item)));
+}
+
+function criarElemento(item) {
+  const li = document.createElement("li");
+
+  const span = document.createElement("span");
+  span.textContent = item.nome;
+  span.style.cursor = "pointer";
+
+  span.onclick = () => {
+    itemSelecionado = item;
+    document.querySelectorAll("span").forEach(s => s.style.fontWeight = "normal");
+    span.style.fontWeight = "bold";
+  };
+
+  li.appendChild(span);
+
+  const btnRemover = document.createElement("button");
+  btnRemover.textContent = "❌";
+  btnRemover.style.marginLeft = "10px";
+  btnRemover.onclick = () => {
+    removerItem(estrutura, item);
+    salvar();
+    renderizar();
+  };
+
+  li.appendChild(btnRemover);
+
+  if (item.filhos && item.filhos.length > 0) {
+    const ul = document.createElement("ul");
+    item.filhos.forEach(f => ul.appendChild(criarElemento(f)));
+    li.appendChild(ul);
+  }
+
+  return li;
+}
+
+function adicionarItem() {
+  const input = document.getElementById("novoItem");
+  const nome = input.value.trim();
+
+  if (!nome) return;
+
+  const novo = { nome, filhos: [] };
+
+  if (itemSelecionado) {
+    itemSelecionado.filhos.push(novo);
+  } else {
+    estrutura.push(novo);
+  }
+
+  input.value = "";
+  salvar();
+  renderizar();
+}
+
+function removerItem(lista, item) {
+  const index = lista.indexOf(item);
+  if (index !== -1) {
+    lista.splice(index, 1);
+    return true;
+  }
+
+  for (let i of lista) {
+    if (removerItem(i.filhos, item)) return true;
+  }
+
+  return false;
+}
+
+// Inicializa
+renderizar();
