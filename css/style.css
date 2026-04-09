@@ -1,77 +1,50 @@
-
-:root {
-  --primary: #38bdf8;
-  --bg-dark: #0f172a;
-  --bg-light: #f1f5f9;
-  --card-dark: #020617;
-  --card-light: #ffffff;
+/* Grid de cards adaptado ao seu CSS existente */
+.grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  margin-top: 20px;
 }
 
-body {
-  margin: 0;
-  font-family: Arial;
-  background: var(--bg-dark);
-  color: white;
-  transition: 0.3s;
-}
-
-body.light {
-  background: var(--bg-light);
-  color: #111;
-}
-
-nav {
-  background: rgba(2,6,23,0.9);
-  padding: 15px;
+/* Cards dentro da grid */
+.grid .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-body.light nav {
-  background: rgba(255,255,255,0.9);
+/* Imagens dentro dos cards */
+.grid .card img {
+  max-width: 80px;
+  margin-bottom: 15px;
 }
 
-nav a {
-  color: white;
-  margin: 0 10px;
-  text-decoration: none;
+/* Hover nos cards mantendo cores do seu tema */
+.grid .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.5);
 }
 
-body.light nav a {
-  color: #111;
+/* Títulos e textos dentro do card */
+.grid .card h3 {
+  margin-bottom: 8px;
 }
 
-.theme-btn {
-  position: fixed;
-  top: 15px;
-  right: 15px;
-  background: var(--primary);
-  border: none;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  cursor: pointer;
+.grid .card p {
+  font-size: 14px;
+  color: inherit; /* respeita o tema claro/escuro */
 }
 
-.top-timer {
-  text-align: center;
-  font-size: 2rem;
-  padding: 15px;
-  font-weight: bold;
-}
+/* Responsividade */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
 
-section {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
-
-.card {
-  background: var(--card-dark);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-body.light .card {
-  background: var(--card-light);
+  .grid .card img {
+    max-width: 60px;
+  }
 }
