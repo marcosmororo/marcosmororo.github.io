@@ -3,23 +3,93 @@
 <head>
 <meta charset="UTF-8">
 <title>Organizacao</title>
-<link rel="stylesheet" href="css/style.css">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+nav {
+  background: #020617;
+  padding: 10px;
+}
+
+nav a {
+  color: #38bdf8;
+  margin-right: 10px;
+  text-decoration: none;
+}
+
+section {
+  padding: 20px;
+}
+
+.card {
+  background: #020617;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 20px;
+}
+
+li {
+  margin: 6px 0;
+  padding: 5px;
+  border-radius: 6px;
+}
+
+li.dragging {
+  opacity: 0.4;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: grab;
+}
+
+.item span {
+  flex: 1;
+}
+
+button {
+  background: #1e293b;
+  border: none;
+  color: #e2e8f0;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+input {
+  padding: 6px;
+  border-radius: 5px;
+  border: none;
+}
+
+.icon {
+  width: 20px;
+}
+</style>
 </head>
+
 <body>
 
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
-
 <nav>
-<a href="index.html">Home</a>
-<a href="metodos.html">Métodos</a>
-<a href="organizacao.html">Organização</a>
-<a href="ferramentas.html">Ferramentas</a>
-<a href="sobre.html">Sobre</a>
-<a href="contato.html">Contato</a>
+<a href="#">Home</a>
+<a href="#">Métodos</a>
+<a href="#">Organização</a>
+<a href="#">Ferramentas</a>
+<a href="#">Sobre</a>
+<a href="#">Contato</a>
 </nav>
 
 <section>
@@ -28,23 +98,169 @@
 <div class="card">
   <h3>🌐 Estrutura de Hosts</h3>
 
-  <div>
-    <input type="text" id="novoItem" placeholder="Nome do item (ex: Core, Huawei...)" />
-    <button onclick="adicionarItem()">Adicionar</button>
-  </div>
+  <input type="text" id="novoItem" placeholder="Novo item..." />
+  <button onclick="adicionarItem()">Adicionar</button>
 
   <ul id="arvore"></ul>
 </div>
 
-<div class="card">
-  <h3>⏱️ Pomodoro</h3>
-  <div class="timer" id="tempo">25:00</div>
-  <button onclick="iniciar()">Iniciar</button>
-  <button onclick="pausar()">Pausar</button>
-  <button onclick="resetar()">Resetar</button>
-</div>
 </section>
 
-<script src="js/script.js"></script>
+<script>
+let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
+  {
+    nome: "Core",
+    filhos: [
+      {
+        nome: "Vendors",
+        filhos: [
+          { nome: "Juniper", filhos: [] },
+          { nome: "Huawei", filhos: [] }
+        ]
+      }
+    ]
+  },
+  {
+    nome: "Distribution",
+    filhos: [
+      {
+        nome: "Vendors",
+        filhos: [
+          { nome: "Juniper", filhos: [] },
+          { nome: "Huawei", filhos: [] },
+          { nome: "ZTE", filhos: [] }
+        ]
+      }
+    ]
+  }
+];
+
+let selecionado = null;
+let dragItem = null;
+
+function salvar() {
+  localStorage.setItem("estruturaZabbix", JSON.stringify(estrutura));
+}
+
+function getIcon(nome) {
+  nome = nome.toLowerCase();
+
+  if (nome.includes("huawei")) return "🔴";
+  if (nome.includes("juniper")) return "🔵";
+  if (nome.includes("zte")) return "🟢";
+  if (nome.includes("vendors")) return "📦";
+  if (nome.includes("core")) return "🧠";
+  if (nome.includes("distribution")) return "🌐";
+
+  return "📁";
+}
+
+function render() {
+  const ul = document.getElementById("arvore");
+  ul.innerHTML = "";
+  estrutura.forEach(item => ul.appendChild(criar(item)));
+}
+
+function criar(item) {
+  const li = document.createElement("li");
+
+  li.draggable = true;
+
+  li.addEventListener("dragstart", () => {
+    dragItem = item;
+    li.classList.add("dragging");
+  });
+
+  li.addEventListener("dragend", () => {
+    li.classList.remove("dragging");
+  });
+
+  li.addEventListener("dragover", (e) => {
+    e.preventDefault();
+  });
+
+  li.addEventListener("drop", () => {
+    if (dragItem !== item) {
+      remover(estrutura, dragItem);
+      item.filhos.push(dragItem);
+      salvar();
+      render();
+    }
+  });
+
+  const div = document.createElement("div");
+  div.className = "item";
+
+  const icon = document.createElement("span");
+  icon.textContent = getIcon(item.nome);
+
+  const span = document.createElement("span");
+  span.textContent = item.nome;
+
+  span.onclick = () => {
+    selecionado = item;
+    document.querySelectorAll(".item span").forEach(s => s.style.fontWeight = "normal");
+    span.style.fontWeight = "bold";
+  };
+
+  const btn = document.createElement("button");
+  btn.textContent = "❌";
+  btn.onclick = () => {
+    remover(estrutura, item);
+    salvar();
+    render();
+  };
+
+  div.appendChild(icon);
+  div.appendChild(span);
+  div.appendChild(btn);
+
+  li.appendChild(div);
+
+  if (item.filhos.length) {
+    const ul = document.createElement("ul");
+    item.filhos.forEach(f => ul.appendChild(criar(f)));
+    li.appendChild(ul);
+  }
+
+  return li;
+}
+
+function adicionarItem() {
+  const input = document.getElementById("novoItem");
+  const nome = input.value.trim();
+
+  if (!nome) return;
+
+  const novo = { nome, filhos: [] };
+
+  if (selecionado) {
+    selecionado.filhos.push(novo);
+  } else {
+    estrutura.push(novo);
+  }
+
+  input.value = "";
+  salvar();
+  render();
+}
+
+function remover(lista, item) {
+  const index = lista.indexOf(item);
+  if (index !== -1) {
+    lista.splice(index, 1);
+    return true;
+  }
+
+  for (let i of lista) {
+    if (remover(i.filhos, item)) return true;
+  }
+
+  return false;
+}
+
+render();
+</script>
+
 </body>
 </html>
