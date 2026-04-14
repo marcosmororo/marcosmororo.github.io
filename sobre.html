@@ -1,19 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Sobre</title>
-<link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+<title>Sobre</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Ícones -->
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="manifest" href="/site.webmanifest">
-  
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- BOTÃO TEMA -->
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+<!-- MENU -->
 <nav>
 <a href="index.html">Home</a>
 <a href="metodos.html">Métodos</a>
@@ -23,12 +33,38 @@
 <a href="contato.html">Contato</a>
 </nav>
 
-<section>
-<h1>Sobre</h1>
-<div class="card"><p>Conteúdo da página Sobre</p></div>
+<!-- CONTEÚDO -->
+<header class="section">
+  <div class="container">
 
+    <h1>👨‍💻 Sobre Mim</h1>
 
-</section>
+    <p>
+      Olá! Meu nome é <strong>Marcos Renan</strong> e trabalho no NOC (Network Operations Center) da 
+      <span class="highlight">Online Telecom</span>. 
+      Sou apaixonado por redes, monitoramento e infraestrutura.
+    </p>
+
+    <p>
+      Aqui você encontrará um pouco sobre minhas habilidades, ferramentas que utilizo 
+      e projetos que desenvolvo ou apoio.
+    </p>
+
+    <!-- CARD -->
+    <div class="card">
+      <p>🚀 Foco em alta disponibilidade</p>
+      <p>📡 Monitoramento de redes e sistemas</p>
+      <p>⚡ Resolução de incidentes e troubleshooting</p>
+    </div>
+
+    <a href="index.html" class="btn">← Voltar para Home</a>
+
+  </div>
+</header>
+
+<footer>
+  <p>© 2026 - Marcos Renan</p>
+</footer>
 
 <script src="js/script.js"></script>
 </body>
