@@ -154,3 +154,35 @@ footer {
   text-align: center;
   padding: 20px;
 }
+/* CONTATO */
+.contato {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.contato .item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.1rem;
+}
+
+/* ÍCONES */
+.contato i {
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+
+/* LINKS */
+.contato a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.contato a:hover {
+  color: var(--primary);
+}
