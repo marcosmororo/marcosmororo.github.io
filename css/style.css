@@ -163,13 +163,17 @@ body.light .card {
   height: 70px;
   object-fit: contain;
   margin-bottom: 15px;
+}
+
+/* aplica efeito SOMENTE no modo claro */
+body.light .grid .card img {
   mix-blend-mode: multiply;
 }
 
 /* melhora no modo claro */
-body.light .grid .card img {
-  mix-blend-mode: normal;
-}
+/* body.light .grid .card img {  */
+/*   mix-blend-mode: normal;  */
+/* }  */
 
 /* título */
 .grid .card h3 {
