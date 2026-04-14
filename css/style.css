@@ -6,7 +6,7 @@
   --card-light: #ffffff;
 }
 
-/* BODY E TEMAS */
+/* BODY */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -25,6 +25,7 @@ nav {
   background: rgba(2,6,23,0.9);
   padding: 15px;
   text-align: center;
+  backdrop-filter: blur(10px);
 }
 
 body.light nav {
@@ -42,7 +43,7 @@ body.light nav a {
   color: #111;
 }
 
-/* BOTÃO DE TEMA */
+/* BOTÃO TEMA */
 .theme-btn {
   position: fixed;
   top: 15px;
@@ -57,22 +58,54 @@ body.light nav a {
   z-index: 100;
 }
 
-/* SEÇÕES */
+/* CENTRALIZAÇÃO (NOVO) */
+.center-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 20px;
+}
+
+/* CONTAINER */
+.container {
+  max-width: 650px;
+  width: 100%;
+}
+
+/* TEXTO */
+.container p {
+  line-height: 1.7;
+  color: #cbd5f5;
+}
+
+body.light .container p {
+  color: #333;
+}
+
+/* DESTAQUE */
+.highlight {
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* SEÇÕES PADRÃO */
 section {
   max-width: 1000px;
   margin: auto;
   padding: 20px;
 }
 
-/* CARDS */
+/* CARD */
 .card {
   background: var(--card-dark);
   padding: 20px;
   border-radius: 12px;
-  margin-bottom: 20px;
+  margin-top: 25px;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: 0.3s;
 }
 
 body.light .card {
@@ -81,24 +114,21 @@ body.light .card {
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
-/* TIMER DO POMODORO */
-.card .timer {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 1rem;
+/* BOTÃO */
+.btn {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: var(--primary);
+  color: #020617;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
 }
 
-.card button {
-  margin: 0 5px;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-/* GRID 3x3 PARA FERRAMENTAS */
+/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -106,26 +136,7 @@ body.light .card {
   margin-top: 20px;
 }
 
-.grid .card img {
-  max-width: 80px;
-  margin-bottom: 10px;
-}
-
-.grid .card h3 {
-  margin: 10px 0 5px;
-  font-size: 1.1rem;
-}
-
-.grid .card p {
-  font-size: 0.9rem;
-  color: #aaa;
-}
-
-body.light .grid .card p {
-  color: #555;
-}
-
-/* RESPONSIVIDADE */
+/* RESPONSIVO */
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
@@ -136,64 +147,10 @@ body.light .grid .card p {
   .grid {
     grid-template-columns: 1fr;
   }
-
-  /* Remove sublinhado do link */
-.card-link {
-  text-decoration: none; /* sem sublinhado */
-  color: inherit;        /* mantém cor do card */
-  display: block;        /* para poder controlar largura */
 }
 
-/* Faz todos os cards da grade terem a mesma altura */
-.grid .card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  height: 260px;          /* altura fixa para todos os cards */
+/* FOOTER */
+footer {
+  text-align: center;
   padding: 20px;
-  border-radius: 12px;
-  background: var(--card-dark);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  text-align: center;
-}
-
-body.light .grid .card {
-  background: var(--card-light);
-}
-
-/* Ajustes de imagens e texto */
-.grid .card img {
-  max-width: 80px;
-  margin-bottom: 10px;
-}
-
-.grid .card h3 {
-  margin: 10px 0 5px;
-  font-size: 1.1rem;
-}
-
-.grid .card p {
-  font-size: 0.9rem;
-  color: #aaa;
-  text-align: center;
-}
-body.light .grid .card p {
-  color: #555;
-}
-}
-
-ul {
-  list-style-type: none;
-  padding-left: 20px;
-}
-
-li {
-  margin: 5px 0;
-}
-
-input {
-  padding: 5px;
-  margin-right: 5px;
 }
