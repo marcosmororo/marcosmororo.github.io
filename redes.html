@@ -18,25 +18,20 @@
   border: 2px solid transparent;
   cursor: pointer;
   background: var(--card-dark);
-  color: inherit;
 }
 
 body.light .tab-btn {
   background: var(--card-light);
 }
 
-/* 🔥 DARK MODE (DEFAULT) */
 .tab-btn.active {
-  background: #ffffff;
-  color: #000;
-  font-weight: bold;
-  border: 2px solid #ffffff;
-}
-
-/* 🔥 LIGHT MODE */
-body.light .tab-btn.active {
   background: var(--primary);
   color: #000;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+body.light .tab-btn.active {
   border: 2px solid #000;
 }
 
