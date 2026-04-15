@@ -9,25 +9,30 @@
 
 <style>
 .accordion {
-  background: var(--card-dark);
-  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   cursor: pointer;
-  padding: 15px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  border-radius: 10px;
-  margin-top: 10px;
+}
+
+.accordion::after {
+  content: "▼";
+  font-size: 12px;
+  transition: 0.3s;
+}
+
+.accordion.active::after {
+  transform: rotate(180deg);
 }
 
 .panel {
-  display: none;
-  padding: 10px;
-  background: var(--bg-dark);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
 pre {
-  background: #020617;
+  background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 8px;
 }
@@ -35,6 +40,8 @@ pre {
 </head>
 
 <body>
+
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
 
 <nav>
 <a href="index.html">Home</a>
@@ -47,9 +54,10 @@ pre {
 </nav>
 
 <section>
+
 <h1>🐧 Linux</h1>
 
-<button class="accordion">Monitoramento</button>
+<div class="card accordion">Monitoramento</div>
 <div class="panel">
 <pre>
 top
@@ -60,7 +68,7 @@ df -h
 </pre>
 </div>
 
-<button class="accordion">Rede</button>
+<div class="card accordion">Rede</div>
 <div class="panel">
 <pre>
 ip a
@@ -70,7 +78,7 @@ traceroute google.com
 </pre>
 </div>
 
-<button class="accordion">Arquivos</button>
+<div class="card accordion">Arquivos</div>
 <div class="panel">
 <pre>
 ls -la
@@ -82,12 +90,22 @@ rm -rf arquivo
 
 </section>
 
+<footer>
+<p>© 2026 - Marcos Renan</p>
+</footer>
+
 <script>
 document.querySelectorAll(".accordion").forEach(btn => {
-  btn.onclick = () => {
+  btn.addEventListener("click", () => {
+    btn.classList.toggle("active");
     let panel = btn.nextElementSibling;
-    panel.style.display = panel.style.display === "block" ? "none" : "block";
-  };
+
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+  });
 });
 </script>
 
