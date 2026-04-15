@@ -4,108 +4,19 @@
 <meta charset="UTF-8">
 <title>Organização</title>
 <link rel="stylesheet" href="css/style.css">
-  
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #e2e8f0;
-  margin: 0;
-}
 
-/* NAV */
-nav {
-  background: #020617;
-  padding: 10px;
-  text-align: center;
-}
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
 
-nav a {
-  color: #38bdf8;
-  margin: 0 8px;
-  text-decoration: none;
-}
-
-/* CENTRALIZAÇÃO */
-section {
-  display: flex;
-  justify-content: center;
-  padding: 30px 10px;
-}
-
-/* CARD COMPACTO */
-.card {
-  background: #020617;
-  padding: 15px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 500px;
-}
-
-/* ÁRVORE */
-ul {
-  list-style: none;
-  padding-left: 15px;
-}
-
-li {
-  margin: 4px 0;
-}
-
-/* ITEM */
-.item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: grab;
-  font-size: 14px;
-}
-
-.item span {
-  flex: 1;
-}
-
-/* BOTÕES */
-button {
-  background: #1e293b;
-  border: none;
-  color: #e2e8f0;
-  padding: 3px 6px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-/* INPUT */
-input {
-  padding: 5px;
-  border-radius: 5px;
-  border: none;
-  width: 65%;
-  margin-bottom: 10px;
-}
-
-/* DRAG */
-.dragging {
-  opacity: 0.4;
-}
-
-/* TOGGLE */
-.toggle {
-  cursor: pointer;
-  width: 15px;
-  display: inline-block;
-}
-</style>
+<!-- Ícones -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 
 <body>
 
 <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
 
 <nav>
 <a href="index.html">Home</a>
@@ -118,189 +29,68 @@ input {
 
 <section>
 
+<h1>🗂️ Organização</h1>
+
 <div class="card">
-  <h3>🌐 Estrutura de Hosts</h3>
+<p>
+Manter uma boa organização é essencial para produtividade, foco e eficiência,
+principalmente trabalhando com redes e infraestrutura.
+</p>
+</div>
 
-  <input type="text" id="novoItem" placeholder="Novo item..." />
-  <button onclick="adicionarItem()">Adicionar</button>
+<div class="grid">
 
-  <ul id="arvore"></ul>
+<!-- ROTINA -->
+<div class="card">
+<i class="fas fa-calendar-day fa-2x"></i>
+<h3>Rotina</h3>
+<p>Planejamento diário das tarefas para manter consistência e disciplina.</p>
+</div>
+
+<!-- PRIORIDADES -->
+<div class="card">
+<i class="fas fa-list-check fa-2x"></i>
+<h3>Prioridades</h3>
+<p>Definir o que é mais importante e evitar perda de tempo com tarefas secundárias.</p>
+</div>
+
+<!-- CHECKLIST -->
+<div class="card">
+<i class="fas fa-check-circle fa-2x"></i>
+<h3>Checklist</h3>
+<p>Utilizar listas para acompanhar tarefas e garantir que nada seja esquecido.</p>
+</div>
+
+<!-- TEMPO -->
+<div class="card">
+<i class="fas fa-clock fa-2x"></i>
+<h3>Gestão de Tempo</h3>
+<p>Dividir o tempo entre estudo, trabalho e descanso de forma equilibrada.</p>
+</div>
+
+<!-- AMBIENTE -->
+<div class="card">
+<i class="fas fa-desktop fa-2x"></i>
+<h3>Ambiente</h3>
+<p>Manter o ambiente limpo e organizado para melhorar o foco e a produtividade.</p>
+</div>
+
+<!-- FERRAMENTAS -->
+<div class="card">
+<i class="fas fa-toolbox fa-2x"></i>
+<h3>Ferramentas</h3>
+<p>Utilizar apps e sistemas para organizar tarefas, projetos e estudos.</p>
+</div>
+
 </div>
 
 </section>
 
-<script>
-let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
-  {
-    nome: "Core",
-    aberto: true,
-    filhos: [
-      {
-        nome: "Vendors",
-        aberto: true,
-        filhos: [
-          { nome: "Juniper", filhos: [] },
-          { nome: "Huawei", filhos: [] }
-        ]
-      }
-    ]
-  },
-  {
-    nome: "Distribution",
-    aberto: true,
-    filhos: [
-      {
-        nome: "Vendors",
-        aberto: true,
-        filhos: [
-          { nome: "Juniper", filhos: [] },
-          { nome: "Huawei", filhos: [] },
-          { nome: "ZTE", filhos: [] }
-        ]
-      }
-    ]
-  }
-];
+<footer>
+<p>© 2026 - Marcos Renan</p>
+</footer>
 
-let selecionado = null;
-let dragItem = null;
-
-function salvar() {
-  localStorage.setItem("estruturaZabbix", JSON.stringify(estrutura));
-}
-
-function getIcon(nome) {
-  nome = nome.toLowerCase();
-
-  if (nome.includes("huawei")) return "🌐";
-  if (nome.includes("juniper")) return "🌐";
-  if (nome.includes("zte")) return "🌐";
-  if (nome.includes("vendors")) return "🌐";
-  if (nome.includes("core")) return "🌐";
-  if (nome.includes("distribution")) return "🌐";
-
-  return "📁";
-}
-
-function render() {
-  const ul = document.getElementById("arvore");
-  ul.innerHTML = "";
-  estrutura.forEach(item => ul.appendChild(criar(item)));
-}
-
-function criar(item) {
-  const li = document.createElement("li");
-  li.draggable = true;
-
-  li.addEventListener("dragstart", () => {
-    dragItem = item;
-    li.classList.add("dragging");
-  });
-
-  li.addEventListener("dragend", () => {
-    li.classList.remove("dragging");
-  });
-
-  li.addEventListener("dragover", (e) => e.preventDefault());
-
-  li.addEventListener("drop", () => {
-    if (dragItem !== item) {
-      remover(estrutura, dragItem);
-      item.filhos.push(dragItem);
-      salvar();
-      render();
-    }
-  });
-
-  const div = document.createElement("div");
-  div.className = "item";
-
-  // TOGGLE
-  const toggle = document.createElement("span");
-  toggle.className = "toggle";
-
-  if (item.filhos && item.filhos.length) {
-    toggle.textContent = item.aberto ? "▼" : "▶";
-    toggle.onclick = () => {
-      item.aberto = !item.aberto;
-      salvar();
-      render();
-    };
-  } else {
-    toggle.textContent = "";
-  }
-
-  const icon = document.createElement("span");
-  icon.textContent = getIcon(item.nome);
-
-  const span = document.createElement("span");
-  span.textContent = item.nome;
-
-  span.onclick = () => {
-    selecionado = item;
-    document.querySelectorAll(".item span").forEach(s => s.style.fontWeight = "normal");
-    span.style.fontWeight = "bold";
-  };
-
-  const btn = document.createElement("button");
-  btn.textContent = "❌";
-  btn.onclick = () => {
-    remover(estrutura, item);
-    salvar();
-    render();
-  };
-
-  div.appendChild(toggle);
-  div.appendChild(icon);
-  div.appendChild(span);
-  div.appendChild(btn);
-
-  li.appendChild(div);
-
-  if (item.filhos && item.filhos.length && item.aberto) {
-    const ul = document.createElement("ul");
-    item.filhos.forEach(f => ul.appendChild(criar(f)));
-    li.appendChild(ul);
-  }
-
-  return li;
-}
-
-function adicionarItem() {
-  const input = document.getElementById("novoItem");
-  const nome = input.value.trim();
-
-  if (!nome) return;
-
-  const novo = { nome, aberto: true, filhos: [] };
-
-  if (selecionado) {
-    selecionado.filhos.push(novo);
-  } else {
-    estrutura.push(novo);
-  }
-
-  input.value = "";
-  salvar();
-  render();
-}
-
-function remover(lista, item) {
-  const index = lista.indexOf(item);
-  if (index !== -1) {
-    lista.splice(index, 1);
-    return true;
-  }
-
-  for (let i of lista) {
-    if (remover(i.filhos, item)) return true;
-  }
-
-  return false;
-}
-
-render();
-</script>
+<script src="js/script.js"></script>
 
 </body>
 </html>
