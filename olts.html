@@ -110,8 +110,105 @@ body.light pre {
 </div>
 
 <div id="nokia" class="tab-content">
+
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show equipment ont</pre></div>
+
+<div class="card accordion">Software e Versão</div>
+<div class="panel"><pre>
+show software-mngt version etsi
+show software-mngt oswp
+show equipment ont sw-version
+</pre></div>
+
+<div class="card accordion">PON / Diagnóstico Óptico</div>
+<div class="panel"><pre>
+show pon unprovision-onu
+show pon sfp-inventory
+show pon optics
+show pon pon-diagnostics 1/1/3/1
+show pon optics 1/1/3/1
+</pre></div>
+
+<div class="card accordion">Hardware e Temperatura</div>
+<div class="panel"><pre>
+show equipment slot
+show equipment slot nt-a detail
+show equipment temperature
+show equipment temperature nt-a
+</pre></div>
+
+<div class="card accordion">CPU / Memória</div>
+<div class="panel"><pre>
+show system cpu-load
+show system memory-usage
+show system core1-cpu
+show core1-uptime
+</pre></div>
+
+<div class="card accordion">Portas e Uplink</div>
+<div class="panel"><pre>
+show port
+show port nt-a:xfp:1
+show equipment transceiver-inventory nt-a:xfp:1
+show equipment diagnostics sfp nt-a:xfp:1 detail
+</pre></div>
+
+<div class="card accordion">Alarmes (Visão Geral)</div>
+<div class="panel"><pre>
+show alarm query alarm-table all severity all servaff all
+show alarm current table
+show alarm query name all
+admin alarm clr-logging
+</pre></div>
+
+<div class="card accordion">Diagnóstico de Uplink / L2</div>
+<div class="panel"><pre>
+show alarm query ihub-link all
+show alarm query sfp all
+show alarm query ether-itf all
+show alarm query lag all
+show alarm query vpls all
+</pre></div>
+
+<div class="card accordion">Diagnóstico PON (OLT)</div>
+<div class="panel"><pre>
+show alarm query olt-gen all
+show alarm query olt-gen all severity all servaff all port 1/1/3/1
+show alarm query name olt-gen-pon-loss-sig
+</pre></div>
+
+<div class="card accordion">Diagnóstico ONT (Cliente)</div>
+<div class="panel"><pre>
+show alarm query ont-ploam all
+show alarm query ont-gen all
+show alarm query ont-ani all
+show equipment ont optics 1/1/1/1/1
+show equipment ont interface 1/1/1/1/1 detail
+</pre></div>
+
+<div class="card accordion">Causa Raiz (Filtros rápidos)</div>
+<div class="panel"><pre>
+show alarm query name ont-ploam-dying-gasp
+show alarm query name ont-ploam-sig-degrade
+show alarm query ont-ploam ont-ploam-inactive
+</pre></div>
+
+<div class="card accordion">Logs e Auditoria</div>
+<div class="panel"><pre>
+show alarm log mgmt-sec-access
+show alarm log ont-gen
+show log log-id 99
+show log log-id 100
+</pre></div>
+
+<div class="card accordion">Ações Administrativas</div>
+<div class="panel"><pre>
+admin equipment reboot-isam hot-restart
+admin equipment slot lt:1/1/1 reboot with-selftest
+admin equipment ont interface 1/1/1/1/1 reboot
+</pre></div>
+
 </div>
 
 <div id="fiberhome" class="tab-content">
