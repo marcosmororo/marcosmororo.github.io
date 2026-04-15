@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <title>OLTs - Vendors</title>
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -20,13 +19,10 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  background: var(--card-dark);
-  color: white;
 }
 
 .tab-btn.active {
   background: var(--primary);
-  color: black;
 }
 
 .tab-content {
@@ -37,11 +33,10 @@
   display: block;
 }
 
-/* Accordion */
 .accordion {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .accordion::after {
@@ -60,9 +55,9 @@
 }
 
 pre {
-  background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 8px;
+  background: var(--card-dark);
 }
 </style>
 </head>
@@ -93,34 +88,26 @@ pre {
 <button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
 </div>
 
-<!-- HUAWEI -->
 <div id="huawei" class="tab-content active">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>display ont info</pre></div>
-
-<div class="card accordion">Sinal</div>
-<div class="panel"><pre>display ont optical-info</pre></div>
 </div>
 
-<!-- ZTE -->
 <div id="zte" class="tab-content">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show gpon onu state</pre></div>
 </div>
 
-<!-- NOKIA -->
 <div id="nokia" class="tab-content">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show equipment ont</pre></div>
 </div>
 
-<!-- FIBERHOME -->
 <div id="fiberhome" class="tab-content">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show onu info</pre></div>
 </div>
 
-<!-- DATACOM -->
 <div id="datacom" class="tab-content">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show onu</pre></div>
@@ -146,11 +133,7 @@ document.querySelectorAll(".accordion").forEach(btn => {
     btn.classList.toggle("active");
     let panel = btn.nextElementSibling;
 
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    }
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
   });
 });
 </script>
