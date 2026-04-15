@@ -4,40 +4,37 @@
 <meta charset="UTF-8">
 <title>Redes - Vendors</title>
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 .tabs {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 15px;
 }
 
 .tab-btn {
   padding: 8px 12px;
   border-radius: 8px;
-  border: none;
+  border: 2px solid transparent;
   cursor: pointer;
   background: var(--card-dark);
-  color: inherit;
-  transition: 0.3s;
 }
 
 body.light .tab-btn {
   background: var(--card-light);
 }
 
-/* 🔥 ABA ATIVA */
+/* 🔥 destaque forte */
 .tab-btn.active {
   background: var(--primary);
   color: #000;
   font-weight: bold;
-  box-shadow: 0 0 0 2px var(--primary);
+  border: 2px solid var(--primary);
 }
 
-.tab-btn:hover {
-  transform: translateY(-2px);
+/* 🔥 resolve modo branco */
+body.light .tab-btn.active {
+  border: 2px solid #000;
 }
 
 .tab-content {
@@ -54,15 +51,6 @@ body.light .tab-btn {
   justify-content: space-between;
 }
 
-.accordion::after {
-  content: "▼";
-  transition: 0.3s;
-}
-
-.accordion.active::after {
-  transform: rotate(180deg);
-}
-
 .panel {
   max-height: 0;
   overflow: hidden;
@@ -70,9 +58,9 @@ body.light .tab-btn {
 }
 
 pre {
+  background: var(--card-dark);
   padding: 10px;
   border-radius: 8px;
-  background: var(--card-dark);
 }
 
 body.light pre {
@@ -99,13 +87,12 @@ body.light pre {
 
 <h1>🌐 Redes</h1>
 
+<a href="infra.html" class="back-btn">← Voltar</a>
+
 <div class="tabs">
 <button class="tab-btn active" onclick="openTab(event,'huawei')">Huawei VRP</button>
 <button class="tab-btn" onclick="openTab(event,'juniper')">Juniper</button>
-<button class="tab-btn" onclick="openTab(event,'a10')">A10</button>
-<button class="tab-btn" onclick="openTab(event,'raisecom')">Raisecom</button>
 <button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
-<button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
 </div>
 
 <div id="huawei" class="tab-content active">
@@ -118,24 +105,9 @@ body.light pre {
 <div class="panel"><pre>show interfaces terse</pre></div>
 </div>
 
-<div id="a10" class="tab-content">
-<div class="card accordion">Diagnóstico</div>
-<div class="panel"><pre>show ip route</pre></div>
-</div>
-
-<div id="raisecom" class="tab-content">
-<div class="card accordion">Diagnóstico</div>
-<div class="panel"><pre>show interface</pre></div>
-</div>
-
 <div id="zte" class="tab-content">
 <div class="card accordion">Diagnóstico</div>
 <div class="panel"><pre>show ip route</pre></div>
-</div>
-
-<div id="datacom" class="tab-content">
-<div class="card accordion">Diagnóstico</div>
-<div class="panel"><pre>show interfaces</pre></div>
 </div>
 
 </section>
