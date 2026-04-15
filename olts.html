@@ -14,6 +14,7 @@
   margin-bottom: 15px;
 }
 
+/* BOTÃO NORMAL */
 .tab-btn {
   padding: 8px 12px;
   border-radius: 8px;
@@ -21,16 +22,24 @@
   cursor: pointer;
   background: var(--card-dark);
   color: inherit;
+  transition: 0.3s;
 }
 
-/* modo claro */
 body.light .tab-btn {
   background: var(--card-light);
 }
 
+/* 🔥 ABA ATIVA (CORRIGIDO) */
 .tab-btn.active {
   background: var(--primary);
   color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* hover leve */
+.tab-btn:hover {
+  transform: translateY(-2px);
 }
 
 .tab-content {
@@ -41,12 +50,11 @@ body.light .tab-btn {
   display: block;
 }
 
-/* Accordion */
+/* ACCORDION */
 .accordion {
   cursor: pointer;
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .accordion::after {
@@ -64,14 +72,12 @@ body.light .tab-btn {
   transition: max-height 0.3s ease;
 }
 
-/* 🔥 CORRIGIDO AQUI */
 pre {
   padding: 10px;
   border-radius: 8px;
   background: var(--card-dark);
 }
 
-/* modo claro */
 body.light pre {
   background: var(--card-light);
 }
@@ -84,12 +90,7 @@ body.light pre {
 
 <nav>
 <a href="index.html">Home</a>
-<a href="metodos.html">Métodos</a>
-<a href="organizacao.html">Organização</a>
-<a href="ferramentas.html">Ferramentas</a>
 <a href="infra.html">Infraestrutura</a>
-<a href="sobre.html">Sobre</a>
-<a href="contato.html">Contato</a>
 </nav>
 
 <section>
@@ -145,15 +146,6 @@ function openTab(evt, tabName) {
   document.getElementById(tabName).classList.add("active");
   evt.currentTarget.classList.add("active");
 }
-
-document.querySelectorAll(".accordion").forEach(btn => {
-  btn.addEventListener("click", () => {
-    btn.classList.toggle("active");
-    let panel = btn.nextElementSibling;
-
-    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
-  });
-});
 </script>
 
 </body>
