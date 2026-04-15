@@ -12,6 +12,26 @@
 
 <!-- Ícones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* REMOVE aparência de link */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* efeito ao passar o mouse */
+.card-link .card {
+  transition: 0.3s;
+}
+
+.card-link .card:hover {
+  transform: translateY(-5px);
+  cursor: pointer;
+}
+</style>
+
 </head>
 
 <body>
@@ -42,31 +62,30 @@ para facilitar o dia a dia em redes e sistemas.
 <div class="grid">
 
 <!-- LINUX -->
-<a href="linux.html" class="card link-card">
-<i class="fab fa-linux fa-2x"></i>
-<h3>Linux</h3>
-<p>Comandos essenciais, administração e resolução de problemas.</p>
+<a href="linux.html" class="card-link">
+  <div class="card">
+    <i class="fab fa-linux fa-2x"></i>
+    <h3>Linux</h3>
+    <p>Comandos essenciais, administração e resolução de problemas.</p>
+  </div>
 </a>
 
 <!-- ROTEADORES E SWITCHES -->
-<a href="redes.html" class="card link-card">
-<i class="fas fa-network-wired fa-2x"></i>
-<h3>Roteadores e Switchs</h3>
-<p>Configurações, troubleshooting e boas práticas em redes.</p>
+<a href="redes.html" class="card-link">
+  <div class="card">
+    <i class="fas fa-network-wired fa-2x"></i>
+    <h3>Roteadores e Switchs</h3>
+    <p>Configurações, troubleshooting e boas práticas em redes.</p>
+  </div>
 </a>
 
 <!-- OLTS -->
-<a href="olts.html" class="card link-card">
-<i class="fas fa-server fa-2x"></i>
-<h3>OLTs</h3>
-<p>Comandos, provisionamento e diagnóstico em redes FTTH.</p>
-</a>
-
-<!-- FUTURO -->
-<a href="outros.html" class="card link-card">
-<i class="fas fa-tools fa-2x"></i>
-<h3>Outros</h3>
-<p>Ferramentas e conteúdos diversos de infraestrutura.</p>
+<a href="olts.html" class="card-link">
+  <div class="card">
+    <i class="fas fa-server fa-2x"></i>
+    <h3>OLTs</h3>
+    <p>Comandos, provisionamento e diagnóstico em redes FTTH.</p>
+  </div>
 </a>
 
 </div>
