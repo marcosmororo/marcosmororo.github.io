@@ -4,14 +4,13 @@
 <meta charset="UTF-8">
 <title>Redes - Troubleshooting</title>
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 .accordion {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .accordion::after {
@@ -30,9 +29,9 @@
 }
 
 pre {
-  background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 8px;
+  background: var(--card-dark);
 }
 </style>
 </head>
@@ -56,32 +55,26 @@ pre {
 <h1>🌐 Roteadores e Switchs</h1>
 
 <div class="card accordion">Diagnóstico</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 ping 8.8.8.8
 traceroute
 show ip route
 display interface brief
-</pre>
-</div>
+</pre></div>
 
 <div class="card accordion">OSPF / BGP</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 display ospf peer
 display bgp peer
 display ip routing-table
-</pre>
-</div>
+</pre></div>
 
 <div class="card accordion">Troubleshooting</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 verificar rotas
 verificar neighbors
 verificar firewall
-</pre>
-</div>
+</pre></div>
 
 </section>
 
@@ -95,11 +88,7 @@ document.querySelectorAll(".accordion").forEach(btn => {
     btn.classList.toggle("active");
     let panel = btn.nextElementSibling;
 
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    }
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
   });
 });
 </script>
