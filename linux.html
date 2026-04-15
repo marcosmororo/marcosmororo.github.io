@@ -4,20 +4,18 @@
 <meta charset="UTF-8">
 <title>Linux - Comandos</title>
 <link rel="stylesheet" href="css/style.css">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 .accordion {
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer;
 }
 
 .accordion::after {
   content: "▼";
-  font-size: 12px;
   transition: 0.3s;
 }
 
@@ -32,9 +30,9 @@
 }
 
 pre {
-  background: rgba(0,0,0,0.2);
   padding: 10px;
   border-radius: 8px;
+  background: var(--card-dark);
 }
 </style>
 </head>
@@ -58,35 +56,29 @@ pre {
 <h1>🐧 Linux</h1>
 
 <div class="card accordion">Monitoramento</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 top
 htop
 uptime
 free -h
 df -h
-</pre>
-</div>
+</pre></div>
 
 <div class="card accordion">Rede</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 ip a
 ping 8.8.8.8
 ss -tulnp
 traceroute google.com
-</pre>
-</div>
+</pre></div>
 
 <div class="card accordion">Arquivos</div>
-<div class="panel">
-<pre>
+<div class="panel"><pre>
 ls -la
 cd /var/log
 du -sh *
 rm -rf arquivo
-</pre>
-</div>
+</pre></div>
 
 </section>
 
@@ -100,11 +92,7 @@ document.querySelectorAll(".accordion").forEach(btn => {
     btn.classList.toggle("active");
     let panel = btn.nextElementSibling;
 
-    if (panel.style.maxHeight) {
-      panel.style.maxHeight = null;
-    } else {
-      panel.style.maxHeight = panel.scrollHeight + "px";
-    }
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
   });
 });
 </script>
