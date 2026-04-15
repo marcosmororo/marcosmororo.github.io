@@ -207,8 +207,140 @@ admin equipment ont interface 1/1/1/1/1 reboot # Reinicia ONT
 </div>
 
 <div id="datacom" class="tab-content">
-<div class="card accordion">Ver ONUs</div>
-<div class="panel"><pre>show onu</pre></div>
+
+<div class="card accordion">Troubleshooting</div>
+<div class="panel"><pre>
+# ONUs descobertas
+show gpon onu unconfigured              # Lista ONUs não provisionadas
+
+# Buscar ONU por serial
+show gpon onu | include ZTEGC4B0BCE2    # Filtra ONU pelo serial
+
+# Status geral da PON
+show gpon interface 1/1/6               # Status da porta GPON
+
+# Status das ONUs
+show gpon onu state                     # Estado das ONUs (online/offline)
+show gpon onu detail 1/1/6 1            # Detalhes de uma ONU
+
+# Potência óptica
+show gpon onu optical-info 1/1/6 1      # RX/TX da ONU
+show gpon interface optics 1/1/6        # Potência da porta PON
+
+# Interfaces
+show interface status                   # Status geral interfaces
+show interface utilization              # Uso das interfaces
+
+# Transceivers
+show interface transceiver              # Status dos SFPs
+show interface transceiver detail       # Diagnóstico detalhado
+
+# Sistema
+show system                             # Informações gerais
+show system uptime                      # Tempo ativo
+show system reboot-history              # Histórico de reboot
+
+# Hardware
+show environment                        # Temperatura / fans / fonte
+show inventory                          # Inventário do equipamento
+
+# VLAN
+show vlan                               # Lista VLANs
+show vlan port                          # VLAN por porta
+
+# Configuração GPON
+show running-config gpon                # Configuração GPON
+</pre></div>
+
+<div class="card accordion">Reboot ONU</div>
+<div class="panel"><pre>
+# Reiniciar ONU
+gpon onu reset 1/1/1 1                  # Reset ONU na porta/posição
+</pre></div>
+
+<div class="card accordion">Configuração VLAN</div>
+<div class="panel"><pre>
+# Criar VLAN
+vlan 4094 name GERENCIA                # VLAN de gerência
+vlan 2001 name PPPOE                   # VLAN de clientes
+
+# Associar VLAN à porta uplink
+interface ethernet 1/1/12
+switchport mode trunk
+switchport trunk allowed vlan add 2001,4094
+</pre></div>
+
+<div class="card accordion">Serviço</div>
+<div class="panel"><pre>
+# Criar serviço (bridge)
+service 1 vlan 2001                    # Serviço para clientes
+service 2 vlan 4094                    # Serviço de gerência
+</pre></div>
+
+<div class="card accordion">Interface L3</div>
+<div class="panel"><pre>
+# Interface de gerência
+interface vlan 4094
+ip address 10.0.0.1/24                # IP da OLT
+no shutdown
+</pre></div>
+
+<div class="card accordion">Bandwidth Profile</div>
+<div class="panel"><pre>
+# Criar perfil de banda
+gpon profile bandwidth 1G
+max 1000000                           # Banda máxima (aprox 1Gb)
+</pre></div>
+
+<div class="card accordion">Line Profile</div>
+<div class="panel"><pre>
+# Criar line profile
+gpon profile line CLIENTE_PADRAO
+tcont 1 bandwidth 1G
+gem 1
+mapping vlan 2001                     # Mapeamento VLAN
+</pre></div>
+
+<div class="card accordion">Adicionar ONU</div>
+<div class="panel"><pre>
+# Adicionar ONU untagged
+gpon onu add 1/1/1 1 serial DACM0000115C
+name ONU1-A
+line-profile CLIENTE_PADRAO
+
+# VLAN untagged
+gpon onu vlan 1/1/1 1 ethernet 1 untagged 2001
+</pre></div>
+
+<div class="card accordion">Adicionar ONU Tagged</div>
+<div class="panel"><pre>
+# ONU em modo bridge/tagged
+gpon onu add 1/1/1 2 serial DACM0000115C
+name ONU1-B
+line-profile CLIENTE_PADRAO
+</pre></div>
+
+<div class="card accordion">Service Port</div>
+<div class="panel"><pre>
+# Associar ONU ao serviço
+gpon service-port 1 interface 1/1/1 onu 1 gem 1 vlan 2001
+</pre></div>
+
+<div class="card accordion">Liberar IP</div>
+<div class="panel"><pre>
+# Liberação de tráfego IP
+ip anti-spoofing disable              # Desativa bloqueio (ou ajustar conforme política)
+</pre></div>
+
+<div class="card accordion">Isolamento ONU</div>
+<div class="panel"><pre>
+# Isolar ONU (anti-rogue)
+gpon onu isolate 1/1/X Y              # Isola ONU
+
+# Remover isolamento
+no gpon onu isolate 1/1/X Y           # Remove isolamento
+</pre></div>
+
 </div>
 
 </section>
