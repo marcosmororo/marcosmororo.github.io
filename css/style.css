@@ -136,59 +136,60 @@ body.light .card {
   margin-top: 20px;
 }
 
-/* ===== CORREÇÃO FERRAMENTAS ===== */
+/* ===== CARDS FERRAMENTAS AJUSTADOS ===== */
 
-/* link do card */
 .card-link {
   text-decoration: none;
   color: inherit;
   display: block;
 }
 
-/* padroniza cards da grid */
 .grid .card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  height: 260px;
-  padding: 20px;
+  justify-content: center; /* centraliza conteúdo */
+  height: 240px;
+  padding: 25px 20px;
   border-radius: 12px;
   text-align: center;
+  gap: 10px;
 }
 
-/* imagens padronizadas */
+/* IMAGENS */
 .grid .card img {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   object-fit: contain;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 
-/* aplica efeito SOMENTE no modo claro */
+/* efeito só no modo claro */
 body.light .grid .card img {
   mix-blend-mode: multiply;
 }
 
-/* melhora no modo claro */
-/* body.light .grid .card img {  */
-/*   mix-blend-mode: normal;  */
-/* }  */
-
-/* título */
+/* TEXTO */
 .grid .card h3 {
-  margin: 10px 0 5px;
+  margin: 5px 0;
   font-size: 1.1rem;
 }
 
-/* descrição */
 .grid .card p {
+  margin: 0;
+  padding: 0 5px;
+  line-height: 1.4;
   font-size: 0.9rem;
   color: #aaa;
 }
 
 body.light .grid .card p {
   color: #555;
+}
+
+/* HOVER MELHORADO */
+.grid .card:hover {
+  transform: translateY(-6px) scale(1.02);
 }
 
 /* RESPONSIVO */
