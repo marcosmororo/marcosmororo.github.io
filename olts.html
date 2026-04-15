@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>OLTs - Comandos</title>
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+
+/* ===== TABS ===== */
+.tabs {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 10px 15px;
+  border: none;
+  background: var(--card-dark);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab-btn.active {
+  background: #38bdf8;
+  color: black;
+}
+
+.tab-content {
+  display: none;
+  margin-top: 15px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ===== ACCORDION ===== */
+.accordion {
+  background: var(--card-dark);
+  color: white;
+  padding: 15px;
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.panel {
+  display: none;
+  padding: 10px;
+}
+
+pre {
+  background: #020617;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
+</nav>
+
+<section>
+<h1>📡 OLTs - Vendors</h1>
+
+<!-- ===== TABS ===== -->
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab('huawei')">Huawei</button>
+<button class="tab-btn" onclick="openTab('zte')">ZTE</button>
+<button class="tab-btn" onclick="openTab('nokia')">Nokia</button>
+<button class="tab-btn" onclick="openTab('fiberhome')">FiberHome</button>
+<button class="tab-btn" onclick="openTab('datacom')">Datacom</button>
+</div>
+
+<!-- ================= HUAWEI ================= -->
+<div id="huawei" class="tab-content active">
+
+<button class="accordion">Ver ONUs</button>
+<div class="panel">
+<pre>
+display ont info
+display ont summary
+</pre>
+</div>
+
+<button class="accordion">Sinal</button>
+<div class="panel">
+<pre>
+display ont optical-info
+</pre>
+</div>
+
+<button class="accordion">Configuração</button>
+<div class="panel">
+<pre>
+ont add
+service-port
+vlan
+</pre>
+</div>
+
+</div>
+
+<!-- ================= ZTE ================= -->
+<div id="zte" class="tab-content">
+
+<button class="accordion">Ver ONUs</button>
+<div class="panel">
+<pre>
+show gpon onu state
+</pre>
+</div>
+
+<button class="accordion">Sinal</button>
+<div class="panel">
+<pre>
+show pon power attenuation
+</pre>
+</div>
+
+</div>
+
+<!-- ================= NOKIA ================= -->
+<div id="nokia" class="tab-content">
+
+<button class="accordion">Ver ONUs</button>
+<div class="panel">
+<pre>
+show equipment ont
+</pre>
+</div>
+
+<button class="accordion">Sinal</button>
+<div class="panel">
+<pre>
+show pon optical
+</pre>
+</div>
+
+</div>
+
+<!-- ================= FIBERHOME ================= -->
+<div id="fiberhome" class="tab-content">
+
+<button class="accordion">Ver ONUs</button>
+<div class="panel">
+<pre>
+show onu info
+</pre>
+</div>
+
+<button class="accordion">Sinal</button>
+<div class="panel">
+<pre>
+show onu optical-power
+</pre>
+</div>
+
+</div>
+
+<!-- ================= DATACOM ================= -->
+<div id="datacom" class="tab-content">
+
+<button class="accordion">Ver ONUs</button>
+<div class="panel">
+<pre>
+show onu
+</pre>
+</div>
+
+<button class="accordion">Sinal</button>
+<div class="panel">
+<pre>
+show pon interface
+</pre>
+</div>
+
+</div>
+
+</section>
+
+<script>
+
+/* ===== TABS ===== */
+function openTab(tabName) {
+  let contents = document.getElementsByClassName("tab-content");
+  let buttons = document.getElementsByClassName("tab-btn");
+
+  for (let i = 0; i < contents.length; i++) {
+    contents[i].classList.remove("active");
+  }
+
+  for (let i = 0; i < buttons.length; i++) {
+    buttons[i].classList.remove("active");
+  }
+
+  document.getElementById(tabName).classList.add("active");
+  event.target.classList.add("active");
+}
+
+/* ===== ACCORDION ===== */
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    let panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+  };
+});
+
+</script>
+
+</body>
+</html>
