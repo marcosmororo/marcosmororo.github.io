@@ -29,10 +29,15 @@
   transition: max-height 0.3s ease;
 }
 
+/* 🔥 NÃO força dark */
 pre {
   padding: 10px;
   border-radius: 8px;
   background: var(--card-dark);
+}
+
+body.light pre {
+  background: var(--card-light);
 }
 </style>
 </head>
@@ -85,6 +90,8 @@ rm -rf arquivo
 <footer>
 <p>© 2026 - Marcos Renan</p>
 </footer>
+
+<script src="js/script.js"></script>
 
 <script>
 document.querySelectorAll(".accordion").forEach(btn => {
