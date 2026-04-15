@@ -1,134 +1,243 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ferramentas</title>
+:root {
+  --primary: #38bdf8;
+  --bg-dark: #0f172a;
+  --bg-light: #f1f5f9;
+  --card-dark: #020617;
+  --card-light: #ffffff;
+}
 
-<link rel="stylesheet" href="css/style.css">
+/* BODY */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg-dark);
+  color: white;
+  transition: 0.3s;
+}
 
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-</head>
+body.light {
+  background: var(--bg-light);
+  color: #111;
+}
 
-<body>
+/* NAV */
+nav {
+  background: rgba(2,6,23,0.9);
+  padding: 15px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+}
 
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+body.light nav {
+  background: rgba(255,255,255,0.9);
+}
 
-<nav>
-<a href="index.html">Home</a>
-<a href="metodos.html">Métodos</a>
-<a href="organizacao.html">Organização</a>
-<a href="ferramentas.html">Ferramentas</a>
-<a href="sobre.html">Sobre</a>
-<a href="contato.html">Contato</a>
-</nav>
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
 
-<section>
+body.light nav a {
+  color: #111;
+}
 
-<h1>🛠️ Ferramentas</h1>
+/* BOTÃO TEMA */
+.theme-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: var(--primary);
+  border: none;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  z-index: 100;
+}
 
-<div class="card">
-  <p>
-    A análise de redes utiliza um ecossistema integrado de ferramentas para monitoramento,
-    automação e análise, garantindo visibilidade, controle e alto desempenho da infraestrutura.
-  </p>
-</div>
+/* CENTRALIZAÇÃO */
+.center-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 20px;
+}
 
-<div class="grid">
+/* CONTAINER */
+.container {
+  max-width: 650px;
+  width: 100%;
+}
 
-<!-- ZABBIX -->
-<a href="https://www.zabbix.com" target="_blank" class="card-link">
-<div class="card">
-<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/zabbix.png" alt="Zabbix">
-<h3>Zabbix</h3>
-<p>Monitoramento de redes e servidores.</p>
-</div>
-</a>
+/* TEXTO */
+.container p {
+  line-height: 1.7;
+  color: #cbd5f5;
+}
 
-<!-- LIBRENMS -->
-<a href="https://www.librenms.org" target="_blank" class="card-link">
-<div class="card">
-<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/webp/librenms.webp" alt="LibreNMS">
-<h3>LibreNMS</h3>
-<p>Monitoramento de rede open source.</p>
-</div>
-</a>
+body.light .container p {
+  color: #333;
+}
 
-<!-- PRTG -->
-<a href="https://www.paessler.com/prtg" target="_blank" class="card-link">
-<div class="card">
-<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/prtg.svg" alt="PRTG">
-<h3>PRTG</h3>
-<p>Monitoramento completo de redes.</p>
-</div>
-</a>
+/* DESTAQUE */
+.highlight {
+  color: var(--primary);
+  font-weight: bold;
+}
 
-<!-- GRAFANA -->
-<a href="https://grafana.com" target="_blank" class="card-link">
-<div class="card">
-<img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/Grafana_icon.svg" alt="Grafana">
-<h3>Grafana</h3>
-<p>Dashboards para visualização de dados.</p>
-</div>
-</a>
+/* SEÇÕES */
+section {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
 
-<!-- PADTEC -->
-<a href="https://www.padtec.com.br" target="_blank" class="card-link">
-<div class="card">
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnYWv80nTqJWtdYWI505NLvTr4g7Gbh79QFA&s" alt="Padtec">
-<h3>Padtec</h3>
-<p>Soluções de redes ópticas e telecom.</p>
-</div>
-</a>
+/* CARD PADRÃO */
+.card {
+  background: var(--card-dark);
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 25px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
 
-<!-- TERMIUS -->
-<a href="https://termius.com" target="_blank" class="card-link">
-<div class="card">
-<img src="https://images.icon-icons.com/3053/PNG/512/termius_macos_bigsur_icon_189654.png" alt="Termius">
-<h3>Termius / SSH</h3>
-<p>Acesso remoto e gerenciamento de equipamentos.</p>
-</div>
-</a>
+body.light .card {
+  background: var(--card-light);
+}
 
-<!-- PHPIPAM -->
-<a href="https://phpipam.net" target="_blank" class="card-link">
-<div class="card">
-<img src="https://phpipam.net/css/images/logo_icon.png" alt="phpIPAM">
-<h3>phpIPAM</h3>
-<p>Gerenciamento de endereçamento IP.</p>
-</div>
-</a>
+.card:hover {
+  transform: translateY(-5px);
+}
 
-<!-- VSCODE -->
-<a href="https://code.visualstudio.com" target="_blank" class="card-link">
-<div class="card">
-<img src="https://freebsdfoundation.org/wp-content/uploads/2024/05/vscode-logo.png" alt="VS Code">
-<h3>VS Code</h3>
-<p>Automação e desenvolvimento de scripts.</p>
-</div>
-</a>
+/* BOTÃO */
+.btn {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: var(--primary);
+  color: #020617;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
 
-<!-- GITHUB -->
-<a href="https://github.com" target="_blank" class="card-link">
-<div class="card">
-<img src="https://cdn-icons-png.flaticon.com/512/2111/2111432.png" alt="GitHub">
-<h3>GitHub</h3>
-<p>Controle de versão e projetos.</p>
-</div>
-</a>
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
 
-</div>
+/* ===== CARDS FERRAMENTAS AJUSTADOS ===== */
 
-</section>
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 
-<footer>
-<p>© 2026 - Marcos Renan</p>
-</footer>
+.grid .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* centraliza conteúdo */
+  height: 240px;
+  padding: 25px 20px;
+  border-radius: 12px;
+  text-align: center;
+  gap: 10px;
+}
 
-<script src="js/script.js"></script>
+/* IMAGENS */
+.grid .card img {
+  width: 65px;
+  height: 65px;
+  object-fit: contain;
+  margin-bottom: 5px;
+}
 
-</body>
-</html>
+/* efeito só no modo claro */
+body.light .grid .card img {
+  mix-blend-mode: multiply;
+}
+
+/* TEXTO */
+.grid .card h3 {
+  margin: 5px 0;
+  font-size: 1.1rem;
+}
+
+.grid .card p {
+  margin: 0;
+  padding: 0 5px;
+  line-height: 1.4;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+body.light .grid .card p {
+  color: #555;
+}
+
+/* HOVER MELHORADO */
+.grid .card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* CONTATO */
+.contato {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.contato .item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 1.1rem;
+}
+
+.contato i {
+  color: var(--primary);
+  font-size: 1.3rem;
+}
+
+.contato a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.contato a:hover {
+  color: var(--primary);
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+}
