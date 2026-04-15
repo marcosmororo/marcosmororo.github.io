@@ -2,11 +2,46 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Redes - Troubleshooting</title>
+<title>Redes - Vendors</title>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.tab-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--card-dark);
+  color: inherit;
+}
+
+body.light .tab-btn {
+  background: var(--card-light);
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: #000;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* ACCORDION */
 .accordion {
   cursor: pointer;
   display: flex;
@@ -29,7 +64,7 @@
   transition: max-height 0.3s ease;
 }
 
-/* 🔥 NÃO força dark */
+/* NÃO força dark */
 pre {
   padding: 10px;
   border-radius: 8px;
@@ -58,29 +93,84 @@ body.light pre {
 
 <section>
 
-<h1>🌐 Roteadores e Switchs</h1>
+<h1>🌐 Redes - Vendors</h1>
 
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab(event,'huawei')">Huawei VRP</button>
+<button class="tab-btn" onclick="openTab(event,'juniper')">Juniper</button>
+<button class="tab-btn" onclick="openTab(event,'a10')">A10</button>
+<button class="tab-btn" onclick="openTab(event,'raisecom')">Raisecom</button>
+<button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
+<button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
+</div>
+
+<!-- HUAWEI -->
+<div id="huawei" class="tab-content active">
 <div class="card accordion">Diagnóstico</div>
 <div class="panel"><pre>
-ping 8.8.8.8
-traceroute
-show ip route
 display interface brief
+display ip routing-table
+ping 8.8.8.8
 </pre></div>
 
 <div class="card accordion">OSPF / BGP</div>
 <div class="panel"><pre>
 display ospf peer
 display bgp peer
-display ip routing-table
+</pre></div>
+</div>
+
+<!-- JUNIPER -->
+<div id="juniper" class="tab-content">
+<div class="card accordion">Diagnóstico</div>
+<div class="panel"><pre>
+show interfaces terse
+show route
+ping 8.8.8.8
 </pre></div>
 
-<div class="card accordion">Troubleshooting</div>
+<div class="card accordion">OSPF / BGP</div>
 <div class="panel"><pre>
-verificar rotas
-verificar neighbors
-verificar firewall
+show ospf neighbor
+show bgp summary
 </pre></div>
+</div>
+
+<!-- A10 -->
+<div id="a10" class="tab-content">
+<div class="card accordion">Diagnóstico</div>
+<div class="panel"><pre>
+show ip route
+show interface brief
+</pre></div>
+</div>
+
+<!-- RAISECOM -->
+<div id="raisecom" class="tab-content">
+<div class="card accordion">Diagnóstico</div>
+<div class="panel"><pre>
+show interface
+show ip route
+</pre></div>
+</div>
+
+<!-- ZTE -->
+<div id="zte" class="tab-content">
+<div class="card accordion">Diagnóstico</div>
+<div class="panel"><pre>
+show ip route
+show interface
+</pre></div>
+</div>
+
+<!-- DATACOM -->
+<div id="datacom" class="tab-content">
+<div class="card accordion">Diagnóstico</div>
+<div class="panel"><pre>
+show interfaces
+show ip route
+</pre></div>
+</div>
 
 </section>
 
@@ -91,6 +181,14 @@ verificar firewall
 <script src="js/script.js"></script>
 
 <script>
+function openTab(evt, tabName) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
+
 document.querySelectorAll(".accordion").forEach(btn => {
   btn.addEventListener("click", () => {
     btn.classList.toggle("active");
