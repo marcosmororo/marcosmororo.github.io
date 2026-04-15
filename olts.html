@@ -109,95 +109,98 @@ body.light pre {
 <div class="panel"><pre>show gpon onu state</pre></div>
 </div>
 
-<div class="card accordion critical">🔴 Uplink Down</div>
+<div id="nokia" class="tab-content">
+
+<div class="card accordion critical">Uplink Down</div>
 <div class="panel"><pre>
 show alarm query ihub-link all            # Verifica status do uplink (link-down = crítico)
 </pre></div>
 
-<div class="card accordion major">🟠 Potência Óptica Fora</div>
+<div class="card accordion major">Potência Óptica Fora</div>
 <div class="panel"><pre>
-show alarm query sfprssi all              # Alarmes de potência fora do padrão
-show pon optics                          # Níveis ópticos gerais da PON
-show pon optics 1/1/3/1                  # Nível óptico de uma porta específica
+show alarm query sfprssi all              # Diagnóstico de potência fora do padrão
+show pon optics                          # Verifica níveis ópticos gerais
+show pon optics 1/1/3/1                  # Verifica porta específica
 </pre></div>
 
-<div class="card accordion major">🟠 Falha na PON</div>
+<div class="card accordion major">Falha na PON</div>
 <div class="panel"><pre>
-show alarm query olt-gen all              # Falhas gerais na porta PON
-show alarm query name olt-gen-pon-loss-sig # Perda de sinal na PON (LoS)
+show alarm query olt-gen all              # Diagnóstico da porta PON
+show alarm query name olt-gen-pon-loss-sig # Perda de sinal (LoS)
 </pre></div>
 
-<div class="card accordion info">🟢 Ver ONTs</div>
+<div class="card accordion info">Ver ONTs</div>
 <div class="panel"><pre>
-show equipment ont                       # Lista todas ONTs
+show equipment ont                       # Lista ONTs
 show pon unprovision-onu                 # ONTs não provisionadas
 </pre></div>
 
-<div class="card accordion info">🟢 Diagnóstico ONT</div>
+<div class="card accordion info">Diagnóstico ONT</div>
 <div class="panel"><pre>
 show equipment ont status pon ont 1/1/1/1/1    # Status da ONT
-show equipment ont optics 1/1/1/1/1             # Potência RX/TX da ONT
-show equipment ont interface 1/1/1/1/1 detail   # Detalhes da interface
+show equipment ont optics 1/1/1/1/1             # Potência RX/TX
+show equipment ont interface 1/1/1/1/1 detail   # Detalhamento completo
 </pre></div>
 
-<div class="card accordion major">🟠 Queda de Cliente</div>
+<div class="card accordion major">Queda de Cliente</div>
 <div class="panel"><pre>
-show alarm query ont-ploam all           # Falhas de comunicação GPON
-show alarm query name ont-ploam-dying-gasp # Cliente sem energia
-show alarm query name ont-ploam-sig-degrade # Sinal degradado (sujeira/atenuação)
+show alarm query ont-ploam all           # Diagnóstico GPON
+show alarm query name ont-ploam-dying-gasp # Falta de energia
+show alarm query name ont-ploam-sig-degrade # Sinal degradado
 </pre></div>
 
-<div class="card accordion info">🟢 Hardware e Temperatura</div>
+<div class="card accordion info">Hardware e Temperatura</div>
 <div class="panel"><pre>
-show equipment temperature               # Temperatura geral da OLT
-show equipment temperature nt-a          # Temperatura da controladora
+show equipment temperature               # Verifica temperatura geral
+show equipment temperature nt-a          # Controladora
 show equipment slot                     # Status das placas
 </pre></div>
 
-<div class="card accordion critical">🔴 Risco de Reboot</div>
+<div class="card accordion critical">Risco de Reboot</div>
 <div class="panel"><pre>
-show equipment temperature               # Verifica superaquecimento (causa comum de reboot)
-show equipment slot                     # Verifica falha em placas/fans
-show software-mngt version etsi          # Verifica versão (bug ou instabilidade)
+show equipment temperature               # Diagnóstico de superaquecimento
+show equipment slot                     # Verifica falhas físicas
+show software-mngt version etsi          # Verifica versão/bugs
 </pre></div>
 
-<div class="card accordion info">🟢 CPU / Memória</div>
+<div class="card accordion info">CPU / Memória</div>
 <div class="panel"><pre>
 show system cpu-load                    # Uso de CPU
 show system memory-usage                # Uso de memória
-show core1-uptime                      # Tempo de uptime
+show core1-uptime                      # Tempo ativo
 </pre></div>
 
-<div class="card accordion info">🟢 Portas e Uplink</div>
+<div class="card accordion info">Portas e Uplink</div>
 <div class="panel"><pre>
-show port                              # Status geral das portas
-show port nt-a:xfp:1                   # Porta uplink específica
-show equipment diagnostics sfp nt-a:xfp:1 detail # Diagnóstico do SFP
+show port                              # Status geral
+show port nt-a:xfp:1                   # Porta uplink
+show equipment diagnostics sfp nt-a:xfp:1 detail # Diagnóstico SFP
 </pre></div>
 
-<div class="card accordion info">🟢 Alarmes Gerais</div>
+<div class="card accordion info">Alarmes Gerais</div>
 <div class="panel"><pre>
-show alarm query alarm-table all severity all servaff all # Todos alarmes ativos
-show alarm current table                                 # Visão resumida
-show alarm query name all                                # Busca por tipo de erro
-admin alarm clr-logging                                  # Limpa buffer de alarmes
+show alarm query alarm-table all severity all servaff all # Todos alarmes
+show alarm current table                                 # Resumo
+show alarm query name all                                # Busca por erro
+admin alarm clr-logging                                  # Limpa buffer
 </pre></div>
 
-<div class="card accordion info">🟢 Logs e Auditoria</div>
+<div class="card accordion info">Logs e Auditoria</div>
 <div class="panel"><pre>
-show alarm log mgmt-sec-access        # Log de login/acesso
-show alarm log ont-gen               # Histórico de quedas de ONT
-show log log-id 99                  # Log geral (volátil)
-show log log-id 100                 # Log de segurança
+show alarm log mgmt-sec-access        # Log de acesso
+show alarm log ont-gen               # Histórico de ONTs
+show log log-id 99                  # Log geral
+show log log-id 100                 # Log segurança
 </pre></div>
 
-<div class="card accordion info">🟢 Ações Administrativas</div>
+<div class="card accordion info">Ações Administrativas</div>
 <div class="panel"><pre>
-admin equipment reboot-isam hot-restart        # Reinicia OLT (rápido)
+admin equipment reboot-isam hot-restart        # Reinicia OLT
 admin equipment slot lt:1/1/1 reboot with-selftest # Reinicia placa
 admin equipment ont interface 1/1/1/1/1 reboot # Reinicia ONT
 </pre></div>
 
+</div>
 <div id="fiberhome" class="tab-content">
 <div class="card accordion">Ver ONUs</div>
 <div class="panel"><pre>show onu info</pre></div>
