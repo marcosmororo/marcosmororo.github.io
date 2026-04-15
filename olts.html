@@ -140,6 +140,7 @@ show pon unprovision-onu                 # ONTs não provisionadas
 show equipment ont status pon ont 1/1/1/1/1    # Status da ONT
 show equipment ont optics 1/1/1/1/1             # Potência RX/TX
 show equipment ont interface 1/1/1/1/1 detail   # Detalhamento completo
+show equipment ont index sn:                    # Coloque o serial para encontrar  
 </pre></div>
 
 <div class="card accordion major">Queda de Cliente</div>
@@ -198,6 +199,7 @@ show log log-id 100                 # Log segurança
 admin equipment reboot-isam hot-restart        # Reinicia OLT
 admin equipment slot lt:1/1/1 reboot with-selftest # Reinicia placa
 admin equipment ont interface 1/1/1/1/1 reboot # Reinicia ONT
+configure equipment slot lt:1/1/1 planned-type fglt-b unlock  
 </pre></div>
 
 </div>
