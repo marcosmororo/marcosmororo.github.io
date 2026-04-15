@@ -101,7 +101,8 @@ body.light pre {
 </div>
 
 <!-- conteúdo mantido igual -->
-<div id="huawei" class="tab-content active"</div> 
+<!-- HUAWEI -->
+<div id="huawei" class="tab-content active">
 <div class="card accordion">Diagnóstico</div>
 <div class="panel"><pre>
 display interface brief
@@ -114,7 +115,9 @@ ping 8.8.8.8
 display ospf peer
 display bgp peer
 </pre></div>
+</div> <!-- ✅ FECHA HUAWEI AQUI -->
 
+<!-- RAISECOM -->
 <div id="raisecom" class="tab-content">
 <div class="card accordion">System Information</div>
 <div class="panel"><pre>
@@ -132,28 +135,25 @@ show interface statistics dynamic detail # Tráfego, erros e drops em tempo real
 
 <div class="card accordion">Interface Específica</div>
 <div class="panel"><pre>
-show interface tengigabitethernet 1/1/4  # Detalhes completos da interface (estado, velocidade, duplex, counters)
+show interface tengigabitethernet 1/1/4  # Detalhes completos da interface
 </pre></div>
 
 <div class="card accordion">Transceivers (SFP / SFP+)</div>
 <div class="panel"><pre>
-show transceiver ddm tengigabitethernet 1/1/4        # Temperatura, TX/RX, tensão
-show transceiver ddm tengigabitethernet 1/1/4 detail # Diagnóstico completo (laser, limites, dBm)
+show transceiver ddm tengigabitethernet 1/1/4
+show transceiver ddm tengigabitethernet 1/1/4 detail
 </pre></div>
 
 <div class="card accordion">Checklist Rápido (Troubleshooting)</div>
 <div class="panel"><pre>
-show cpu-utilization                 # Verifica CPU alta
-show interface brief                 # Interfaces down
-show interface statistics dynamic detail # Erros e drops
-show transceiver ddm tengigabitethernet 1/1/4 # Potência óptica
-show reboot info                     # Verifica reboot inesperado
+show cpu-utilization
+show interface brief
+show interface statistics dynamic detail
+show transceiver ddm tengigabitethernet 1/1/4
+show reboot info
 </pre></div>
 
-</div>
-
-
-</div>
+</div> <!-- ✅ FECHA RAISECOM -->
 
 <!-- restante igual -->
 </section>
