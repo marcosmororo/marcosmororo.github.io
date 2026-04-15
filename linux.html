@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Linux - Comandos</title>
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+.accordion {
+  background: var(--card-dark);
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.panel {
+  display: none;
+  padding: 10px;
+  background: var(--bg-dark);
+}
+
+pre {
+  background: #020617;
+  padding: 10px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
+</nav>
+
+<section>
+<h1>🐧 Linux</h1>
+
+<button class="accordion">Monitoramento</button>
+<div class="panel">
+<pre>
+top
+htop
+uptime
+free -h
+df -h
+</pre>
+</div>
+
+<button class="accordion">Rede</button>
+<div class="panel">
+<pre>
+ip a
+ping 8.8.8.8
+ss -tulnp
+traceroute google.com
+</pre>
+</div>
+
+<button class="accordion">Arquivos</button>
+<div class="panel">
+<pre>
+ls -la
+cd /var/log
+du -sh *
+rm -rf arquivo
+</pre>
+</div>
+
+</section>
+
+<script>
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    let panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+  };
+});
+</script>
+
+</body>
+</html>
