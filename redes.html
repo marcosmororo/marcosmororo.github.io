@@ -173,6 +173,25 @@ function openTab(evt, tabName) {
   evt.currentTarget.classList.add("active");
 }
 </script>
+  
+<script>
+// Accordion global (funciona em todas as abas)
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("accordion")) {
+    let panel = e.target.nextElementSibling;
 
+    if (!panel) return;
+
+    e.target.classList.toggle("active");
+
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    }
+  }
+});
+</script>
+  
 </body>
 </html>
