@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Redes - Troubleshooting</title>
+<link rel="stylesheet" href="css/style.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+.accordion {
+  background: var(--card-dark);
+  color: white;
+  padding: 15px;
+  width: 100%;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.panel {
+  display: none;
+  padding: 10px;
+}
+
+pre {
+  background: #020617;
+  padding: 10px;
+  border-radius: 8px;
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
+</nav>
+
+<section>
+<h1>🌐 Roteadores e Switchs</h1>
+
+<button class="accordion">Diagnóstico</button>
+<div class="panel">
+<pre>
+ping 8.8.8.8
+traceroute
+show ip route
+display interface brief
+</pre>
+</div>
+
+<button class="accordion">OSPF / BGP</button>
+<div class="panel">
+<pre>
+display ospf peer
+display bgp peer
+display ip routing-table
+</pre>
+</div>
+
+<button class="accordion">Troubleshooting</button>
+<div class="panel">
+<pre>
+verificar rotas
+verificar neighbors
+verificar firewall
+</pre>
+</div>
+
+</section>
+
+<script>
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    let panel = btn.nextElementSibling;
+    panel.style.display = panel.style.display === "block" ? "none" : "block";
+  };
+});
+</script>
+
+</body>
+</html>
