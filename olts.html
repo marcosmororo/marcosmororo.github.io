@@ -28,10 +28,9 @@ body.light .tab-btn {
   background: var(--primary);
   color: #000;
   font-weight: bold;
-  border: 2px solid var(--primary);
+  border: 2px solid #fff;
 }
 
-/* 🔥 fix modo branco */
 body.light .tab-btn.active {
   border: 2px solid #000;
 }
@@ -42,6 +41,28 @@ body.light .tab-btn.active {
 
 .tab-content.active {
   display: block;
+}
+
+.accordion {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
+
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+pre {
+  background: var(--card-dark);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+body.light pre {
+  background: var(--card-light);
 }
 </style>
 </head>
@@ -63,18 +84,40 @@ body.light .tab-btn.active {
 <section>
 
 <h1>📡 OLTs</h1>
-
 <a href="infra.html" class="back-btn">← Voltar</a>
 
 <div class="tabs">
 <button class="tab-btn active" onclick="openTab(event,'huawei')">Huawei</button>
 <button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
+<button class="tab-btn" onclick="openTab(event,'nokia')">Nokia</button>
+<button class="tab-btn" onclick="openTab(event,'fiberhome')">FiberHome</button>
 <button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
 </div>
 
-<div id="huawei" class="tab-content active">Huawei conteúdo</div>
-<div id="zte" class="tab-content">ZTE conteúdo</div>
-<div id="datacom" class="tab-content">Datacom conteúdo</div>
+<div id="huawei" class="tab-content active">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>display ont info</pre></div>
+</div>
+
+<div id="zte" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show gpon onu state</pre></div>
+</div>
+
+<div id="nokia" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show equipment ont</pre></div>
+</div>
+
+<div id="fiberhome" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show onu info</pre></div>
+</div>
+
+<div id="datacom" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show onu</pre></div>
+</div>
 
 </section>
 
@@ -92,6 +135,14 @@ function openTab(evt, tabName) {
   document.getElementById(tabName).classList.add("active");
   evt.currentTarget.classList.add("active");
 }
+
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    let panel = btn.nextElementSibling;
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+  };
+});
 </script>
 
 </body>
