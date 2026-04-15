@@ -12,31 +12,42 @@
   flex-wrap: wrap;
 }
 
+/* BASE */
 .tab-btn {
   padding: 8px 12px;
   border-radius: 8px;
   border: 2px solid transparent;
   cursor: pointer;
   background: var(--card-dark);
+  color: inherit;
+  transition: 0.2s;
 }
 
 body.light .tab-btn {
   background: var(--card-light);
 }
 
-/* 🔥 destaque forte */
+/* 🔥 DARK MODE (PADRÃO) */
 .tab-btn.active {
   background: var(--primary);
   color: #000;
   font-weight: bold;
-  border: 2px solid var(--primary);
+  border: 2px solid #fff; /* CONTRASTE FORTE */
+  box-shadow: 0 0 8px rgba(255,255,255,0.3);
 }
 
-/* 🔥 resolve modo branco */
+/* 🔥 LIGHT MODE */
 body.light .tab-btn.active {
   border: 2px solid #000;
+  box-shadow: 0 0 8px rgba(0,0,0,0.2);
 }
 
+/* HOVER */
+.tab-btn:hover {
+  transform: translateY(-2px);
+}
+
+/* CONTENT */
 .tab-content {
   display: none;
 }
@@ -45,6 +56,7 @@ body.light .tab-btn.active {
   display: block;
 }
 
+/* ACCORDION */
 .accordion {
   cursor: pointer;
   display: flex;
@@ -86,7 +98,6 @@ body.light pre {
 <section>
 
 <h1>🌐 Redes</h1>
-
 <a href="infra.html" class="back-btn">← Voltar</a>
 
 <div class="tabs">
