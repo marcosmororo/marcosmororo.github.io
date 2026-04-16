@@ -237,6 +237,95 @@ traceroute 8.8.8.8                  # Rota até destino
 admin save                          # Salva configuração
   </pre></div>
 
+<div id="a10" class="tab-content">
+
+  <div class="card accordion">System Information</div>
+  <div class="panel"><pre>
+show version                         # Versão do ACOS e hardware
+show uptime                          # Tempo de atividade
+show cpu                             # Uso de CPU
+show memory                          # Uso de memória
+show running-config                  # Configuração atual
+  </pre></div>
+
+  <div class="card accordion">Interfaces</div>
+  <div class="panel"><pre>
+show interface ethernet 1            # Status da interface
+
+interface ethernet 1                 # Configurar interface
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+ exit
+  </pre></div>
+
+  <div class="card accordion">VLAN</div>
+  <div class="panel"><pre>
+show vlan                            # Lista VLANs
+
+vlan 100                             # Criar VLAN
+ tagged ethernet 1
+ router-interface ve 100
+ exit
+
+interface ve 100                     # Interface virtual da VLAN
+ ip address 192.168.100.1 255.255.255.0
+  </pre></div>
+
+  <div class="card accordion">Routing</div>
+  <div class="panel"><pre>
+show ip route                        # Tabela de rotas
+
+ip route 0.0.0.0 /0 192.168.1.254    # Rota padrão
+  </pre></div>
+
+  <div class="card accordion">NAT / CGNAT</div>
+  <div class="panel"><pre>
+show ip nat pool                     # Pools NAT
+
+ip nat pool NAT_POOL 200.0.0.1 200.0.0.100 netmask /24
+
+ip nat inside source list 1 pool NAT_POOL overload
+                                     # NAT com overload (CGNAT)
+
+access-list 1 permit 192.168.0.0 /16
+  </pre></div>
+
+  <div class="card accordion">SLB (Load Balance)</div>
+  <div class="panel"><pre>
+slb server srv1 10.0.0.1             # Servidor real
+ port 80 tcp
+ exit
+
+slb service-group web tcp            # Grupo de servidores
+ member srv1 80
+ exit
+
+slb virtual-server vip1 200.0.0.10   # IP virtual
+ port 80 tcp
+  service-group web
+  </pre></div>
+
+  <div class="card accordion">Firewall / Security</div>
+  <div class="panel"><pre>
+show access-list                     # Ver ACLs
+
+access-list 100 permit ip any any    # Criar regra simples
+  </pre></div>
+
+  <div class="card accordion">Diagnóstico</div>
+  <div class="panel"><pre>
+ping 8.8.8.8                         # Teste de conectividade
+traceroute 8.8.8.8                   # Rota até destino
+show ip nat statistics               # Estatísticas NAT
+  </pre></div>
+
+  <div class="card accordion">Salvar Configuração</div>
+  <div class="panel"><pre>
+write memory                         # Salvar configuração
+  </pre></div>
+
+</div>
+
 </div>  
 <!-- restante igual -->
 </section>
