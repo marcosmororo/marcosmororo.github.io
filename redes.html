@@ -98,6 +98,7 @@ body.light pre {
 <button class="tab-btn" onclick="openTab(event,'raisecom')">Raisecom</button>
 <button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
 <button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
+<button class="tab-btn" onclick="openTab(event,'nokia')">Nokia</button>
 </div>
 
 <!-- conteúdo mantido igual -->
@@ -155,6 +156,88 @@ show reboot info
 
 </div> <!-- ✅ FECHA RAISECOM -->
 
+<div id="nokia" class="tab-content">
+
+  <div class="card accordion">System Information</div>
+  <div class="panel"><pre>
+show version                         # Exibe modelo, firmware e versão do SR OS
+show system information              # Informações gerais do sistema
+show system uptime                   # Tempo de atividade
+show log log-id 99                   # Logs do sistema
+  </pre></div>
+
+  <div class="card accordion">Interfaces</div>
+  <div class="panel"><pre>
+show router interface                # Lista interfaces L3
+show port                            # Lista portas físicas
+
+configure router interface "if-1"    # Cria/edita interface
+ address 192.168.1.1/24
+ port 1/1/1
+ no shutdown
+ exit
+  </pre></div>
+
+  <div class="card accordion">Portas (Switch)</div>
+  <div class="panel"><pre>
+show port 1/1/1                      # Status da porta
+
+configure port 1/1/1                 # Configuração da porta
+ description "Cliente X"
+ no shutdown
+ exit
+  </pre></div>
+
+  <div class="card accordion">VLAN / Services</div>
+  <div class="panel"><pre>
+configure service vpls 100 customer 1 create   # Cria VPLS
+ description "VLAN 100"
+ sap 1/1/1:100 create
+ no shutdown
+
+configure service epipe 200 customer 1 create  # Cria Epipe
+ sap 1/1/1:200 create
+ no shutdown
+  </pre></div>
+
+  <div class="card accordion">Routing</div>
+  <div class="panel"><pre>
+show router route-table             # Tabela de rotas
+
+configure router static-route 0.0.0.0/0 next-hop 192.168.1.254
+                                     # Rota padrão
+  </pre></div>
+
+  <div class="card accordion">BGP</div>
+  <div class="panel"><pre>
+show router bgp summary             # Status BGP
+
+configure router bgp
+ group "EBGP"
+ neighbor 10.0.0.1
+ peer-as 65001
+ exit
+  </pre></div>
+
+  <div class="card accordion">Usuários</div>
+  <div class="panel"><pre>
+configure system security user "admin"
+ password "senha"
+ access console ftp
+  </pre></div>
+
+  <div class="card accordion">Diagnóstico</div>
+  <div class="panel"><pre>
+ping 8.8.8.8                        # Teste de conectividade
+traceroute 8.8.8.8                  # Rota até destino
+  </pre></div>
+
+  <div class="card accordion">Salvar Configuração</div>
+  <div class="panel"><pre>
+admin save                          # Salva configuração
+  </pre></div>
+
+</div>  
 <!-- restante igual -->
 </section>
 
