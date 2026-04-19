@@ -8,8 +8,6 @@
 
 <link rel="stylesheet" href="css/style.css">
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
 <style>
 
 /* BUSCA */
@@ -27,37 +25,38 @@
 
 /* BLOCO */
 .block {
-  margin: 20px auto;
   max-width: 900px;
+  margin: 10px auto;
 }
 
-.block h2 {
-  margin-bottom: 10px;
+/* HEADER COLAPSÁVEL */
+.block-header {
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+}
+
+.block-header:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* CONTEÚDO */
+.block-content {
+  display: none;
+  margin-top: 10px;
 }
 
 /* COMANDO */
 .cmd {
   position: relative;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
   background: rgba(0,0,0,0.4);
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 10px;
   font-family: monospace;
   font-size: 13px;
-}
-
-/* BOTÃO COPIAR */
-.copy {
-  position: absolute;
-  right: 10px;
-  top: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  opacity: 0.7;
-}
-
-.copy:hover {
-  opacity: 1;
 }
 
 /* DESCRIÇÃO */
@@ -65,6 +64,20 @@
   font-size: 12px;
   opacity: 0.7;
   margin-top: 3px;
+}
+
+/* COPIAR */
+.copy {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.copy:hover {
+  opacity: 1;
 }
 
 </style>
@@ -83,122 +96,132 @@
 
 <section>
 
-<h1>🐧 Linux - Troubleshooting</h1>
+<h1>Linux - Troubleshooting</h1>
 
 <div class="search-box">
 <input type="text" id="search" placeholder="Buscar comando...">
 </div>
 
 <!-- CPU -->
-<div class="block" data-cat="cpu">
-<h2>🧠 CPU / PROCESSOS</h2>
+<div class="block">
+  <div class="block-header" onclick="toggle(this)">CPU / PROCESSOS</div>
+  <div class="block-content">
 
-<div class="cmd" data-name="top cpu processo uso">
-top
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Monitorar uso em tempo real</div>
-</div>
+    <div class="cmd" data-name="top cpu">
+      top
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Monitorar CPU em tempo real</div>
+    </div>
 
-<div class="cmd" data-name="htop cpu processo">
-htop
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Versão melhorada do top</div>
-</div>
+    <div class="cmd" data-name="htop cpu">
+      htop
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Versão avançada do top</div>
+    </div>
 
-<div class="cmd" data-name="ps aux processo">
-ps aux | grep processo
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Buscar processo específico</div>
-</div>
+    <div class="cmd" data-name="ps processo">
+      ps aux | grep processo
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Buscar processo</div>
+    </div>
 
+  </div>
 </div>
 
 <!-- MEMORIA -->
-<div class="block" data-cat="mem">
-<h2>💾 MEMÓRIA</h2>
+<div class="block">
+  <div class="block-header" onclick="toggle(this)">MEMÓRIA</div>
+  <div class="block-content">
 
-<div class="cmd" data-name="free memoria ram">
-free -h
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Ver uso de memória</div>
-</div>
+    <div class="cmd" data-name="free memoria">
+      free -h
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Uso de memória</div>
+    </div>
 
+  </div>
 </div>
 
 <!-- DISCO -->
-<div class="block" data-cat="disk">
-<h2>💽 DISCO</h2>
+<div class="block">
+  <div class="block-header" onclick="toggle(this)">DISCO</div>
+  <div class="block-content">
 
-<div class="cmd" data-name="df disco espaço">
-df -h
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Espaço em disco</div>
-</div>
+    <div class="cmd" data-name="df disco">
+      df -h
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Espaço em disco</div>
+    </div>
 
-<div class="cmd" data-name="du tamanho pasta">
-du -sh *
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Tamanho de diretórios</div>
-</div>
+    <div class="cmd" data-name="du tamanho">
+      du -sh *
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Tamanho de diretórios</div>
+    </div>
 
+  </div>
 </div>
 
 <!-- REDE -->
-<div class="block" data-cat="net">
-<h2>🌐 REDE</h2>
+<div class="block">
+  <div class="block-header" onclick="toggle(this)">REDE</div>
+  <div class="block-content">
 
-<div class="cmd" data-name="ip a rede interface">
-ip a
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Ver interfaces</div>
-</div>
+    <div class="cmd" data-name="ip rede">
+      ip a
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Interfaces</div>
+    </div>
 
-<div class="cmd" data-name="ping teste rede">
-ping 8.8.8.8
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Teste de conectividade</div>
-</div>
+    <div class="cmd" data-name="ping rede">
+      ping 8.8.8.8
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Teste de conectividade</div>
+    </div>
 
-<div class="cmd" data-name="netstat porta conexão">
-netstat -tulnp
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Portas abertas</div>
-</div>
-
+  </div>
 </div>
 
 <!-- LOGS -->
-<div class="block" data-cat="log">
-<h2>📜 LOGS</h2>
+<div class="block">
+  <div class="block-header" onclick="toggle(this)">LOGS</div>
+  <div class="block-content">
 
-<div class="cmd" data-name="journalctl log erro">
-journalctl -xe
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Logs do sistema</div>
-</div>
+    <div class="cmd" data-name="journalctl log">
+      journalctl -xe
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Logs do sistema</div>
+    </div>
 
-<div class="cmd" data-name="tail log tempo real">
-tail -f /var/log/syslog
-<span class="copy" onclick="copy(this)">📋</span>
-<div class="desc">Acompanhar log ao vivo</div>
-</div>
+    <div class="cmd" data-name="tail log">
+      tail -f /var/log/syslog
+      <span class="copy" onclick="copy(this)">copiar</span>
+      <div class="desc">Log em tempo real</div>
+    </div>
 
+  </div>
 </div>
 
 </section>
 
 <footer>
-<p>© NOC - Marcos Renan</p>
+<p>© MARCOS RENAN</p>
 </footer>
 
 <script>
 
+/* ABRIR/FECHAR */
+function toggle(el) {
+  const content = el.nextElementSibling;
+  content.style.display = content.style.display === "block" ? "none" : "block";
+}
+
 /* COPIAR */
 function copy(el) {
-  const text = el.parentElement.innerText.replace("📋", "").trim();
+  const text = el.parentElement.childNodes[0].textContent.trim();
   navigator.clipboard.writeText(text);
-  el.innerText = "✔";
-  setTimeout(() => el.innerText = "📋", 1000);
+  el.innerText = "ok";
+  setTimeout(() => el.innerText = "copiar", 800);
 }
 
 /* BUSCA */
