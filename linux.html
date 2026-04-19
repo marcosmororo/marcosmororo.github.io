@@ -2,42 +2,73 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Linux - Comandos</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Linux - Troubleshooting</title>
+
 <link rel="stylesheet" href="css/style.css">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-.accordion {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
+
+/* BUSCA */
+.search-box {
+  max-width: 400px;
+  margin: 15px auto;
 }
 
-.accordion::after {
-  content: "▼";
-  transition: 0.3s;
+.search-box input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
 }
 
-.accordion.active::after {
-  transform: rotate(180deg);
+/* BLOCO */
+.block {
+  margin: 20px auto;
+  max-width: 900px;
 }
 
-.panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+.block h2 {
+  margin-bottom: 10px;
 }
 
-pre {
-  padding: 10px;
+/* COMANDO */
+.cmd {
+  position: relative;
+  background: rgba(0,0,0,0.4);
+  padding: 12px;
   border-radius: 8px;
-  background: var(--card-dark);
+  margin-bottom: 10px;
+  font-family: monospace;
+  font-size: 13px;
 }
 
-body.light pre {
-  background: var(--card-light);
+/* BOTÃO COPIAR */
+.copy {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.7;
 }
+
+.copy:hover {
+  opacity: 1;
+}
+
+/* DESCRIÇÃO */
+.desc {
+  font-size: 12px;
+  opacity: 0.7;
+  margin-top: 3px;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -46,61 +77,145 @@ body.light pre {
 
 <nav>
 <a href="index.html">Home</a>
-<a href="metodos.html">Métodos</a>
-<a href="organizacao.html">Organização</a>
-<a href="ferramentas.html">Ferramentas</a>
 <a href="infra.html">Infraestrutura</a>
-<a href="sobre.html">Sobre</a>
 <a href="contato.html">Contato</a>
 </nav>
 
 <section>
 
-<h1>🐧 Linux</h1>
-<a href="infra.html" class="back-btn">← Voltar</a>
+<h1>🐧 Linux - Troubleshooting</h1>
 
-<div class="card accordion">Monitoramento</div>
-<div class="panel"><pre>
+<div class="search-box">
+<input type="text" id="search" placeholder="Buscar comando...">
+</div>
+
+<!-- CPU -->
+<div class="block" data-cat="cpu">
+<h2>🧠 CPU / PROCESSOS</h2>
+
+<div class="cmd" data-name="top cpu processo uso">
 top
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Monitorar uso em tempo real</div>
+</div>
+
+<div class="cmd" data-name="htop cpu processo">
 htop
-uptime
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Versão melhorada do top</div>
+</div>
+
+<div class="cmd" data-name="ps aux processo">
+ps aux | grep processo
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Buscar processo específico</div>
+</div>
+
+</div>
+
+<!-- MEMORIA -->
+<div class="block" data-cat="mem">
+<h2>💾 MEMÓRIA</h2>
+
+<div class="cmd" data-name="free memoria ram">
 free -h
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Ver uso de memória</div>
+</div>
+
+</div>
+
+<!-- DISCO -->
+<div class="block" data-cat="disk">
+<h2>💽 DISCO</h2>
+
+<div class="cmd" data-name="df disco espaço">
 df -h
-</pre></div>
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Espaço em disco</div>
+</div>
 
-<div class="card accordion">Rede</div>
-<div class="panel"><pre>
-ip a
-ping 8.8.8.8
-ss -tulnp
-traceroute google.com
-</pre></div>
-
-<div class="card accordion">Arquivos</div>
-<div class="panel"><pre>
-ls -la
-cd /var/log
+<div class="cmd" data-name="du tamanho pasta">
 du -sh *
-rm -rf arquivo
-</pre></div>
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Tamanho de diretórios</div>
+</div>
+
+</div>
+
+<!-- REDE -->
+<div class="block" data-cat="net">
+<h2>🌐 REDE</h2>
+
+<div class="cmd" data-name="ip a rede interface">
+ip a
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Ver interfaces</div>
+</div>
+
+<div class="cmd" data-name="ping teste rede">
+ping 8.8.8.8
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Teste de conectividade</div>
+</div>
+
+<div class="cmd" data-name="netstat porta conexão">
+netstat -tulnp
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Portas abertas</div>
+</div>
+
+</div>
+
+<!-- LOGS -->
+<div class="block" data-cat="log">
+<h2>📜 LOGS</h2>
+
+<div class="cmd" data-name="journalctl log erro">
+journalctl -xe
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Logs do sistema</div>
+</div>
+
+<div class="cmd" data-name="tail log tempo real">
+tail -f /var/log/syslog
+<span class="copy" onclick="copy(this)">📋</span>
+<div class="desc">Acompanhar log ao vivo</div>
+</div>
+
+</div>
 
 </section>
 
 <footer>
-<p>© 2026 - Marcos Renan</p>
+<p>© NOC - Marcos Renan</p>
 </footer>
 
-<script src="js/script.js"></script>
-
 <script>
-document.querySelectorAll(".accordion").forEach(btn => {
-  btn.addEventListener("click", () => {
-    btn.classList.toggle("active");
-    let panel = btn.nextElementSibling;
-    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+
+/* COPIAR */
+function copy(el) {
+  const text = el.parentElement.innerText.replace("📋", "").trim();
+  navigator.clipboard.writeText(text);
+  el.innerText = "✔";
+  setTimeout(() => el.innerText = "📋", 1000);
+}
+
+/* BUSCA */
+const search = document.getElementById("search");
+const cmds = document.querySelectorAll(".cmd");
+
+search.addEventListener("keyup", () => {
+  const v = search.value.toLowerCase();
+
+  cmds.forEach(c => {
+    c.style.display = c.dataset.name.includes(v) ? "block" : "none";
   });
 });
+
 </script>
+
+<script src="js/script.js"></script>
 
 </body>
 </html>
