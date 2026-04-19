@@ -4,97 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Infraestrutura & Troubleshooting</title>
+<title>Infraestrutura</title>
 
 <link rel="stylesheet" href="css/style.css">
-
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
-/* LINK */
+/* GRID MODERNO */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+/* CARD */
 .card-link {
   text-decoration: none;
   color: inherit;
-  display: block;
 }
 
-/* GRID MAIS COMPACTO */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 15px;
-}
-
-/* CARD MENOR */
-.card-link .card {
+.card {
   padding: 18px;
-  border-radius: 10px;
-  text-align: center;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   transition: 0.25s;
-  position: relative;
+  font-weight: 500;
 }
 
 /* HOVER */
-.card-link .card:hover {
+.card:hover {
   transform: translateY(-4px);
+  opacity: 0.9;
 }
 
 /* ÍCONE */
 .card i {
-  margin-bottom: 8px;
+  font-size: 18px;
 }
 
-/* TAG */
-.tag {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  font-size: 10px;
-  padding: 3px 6px;
-  border-radius: 5px;
-  background: rgba(255,255,255,0.1);
-}
-
-/* PRIORIDADE */
-.priority {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  font-size: 10px;
-  padding: 3px 6px;
-  border-radius: 5px;
-}
-
-.low { background: #334155; }
-.medium { background: #ca8a04; }
-.high { background: #dc2626; }
+/* CORES POR CATEGORIA (igual estilo imagem) */
+.linux   { background: #2f3e46; }
+.rede    { background: #1d3557; }
+.olt     { background: #6b2c2c; }
 
 /* TEXTO */
-.card h3 {
-  margin: 8px 0 4px;
+.card span {
   font-size: 15px;
 }
 
-.card p {
-  font-size: 12px;
-  opacity: 0.8;
+/* HEADER */
+.section-header {
+  text-align: center;
+  margin-top: 20px;
 }
 
-/* BUSCA */
-.search-box {
-  max-width: 350px;
-  margin: 15px auto;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: none;
+.section-header p {
+  opacity: 0.7;
+  font-size: 14px;
 }
 
 </style>
@@ -117,51 +88,34 @@
 
 <section>
 
+<div class="section-header">
 <h1>🖥️ Infraestrutura & Troubleshooting</h1>
-
-<div class="card">
-<p>
-Acesse rapidamente comandos e troubleshooting por tecnologia.
-</p>
+<p>Acesso rápido por tecnologia</p>
 </div>
 
-<!-- BUSCA -->
-<div class="search-box">
-<input type="text" id="search" placeholder="🔎 Buscar...">
-</div>
-
-<div class="grid" id="cards">
+<div class="grid">
 
 <!-- LINUX -->
-<a href="linux.html" class="card-link" data-name="linux servidor comandos logs cpu memoria">
-  <div class="card">
-    <span class="tag">Linux</span>
-    <span class="priority low">O.S</span>
-    <i class="fab fa-linux fa-lg"></i>
-    <h3>Linux</h3>
-    <p>Logs, CPU, memória.</p>
+<a href="linux.html" class="card-link">
+  <div class="card linux">
+    <i class="fab fa-linux"></i>
+    <span>Linux</span>
   </div>
 </a>
 
-<!-- REDES -->
-<a href="redes.html" class="card-link" data-name="rede vlan bgp ospf switch roteador">
-  <div class="card">
-    <span class="tag">Rede</span>
-    <span class="priority medium">CORE/EDGE</span>
-    <i class="fas fa-network-wired fa-lg"></i>
-    <h3>Rede</h3>
-    <p>VLAN, rotas, protocolos.</p>
+<!-- REDE -->
+<a href="redes.html" class="card-link">
+  <div class="card rede">
+    <i class="fas fa-network-wired"></i>
+    <span>Roteadores & Switches</span>
   </div>
 </a>
 
 <!-- OLT -->
-<a href="olts.html" class="card-link" data-name="olt gpon onu fibra ftth sinal potencia">
-  <div class="card">
-    <span class="tag">OLT</span>
-    <span class="priority high">ACCESS</span>
-    <i class="fas fa-server fa-lg"></i>
-    <h3>OLT</h3>
-    <p>ONU, potência, GPON.</p>
+<a href="olts.html" class="card-link">
+  <div class="card olt">
+    <i class="fas fa-server"></i>
+    <span>OLTs / GPON</span>
   </div>
 </a>
 
@@ -172,23 +126,6 @@ Acesse rapidamente comandos e troubleshooting por tecnologia.
 <footer>
 <p>Todos os direitos reservados © MARCOS RENAN</p>
 </footer>
-
-<script>
-
-/* BUSCA SEM QUEBRAR LINKS */
-const search = document.getElementById('search');
-const cards = document.querySelectorAll('.card-link');
-
-search.addEventListener('keyup', () => {
-  const value = search.value.toLowerCase();
-
-  cards.forEach(card => {
-    const text = card.dataset.name;
-    card.style.display = text.includes(value) ? "block" : "none";
-  });
-});
-
-</script>
 
 <script src="js/script.js"></script>
 
