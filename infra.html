@@ -25,6 +25,10 @@
   text-decoration: none;
   color: inherit;
 }
+.card {
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
 
 .card {
   padding: 18px;
@@ -48,10 +52,15 @@
 }
 
 /* CORES POR CATEGORIA (igual estilo imagem) */
-.linux   { background: #2f3e46; }
-.rede    { background: #1d3557; }
-.olt     { background: #6b2c2c; }
-
+.linux   { background: #2f3e46; }   /* cinza azulado */
+.rede    { background: #2c4f7c; }   /* azul médio */
+.olt     { background: #7a2e2e; }   /* vermelho escuro */
+.diag    { background: #3a3f45; }   /* cinza técnico */
+.monitor { background: #2f5d50; }   /* verde monitoramento */
+.auto    { background: #4b3b75; }   /* roxo automação */
+.sec     { background: #6b2c2c; }   /* vermelho segurança */
+.logs    { background: #4a5568; }   /* cinza logs */
+.cloud   { background: #355c7d; }   /* azul cloud */
 /* TEXTO */
 .card span {
   font-size: 15px;
