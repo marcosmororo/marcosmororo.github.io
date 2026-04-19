@@ -2,34 +2,88 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Infraestrutura & Troubleshooting</title>
+
 <link rel="stylesheet" href="css/style.css">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
 
-<!-- Ícones -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-/* REMOVE aparência de link */
+
+/* LINK */
 .card-link {
   text-decoration: none;
   color: inherit;
   display: block;
 }
 
-/* efeito ao passar o mouse */
-.card-link .card {
-  transition: 0.3s;
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
 }
 
-.card-link .card:hover {
-  transform: translateY(-5px);
-  cursor: pointer;
+/* CARD */
+.card-link .card {
+  text-align: center;
+  padding: 25px;
+  border-radius: 12px;
+  transition: 0.3s;
+  position: relative;
 }
+
+/* HOVER */
+.card-link .card:hover {
+  transform: translateY(-6px);
+}
+
+/* ÍCONE */
+.card i {
+  margin-bottom: 10px;
+}
+
+/* TAG */
+.tag {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+}
+
+/* BUSCA */
+.search-box {
+  margin: 20px auto;
+  max-width: 400px;
+  display: flex;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+/* TEXTO */
+.card h3 {
+  margin: 10px 0 5px;
+}
+
+.card p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
 </style>
 
 </head>
@@ -54,37 +108,45 @@
 
 <div class="card">
 <p>
-Acesse conteúdos organizados com comandos, configurações e troubleshooting 
-para facilitar o dia a dia em redes e sistemas.
+Encontre rapidamente comandos, diagnósticos e soluções para redes, sistemas e equipamentos.
+Use a busca para agilizar seu troubleshooting.
 </p>
 </div>
 
-<div class="grid">
+<!-- BUSCA -->
+<div class="search-box">
+<input type="text" id="search" placeholder="🔎 Buscar (ex: OLT, Linux, VLAN...)">
+</div>
+
+<div class="grid" id="cards">
 
 <!-- LINUX -->
-<a href="linux.html" class="card-link">
+<a href="linux.html" class="card-link" data-name="linux comandos servidor troubleshooting">
   <div class="card">
+    <span class="tag">Linux</span>
     <i class="fab fa-linux fa-2x"></i>
     <h3>Linux</h3>
-    <p>Comandos essenciais, administração e resolução de problemas.</p>
+    <p>Comandos, processos, logs e diagnóstico de servidores.</p>
   </div>
 </a>
 
-<!-- ROTEADORES E SWITCHES -->
-<a href="redes.html" class="card-link">
+<!-- REDES -->
+<a href="redes.html" class="card-link" data-name="rede switch roteador vlan bgp ospf troubleshooting">
   <div class="card">
+    <span class="tag">Rede</span>
     <i class="fas fa-network-wired fa-2x"></i>
-    <h3>Roteadores e Switchs</h3>
-    <p>Configurações, troubleshooting e boas práticas em redes.</p>
+    <h3>Roteadores & Switches</h3>
+    <p>Configurações, VLAN, rotas e troubleshooting.</p>
   </div>
 </a>
 
-<!-- OLTS -->
-<a href="olts.html" class="card-link">
+<!-- OLT -->
+<a href="olts.html" class="card-link" data-name="olt gpon onu fibra ftth troubleshooting">
   <div class="card">
+    <span class="tag">FTTH</span>
     <i class="fas fa-server fa-2x"></i>
     <h3>OLTs</h3>
-    <p>Comandos, provisionamento e diagnóstico em redes FTTH.</p>
+    <p>Provisionamento, ONU, potência e diagnóstico GPON.</p>
   </div>
 </a>
 
@@ -95,6 +157,23 @@ para facilitar o dia a dia em redes e sistemas.
 <footer>
 <p>Todos os direitos reservados © MARCOS RENAN</p>
 </footer>
+
+<script>
+
+/* BUSCA INTELIGENTE */
+const search = document.getElementById('search');
+const cards = document.querySelectorAll('.card-link');
+
+search.addEventListener('keyup', () => {
+  const value = search.value.toLowerCase();
+
+  cards.forEach(card => {
+    const text = card.dataset.name;
+    card.style.display = text.includes(value) ? "block" : "none";
+  });
+});
+
+</script>
 
 <script src="js/script.js"></script>
 
