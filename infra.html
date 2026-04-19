@@ -4,103 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOC - Troubleshooting</title>
+<title>Infraestrutura & Troubleshooting</title>
 
 <link rel="stylesheet" href="css/style.css">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
-/* GRID */
+/* LINK */
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* GRID MAIS COMPACTO */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
 }
 
-/* CARD */
-.card {
-  position: relative;
-  padding: 25px;
-  border-radius: 12px;
+/* CARD MENOR */
+.card-link .card {
+  padding: 18px;
+  border-radius: 10px;
   text-align: center;
-  transition: 0.3s;
+  transition: 0.25s;
+  position: relative;
 }
 
-.card:hover {
-  transform: translateY(-6px);
+/* HOVER */
+.card-link .card:hover {
+  transform: translateY(-4px);
+}
+
+/* ÍCONE */
+.card i {
+  margin-bottom: 8px;
 }
 
 /* TAG */
 .tag {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
+  top: 8px;
+  left: 8px;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 5px;
   background: rgba(255,255,255,0.1);
 }
 
 /* PRIORIDADE */
 .priority {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 5px;
 }
 
 .low { background: #334155; }
 .medium { background: #ca8a04; }
 .high { background: #dc2626; }
 
-/* FAVORITO */
-.star {
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  cursor: pointer;
-  opacity: 0.5;
+/* TEXTO */
+.card h3 {
+  margin: 8px 0 4px;
+  font-size: 15px;
 }
 
-.star.active {
-  color: gold;
-  opacity: 1;
+.card p {
+  font-size: 12px;
+  opacity: 0.8;
 }
 
 /* BUSCA */
 .search-box {
-  max-width: 400px;
-  margin: 20px auto;
+  max-width: 350px;
+  margin: 15px auto;
 }
 
 .search-box input {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
-/* FILTROS */
-.filters {
-  text-align: center;
-  margin-bottom: 15px;
-}
-
-.filters button {
-  margin: 5px;
-  padding: 6px 12px;
+  padding: 8px;
   border-radius: 6px;
   border: none;
-  cursor: pointer;
-}
-
-.filters button.active {
-  background: #38bdf8;
-  color: white;
 }
 
 </style>
@@ -113,100 +107,86 @@
 
 <nav>
 <a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
 <a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
 <a href="contato.html">Contato</a>
 </nav>
 
 <section>
 
-<h1>🖥️ NOC - Troubleshooting</h1>
+<h1>🖥️ Infraestrutura & Troubleshooting</h1>
 
-<div class="search-box">
-<input type="text" id="search" placeholder="Buscar comando ou tecnologia...">
+<div class="card">
+<p>
+Acesse rapidamente comandos e troubleshooting por tecnologia.
+</p>
 </div>
 
-<div class="filters">
-<button onclick="filter('all')" class="active">Todos</button>
-<button onclick="filter('linux')">Linux</button>
-<button onclick="filter('rede')">Rede</button>
-<button onclick="filter('olt')">OLT</button>
-<button onclick="showFavorites()">⭐ Favoritos</button>
+<!-- BUSCA -->
+<div class="search-box">
+<input type="text" id="search" placeholder="🔎 Buscar...">
 </div>
 
 <div class="grid" id="cards">
 
 <!-- LINUX -->
-<div class="card" data-cat="linux" data-name="linux logs cpu memoria processo">
-<span class="tag">Linux</span>
-<span class="priority low">Rápido</span>
-<i class="fab fa-linux fa-2x"></i>
-<h3>Linux</h3>
-<p>Logs, CPU, memória, processos.</p>
-<i class="fas fa-star star" onclick="fav(this)"></i>
-</div>
+<a href="linux.html" class="card-link" data-name="linux servidor comandos logs cpu memoria">
+  <div class="card">
+    <span class="tag">Linux</span>
+    <span class="priority low">Rápido</span>
+    <i class="fab fa-linux fa-lg"></i>
+    <h3>Linux</h3>
+    <p>Logs, CPU, memória.</p>
+  </div>
+</a>
 
-<!-- REDE -->
-<div class="card" data-cat="rede" data-name="vlan bgp ospf rota switch">
-<span class="tag">Rede</span>
-<span class="priority medium">Importante</span>
-<i class="fas fa-network-wired fa-2x"></i>
-<h3>Switch/Roteador</h3>
-<p>VLAN, rotas, protocolos.</p>
-<i class="fas fa-star star" onclick="fav(this)"></i>
-</div>
+<!-- REDES -->
+<a href="redes.html" class="card-link" data-name="rede vlan bgp ospf switch roteador">
+  <div class="card">
+    <span class="tag">Rede</span>
+    <span class="priority medium">Importante</span>
+    <i class="fas fa-network-wired fa-lg"></i>
+    <h3>Rede</h3>
+    <p>VLAN, rotas, protocolos.</p>
+  </div>
+</a>
 
 <!-- OLT -->
-<div class="card" data-cat="olt" data-name="gpon onu sinal potencia fibra">
-<span class="tag">OLT</span>
-<span class="priority high">Crítico</span>
-<i class="fas fa-server fa-2x"></i>
-<h3>OLT</h3>
-<p>ONU, potência, diagnóstico GPON.</p>
-<i class="fas fa-star star" onclick="fav(this)"></i>
-</div>
+<a href="olts.html" class="card-link" data-name="olt gpon onu fibra ftth sinal potencia">
+  <div class="card">
+    <span class="tag">OLT</span>
+    <span class="priority high">Crítico</span>
+    <i class="fas fa-server fa-lg"></i>
+    <h3>OLT</h3>
+    <p>ONU, potência, GPON.</p>
+  </div>
+</a>
 
 </div>
 
 </section>
 
 <footer>
-<p>© NOC - Marcos Renan</p>
+<p>Todos os direitos reservados © MARCOS RENAN</p>
 </footer>
 
 <script>
 
-const cards = document.querySelectorAll(".card");
+/* BUSCA SEM QUEBRAR LINKS */
+const search = document.getElementById('search');
+const cards = document.querySelectorAll('.card-link');
 
-/* BUSCA */
-document.getElementById("search").addEventListener("keyup", function() {
-  const v = this.value.toLowerCase();
-  cards.forEach(c => {
-    c.style.display = c.dataset.name.includes(v) ? "block" : "none";
+search.addEventListener('keyup', () => {
+  const value = search.value.toLowerCase();
+
+  cards.forEach(card => {
+    const text = card.dataset.name;
+    card.style.display = text.includes(value) ? "block" : "none";
   });
 });
-
-/* FILTRO */
-function filter(cat) {
-  document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
-  event.target.classList.add("active");
-
-  cards.forEach(c => {
-    c.style.display = (cat === "all" || c.dataset.cat === cat) ? "block" : "none";
-  });
-}
-
-/* FAVORITOS */
-function fav(el) {
-  el.classList.toggle("active");
-}
-
-/* MOSTRAR FAVORITOS */
-function showFavorites() {
-  cards.forEach(c => {
-    const star = c.querySelector(".star");
-    c.style.display = star.classList.contains("active") ? "block" : "none";
-  });
-}
 
 </script>
 
