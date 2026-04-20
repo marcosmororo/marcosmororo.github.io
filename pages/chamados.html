@@ -3,284 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Chamados NOC - High Performance</title>
+    <title>NOC - Documentação e Escalonamento 2026</title>
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
+            --bg: #020617;
+            --card: #1e293b;
             --primary: #38bdf8;
+            --accent: #0ea5e9;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --success: #22c55e;
+            --text: #f1f5f9;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
             padding: 20px;
         }
 
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
+        .container { max-width: 1100px; margin: auto; }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 20px;
+            border-bottom: 2px solid var(--card);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
-        .form-group {
-            background: var(--card-bg);
+        /* Formulário de Documentação */
+        .doc-form {
+            background: var(--card);
             padding: 20px;
             border-radius: 12px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
 
-        input, select, button {
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2);
+        .form-group { display: flex; flex-direction: column; }
+        label { font-size: 12px; margin-bottom: 5px; color: var(--primary); font-weight: bold; }
+
+        input, select, textarea {
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            background: #0f172a;
             color: white;
-            font-size: 14px;
         }
 
-        button {
+        button.add-btn {
             background: var(--primary);
-            color: #000;
+            color: #020617;
+            border: none;
             font-weight: bold;
             cursor: pointer;
-            border: none;
-            transition: transform 0.1s;
+            height: 40px;
+            margin-top: auto;
+            border-radius: 6px;
         }
 
-        button:active { transform: scale(0.98); }
-
-        .lista { display: grid; gap: 15px; }
-
-        .chamado {
-            background: var(--card-bg);
-            padding: 20px;
+        /* Cards de Monitoramento */
+        .chamado-card {
+            background: var(--card);
             border-radius: 12px;
-            border-left: 6px solid var(--success);
-            transition: all 0.3s;
-            position: relative;
-        }
-
-        .chamado.proximo { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
-        .chamado.atrasado { 
-            border-left-color: var(--danger); 
-            background: rgba(239, 68, 68, 0.1);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-
-        .info-grid {
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 8px solid var(--accent);
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr 300px;
             gap: 20px;
         }
 
-        .escalation-box {
-            background: rgba(0,0,0,0.3);
+        .info-section h3 { margin: 0 0 10px 0; color: var(--primary); }
+        .meta-info { font-size: 13px; opacity: 0.8; line-height: 1.6; }
+
+        .escalation-tracker {
+            background: #0f172a;
             padding: 15px;
             border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .step {
             font-size: 13px;
+            padding: 8px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            opacity: 0.4;
+            transition: all 0.3s;
         }
 
-        .contato-item {
-            padding: 4px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .timer {
-            font-family: monospace;
-            font-size: 1.2em;
+        .step.active {
+            opacity: 1;
+            background: rgba(56, 189, 248, 0.2);
+            border-left: 4px solid var(--primary);
             font-weight: bold;
-            color: var(--primary);
         }
 
-        .btn-remove {
-            background: var(--danger);
-            color: white;
+        .step.past { opacity: 0.7; text-decoration: line-through; color: #94a3b8; }
+
+        .timer-badge {
+            background: var(--primary);
+            color: #020617;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 16px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
             margin-top: 15px;
         }
+
+        .delete-btn:hover { background: var(--danger); color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>📋 Chamados NOC</h1>
-        <div id="relogio-geral"></div>
+        <h1>📑 Documentação de Incidentes NOC</h1>
+        <div id="clock" style="font-family: monospace; font-size: 20px;"></div>
     </div>
 
-    <div class="form-group">
-        <input type="text" id="titulo" placeholder="ID Chamado">
-        <input type="text" id="descricao" placeholder="Descrição rápida">
-        <input type="text" id="filho" placeholder="Chamado Filho">
-        <input type="time" id="hora">
-        <select id="tipo">
-            <option value="externa">Rede Externa</option>
-            <option value="interna">Rede Interna</option>
-        </select>
-        <button onclick="addChamado()">+ Abrir Chamado</button>
+    <div class="doc-form">
+        <div class="form-group">
+            <label>ID / Título</label>
+            <input type="text" id="titulo" placeholder="Ex: Queda Fibra Crateús">
+        </div>
+        <div class="form-group">
+            <label>Data Início</label>
+            <input type="date" id="data_inicio">
+        </div>
+        <div class="form-group">
+            <label>Hora Início</label>
+            <input type="time" id="hora_inicio">
+        </div>
+        <div class="form-group">
+            <label>Tipo de Rede</label>
+            <select id="tipo">
+                <option value="externa">Rede Externa</option>
+                <option value="interna">Rede Interna</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Chamado Filho</label>
+            <input type="text" id="filho" placeholder="Opcional">
+        </div>
+        <button class="add-btn" onclick="adicionarRegistro()">Registrar e Monitorar</button>
     </div>
 
-    <div class="lista" id="lista"></div>
+    <div id="lista-chamados"></div>
 </div>
 
 <script>
-    // Configuração de Áudio
-    const audioAlerta = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-    
-    let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
-
-    const escala = {
+    // Banco de contatos oficial conforme solicitado
+    const contatos = {
         externa: [
-            {min:4, nome:"Erivelton Rodrigues (88) 9 9828-3311"},
-            {min:8, nome:"Guilherme Silva (88) 9 9928-2323"},
-            {min:10, nome:"Valmir (88) 9 9828-7071"},
-            {min:12, nome:"Fernando (88) 9 9440-1255"}
+            { min: 0, nome: "Abertura do Incidente" },
+            { min: 4, nome: "Nível 1: Erivelton Rodrigues" },
+            { min: 8, nome: "Nível 2: Guilherme Silva" },
+            { min: 10, nome: "Nível 3: Valmir (Coordenação)" },
+            { min: 12, nome: "Nível 4: Fernando (Gerência)" }
         ],
         interna: [
-            {min:4, nome:"Joao Martins (88) 9 9828-3337"},
-            {min:8, nome:"Wescley (88) 9 9486-6085"},
-            {min:10, nome:"Valmir (88) 9 9828-7071"},
-            {min:12, nome:"Fernando (88) 9 9440-1255"}
+            { min: 0, nome: "Abertura do Incidente" },
+            { min: 4, nome: "Nível 1: Joao Martins" },
+            { min: 8, nome: "Nível 2: Wescley" },
+            { min: 10, nome: "Nível 3: Valmir (Coordenação)" },
+            { min: 12, nome: "Nível 4: Fernando (Gerência)" }
         ]
     };
 
-    function salvar() {
-        localStorage.setItem("chamados", JSON.stringify(chamados));
-    }
+    let registros = JSON.parse(localStorage.getItem("noc_documentacao_2026")) || [];
 
-    function addChamado() {
+    // Setar data de hoje por padrão no input
+    document.getElementById('data_inicio').valueAsDate = new Date();
+
+    function adicionarRegistro() {
         const titulo = document.getElementById("titulo").value;
-        const descricao = document.getElementById("descricao").value;
-        const filho = document.getElementById("filho").value;
-        const hora = document.getElementById("hora").value;
+        const data = document.getElementById("data_inicio").value;
+        const hora = document.getElementById("hora_inicio").value;
         const tipo = document.getElementById("tipo").value;
+        const filho = document.getElementById("filho").value;
 
-        if (!titulo || !hora) {
-            alert("Preencha o ID do Chamado e a Hora do SLA.");
-            return;
-        }
+        if (!titulo || !data || !hora) return alert("Preencha título, data e hora.");
 
-        chamados.push({ 
-            titulo, 
-            descricao, 
-            filho, 
-            hora, 
-            tipo, 
-            alertaTocado: false 
+        const inicio = new Date(`${data}T${hora}`);
+        
+        registros.push({
+            id: Date.now(),
+            titulo,
+            inicio: inicio.getTime(),
+            tipo,
+            filho,
+            alertaSla: false
         });
 
-        document.getElementById("titulo").value = "";
-        document.getElementById("descricao").value = "";
-        document.getElementById("filho").value = "";
-        
-        salvar();
+        localStorage.setItem("noc_documentacao_2026", JSON.stringify(registros));
         render();
     }
 
-    function remover(i) {
-        chamados.splice(i,1);
-        salvar();
+    function excluir(id) {
+        registros = registros.filter(r => r.id !== id);
+        localStorage.setItem("noc_documentacao_2026", JSON.stringify(registros));
         render();
-    }
-
-    function getEscalacao(tipo, diff) {
-        let lista = escala[tipo];
-        // Retorna contatos baseado no tempo que já passou do SLA
-        // Regra: SLA total é 15 min. diff é quanto falta.
-        // Se diff é 11 (faltam 11 min), passaram 4 min -> Mostra nível 1.
-        return lista.filter(e => diff <= (15 - e.min));
-    }
-
-    function formatTime(ms) {
-        const totalSegundos = Math.floor(Math.abs(ms) / 1000);
-        const h = Math.floor(totalSegundos / 3600);
-        const m = Math.floor((totalSegundos % 3600) / 60);
-        const s = totalSegundos % 60;
-        const sinal = ms < 0 ? "-" : "";
-        return `${sinal}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
 
     function render() {
-        const lista = document.getElementById("lista");
-        const agora = new Date();
-        
-        lista.innerHTML = "";
+        const container = document.getElementById("lista-chamados");
+        const agora = new Date().getTime();
+        container.innerHTML = "";
 
-        chamados.forEach((c, i) => {
-            const [h, m] = c.hora.split(":");
-            const dataLimite = new Date();
-            dataLimite.setHours(h, m, 0);
+        registros.forEach(reg => {
+            const decorridoMs = agora - reg.inicio;
+            const decorridoMin = Math.floor(decorridoMs / 60000);
+            
+            const card = document.createElement("div");
+            card.className = "chamado-card";
 
-            const diffMs = dataLimite - agora;
-            const diffMin = diffMs / 60000;
-
-            const div = document.createElement("div");
-            div.className = "chamado";
-
-            if (diffMin < 0) {
-                div.classList.add("atrasado");
-                // Dispara Alerta Sonoro
-                if (!c.alertaTocado) {
-                    audioAlerta.play().catch(() => console.log("Interaja com a página para habilitar som"));
-                    c.alertaTocado = true;
-                    salvar();
+            // Lógica de contatos
+            const listaContatos = contatos[reg.tipo];
+            let htmlEscalation = "";
+            
+            listaContatos.forEach(c => {
+                let statusClass = "";
+                if (decorridoMin >= c.min) {
+                    // Verifica se é o nível atual (o maior min que já passou)
+                    const proximo = listaContatos.find(p => p.min > c.min);
+                    if (!proximo || decorridoMin < proximo.min) {
+                        statusClass = "active";
+                    } else {
+                        statusClass = "past";
+                    }
                 }
-            } else if (diffMin < 15) {
-                div.classList.add("proximo");
-            }
+                htmlEscalation += `<div class="step ${statusClass}">${c.min}min - ${c.nome}</div>`;
+            });
 
-            const contatos = getEscalacao(c.tipo, diffMin);
+            const dataFormatada = new Date(reg.inicio).toLocaleString('pt-BR');
 
-            div.innerHTML = `
-                <div class="info-grid">
-                    <div>
-                        <div style="font-size: 1.2em; margin-bottom: 5px;"><strong>#${c.titulo}</strong></div>
-                        <div style="opacity: 0.8; margin-bottom: 10px;">${c.descricao || "Sem descrição"}</div>
-                        <div style="font-size: 0.9em;">
-                            🔗 Filho: ${c.filho || "N/A"} | 🌐 ${c.tipo.toUpperCase()}
-                        </div>
+            card.innerHTML = `
+                <div class="info-section">
+                    <h3>${reg.titulo}</h3>
+                    <div class="meta-info">
+                        <strong>Início:</strong> ${dataFormatada}<br>
+                        <strong>Tipo:</strong> Rede ${reg.tipo.charAt(0).toUpperCase() + reg.tipo.slice(1)}<br>
+                        <strong>Filho:</strong> ${reg.filho || "Nenhum"}<br>
+                        <strong>Tempo Decorrido:</strong> <span class="timer-badge">${formatarTempo(decorridoMs)}</span>
                     </div>
-                    <div style="text-align: right;">
-                        <div class="timer">${formatTime(diffMs)}</div>
-                        <div style="font-size: 0.8em; opacity: 0.6;">Meta: ${c.hora}</div>
-                    </div>
+                    <button class="delete-btn" onclick="excluir(${reg.id})">Encerrar Documentação</button>
                 </div>
-
-                <div class="escalation-box" style="margin-top: 15px;">
-                    <strong>📞 Contatos para Escalonamento:</strong><br>
-                    ${contatos.length ? contatos.map(ct => `<div class="contato-item">${ct.nome}</div>`).join("") : "<span style='opacity:0.5'>Aguardando tempo de escala...</span>"}
+                <div class="escalation-tracker">
+                    <label>Régua de Acionamento:</label>
+                    ${htmlEscalation}
                 </div>
-
-                <button class="btn-remove" onclick="remover(${i})">Finalizar Chamado</button>
             `;
-            lista.appendChild(div);
+            container.appendChild(card);
         });
     }
 
-    // Atualiza a cada 1 segundo para o cronômetro ficar fluido
-    setInterval(render, 1000);
+    function formatarTempo(ms) {
+        const totalSegundos = Math.floor(ms / 1000);
+        const h = Math.floor(totalSegundos / 3600);
+        const m = Math.floor((totalSegundos % 3600) / 60);
+        const s = totalSegundos % 60;
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    // Relógio e Update
+    setInterval(() => {
+        document.getElementById("clock").innerText = new Date().toLocaleTimeString('pt-BR');
+        render();
+    }, 1000);
+
     render();
 </script>
 
