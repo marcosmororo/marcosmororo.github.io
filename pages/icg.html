@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>ICG - Dashboard</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: #fff;
+    text-align: center;
+    padding: 40px;
+}
+
+h1 {
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: #1e293b;
+    padding: 30px;
+    border-radius: 12px;
+    width: 200px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card:hover {
+    background: #334155;
+    transform: scale(1.05);
+}
+</style>
+</head>
+
+<body>
+
+<h1>Dashboard ICG</h1>
+
+<div class="menu">
+    <div class="card" onclick="abrir('cdn.html')">CDN</div>
+    <div class="card" onclick="abrir('linkip.html')">Link IP</div>
+    <div class="card" onclick="abrir('pttepni.html')">PTT e PNI</div>
+</div>
+
+<script>
+function abrir(pagina) {
+    window.location.href = pagina;
+}
+</script>
+
+</body>
+</html>
