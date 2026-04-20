@@ -3,128 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation Pro - Compact</title>
+    <title>NOC Escalation Pro - Ultra Edition</title>
 
     <style>
         :root {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --header: #334155;
-            --primary: #38bdf8;
+            --bg: #0b0f1a;
+            --card: #161e2d;
+            --header: #242f41;
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14, 165, 233, 0.3);
             --ok: #10b981;
             --warn: #f59e0b;
             --danger: #ef4444;
-            --text-main: #f8fafc;
+            --text-main: #f1f5f9;
             --text-dim: #94a3b8;
             --alert: #fbbf24;
         }
 
-        * { box-sizing: border-box; transition: background 0.2s ease; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 10px; }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; }
         .container { max-width: 100%; margin: auto; }
 
-        /* Header Compacto */
+        /* Header Profissional */
         .page-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px; border-bottom: 1px solid var(--header); padding-bottom: 5px;
+            margin-bottom: 20px; padding: 0 5px;
         }
-        #page-clock { font-family: monospace; font-size: 1.2rem; color: var(--primary); font-weight: bold; }
+        .logo-area h2 { margin: 0; font-size: 1.4rem; letter-spacing: -0.5px; background: linear-gradient(90deg, #0ea5e9, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #page-clock { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-dim); background: var(--header); padding: 4px 12px; border-radius: 6px; }
 
-        /* Formulario Super Compacto */
-        .form-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px; background: var(--card); padding: 12px; border-radius: 8px;
-            margin-bottom: 15px; border: 1px solid var(--header);
+        /* FORMULÁRIO TOP (DASHBOARD STYLE) */
+        .admin-panel {
+            background: var(--card); border: 1px solid var(--header); border-radius: 12px;
+            padding: 20px; margin-bottom: 25px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
-        .form-group { display: flex; flex-direction: column; gap: 2px; }
-        label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: bold; }
-        input, select, textarea { background: var(--bg); border: 1px solid var(--header); color: white; padding: 6px 10px; border-radius: 4px; font-size: 13px; }
-        textarea { grid-column: span 2; height: 38px; }
-
-        button { padding: 8px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 10px; }
-        .btn-add { background: var(--primary); color: var(--bg); grid-column: -1; height: 38px; align-self: flex-end; }
-        .btn-finish { background: var(--ok); color: white; width: 100%; margin-top: 8px; height: 28px; }
-
-        /* Tabs */
-        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
-        .tabs button { background: var(--card); color: var(--text-dim); padding: 8px 15px; font-size: 11px; }
-        .tabs button.active { background: var(--primary); color: var(--bg); }
-
-        /* GRID DE CARDS - AQUI ESTÁ O SEGREDO */
-        .grid-cards { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 12px; 
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        
+        label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        
+        input, select, textarea { 
+            background: #0f172a; border: 1px solid var(--header); color: white; 
+            padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none;
         }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+        
+        textarea { grid-column: span 2; height: 42px; resize: none; }
+
+        .btn-add { 
+            background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%); 
+            color: white; border: none; border-radius: 8px; cursor: pointer;
+            font-weight: 700; text-transform: uppercase; font-size: 12px;
+            height: 42px; align-self: flex-end; width: 100%;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.4); }
+
+        /* Tabs Profissionais */
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tabs button { 
+            background: transparent; color: var(--text-dim); padding: 10px 20px; 
+            border: 1px solid var(--header); border-radius: 8px; font-size: 12px; font-weight: 600;
+        }
+        .tabs button.active { background: var(--header); color: var(--primary); border-color: var(--primary); }
+
+        /* Grid de Cards */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
 
         .card {
-            background: var(--card); padding: 12px; border-radius: 8px;
-            border-top: 4px solid var(--ok); box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column; gap: 6px; position: relative;
+            background: var(--card); border: 1px solid var(--header); border-radius: 12px;
+            padding: 15px; border-left: 4px solid var(--ok); position: relative;
         }
-        .card.warn { border-top-color: var(--warn); }
-        .card.danger { border-top-color: var(--danger); }
-        .card.finalizado { border-top-color: var(--header); opacity: 0.8; }
+        .card.warn { border-left-color: var(--warn); }
+        .card.danger { border-left-color: var(--danger); }
+        .card.finalizado { opacity: 0.7; grayscale: 0.5; }
 
-        .datetime-badge { font-size: 0.65rem; color: var(--primary); font-weight: bold; }
-
-        .timer-box { 
-            background: #0f172a; padding: 6px; border-radius: 4px; text-align: center;
-            border: 1px solid var(--header);
-        }
-        .timer-val { font-family: monospace; color: var(--alert); font-size: 1.2rem; font-weight: bold; }
+        .timer-box { background: #0b0f1a; border-radius: 8px; padding: 10px; text-align: center; margin: 10px 0; border: 1px solid var(--header); }
+        .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--alert); font-weight: bold; }
 
         .step {
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(15, 23, 42, 0.6); padding: 6px 8px; margin: 2px 0;
-            border-radius: 4px; font-size: 0.75rem; border: 1px solid transparent;
+            background: rgba(255,255,255,0.03); padding: 8px 12px; margin: 4px 0;
+            border-radius: 6px; font-size: 0.8rem;
         }
-        .step.done { opacity: 0.4; text-decoration: line-through; border-left: 3px solid var(--ok); }
-        .step.next-to-call { 
-            border-color: var(--alert); 
-            background: rgba(251, 191, 36, 0.1);
-            animation: pulse 1s infinite alternate;
-        }
+        .step.done { opacity: 0.3; text-decoration: line-through; }
+        .step.next-to-call { border: 1px solid var(--alert); background: rgba(251, 191, 36, 0.05); animation: pulse 1s infinite alternate; }
 
-        @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+        @keyframes pulse { from { box-shadow: 0 0 2px var(--alert); } to { box-shadow: 0 0 10px var(--alert); } }
 
-        .log-container {
-            background: rgba(0,0,0,0.2); padding: 6px; border-radius: 4px; 
-            font-size: 0.7rem; max-height: 80px; overflow-y: auto; color: #cbd5e1;
-        }
+        .log-container { background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; color: #94a3b8; border: 1px solid #ffffff05; }
+        
+        .btn-encerrar { background: var(--ok); color: white; width: 100%; border-radius: 6px; padding: 8px; margin-top: 10px; font-size: 11px; }
 
         .hidden { display: none; }
-        .flex-row { display: flex; gap: 4px; align-items: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="page-header">
-        <h3 style="color: var(--primary); margin:0;">📡 NOC ESCALATION PRO</h3>
+        <div class="logo-area"><h2>📡 NOC ESCALATION <small style="font-size: 0.6rem; vertical-align: middle; opacity: 0.5;">v5.0</small></h2></div>
         <div id="page-clock">00:00:00</div>
     </div>
 
-    <div class="form-grid">
-        <div class="form-group"><label>Título</label><input id="titulo"></div>
-        <div class="form-group"><label>Pai</label><input id="pai"></div>
-        <div class="form-group"><label>Filho</label><input id="filho"></div>
-        <div class="form-group">
-            <label>Tipo</label>
-            <select id="tipo">
-                <option value="externa">Externa</option>
-                <option value="interna">Interna</option>
-            </select>
+    <div class="admin-panel">
+        <div class="form-row">
+            <div class="form-group"><label>Título do Evento</label><input id="titulo" placeholder="Ex: Rompimento Backbone"></div>
+            <div class="form-group"><label>Elemento Pai</label><input id="pai" placeholder="Concentrador/OLT"></div>
+            <div class="form-group"><label>Elemento Filho</label><input id="filho" placeholder="CTO/Slot"></div>
+            <div class="form-group">
+                <label>Tipo de Rede</label>
+                <select id="tipo">
+                    <option value="externa">Rede Externa (Campo)</option>
+                    <option value="interna">Rede Interna (Core)</option>
+                </select>
+            </div>
         </div>
-        <div class="form-group"><label>Data</label><input type="date" id="data_manual"></div>
-        <div class="form-group"><label>Hora</label><input type="time" id="hora_manual"></div>
-        <textarea id="descricao" placeholder="Descrição rápida..."></textarea>
-        <button class="btn-add" onclick="add()">Registrar</button>
+        <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 1fr;">
+            <div class="form-group"><label>Data Início</label><input type="date" id="data_manual"></div>
+            <div class="form-group"><label>Hora Início</label><input type="time" id="hora_manual"></div>
+            <div class="form-group"><label>Descrição Técnica</label><textarea id="descricao" placeholder="Relato inicial da falha..."></textarea></div>
+            <button class="btn-add" onclick="add()">Registrar Incidente</button>
+        </div>
     </div>
 
     <div class="tabs">
-        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">Ativos</button>
-        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">Histórico</button>
+        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">MONITORAMENTO ATIVO</button>
+        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO DE INCIDENTES</button>
     </div>
 
     <div id="ativos" class="grid-cards"></div>
@@ -189,7 +194,7 @@
         const t = document.getElementById("titulo").value;
         const dM = document.getElementById("data_manual").value;
         const hM = document.getElementById("hora_manual").value;
-        if(!t) return alert("Insira o título");
+        if(!t) return alert("Título é obrigatório!");
 
         let dataE = dM && hM ? new Date(`${dM}T${hM}`) : new Date();
 
@@ -205,46 +210,39 @@
         const container = document.getElementById(containerId);
         const div = document.createElement("div");
         const isResolvido = containerId === 'resolvidos';
-        
         div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
         div.id = id;
         div.dataset.start = data.inicio;
         div.dataset.escalado = JSON.stringify(data.escalado || []);
 
-        const timeDisplay = isResolvido && data.fim ? formatTime(data.fim - data.inicio) : '...';
-
         const stepsHTML = escala[data.tipo].map(e => `
             <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
                 <span>${e.h}h - ${e.n}</span>
-                <div class="flex-row"><a href="tel:+${e.tel}">📞</a> <a href="https://wa.me/${e.tel}" target="_blank">💬</a></div>
+                <div style="display:flex; gap:8px;"><a href="tel:+${e.tel}" style="text-decoration:none;">📞</a> <a href="https://wa.me/${e.tel}" target="_blank" style="text-decoration:none;">💬</a></div>
             </div>`).join('');
 
-        const logsHTML = (data.comentarios || []).map(c => `<div><span style="color:var(--primary)">[${c.hora}]</span> ${c.texto}</div>`).reverse().join('');
+        const logsHTML = (data.comentarios || []).map(c => `<div><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
 
         div.innerHTML = `
-            <div class="datetime-badge">${data.dataStr}</div>
-            <div style="font-weight:bold; font-size: 0.9rem;">${data.titulo}</div>
-            <div style="font-size:0.7rem; color:var(--text-dim);">${data.pai || '-'} / ${data.filho || '-'}</div>
+            <div class="datetime-badge">${isResolvido ? 'RESOLVIDO' : 'REGISTRADO EM'}: ${data.dataStr}</div>
+            <div style="font-weight:700; font-size:1.1rem; margin-top:5px;">${data.titulo}</div>
+            <div style="font-size:0.75rem; color:var(--text-dim); margin-bottom:8px;">${data.pai || '-'} / ${data.filho || '-'}</div>
             
-            <div class="timer-box">
-                <div class="timer-val">${timeDisplay}</div>
-            </div>
+            <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
             
-            <div class="log-container">${logsHTML || 'Sem notas.'}</div>
-            ${!isResolvido ? `<div class="flex-row" style="margin-top:2px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; font-size:11px; padding:4px;"><button style="padding:4px 8px; background:var(--header); color:white;" onclick="addComment('${id}')">OK</button></div>` : ''}
+            <div class="log-container">${logsHTML || 'Aguardando notas...'}</div>
+            ${!isResolvido ? `<div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="in-${id}" placeholder="Adicionar nota..." style="flex:1; font-size:12px; padding:6px;"><button style="background:var(--header); color:white; padding:0 12px; border-radius:6px;" onclick="addComment('${id}')">OK</button></div>` : ''}
 
-            <div style="display:grid; grid-template-columns: 1fr; margin-top:5px;">${stepsHTML}</div>
+            <div style="margin-top:10px;">${stepsHTML}</div>
             
-            ${!isResolvido 
-                ? `<button class="btn-finish" onclick="finalizar('${id}')">Finalizar</button>` 
-                : `<div class="flex-row" style="margin-top:5px;"><button style="background:var(--warn); flex:1; padding:5px;" onclick="reabrir('${id}')">Reabrir</button>
-                   <button style="background:var(--danger); color:white; flex:1; padding:5px;" onclick="apagar('${id}')">Limpar</button></div>`}
+            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">Encerrar Incidente</button>` : `<div style="display:flex; gap:5px;"><button style="background:var(--warn); color:white; flex:1; margin-top:10px; border-radius:6px; padding:8px;" onclick="reabrir('${id}')">Reabrir</button><button style="background:var(--danger); color:white; flex:1; margin-top:10px; border-radius:6px; padding:8px;" onclick="apagar('${id}')">Excluir</button></div>`}
         `;
         container.appendChild(div);
     }
 
     window.addComment = (id) => {
         const inp = document.getElementById(`in-${id}`);
+        if(!inp.value) return;
         onValue(ref(db, `ativos/${id}`), s => {
             const list = s.val().comentarios || [];
             list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
@@ -263,22 +261,22 @@
 
     window.finalizar = (id) => {
         onValue(ref(db, `ativos/${id}`), s => {
-            const data = s.val(); if(!data) return;
-            push(ref(db, "resolvidos"), { ...data, fim: Date.now() });
+            const d = s.val(); if(!d) return;
+            push(ref(db, "resolvidos"), { ...d, fim: Date.now() });
             remove(ref(db, `ativos/${id}`));
         }, { onlyOnce: true });
     };
 
     window.reabrir = (id) => {
         onValue(ref(db, `resolvidos/${id}`), s => {
-            const data = s.val(); if(!data) return;
-            const { fim, ...rest } = data;
+            const d = s.val(); if(!d) return;
+            const { fim, ...rest } = d;
             push(ref(db, "ativos"), rest);
             remove(ref(db, `resolvidos/${id}`));
         }, { onlyOnce: true });
     };
 
-    window.apagar = (id) => { if(confirm("Excluir?")) remove(ref(db, `resolvidos/${id}`)); };
+    window.apagar = (id) => { if(confirm("Deseja deletar do histórico?")) remove(ref(db, `resolvidos/${id}`)); };
 
     onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
     onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
@@ -290,5 +288,6 @@
         document.getElementById("btn-tab-resolvidos").classList.toggle("active", tab === "resolvidos");
     };
 </script>
+
 </body>
 </html>
