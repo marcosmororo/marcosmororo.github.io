@@ -1,40 +1,57 @@
-
-(function () {
+// =====================
+// TEMA (GLOBAL)
+// =====================
+document.addEventListener("DOMContentLoaded", () => {
   const tema = localStorage.getItem("tema");
-  if (tema === "light") document.body.classList.add("light");
-})();
+
+  if (tema === "light") {
+    document.body.classList.add("light");
+  }
+
+  atualizarBotao();
+  atualizarTempo();
+  renderizar();
+
+  if (rodando) iniciar();
+});
 
 function toggleTheme() {
   document.body.classList.toggle("light");
-  localStorage.setItem("tema",
-    document.body.classList.contains("light") ? "light" : "dark"
-  );
+
+  const isLight = document.body.classList.contains("light");
+  localStorage.setItem("tema", isLight ? "light" : "dark");
+
   atualizarBotao();
 }
 
 function atualizarBotao() {
   const btn = document.querySelector(".theme-btn");
-  if (btn) btn.textContent =
-    document.body.classList.contains("light") ? "🌙" : "☀️";
+  if (btn) {
+    btn.textContent =
+      document.body.classList.contains("light") ? "🌙" : "☀️";
+  }
 }
 
-window.onload = atualizarBotao;
-
+// =====================
+// TIMER
+// =====================
 let tempo = localStorage.getItem("tempo")
   ? parseInt(localStorage.getItem("tempo")) : 1500;
 
 let rodando = localStorage.getItem("rodando") === "true";
-let intervalo;
+let intervalo = null;
 
 function atualizarTempo() {
   const el = document.getElementById("tempo");
   if (!el) return;
-  let m = Math.floor(tempo/60);
-  let s = tempo%60;
-  el.innerText = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+
+  let m = Math.floor(tempo / 60);
+  let s = tempo % 60;
+
+  el.innerText = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-function salvar() {
+function salvarTempo() {
   localStorage.setItem("tempo", tempo);
   localStorage.setItem("rodando", rodando);
 }
@@ -42,29 +59,34 @@ function salvar() {
 function iniciar() {
   if (!intervalo) {
     rodando = true;
-    intervalo = setInterval(()=>{
-      if (tempo>0){ tempo--; atualizarTempo(); salvar(); }
-    },1000);
+
+    intervalo = setInterval(() => {
+      if (tempo > 0) {
+        tempo--;
+        atualizarTempo();
+        salvarTempo();
+      }
+    }, 1000);
   }
 }
 
 function pausar() {
   clearInterval(intervalo);
-  intervalo=null;
-  rodando=false;
-  salvar();
+  intervalo = null;
+  rodando = false;
+  salvarTempo();
 }
 
 function resetar() {
   pausar();
-  tempo=1500;
+  tempo = 1500;
   atualizarTempo();
-  salvar();
+  salvarTempo();
 }
 
-if (rodando) iniciar();
-setInterval(atualizarTempo,500);
-
+// =====================
+// ZABBIX TREE
+// =====================
 let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
   {
     nome: "Core",
@@ -95,12 +117,14 @@ let estrutura = JSON.parse(localStorage.getItem("estruturaZabbix")) || [
 
 let itemSelecionado = null;
 
-function salvar() {
+function salvarEstrutura() {
   localStorage.setItem("estruturaZabbix", JSON.stringify(estrutura));
 }
 
 function renderizar() {
   const ul = document.getElementById("arvore");
+  if (!ul) return;
+
   ul.innerHTML = "";
   estrutura.forEach(item => ul.appendChild(criarElemento(item)));
 }
@@ -114,7 +138,10 @@ function criarElemento(item) {
 
   span.onclick = () => {
     itemSelecionado = item;
-    document.querySelectorAll("span").forEach(s => s.style.fontWeight = "normal");
+
+    document.querySelectorAll("#arvore span")
+      .forEach(s => s.style.fontWeight = "normal");
+
     span.style.fontWeight = "bold";
   };
 
@@ -123,15 +150,16 @@ function criarElemento(item) {
   const btnRemover = document.createElement("button");
   btnRemover.textContent = "❌";
   btnRemover.style.marginLeft = "10px";
+
   btnRemover.onclick = () => {
     removerItem(estrutura, item);
-    salvar();
+    salvarEstrutura();
     renderizar();
   };
 
   li.appendChild(btnRemover);
 
-  if (item.filhos && item.filhos.length > 0) {
+  if (item.filhos.length > 0) {
     const ul = document.createElement("ul");
     item.filhos.forEach(f => ul.appendChild(criarElemento(f)));
     li.appendChild(ul);
@@ -142,8 +170,9 @@ function criarElemento(item) {
 
 function adicionarItem() {
   const input = document.getElementById("novoItem");
-  const nome = input.value.trim();
+  if (!input) return;
 
+  const nome = input.value.trim();
   if (!nome) return;
 
   const novo = { nome, filhos: [] };
@@ -155,12 +184,13 @@ function adicionarItem() {
   }
 
   input.value = "";
-  salvar();
+  salvarEstrutura();
   renderizar();
 }
 
 function removerItem(lista, item) {
   const index = lista.indexOf(item);
+
   if (index !== -1) {
     lista.splice(index, 1);
     return true;
@@ -172,6 +202,3 @@ function removerItem(lista, item) {
 
   return false;
 }
-
-// Inicializa
-renderizar();
