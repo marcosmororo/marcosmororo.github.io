@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC - Documentação e Escalonamento 2026</title>
+    <title>NOC - Documentação e Escalonamento (Escala: Horas)</title>
     <style>
         :root {
             --bg: #020617;
@@ -33,7 +33,6 @@
             margin-bottom: 25px;
         }
 
-        /* Formulário de Documentação */
         .doc-form {
             background: var(--card);
             padding: 20px;
@@ -48,7 +47,7 @@
         .form-group { display: flex; flex-direction: column; }
         label { font-size: 12px; margin-bottom: 5px; color: var(--primary); font-weight: bold; }
 
-        input, select, textarea {
+        input, select {
             padding: 10px;
             border-radius: 6px;
             border: 1px solid #334155;
@@ -67,7 +66,6 @@
             border-radius: 6px;
         }
 
-        /* Cards de Monitoramento */
         .chamado-card {
             background: var(--card);
             border-radius: 12px;
@@ -75,12 +73,12 @@
             margin-bottom: 20px;
             border-left: 8px solid var(--accent);
             display: grid;
-            grid-template-columns: 1fr 300px;
+            grid-template-columns: 1fr 320px;
             gap: 20px;
         }
 
         .info-section h3 { margin: 0 0 10px 0; color: var(--primary); }
-        .meta-info { font-size: 13px; opacity: 0.8; line-height: 1.6; }
+        .meta-info { font-size: 13px; opacity: 0.9; line-height: 1.6; }
 
         .escalation-tracker {
             background: #0f172a;
@@ -91,30 +89,37 @@
 
         .step {
             font-size: 13px;
-            padding: 8px;
-            margin-bottom: 5px;
+            padding: 10px;
+            margin-bottom: 6px;
             border-radius: 4px;
-            opacity: 0.4;
-            transition: all 0.3s;
+            opacity: 0.3;
+            border-left: 3px solid transparent;
         }
 
         .step.active {
             opacity: 1;
-            background: rgba(56, 189, 248, 0.2);
-            border-left: 4px solid var(--primary);
+            background: rgba(56, 189, 248, 0.15);
+            border-left-color: var(--primary);
             font-weight: bold;
+            animation: pulse 2s infinite;
         }
 
-        .step.past { opacity: 0.7; text-decoration: line-through; color: #94a3b8; }
+        .step.past { opacity: 0.6; text-decoration: line-through; color: #94a3b8; }
+
+        @keyframes pulse {
+            0% { box-shadow: inset 5px 0 0 rgba(56, 189, 248, 0.5); }
+            50% { box-shadow: inset 15px 0 20px rgba(56, 189, 248, 0.1); }
+            100% { box-shadow: inset 5px 0 0 rgba(56, 189, 248, 0.5); }
+        }
 
         .timer-badge {
             background: var(--primary);
             color: #020617;
-            padding: 4px 10px;
-            border-radius: 20px;
+            padding: 4px 12px;
+            border-radius: 6px;
             font-weight: bold;
-            font-family: monospace;
-            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
         }
 
         .delete-btn {
@@ -122,9 +127,9 @@
             border: 1px solid var(--danger);
             color: var(--danger);
             cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 4px;
-            margin-top: 15px;
+            padding: 8px 15px;
+            border-radius: 6px;
+            margin-top: 20px;
         }
 
         .delete-btn:hover { background: var(--danger); color: white; }
@@ -134,21 +139,21 @@
 
 <div class="container">
     <div class="header">
-        <h1>📑 Documentação de Incidentes NOC</h1>
-        <div id="clock" style="font-family: monospace; font-size: 20px;"></div>
+        <h1>📑 Documentação de Incidentes (Escala: Horas)</h1>
+        <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);"></div>
     </div>
 
     <div class="doc-form">
         <div class="form-group">
-            <label>ID / Título</label>
-            <input type="text" id="titulo" placeholder="Ex: Queda Fibra Crateús">
+            <label>Título do Incidente</label>
+            <input type="text" id="titulo" placeholder="Ex: Rompimento Backbone Sul">
         </div>
         <div class="form-group">
-            <label>Data Início</label>
+            <label>Data de Início</label>
             <input type="date" id="data_inicio">
         </div>
         <div class="form-group">
-            <label>Hora Início</label>
+            <label>Hora de Início</label>
             <input type="time" id="hora_inicio">
         </div>
         <div class="form-group">
@@ -159,37 +164,35 @@
             </select>
         </div>
         <div class="form-group">
-            <label>Chamado Filho</label>
-            <input type="text" id="filho" placeholder="Opcional">
+            <label>ID Chamado Pai/Filho</label>
+            <input type="text" id="filho" placeholder="Ex: 20240420-001">
         </div>
-        <button class="add-btn" onclick="adicionarRegistro()">Registrar e Monitorar</button>
+        <button class="add-btn" onclick="adicionarRegistro()">Iniciar Documentação</button>
     </div>
 
     <div id="lista-chamados"></div>
 </div>
 
 <script>
-    // Banco de contatos oficial conforme solicitado
+    // Configuração oficial: Agora em HORAS
     const contatos = {
         externa: [
-            { min: 0, nome: "Abertura do Incidente" },
-            { min: 4, nome: "Nível 1: Erivelton Rodrigues" },
-            { min: 8, nome: "Nível 2: Guilherme Silva" },
-            { min: 10, nome: "Nível 3: Valmir (Coordenação)" },
-            { min: 12, nome: "Nível 4: Fernando (Gerência)" }
+            { horas: 0, nome: "Início do Evento" },
+            { horas: 4, nome: "Nível 1: Erivelton Rodrigues" },
+            { horas: 8, nome: "Nível 2: Guilherme Silva" },
+            { horas: 10, nome: "Nível 3: Valmir (Coordenação)" },
+            { horas: 12, nome: "Nível 4: Fernando (Gerência)" }
         ],
         interna: [
-            { min: 0, nome: "Abertura do Incidente" },
-            { min: 4, nome: "Nível 1: Joao Martins" },
-            { min: 8, nome: "Nível 2: Wescley" },
-            { min: 10, nome: "Nível 3: Valmir (Coordenação)" },
-            { min: 12, nome: "Nível 4: Fernando (Gerência)" }
+            { horas: 0, nome: "Início do Evento" },
+            { horas: 4, nome: "Nível 1: Joao Martins" },
+            { horas: 8, nome: "Nível 2: Wescley" },
+            { horas: 10, nome: "Nível 3: Valmir (Coordenação)" },
+            { horas: 12, nome: "Nível 4: Fernando (Gerência)" }
         ]
     };
 
-    let registros = JSON.parse(localStorage.getItem("noc_documentacao_2026")) || [];
-
-    // Setar data de hoje por padrão no input
+    let registros = JSON.parse(localStorage.getItem("noc_doc_hours_2026")) || [];
     document.getElementById('data_inicio').valueAsDate = new Date();
 
     function adicionarRegistro() {
@@ -199,7 +202,7 @@
         const tipo = document.getElementById("tipo").value;
         const filho = document.getElementById("filho").value;
 
-        if (!titulo || !data || !hora) return alert("Preencha título, data e hora.");
+        if (!titulo || !data || !hora) return alert("Erro: Título, Data e Hora são obrigatórios.");
 
         const inicio = new Date(`${data}T${hora}`);
         
@@ -208,18 +211,19 @@
             titulo,
             inicio: inicio.getTime(),
             tipo,
-            filho,
-            alertaSla: false
+            filho
         });
 
-        localStorage.setItem("noc_documentacao_2026", JSON.stringify(registros));
+        localStorage.setItem("noc_doc_hours_2026", JSON.stringify(registros));
         render();
     }
 
     function excluir(id) {
-        registros = registros.filter(r => r.id !== id);
-        localStorage.setItem("noc_documentacao_2026", JSON.stringify(registros));
-        render();
+        if(confirm("Deseja encerrar e excluir este registro?")) {
+            registros = registros.filter(r => r.id !== id);
+            localStorage.setItem("noc_doc_hours_2026", JSON.stringify(registros));
+            render();
+        }
     }
 
     function render() {
@@ -229,44 +233,43 @@
 
         registros.forEach(reg => {
             const decorridoMs = agora - reg.inicio;
-            const decorridoMin = Math.floor(decorridoMs / 60000);
+            const decorridoHoras = decorridoMs / (1000 * 60 * 60);
             
             const card = document.createElement("div");
             card.className = "chamado-card";
 
-            // Lógica de contatos
             const listaContatos = contatos[reg.tipo];
             let htmlEscalation = "";
             
             listaContatos.forEach(c => {
                 let statusClass = "";
-                if (decorridoMin >= c.min) {
-                    // Verifica se é o nível atual (o maior min que já passou)
-                    const proximo = listaContatos.find(p => p.min > c.min);
-                    if (!proximo || decorridoMin < proximo.min) {
+                if (decorridoHoras >= c.horas) {
+                    const proximo = listaContatos.find(p => p.horas > c.horas);
+                    if (!proximo || decorridoHoras < proximo.horas) {
                         statusClass = "active";
                     } else {
                         statusClass = "past";
                     }
                 }
-                htmlEscalation += `<div class="step ${statusClass}">${c.min}min - ${c.nome}</div>`;
+                htmlEscalation += `<div class="step ${statusClass}">${c.horas}h - ${c.nome}</div>`;
             });
 
-            const dataFormatada = new Date(reg.inicio).toLocaleString('pt-BR');
+            const dataInicioStr = new Date(reg.inicio).toLocaleString('pt-BR');
 
             card.innerHTML = `
                 <div class="info-section">
                     <h3>${reg.titulo}</h3>
                     <div class="meta-info">
-                        <strong>Início:</strong> ${dataFormatada}<br>
-                        <strong>Tipo:</strong> Rede ${reg.tipo.charAt(0).toUpperCase() + reg.tipo.slice(1)}<br>
-                        <strong>Filho:</strong> ${reg.filho || "Nenhum"}<br>
-                        <strong>Tempo Decorrido:</strong> <span class="timer-badge">${formatarTempo(decorridoMs)}</span>
+                        <strong>🕗 Início:</strong> ${dataInicioStr}<br>
+                        <strong>🌐 Rede:</strong> ${reg.tipo === 'externa' ? 'Externa' : 'Interna'}<br>
+                        <strong>🔗 Referência:</strong> ${reg.filho || "Sem ID"}<br><br>
+                        <label>Tempo de Incidente:</label><br>
+                        <span class="timer-badge">${formatarTempoCompleto(decorridoMs)}</span>
                     </div>
-                    <button class="delete-btn" onclick="excluir(${reg.id})">Encerrar Documentação</button>
+                    <button class="delete-btn" onclick="excluir(${reg.id})">Encerrar Incidente</button>
                 </div>
                 <div class="escalation-tracker">
-                    <label>Régua de Acionamento:</label>
+                    <label>Régua de Escalonamento (H):</label>
                     ${htmlEscalation}
                 </div>
             `;
@@ -274,15 +277,14 @@
         });
     }
 
-    function formatarTempo(ms) {
+    function formatarTempoCompleto(ms) {
         const totalSegundos = Math.floor(ms / 1000);
         const h = Math.floor(totalSegundos / 3600);
         const m = Math.floor((totalSegundos % 3600) / 60);
         const s = totalSegundos % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        return `${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
     }
 
-    // Relógio e Update
     setInterval(() => {
         document.getElementById("clock").innerText = new Date().toLocaleTimeString('pt-BR');
         render();
