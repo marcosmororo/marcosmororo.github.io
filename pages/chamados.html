@@ -1,189 +1,287 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Chamados NOC - High Performance</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --primary: #38bdf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #22c55e;
+        }
 
-<title>Controle de Chamados NOC</title>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: white;
+            margin: 0;
+            padding: 20px;
+        }
 
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: white;
-  margin: 0;
-  padding: 20px;
-}
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+        }
 
-input, select, button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 8px;
-  border: none;
-}
+        .form-group {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 30px;
+        }
 
-input, select {
-  width: 30%;
-}
+        input, select, button {
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 14px;
+        }
 
-button {
-  background: #38bdf8;
-  cursor: pointer;
-}
+        button {
+            background: var(--primary);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.1s;
+        }
 
-.lista {
-  margin-top: 20px;
-}
+        button:active { transform: scale(0.98); }
 
-.chamado {
-  background: rgba(255,255,255,0.05);
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-}
+        .lista { display: grid; gap: 15px; }
 
-.atrasado { border-left: 5px solid red; }
-.proximo { border-left: 5px solid orange; }
+        .chamado {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 6px solid var(--success);
+            transition: all 0.3s;
+            position: relative;
+        }
 
-.escalation {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.08);
-}
-</style>
+        .chamado.proximo { border-left-color: var(--warning); background: rgba(245, 158, 11, 0.05); }
+        .chamado.atrasado { 
+            border-left-color: var(--danger); 
+            background: rgba(239, 68, 68, 0.1);
+            animation: pulse 2s infinite;
+        }
 
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .escalation-box {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .contato-item {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .timer {
+            font-family: monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .btn-remove {
+            background: var(--danger);
+            color: white;
+            margin-top: 15px;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="container">
-<h1>📋 Controle de Chamados NOC</h1>
+    <div class="header">
+        <h1>📋 Chamados NOC</h1>
+        <div id="relogio-geral"></div>
+    </div>
 
-<input type="text" id="titulo" placeholder="Chamado">
-<input type="text" id="descricao" placeholder="Descrição">
-<input type="text" id="filho" placeholder="Chamado Filho">
-<input type="time" id="hora">
+    <div class="form-group">
+        <input type="text" id="titulo" placeholder="ID Chamado">
+        <input type="text" id="descricao" placeholder="Descrição rápida">
+        <input type="text" id="filho" placeholder="Chamado Filho">
+        <input type="time" id="hora">
+        <select id="tipo">
+            <option value="externa">Rede Externa</option>
+            <option value="interna">Rede Interna</option>
+        </select>
+        <button onclick="addChamado()">+ Abrir Chamado</button>
+    </div>
 
-<select id="tipo">
-  <option value="externa">Rede Externa</option>
-  <option value="interna">Rede Interna</option>
-</select>
-
-<button onclick="addChamado()">Adicionar</button>
-
-<div class="lista" id="lista"></div>
+    <div class="lista" id="lista"></div>
 </div>
 
 <script>
-let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
+    // Configuração de Áudio
+    const audioAlerta = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+    
+    let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
 
-const escala = {
-  externa: [
-    {min:4, nome:"Erivelton Rodrigues (88) 9 9828-3311"},
-    {min:8, nome:"Guilherme Silva (88) 9 9928-2323"},
-    {min:10, nome:"Valmir (88) 9 9828-7071"},
-    {min:12, nome:"Fernando (88) 9 9440-1255"}
-  ],
-  interna: [
-    {min:4, nome:"Joao Martins (88) 9 9828-3337"},
-    {min:8, nome:"Wescley (88) 9 9486-6085"},
-    {min:10, nome:"Valmir (88) 9 9828-7071"},
-    {min:12, nome:"Fernando (88) 9 9440-1255"}
-  ]
-};
+    const escala = {
+        externa: [
+            {min:4, nome:"Erivelton Rodrigues (88) 9 9828-3311"},
+            {min:8, nome:"Guilherme Silva (88) 9 9928-2323"},
+            {min:10, nome:"Valmir (88) 9 9828-7071"},
+            {min:12, nome:"Fernando (88) 9 9440-1255"}
+        ],
+        interna: [
+            {min:4, nome:"Joao Martins (88) 9 9828-3337"},
+            {min:8, nome:"Wescley (88) 9 9486-6085"},
+            {min:10, nome:"Valmir (88) 9 9828-7071"},
+            {min:12, nome:"Fernando (88) 9 9440-1255"}
+        ]
+    };
 
-function salvar() {
-  localStorage.setItem("chamados", JSON.stringify(chamados));
-}
-
-function addChamado() {
-  const titulo = document.getElementById("titulo").value;
-  const descricao = document.getElementById("descricao").value;
-  const filho = document.getElementById("filho").value;
-  const hora = document.getElementById("hora").value;
-  const tipo = document.getElementById("tipo").value;
-
-  if (!titulo || !hora) return;
-
-  chamados.push({ titulo, descricao, filho, hora, tipo });
-
-  document.getElementById("titulo").value = "";
-  document.getElementById("descricao").value = "";
-  document.getElementById("filho").value = "";
-
-  salvar();
-  render();
-}
-
-function remover(i) {
-  chamados.splice(i,1);
-  salvar();
-  render();
-}
-
-function getEscalacao(tipo, diff) {
-  let lista = escala[tipo];
-  let contatos = [];
-
-  lista.forEach(e => {
-    if (diff <= (15 - e.min)) {
-      contatos.push(e.nome);
+    function salvar() {
+        localStorage.setItem("chamados", JSON.stringify(chamados));
     }
-  });
 
-  return contatos;
-}
+    function addChamado() {
+        const titulo = document.getElementById("titulo").value;
+        const descricao = document.getElementById("descricao").value;
+        const filho = document.getElementById("filho").value;
+        const hora = document.getElementById("hora").value;
+        const tipo = document.getElementById("tipo").value;
 
-function render() {
-  const lista = document.getElementById("lista");
-  lista.innerHTML = "";
+        if (!titulo || !hora) {
+            alert("Preencha o ID do Chamado e a Hora do SLA.");
+            return;
+        }
 
-  const agora = new Date();
+        chamados.push({ 
+            titulo, 
+            descricao, 
+            filho, 
+            hora, 
+            tipo, 
+            alertaTocado: false 
+        });
 
-  chamados.forEach((c, i) => {
-    const div = document.createElement("div");
-    div.className = "chamado";
+        document.getElementById("titulo").value = "";
+        document.getElementById("descricao").value = "";
+        document.getElementById("filho").value = "";
+        
+        salvar();
+        render();
+    }
 
-    const [h,m] = c.hora.split(":");
-    const data = new Date();
-    data.setHours(h,m,0);
+    function remover(i) {
+        chamados.splice(i,1);
+        salvar();
+        render();
+    }
 
-    const diff = (data - agora) / 60000;
+    function getEscalacao(tipo, diff) {
+        let lista = escala[tipo];
+        // Retorna contatos baseado no tempo que já passou do SLA
+        // Regra: SLA total é 15 min. diff é quanto falta.
+        // Se diff é 11 (faltam 11 min), passaram 4 min -> Mostra nível 1.
+        return lista.filter(e => diff <= (15 - e.min));
+    }
 
-    if (diff < 0) div.classList.add("atrasado");
-    else if (diff < 15) div.classList.add("proximo");
+    function formatTime(ms) {
+        const totalSegundos = Math.floor(Math.abs(ms) / 1000);
+        const h = Math.floor(totalSegundos / 3600);
+        const m = Math.floor((totalSegundos % 3600) / 60);
+        const s = totalSegundos % 60;
+        const sinal = ms < 0 ? "-" : "";
+        return `${sinal}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
 
-    const contatos = getEscalacao(c.tipo, diff);
+    function render() {
+        const lista = document.getElementById("lista");
+        const agora = new Date();
+        
+        lista.innerHTML = "";
 
-    div.innerHTML = `
-      <strong>${c.titulo}</strong><br>
-      📝 ${c.descricao || "-"}<br>
-      🔗 Filho: ${c.filho || "-"}<br>
-      ⏰ Escalonar até: ${c.hora}<br>
-      🌐 Tipo: ${c.tipo === "externa" ? "Rede Externa" : "Rede Interna"}
+        chamados.forEach((c, i) => {
+            const [h, m] = c.hora.split(":");
+            const dataLimite = new Date();
+            dataLimite.setHours(h, m, 0);
 
-      <div class="escalation">
-        <strong>📞 Escalonamento:</strong><br>
-        ${contatos.length ? contatos.join("<br>") : "Dentro do tempo"}
-      </div>
+            const diffMs = dataLimite - agora;
+            const diffMin = diffMs / 60000;
 
-      <br>
-      <button onclick="remover(${i})">Remover</button>
-    `;
+            const div = document.createElement("div");
+            div.className = "chamado";
 
-    lista.appendChild(div);
-  });
-}
+            if (diffMin < 0) {
+                div.classList.add("atrasado");
+                // Dispara Alerta Sonoro
+                if (!c.alertaTocado) {
+                    audioAlerta.play().catch(() => console.log("Interaja com a página para habilitar som"));
+                    c.alertaTocado = true;
+                    salvar();
+                }
+            } else if (diffMin < 15) {
+                div.classList.add("proximo");
+            }
 
-setInterval(render, 60000);
-render();
+            const contatos = getEscalacao(c.tipo, diffMin);
+
+            div.innerHTML = `
+                <div class="info-grid">
+                    <div>
+                        <div style="font-size: 1.2em; margin-bottom: 5px;"><strong>#${c.titulo}</strong></div>
+                        <div style="opacity: 0.8; margin-bottom: 10px;">${c.descricao || "Sem descrição"}</div>
+                        <div style="font-size: 0.9em;">
+                            🔗 Filho: ${c.filho || "N/A"} | 🌐 ${c.tipo.toUpperCase()}
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div class="timer">${formatTime(diffMs)}</div>
+                        <div style="font-size: 0.8em; opacity: 0.6;">Meta: ${c.hora}</div>
+                    </div>
+                </div>
+
+                <div class="escalation-box" style="margin-top: 15px;">
+                    <strong>📞 Contatos para Escalonamento:</strong><br>
+                    ${contatos.length ? contatos.map(ct => `<div class="contato-item">${ct.nome}</div>`).join("") : "<span style='opacity:0.5'>Aguardando tempo de escala...</span>"}
+                </div>
+
+                <button class="btn-remove" onclick="remover(${i})">Finalizar Chamado</button>
+            `;
+            lista.appendChild(div);
+        });
+    }
+
+    // Atualiza a cada 1 segundo para o cronômetro ficar fluido
+    setInterval(render, 1000);
+    render();
 </script>
 
 </body>
