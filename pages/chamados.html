@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation Pro - v3.0</title>
+    <title>NOC Escalation Pro - Alerta Ativo</title>
 
     <style>
         :root {
@@ -16,7 +16,7 @@
             --danger: #ef4444;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --next-step: #fbbf24;
+            --alert: #fbbf24; /* Cor de alerta para escalonamento pendente */
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
@@ -44,7 +44,7 @@
         .tabs button.active { background: var(--primary); color: var(--bg); }
 
         /* Cards Grid */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
 
         .card {
             background: var(--card); padding: 18px; border-radius: 12px;
@@ -58,29 +58,34 @@
         .card-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); }
         .card-meta { font-size: 0.75rem; color: var(--text-dim); display: block; margin-top: 4px; }
 
-        .timer { font-family: monospace; color: var(--warn); font-size: 1.2rem; font-weight: bold; }
+        .timer { font-family: monospace; color: var(--warn); font-size: 1.3rem; font-weight: bold; text-align: center; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 4px; }
 
-        /* Steps */
+        /* Escalation Steps */
         .step {
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(15, 23, 42, 0.4); padding: 8px 12px; margin: 4px 0;
-            border-radius: 6px; font-size: 0.85rem; border: 1px solid transparent;
+            background: rgba(15, 23, 42, 0.4); padding: 10px 12px; margin: 6px 0;
+            border-radius: 6px; font-size: 0.85rem; border: 2px solid transparent;
         }
-        .step.done { opacity: 0.4; text-decoration: line-through; border-left: 3px solid var(--ok); }
-        .step.next-to-call { border: 1px solid var(--next-step); background: rgba(251, 191, 36, 0.1); animation: pulse-next 2s infinite; }
+        .step.done { opacity: 0.4; text-decoration: line-through; border-left: 4px solid var(--ok); background: transparent; }
+        
+        /* ALERTA: Este é o próximo que você DEVE ligar */
+        .step.next-to-call { 
+            border-color: var(--alert); 
+            background: rgba(251, 191, 36, 0.15);
+            animation: blinker 1.5s linear infinite;
+        }
 
-        @keyframes pulse-next {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); background: rgba(251, 191, 36, 0.2); }
+        @keyframes blinker {
+            50% { border-color: transparent; }
         }
 
         /* Comments Area */
         .comments-box {
-            background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem;
+            background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 0.85rem;
             max-height: 120px; overflow-y: auto; border: 1px solid var(--header);
         }
         .comment-item { border-bottom: 1px solid #33415566; padding: 4px 0; color: #cbd5e1; }
-        .comment-time { font-size: 0.7rem; color: var(--primary); margin-right: 5px; }
+        .comment-time { font-size: 0.7rem; color: var(--primary); margin-right: 5px; font-weight: bold; }
 
         .action-group { display: flex; gap: 8px; margin-top: 10px; }
         .hidden { display: none; }
@@ -94,15 +99,15 @@
     </header>
 
     <div class="form-grid">
-        <input id="titulo" placeholder="Título do Evento">
-        <input id="pai" placeholder="Elemento Pai">
-        <input id="filho" placeholder="Elemento Filho">
+        <input id="titulo" placeholder="Título (Ex: Rompimento de Fibra)">
+        <input id="pai" placeholder="Concentrador / POP">
+        <input id="filho" placeholder="Elemento / CTO">
         <select id="tipo">
             <option value="externa">Rede Externa</option>
             <option value="interna">Rede Interna</option>
         </select>
-        <textarea id="descricao" placeholder="Descrição técnica inicial..."></textarea>
-        <button class="btn-add" onclick="add()">Abrir Incidente</button>
+        <textarea id="descricao" placeholder="Descrição técnica inicial do incidente..."></textarea>
+        <button class="btn-add" onclick="add()">Iniciar Monitoramento</button>
     </div>
 
     <div class="tabs">
@@ -148,7 +153,7 @@
 
     window.add = function(){
         const t = document.getElementById("titulo").value;
-        if(!t) return alert("Preencha o título");
+        if(!t) return alert("Título é obrigatório");
 
         const agora = new Date();
         push(ref(db,"ativos"), {
@@ -172,67 +177,73 @@
         
         div.className = `card ${diffH >= 10 ? 'danger' : diffH >= 8 ? 'warn' : ''}`;
         
-        // Lógica de próximo escalonamento
+        // Lógica de Próximo Escalonamento (Onde a mágica acontece)
         let proximoH = null;
-        const atingidos = escala[data.tipo].filter(e => diffH >= e.h);
-        if(atingidos.length > 0) {
-            const pendentes = atingidos.filter(e => !data.escalado?.includes(e.h));
+        // Filtra quais níveis da escala já deveriam ter sido acionados com base no tempo atual
+        const niveisAtingidos = escala[data.tipo].filter(e => diffH >= e.h);
+        if(niveisAtingidos.length > 0) {
+            // Pega o primeiro nível que já atingiu o horário mas NÃO foi marcado como feito ainda
+            const pendentes = niveisAtingidos.filter(e => !data.escalado?.includes(e.h));
             if(pendentes.length > 0) proximoH = pendentes[0].h;
         }
 
         const stepsHTML = escala[data.tipo].map(e => {
             const isDone = data.escalado?.includes(e.h);
             const isNext = e.h === proximoH && containerId === 'ativos';
+            
             return `
                 <div class="step ${isDone?'done':''} ${isNext?'next-to-call':''}" 
-                     onclick="${containerId === 'ativos' ? `toggleEscala('${id}', ${e.h})` : ''}">
+                     onclick="${containerId === 'ativos' ? `toggleEscala('${id}', ${e.h})` : ''}"
+                     title="${isNext ? 'ESCALONAMENTO PENDENTE!' : ''}">
                     <span><strong>${e.h}h</strong> - ${e.n} ${isDone ? '✔' : ''}</span>
                     <div>
-                        <a href="tel:+${e.tel}" style="text-decoration:none">📞</a>
-                        <a href="https://wa.me/${e.tel}" target="_blank" style="text-decoration:none; margin-left:8px;">💬</a>
+                        <a href="tel:+${e.tel}" style="text-decoration:none; font-size:1.2rem;">📞</a>
+                        <a href="https://wa.me/${e.tel}" target="_blank" style="text-decoration:none; margin-left:12px; font-size:1.2rem;">💬</a>
                     </div>
                 </div>`;
         }).join('');
 
         const commentsHTML = (data.comentarios || []).map(c => `
             <div class="comment-item">
-                <span class="comment-time">${c.hora}</span> ${c.texto}
+                <span class="comment-time">[${c.hora}]</span> ${c.texto}
             </div>
         `).reverse().join('');
 
         div.innerHTML = `
             <div class="card-header">
                 <span class="card-title">${data.titulo}</span>
-                <span class="card-meta">Início: ${data.dataStr} | ${data.pai || '-'} > ${data.filho || '-'}</span>
+                <span class="card-meta">Aberto em: ${data.dataStr}<br>Local: ${data.pai || '-'} / ${data.filho || '-'}</span>
             </div>
             
             <div class="timer">⏱ ${Math.floor(diffH)}h ${Math.floor((diffH % 1) * 60)}m</div>
             
-            <div style="font-size:0.85rem; color:var(--text-dim)"><strong>Resumo:</strong> ${data.descricao || 'Sem descrição'}</div>
+            <div style="font-size:0.85rem; color:var(--text-dim)"><strong>Resumo Inicial:</strong> ${data.descricao || 'Nenhuma descrição.'}</div>
 
-            <div class="comments-box" id="cm-list-${id}">${commentsHTML || 'Nenhuma atualização...'}</div>
+            <div class="comments-box">${commentsHTML || 'Sem atualizações técnicas ainda.'}</div>
 
             ${containerId === 'ativos' ? `
                 <div style="display:flex; gap:5px;">
-                    <input type="text" id="in-${id}" placeholder="Nova atualização..." style="flex:1; font-size:12px; padding:5px;">
-                    <button class="btn-update" onclick="addComment('${id}')">Anotar</button>
+                    <input type="text" id="in-${id}" placeholder="Adicionar comentário..." style="flex:1; font-size:12px;">
+                    <button class="btn-update" onclick="addComment('${id}')">Salvar</button>
                 </div>
             ` : ''}
 
+            <div style="margin-top:10px; font-weight:bold; font-size:0.75rem; color:var(--primary);">FLUXO DE ESCALONAMENTO:</div>
             <div class="step-list">${stepsHTML}</div>
             
             <div class="action-group">
                 ${containerId === "ativos" 
-                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Encerrar e Arquivar</button>` 
+                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Encerrar Incidente</button>` 
                     : `<button style="background:var(--warn); flex:1;" onclick="reabrir('${id}')">Reabrir</button>
-                       <button style="background:var(--danger); color:white; flex:1;" onclick="apagar('${id}')">Apagar</button>`
+                       <button style="background:var(--danger); color:white; flex:1;" onclick="apagar('${id}')">Excluir Registro</button>`
                 }
             </div>
         `;
         container.appendChild(div);
     }
 
-    // Ações
+    // --- FUNÇÕES DE INTERAÇÃO ---
+
     window.addComment = function(id) {
         const input = document.getElementById(`in-${id}`);
         if(!input.value) return;
@@ -241,7 +252,10 @@
         onValue(r, s => {
             const d = s.val(); if(!d) return;
             const lista = d.comentarios || [];
-            lista.push({ texto: input.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+            lista.push({ 
+                texto: input.value, 
+                hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) 
+            });
             update(r, { comentarios: lista });
             input.value = "";
         }, { onlyOnce: true });
@@ -259,23 +273,27 @@
 
     window.finalizar = function(id){
         onValue(ref(db, `ativos/${id}`), s => {
-            push(ref(db, "resolvidos"), s.val());
+            if(!s.val()) return;
+            push(ref(db, "resolvidos"), { ...s.val(), fim: new Date().toLocaleString('pt-BR') });
             remove(ref(db, `ativos/${id}`));
         }, { onlyOnce: true });
     };
 
     window.reabrir = function(id){
         onValue(ref(db, `resolvidos/${id}`), s => {
+            if(!s.val()) return;
             push(ref(db, "ativos"), s.val());
             remove(ref(db, `resolvidos/${id}`));
         }, { onlyOnce: true });
     };
 
     window.apagar = function(id){
-        if(confirm("Apagar permanentemente?")) remove(ref(db, `resolvidos/${id}`));
+        if(confirm("Tem certeza que deseja excluir permanentemente este registro histórico?")) 
+            remove(ref(db, `resolvidos/${id}`));
     };
 
-    // Sync e UI
+    // --- SINCRONIZAÇÃO EM TEMPO REAL ---
+
     onValue(ref(db, "ativos"), snap => {
         document.getElementById("ativos").innerHTML = "";
         snap.forEach(c => renderCard(c.key, c.val(), "ativos"));
@@ -293,7 +311,17 @@
         document.getElementById("btn-tab-resolvidos").classList.toggle("active", tab === "resolvidos");
     };
 
-    setInterval(() => { if(!document.getElementById("ativos").classList.contains("hidden")) showTab('ativos'); }, 60000);
+    // Atualiza a tela a cada 60 segundos para repintar os timers e alertas
+    setInterval(() => { 
+        if(!document.getElementById("ativos").classList.contains("hidden")) {
+            const container = document.getElementById("ativos");
+            // Forçamos uma atualização visual sem refresh total da página
+            onValue(ref(db, "ativos"), snap => {
+                container.innerHTML = "";
+                snap.forEach(c => renderCard(c.key, c.val(), "ativos"));
+            }, { onlyOnce: true });
+        }
+    }, 60000);
 </script>
 
 </body>
