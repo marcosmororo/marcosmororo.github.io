@@ -2,49 +2,62 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>N2.NC01 - TOTAL CDN ONLINE</title>
+<title>CDN - Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { font-family: Arial; padding: 20px; background:#0f172a; color:#fff; }
-table { width:100%; border-collapse: collapse; margin-bottom:20px; }
-th, td { border:1px solid #334155; padding:10px; text-align:center; }
-th { background:#1e293b; }
-input { width:80px; padding:5px; }
-button { padding:10px 15px; margin:5px; cursor:pointer; }
-#comentario { width:100%; height:80px; }
-.card { background:#1e293b; padding:15px; border-radius:10px; margin-top:20px; }
+body { font-family: Arial; background:#0f172a; color:#fff; padding:20px; }
+
+button { padding:8px 12px; margin:5px; cursor:pointer; }
+
+.table-container { max-height:300px; overflow-y:auto; border:1px solid #334155; border-radius:8px; }
+
+table { width:100%; border-collapse: collapse; }
+th, td { border:1px solid #334155; padding:8px; text-align:center; font-size:14px; }
+th { background:#1e293b; position:sticky; top:0; }
+
+input { width:70px; padding:4px; }
+
+.card { background:#1e293b; padding:15px; border-radius:10px; margin-top:15px; }
+
+#grafico { max-height:250px !important; }
+
+textarea { width:100%; height:70px; }
 </style>
 </head>
 <body>
 
-<h2>Consumo de Rede</h2>
+<button onclick="voltar()">⬅ Voltar</button>
+<h2>CDN - Consumo</h2>
 
+<div class="table-container">
 <table id="tabela">
 <thead>
 <tr>
 <th>Provedor</th>
 <th>Interface</th>
 <th>Equipamento</th>
-<th>Valor (Mbps)</th>
+<th>Atual</th>
+<th>Pico Máx</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>GOOGLE</td><td>irb.428</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>GOOGLE</td><td>irb.400</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>FACEBOOK</td><td>ae6</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>FACEBOOK</td><td>ae8</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae0</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae3</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae4</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae5</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>CLOUDFLARE</td><td>ae7</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>ae1</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk1</td><td>PI-PRP-E01-BKB-SW002</td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk3</td><td>MA-CHA-E01-BKB-SW001</td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>irb.428</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>irb.400</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>FACEBOOK</td><td>ae6</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>FACEBOOK</td><td>ae8</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae0</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae3</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae4</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae5</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>CLOUDFLARE</td><td>ae7</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>ae1</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk1</td><td>BKB</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk3</td><td>BKB</td><td><input type="number"></td><td><input type="number"></td></tr>
 </tbody>
 </table>
+</div>
 
 <button onclick="calcular()">Calcular</button>
 <button onclick="window.print()">Baixar PDF</button>
@@ -55,7 +68,7 @@ button { padding:10px 15px; margin:5px; cursor:pointer; }
 
 <div class="card">
 <h3>Comentários</h3>
-<textarea id="comentario" placeholder="Adicione observações..."></textarea>
+<textarea placeholder="Observações..."></textarea>
 </div>
 
 <script>
@@ -65,23 +78,29 @@ function calcular() {
     const linhas = document.querySelectorAll("tbody tr");
     let valores = [];
     let total = 0;
+    let maxPico = 0;
 
     linhas.forEach(l => {
-        const val = parseFloat(l.cells[3].children[0].value) || 0;
-        valores.push(val);
-        total += val;
+        const atual = parseFloat(l.cells[3].children[0].value) || 0;
+        const pico = parseFloat(l.cells[4].children[0].value) || 0;
+
+        valores.push(atual);
+        total += atual;
+
+        if (pico > maxPico) maxPico = pico;
     });
 
-    let max = Math.max(...valores);
-    let indiceMax = valores.indexOf(max);
-    let nomeMax = linhas[indiceMax].cells[1].innerText;
+    let maxAtual = Math.max(...valores);
+    let idx = valores.indexOf(maxAtual);
+    let nome = linhas[idx].cells[1].innerText;
 
     valores.sort((a,b)=>a-b);
     let p95 = valores[Math.floor(valores.length * 0.95)] || 0;
 
     document.getElementById("resultado").innerHTML = `
         <p><b>Total:</b> ${total.toFixed(2)} Mbps</p>
-        <p><b>Maior consumo:</b> ${nomeMax} (${max} Mbps)</p>
+        <p><b>Maior consumo:</b> ${nome} (${maxAtual} Mbps)</p>
+        <p><b>Pico Máximo:</b> ${maxPico} Mbps</p>
         <p><b>Percentil 95:</b> ${p95} Mbps</p>
     `;
 
@@ -104,11 +123,21 @@ function gerarGrafico(linhas) {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Consumo Mbps',
+                label: 'Mbps',
                 data: dados
             }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
         }
     });
+}
+
+function voltar() {
+    window.location.href = "icg.html";
 }
 </script>
 
