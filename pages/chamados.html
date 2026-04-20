@@ -4,24 +4,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>NOC Monitor PRO</title>
 
 <style>
 body { font-family: Arial; background:#020617; color:#fff; padding:20px;}
-.container { max-width:1000px; margin:auto;}
+.container { max-width:1100px; margin:auto;}
+
 input, select, textarea, button {
   padding:10px; margin:5px; border-radius:6px; border:none;
 }
+
 button { background:#38bdf8; cursor:pointer;}
+
 .card {
-  background:#1e293b; padding:15px; margin:10px 0;
+  background:#1e293b;
+  padding:15px;
+  margin:10px 0;
   border-radius:10px;
+  border-left:6px solid #22c55e;
 }
-.timer { background:#38bdf8; color:#000; padding:5px 10px; border-radius:6px;}
-.step { font-size:12px; opacity:0.3; cursor:pointer;}
-.step.active { opacity:1; font-weight:bold; color:#38bdf8;}
+
+.card.warning { border-color:#facc15; }
+.card.danger { border-color:#ef4444; }
+
+.timer {
+  font-weight:bold;
+  margin-top:5px;
+}
+
+.escalation {
+  margin-top:10px;
+  padding:10px;
+  background:#0f172a;
+  border-radius:8px;
+}
+
 .tabs button { margin:5px; }
+.hidden { display:none; }
 </style>
 
 </head>
@@ -30,42 +49,44 @@ button { background:#38bdf8; cursor:pointer;}
 
 <div class="container">
 
-<h2>📑 NOC Monitor PRO</h2>
+<h2>📡 NOC Monitor</h2>
 
 <div>
-<input type="text" id="pai" placeholder="Chamado Pai">
-<input type="text" id="filho" placeholder="Chamado Filho">
-<input type="text" id="titulo" placeholder="Título">
+<input type="text" id="titulo" placeholder="Chamado">
+<input type="text" id="pai" placeholder="Pai">
+<input type="text" id="filho" placeholder="Filho">
 <input type="time" id="hora">
 <select id="tipo">
 <option value="externa">Rede Externa</option>
 <option value="interna">Rede Interna</option>
 </select>
 <textarea id="descricao" placeholder="Descrição"></textarea>
-<button onclick="adicionar()">Adicionar</button>
+<button onclick="add()">Adicionar</button>
 </div>
 
 <div class="tabs">
-<button onclick="trocarAba('ativos')">Ativos</button>
-<button onclick="trocarAba('resolvidos')">Resolvidos</button>
+<button onclick="showTab('ativos')">Ativos</button>
+<button onclick="showTab('resolvidos')">Resolvidos</button>
 </div>
 
 <div id="ativos"></div>
-<div id="resolvidos" style="display:none"></div>
+<div id="resolvidos" class="hidden"></div>
 
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, update, remove } 
-from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+import {
+getDatabase, ref, push, onChildAdded,
+onChildRemoved, update, remove, get
+} from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "SUA_API",
   authDomain: "chamadosnoc-c45c4.firebaseapp.com",
   databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com",
-  projectId: "chamadosnoc-c45c4",
+  projectId: "chamadosnoc-c45c4"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -73,135 +94,116 @@ const db = getDatabase(app);
 
 const escala = {
   externa: [
-    {h:4,n:"Erivelton"},
-    {h:8,n:"Guilherme"},
-    {h:10,n:"Valmir"},
-    {h:12,n:"Fernando"}
+    {h:4,n:"Erivelton",tel:"558898283311"},
+    {h:8,n:"Guilherme",tel:"558899282323"},
+    {h:10,n:"Valmir",tel:"558898287071"},
+    {h:12,n:"Fernando",tel:"5588994401255"}
   ],
   interna: [
-    {h:4,n:"Joao"},
-    {h:8,n:"Wescley"},
-    {h:10,n:"Valmir"},
-    {h:12,n:"Fernando"}
+    {h:4,n:"Joao",tel:"558898283337"},
+    {h:8,n:"Wescley",tel:"558894866085"},
+    {h:10,n:"Valmir",tel:"558898287071"},
+    {h:12,n:"Fernando",tel:"5588994401255"}
   ]
 };
 
-// =====================
-// ADICIONAR
-// =====================
-window.adicionar = function () {
-  const data = new Date();
-
-  push(ref(db, "ativos"), {
-    pai: pai.value,
-    filho: filho.value,
-    titulo: titulo.value,
-    descricao: descricao.value,
-    tipo: tipo.value,
-    inicio: data.getTime(),
-    escalado: []
+// ADD
+window.add = function() {
+  push(ref(db,"ativos"),{
+    titulo:titulo.value,
+    pai:pai.value,
+    filho:filho.value,
+    descricao:descricao.value,
+    tipo:tipo.value,
+    inicio:new Date().getTime()
   });
 
-  document.querySelectorAll("input, textarea").forEach(e => e.value = "");
+  document.querySelectorAll("input, textarea").forEach(e=>e.value="");
 }
 
-// =====================
 // RENDER
-// =====================
-function criarCard(id, item, tipoLista) {
+function render(id,data,containerId){
 
-  const container = document.getElementById(tipoLista);
+  const container = document.getElementById(containerId);
 
   const div = document.createElement("div");
-  div.className = "card";
+  div.className="card";
 
-  let htmlEscala = "";
+  function atualizar(){
 
-  escala[item.tipo].forEach((e,i)=>{
-    const ativo = item.escalado.includes(e.h);
+    const diff = (Date.now()-data.inicio)/3600000;
 
-    htmlEscala += `
-      <div class="step ${ativo ? 'active':''}" 
-           onclick="marcarEscala('${id}',${e.h})">
-        ${e.h}h - ${e.n}
+    let nivelAtual=null;
+
+    escala[data.tipo].forEach(e=>{
+      if(diff>=e.h) nivelAtual=e;
+    });
+
+    div.classList.remove("warning","danger");
+
+    if(diff>=8) div.classList.add("warning");
+    if(diff>=10) div.classList.add("danger");
+
+    div.innerHTML = `
+      <strong>${data.titulo}</strong><br>
+      Pai: ${data.pai||"-"} | Filho: ${data.filho||"-"}<br>
+      📝 ${data.descricao||"-"}<br>
+
+      <div class="timer">
+        ⏱ ${Math.floor(diff)}h ${Math.floor((diff%1)*60)}m
       </div>
+
+      ${
+        nivelAtual ? `
+        <div class="escalation">
+          🚨 Escalar AGORA:<br>
+          <b>${nivelAtual.n}</b><br>
+
+          <a href="tel:+${nivelAtual.tel}">
+            📞 Ligar
+          </a> |
+
+          <a href="https://wa.me/${nivelAtual.tel}" target="_blank">
+            💬 WhatsApp
+          </a>
+        </div>
+        ` : "🟢 Dentro do SLA"
+      }
+
+      <br>
+      ${containerId==="ativos"
+        ? `<button onclick="finalizar('${id}')">Finalizar</button>`
+        : `<small>Resolvido</small>`}
     `;
-  });
+  }
 
-  div.innerHTML = `
-    <strong>${item.titulo}</strong><br>
-    Pai: ${item.pai || "-"}<br>
-    Filho: ${item.filho || "-"}<br>
-    📝 ${item.descricao}<br>
-    ⏰ ${new Date(item.inicio).toLocaleString()}<br><br>
-
-    ${tipoLista === "ativos" ? `
-      <button onclick="finalizar('${id}')">Finalizar</button>
-    ` : `
-      <small>Escalado até: ${Math.max(...(item.escalado||[0]))}h</small>
-    `}
-
-    <div>${htmlEscala}</div>
-  `;
+  atualizar();
+  setInterval(atualizar,60000);
 
   container.appendChild(div);
 }
 
-// =====================
 // FIREBASE
-// =====================
 onChildAdded(ref(db,"ativos"), snap=>{
-  criarCard(snap.key, snap.val(), "ativos");
+  render(snap.key, snap.val(),"ativos");
 });
 
 onChildAdded(ref(db,"resolvidos"), snap=>{
-  criarCard(snap.key, snap.val(), "resolvidos");
+  render(snap.key, snap.val(),"resolvidos");
 });
 
-// =====================
-// ESCALA
-// =====================
-window.marcarEscala = function(id, h) {
-  const refItem = ref(db,"ativos/"+id);
-
-  import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js")
-  .then(({get})=>{
-    get(refItem).then(snap=>{
-      let dados = snap.val();
-      let lista = dados.escalado || [];
-
-      if (!lista.includes(h)) lista.push(h);
-
-      update(refItem,{escalado: lista});
-      location.reload();
-    });
-  });
-}
-
-// =====================
 // FINALIZAR
-// =====================
-window.finalizar = function(id) {
-
-  import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js")
-  .then(({get})=>{
-    get(ref(db,"ativos/"+id)).then(snap=>{
-      const dados = snap.val();
-
-      push(ref(db,"resolvidos"), dados);
-      remove(ref(db,"ativos/"+id));
-
-      location.reload();
-    });
+window.finalizar = function(id){
+  get(ref(db,"ativos/"+id)).then(snap=>{
+    push(ref(db,"resolvidos"), snap.val());
+    remove(ref(db,"ativos/"+id));
   });
 }
 
-// =====================
-// ABAS
-// =====================
-window.trocarAba = function(aba){
-  document.getElementById("ativos").style.display = aba==="ativos"?"block":"none";
-  document.getElementById("resolvidos").style.display = aba==="resolvidos"?"block":"none";
+// TABS
+window.showTab = function(tab){
+  ativos.classList.toggle("hidden",tab!=="ativos");
+  resolvidos.classList.toggle("hidden",tab!=="resolvidos");
 }
 
 </script>
