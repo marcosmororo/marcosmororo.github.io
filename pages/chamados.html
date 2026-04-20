@@ -1,8 +1,184 @@
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOC Dashboard - Sincronizado</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <style>
+        :root { 
+            --bg: #020617; 
+            --card: #1e293b; 
+            --primary: #38bdf8; 
+            --text: #f1f5f9; 
+            --danger: #ef4444; 
+            --success: #22c55e;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            padding: 20px; 
+            margin: 0; 
+        }
+
+        .container { max-width: 1000px; margin: auto; }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid var(--card); 
+            padding-bottom: 15px; 
+            margin-bottom: 25px; 
+        }
+
+        /* Formulário */
+        .doc-form { 
+            background: var(--card); 
+            padding: 20px; 
+            border-radius: 12px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); 
+            gap: 12px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+        }
+
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 4px; text-transform: uppercase; }
+
+        input, select, button { 
+            padding: 12px; 
+            border-radius: 6px; 
+            border: 1px solid #334155; 
+            background: #0f172a; 
+            color: white; 
+            font-size: 14px; 
+        }
+
+        button.add-btn { 
+            background: var(--primary); 
+            color: #020617; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            transition: filter 0.2s;
+        }
+        button.add-btn:hover { filter: brightness(1.1); }
+
+        /* Card de Incidente */
+        .chamado-card { 
+            background: var(--card); 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-left: 8px solid var(--primary); 
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .timer-badge { 
+            background: var(--primary); 
+            color: #020617; 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            font-family: 'Courier New', monospace; 
+            font-size: 18px; 
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Escalonamento */
+        .escalation-tracker {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        .step { 
+            font-size: 13px; 
+            padding: 8px; 
+            margin-bottom: 4px;
+            opacity: 0.3; 
+            border-radius: 4px; 
+            border-left: 3px solid transparent;
+        }
+
+        .step.active { 
+            opacity: 1; 
+            background: rgba(56, 189, 248, 0.15); 
+            border-left-color: var(--primary); 
+            font-weight: bold; 
+        }
+
+        .step.past { opacity: 0.5; text-decoration: line-through; }
+
+        .delete-btn { 
+            color: var(--danger); 
+            border: 1px solid var(--danger); 
+            background: none; 
+            cursor: pointer; 
+            padding: 8px; 
+            border-radius: 6px; 
+            margin-top: 15px;
+            width: 100%;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .delete-btn:hover { background: var(--danger); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>📑 NOC Monitor Cloud</h1>
+        <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);">00:00:00</div>
+    </div>
+
+    <div class="doc-form">
+        <div class="input-group">
+            <label>Incidente</label>
+            <input type="text" id="titulo" placeholder="Ex: Rompimento Fibra">
+        </div>
+        <div class="input-group">
+            <label>Data</label>
+            <input type="date" id="data_inicio">
+        </div>
+        <div class="input-group">
+            <label>Hora</label>
+            <input type="time" id="hora_inicio">
+        </div>
+        <div class="input-group">
+            <label>Rede</label>
+            <select id="tipo">
+                <option value="externa">Rede Externa</option>
+                <option value="interna">Rede Interna</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>Chamado</label>
+            <input type="text" id="filho" placeholder="ID Opcional">
+        </div>
+        <button class="add-btn" onclick="adicionarRegistro()">Lançar Nuvem</button>
+    </div>
+
+    <div id="lista-chamados"></div>
+</div>
 
 <script>
-    // 2. Sua configuração específica que você enviou
+    // Configurações do seu projeto (AIza...)
     const firebaseConfig = {
         apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
         authDomain: "chamadosnoc-c45c4.firebaseapp.com",
@@ -10,111 +186,115 @@
         storageBucket: "chamadosnoc-c45c4.firebasestorage.app",
         messagingSenderId: "25502320062",
         appId: "1:25502320062:web:0b53a68ebd5324b3b265ef",
-        // Importante: O Realtime Database precisa da URL do banco
+        // URL gerada automaticamente baseada no seu ProjectId
         databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com" 
     };
 
-    // 3. Inicialização
+    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 4. Configuração dos Contatos e Tempos (Horas)
+    // Régua de Escalonamento em Horas
     const escala = {
         externa: [
-            { h: 0, n: "Início" },
-            { h: 4, n: "Erivelton Rodrigues" },
-            { h: 8, n: "Guilherme Silva" },
-            { h: 10, n: "Valmir (Coordenação)" },
-            { h: 12, n: "Fernando (Gerência)" }
+            { h: 0, n: "Início do Evento" },
+            { h: 4, n: "Nível 1: Erivelton Rodrigues" },
+            { h: 8, n: "Nível 2: Guilherme Silva" },
+            { h: 10, n: "Nível 3: Valmir (Coordenação)" },
+            { h: 12, n: "Nível 4: Fernando (Gerência)" }
         ],
         interna: [
-            { h: 0, n: "Início" },
-            { h: 4, n: "Joao Martins" },
-            { h: 8, n: "Wescley" },
-            { h: 10, n: "Valmir (Coordenação)" },
-            { h: 12, n: "Fernando (Gerência)" }
+            { h: 0, n: "Início do Evento" },
+            { h: 4, n: "Nível 1: Joao Martins" },
+            { h: 8, n: "Nível 2: Wescley" },
+            { h: 10, n: "Nível 3: Valmir (Coordenação)" },
+            { h: 12, n: "Nível 4: Fernando (Gerência)" }
         ]
     };
 
-    // 5. Função para Enviar Dados para a Nuvem
+    // Data de hoje padrão
+    document.getElementById('data_inicio').valueAsDate = new Date();
+
+    // Função para Salvar no Firebase
     function adicionarRegistro() {
-        const titulo = document.getElementById("titulo").value;
-        const data = document.getElementById("data_inicio").value;
-        const hora = document.getElementById("hora_inicio").value;
-        const tipo = document.getElementById("tipo").value;
-        const filho = document.getElementById("filho").value;
+        const t = document.getElementById("titulo").value;
+        const d = document.getElementById("data_inicio").value;
+        const h = document.getElementById("hora_inicio").value;
+        const tp = document.getElementById("tipo").value;
+        const f = document.getElementById("filho").value;
 
-        if (!titulo || !data || !hora) return alert("Preencha Título, Data e Hora!");
+        if (!t || !d || !h) return alert("Erro: Título, Data e Hora são obrigatórios.");
 
-        const inicio = new Date(`${data}T${hora}`).getTime();
+        const inicio = new Date(`${d}T${h}`).getTime();
         
-        // Salva no Firebase
         db.ref('incidentes').push({
-            titulo,
-            inicio,
-            tipo,
-            filho
+            titulo: t,
+            inicio: inicio,
+            tipo: tp,
+            filho: f
         });
 
-        // Limpa o campo de título
         document.getElementById("titulo").value = "";
+        document.getElementById("filho").value = "";
     }
 
-    // 6. Função para Encerrar (Deletar da Nuvem)
+    // Função para Remover do Firebase
     function excluir(id) {
-        if(confirm("Deseja encerrar este incidente para todos?")) {
+        if(confirm("Encerrar este incidente para todos os usuários?")) {
             db.ref('incidentes/' + id).remove();
         }
     }
 
-    // 7. Escuta em Tempo Real (Sincronização)
-    db.ref('incidentes').on('value', (snapshot) => {
-        const listaDiv = document.getElementById("lista-chamados");
-        listaDiv.innerHTML = "";
-        const dados = snapshot.val();
-        const agora = Date.now();
-
+    // Sincronização em Tempo Real
+    db.ref('incidentes').on('value', (snap) => {
+        const container = document.getElementById("lista-chamados");
+        container.innerHTML = "";
+        const dados = snap.val();
+        
         if (!dados) {
-            listaDiv.innerHTML = "<p style='opacity:0.5'>Nenhum incidente ativo no momento.</p>";
+            container.innerHTML = "<p style='text-align:center; opacity:0.5; margin-top:50px;'>Nenhum incidente ativo no momento.</p>";
             return;
         }
 
-        for (let id in dados) {
+        const agora = Date.now();
+
+        Object.keys(dados).forEach(id => {
             const item = dados[id];
             const decorridoMs = agora - item.inicio;
             const decorridoH = decorridoMs / 3600000;
-
+            
             let htmlEscala = "";
             escala[item.tipo].forEach(e => {
-                let statusClass = "";
+                let cls = "";
                 if (decorridoH >= e.h) {
-                    const proximo = escala[item.tipo].find(p => p.h > e.h);
-                    statusClass = (!proximo || decorridoH < proximo.h) ? "active" : "past";
+                    const prox = escala[item.tipo].find(p => p.h > e.h);
+                    cls = (!prox || decorridoH < prox.h) ? "active" : "past";
                 }
-                htmlEscala += `<div class="step ${statusClass}">${e.h}h - ${e.n}</div>`;
+                htmlEscala += `<div class="step ${cls}">${e.h}h - ${e.n}</div>`;
             });
 
-            listaDiv.innerHTML += `
-                <div class="chamado-card">
-                    <div class="info-section">
-                        <h3>${item.titulo}</h3>
-                        <div class="meta-info">
-                            <strong>Início:</strong> ${new Date(item.inicio).toLocaleString()}<br>
-                            <strong>Ref:</strong> ${item.filho || "N/A"}<br>
-                            <strong>Tempo total:</strong> <span class="timer-badge">${formatarTempo(decorridoMs)}</span>
-                        </div>
-                        <button class="delete-btn" onclick="excluir('${id}')">Encerrar e Arquivar</button>
+            const card = document.createElement("div");
+            card.className = "chamado-card";
+            card.innerHTML = `
+                <div>
+                    <h3 style="margin:0; color:var(--primary)">${item.titulo}</h3>
+                    <div style="font-size:13px; margin-top:10px; opacity:0.8">
+                        <strong>Início:</strong> ${new Date(item.inicio).toLocaleString('pt-BR')}<br>
+                        <strong>Ref:</strong> ${item.filho || "N/A"}
                     </div>
-                    <div class="escalation-tracker">
-                        <label>Régua de Escalonamento:</label>
-                        ${htmlEscala}
-                    </div>
+                    <div class="timer-badge">${formatar(decorridoMs)}</div>
+                    <button class="delete-btn" onclick="excluir('${id}')">Encerrar Incidente</button>
+                </div>
+                <div class="escalation-tracker">
+                    <label style="font-size:10px; color:var(--primary); font-weight:bold; display:block; margin-bottom:10px;">Régua de Escalonamento</label>
+                    ${htmlEscala}
                 </div>
             `;
-        }
+            container.appendChild(card);
+        });
     });
 
-    function formatarTempo(ms) {
+    function formatar(ms) {
         const s = Math.floor(ms / 1000);
         const h = Math.floor(s / 3600);
         const m = Math.floor((s % 3600) / 60);
@@ -122,9 +302,11 @@
         return `${h}h ${m}m ${seg}s`;
     }
 
-    // Atualiza apenas o relógio visual
+    // Relógio
     setInterval(() => {
-        const clock = document.getElementById("clock");
-        if(clock) clock.innerText = new Date().toLocaleTimeString();
+        document.getElementById("clock").innerText = new Date().toLocaleTimeString('pt-BR');
     }, 1000);
 </script>
+
+</body>
+</html>
