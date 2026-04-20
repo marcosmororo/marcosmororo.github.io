@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Dashboard - Controle de Escalonamento</title>
+    <title>NOC Escalation - Advanced</title>
 
     <style>
         :root {
@@ -11,152 +11,117 @@
             --card: #1e293b;
             --header: #334155;
             --primary: #38bdf8;
-            --primary-hover: #0ea5e9;
             --ok: #10b981;
             --warn: #f59e0b;
             --danger: #ef4444;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
+            --next-step: #fbbf24; /* Cor para o próximo escalonamento */
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
 
         body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
             background: var(--bg); 
             color: var(--text-main); 
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
+            margin: 0; padding: 20px;
         }
 
         .container { max-width: 1200px; margin: auto; }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--card);
-        }
-
-        h2 { font-weight: 300; letter-spacing: 1px; color: var(--primary); margin: 0; }
-
-        /* Form Style */
+        /* Form */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
             background: var(--card);
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            border: 1px solid var(--header);
         }
 
         input, select, textarea {
             background: var(--bg);
             border: 1px solid var(--header);
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            outline: none;
+            color: white; padding: 12px; border-radius: 8px;
         }
 
-        input:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
-
-        textarea { grid-column: 1 / -1; height: 80px; resize: vertical; }
+        textarea { grid-column: 1 / -1; height: 60px; }
 
         button {
-            background: var(--primary);
-            color: var(--bg);
-            font-weight: bold;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            text-transform: uppercase;
-            font-size: 0.85rem;
+            padding: 12px; border-radius: 8px; border: none;
+            cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 12px;
         }
 
-        button:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-add { background: var(--primary); color: var(--bg); }
+        .btn-finish { background: var(--ok); color: white; width: 100%; margin-top: 10px; }
+        .btn-reopen { background: var(--warn); color: var(--bg); flex: 1; }
+        .btn-delete { background: var(--danger); color: white; flex: 1; }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tabs button { background: var(--card); color: var(--text-dim); }
+        .tabs button { background: var(--card); color: var(--text-dim); padding: 10px 20px; }
         .tabs button.active { background: var(--primary); color: var(--bg); }
 
-        /* Cards */
+        /* Grid */
         .grid-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
 
+        /* Card */
         .card {
             background: var(--card);
-            padding: 20px;
+            padding: 18px;
             border-radius: 12px;
-            border-top: 4px solid var(--ok);
-            position: relative;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
-        }
-
-        .card.warn { border-top-color: var(--warn); }
-        .card.danger { border-top-color: var(--danger); }
-
-        .card-header { margin-bottom: 15px; }
-        .card-title { font-size: 1.2rem; font-weight: 600; display: block; color: var(--primary); }
-        .card-subtitle { font-size: 0.8rem; color: var(--text-dim); }
-
-        .description { 
-            background: rgba(0,0,0,0.2); 
-            padding: 10px; 
-            border-radius: 6px; 
-            margin: 10px 0; 
-            font-size: 0.9rem;
-        }
-
-        .timer {
-            font-family: monospace;
-            font-size: 1.1rem;
-            color: var(--warn);
+            border-left: 6px solid var(--ok);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
             display: flex;
-            align-items: center;
-            gap: 5px;
-            margin: 10px 0;
+            flex-direction: column;
         }
 
-        /* Escalation Steps */
-        .step-list { margin-top: 15px; }
+        .card.warn { border-left-color: var(--warn); }
+        .card.danger { border-left-color: var(--danger); }
+
+        .card-header { margin-bottom: 10px; border-bottom: 1px solid var(--header); padding-bottom: 8px; }
+        .card-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); display: block; }
+        
+        .timer { font-family: monospace; color: var(--warn); font-size: 1.1rem; margin: 8px 0; }
+
+        /* Steps */
         .step {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            background: var(--header);
-            padding: 10px;
-            margin: 6px 0;
-            border-radius: 8px;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.5);
+            padding: 8px 12px;
+            margin: 4px 0;
+            border-radius: 6px;
             font-size: 0.85rem;
-            cursor: pointer;
+            border: 1px solid transparent;
         }
 
-        .step.done { border-left: 4px solid var(--ok); background: rgba(16, 185, 129, 0.1); opacity: 0.7; }
-        .step.current { border-left: 4px solid var(--primary); animation: pulse 2s infinite; }
+        .step.done { opacity: 0.4; text-decoration: line-through; border-left: 3px solid var(--ok); }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        /* Efeito para o PRÓXIMO que deve ser acionado */
+        .step.next-to-call {
+            border: 1px solid var(--next-step);
+            background: rgba(251, 191, 36, 0.1);
+            animation: pulse-next 2s infinite;
         }
 
-        .step-actions a {
-            text-decoration: none;
-            margin-left: 8px;
-            font-size: 1.2rem;
+        @keyframes pulse-next {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
         }
 
-        .btn-finish { width: 100%; margin-top: 15px; background: var(--ok); color: white; }
-        .btn-finish:hover { background: #059669; }
+        .step-actions a { text-decoration: none; margin-left: 10px; font-size: 1.1rem; }
+
+        .action-group { display: flex; gap: 8px; margin-top: 15px; }
 
         .hidden { display: none; }
     </style>
@@ -164,25 +129,25 @@
 <body>
 
 <div class="container">
-    <header>
-        <h2>📡 NOC ESCALATION SYSTEM</h2>
+    <header style="text-align:center; margin-bottom: 20px;">
+        <h2 style="color: var(--primary);">📡 NOC DASHBOARD - ESCALONAMENTO</h2>
     </header>
 
     <div class="form-grid">
-        <input id="titulo" placeholder="Título da Ocorrência (Ex: Rompimento Fibra)">
-        <input id="pai" placeholder="Elemento Pai">
-        <input id="filho" placeholder="Elemento Filho">
+        <input id="titulo" placeholder="Título">
+        <input id="pai" placeholder="Pai">
+        <input id="filho" placeholder="Filho">
         <select id="tipo">
             <option value="externa">Rede Externa</option>
             <option value="interna">Rede Interna</option>
         </select>
-        <textarea id="descricao" placeholder="Detalhes técnicos da falha..."></textarea>
-        <button onclick="add()">Abrir Escalonamento</button>
+        <textarea id="descricao" placeholder="Descrição da falha..."></textarea>
+        <button class="btn-add" onclick="add()">Iniciar Evento</button>
     </div>
 
     <div class="tabs">
-        <button id="btn-ativos" class="active" onclick="showTab('ativos')">Ativos</button>
-        <button id="btn-resolvidos" onclick="showTab('resolvidos')">Histórico Resolvidos</button>
+        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">Incidentes Ativos</button>
+        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">Histórico / Resolvidos</button>
     </div>
 
     <div id="ativos" class="grid-cards"></div>
@@ -192,8 +157,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
     import {
-        getDatabase, ref, push, onChildAdded,
-        onChildRemoved, update, remove, onValue
+        getDatabase, ref, push, update, remove, onValue
     } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -226,7 +190,7 @@
 
     window.add = function(){
         const t = document.getElementById("titulo").value;
-        if(!t) return alert("Título é obrigatório");
+        if(!t) return alert("Título necessário");
 
         push(ref(db,"ativos"), {
             titulo: t,
@@ -237,104 +201,124 @@
             inicio: new Date().getTime(),
             escalado: []
         });
-
         document.querySelectorAll("input, textarea").forEach(e=>e.value="");
-    }
+    };
 
     function renderCard(id, data, containerId) {
         const container = document.getElementById(containerId);
-        let div = document.getElementById(id);
+        let div = document.createElement("div");
         
-        if(!div) {
-            div = document.createElement("div");
-            div.id = id;
-            container.appendChild(div);
+        const diffH = (Date.now() - data.inicio) / 3600000;
+        
+        // Lógica de cores do card
+        let statusClass = "";
+        if(diffH >= 10) statusClass = "danger";
+        else if(diffH >= 8) statusClass = "warn";
+        
+        div.className = `card ${statusClass}`;
+        div.id = id;
+
+        // Encontrar o próximo contato a ser feito (que ainda não foi marcado como feito)
+        let proximoH = null;
+        const contatosPosiveis = escala[data.tipo].filter(e => diffH >= e.h);
+        if(contatosPosiveis.length > 0) {
+            // O último da lista de tempos atingidos que ainda não foi marcado
+            const pendentes = contatosPosiveis.filter(e => !data.escalado?.includes(e.h));
+            if(pendentes.length > 0) proximoH = pendentes[0].h;
         }
 
-        const updateUI = () => {
-            const diffMs = Date.now() - data.inicio;
-            const diffH = diffMs / 3600000;
-            const hDisplay = Math.floor(diffH);
-            const mDisplay = Math.floor((diffH % 1) * 60);
-
-            let nivelAtual = null;
-            escala[data.tipo].forEach(e => { if(diffH >= e.h) nivelAtual = e; });
-
-            div.className = `card ${diffH >= 10 ? 'danger' : diffH >= 8 ? 'warn' : ''}`;
-
-            let stepsHTML = escala[data.tipo].map(e => {
-                const done = data.escalado?.includes(e.h);
-                const isCurrent = nivelAtual && nivelAtual.h === e.h;
-                return `
-                    <div class="step ${done?'done':''} ${isCurrent?'current':''}" onclick="toggleEscala('${id}', ${e.h})">
-                        <span><strong>${e.h}h</strong> - ${e.n} ${done ? '✔' : ''}</span>
-                        <div class="step-actions">
-                            <a href="tel:+${e.tel}" title="Ligar">📞</a>
-                            <a href="https://wa.me/${e.tel}" target="_blank" title="WhatsApp">💬</a>
-                        </div>
+        const stepsHTML = escala[data.tipo].map(e => {
+            const isDone = data.escalado?.includes(e.h);
+            const isNext = e.h === proximoH && containerId === 'ativos';
+            
+            return `
+                <div class="step ${isDone?'done':''} ${isNext?'next-to-call':''}" 
+                     onclick="${containerId === 'ativos' ? `toggleEscala('${id}', ${e.h})` : ''}">
+                    <span><strong>${e.h}h</strong> - ${e.n} ${isDone ? '✔' : ''}</span>
+                    <div class="step-actions">
+                        <a href="tel:+${e.tel}">📞</a>
+                        <a href="https://wa.me/${e.tel}" target="_blank">💬</a>
                     </div>
-                `;
-            }).join('');
-
-            div.innerHTML = `
-                <div class="card-header">
-                    <span class="card-title">${data.titulo}</span>
-                    <span class="card-subtitle">Local: ${data.pai || 'N/A'} > ${data.filho || 'N/A'} | Tipo: ${data.tipo}</span>
                 </div>
-                <div class="description">${data.descricao || "Sem descrição adicional."}</div>
-                <div class="timer">⏱ ${hDisplay}h ${mDisplay}m ocorrendo</div>
-                <div class="step-list">${stepsHTML}</div>
-                ${containerId === "ativos" 
-                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Encerrar Ocorrência</button>` 
-                    : `<div style="text-align:center; color:var(--ok); margin-top:10px;">✓ Resolvido</div>`}
             `;
-        };
+        }).join('');
 
-        updateUI();
-        if(containerId === "ativos") {
-            if(div.dataset.interval) clearInterval(div.dataset.interval);
-            div.dataset.interval = setInterval(updateUI, 30000);
-        }
+        div.innerHTML = `
+            <div class="card-header">
+                <span class="card-title">${data.titulo}</span>
+                <small>${data.pai || '-'} / ${data.filho || '-'}</small>
+            </div>
+            <div style="font-size:0.85rem; flex-grow:1;">${data.descricao || ''}</div>
+            <div class="timer">⏱ ${Math.floor(diffH)}h ${Math.floor((diffH % 1) * 60)}m</div>
+            <div class="step-list">${stepsHTML}</div>
+            
+            ${containerId === "ativos" 
+                ? `<button class="btn-finish" onclick="finalizar('${id}')">Finalizar</button>` 
+                : `<div class="action-group">
+                    <button class="btn-reopen" onclick="reabrir('${id}')">Reabrir</button>
+                    <button class="btn-delete" onclick="apagar('${id}', 'resolvidos')">Apagar</button>
+                   </div>`
+            }
+        `;
+        container.appendChild(div);
     }
 
-    // Listeners em tempo real
+    // Sincronização Firebase
     onValue(ref(db, "ativos"), snap => {
         document.getElementById("ativos").innerHTML = "";
-        snap.forEach(child => renderCard(child.key, child.val(), "ativos"));
+        snap.forEach(c => renderCard(c.key, c.val(), "ativos"));
     });
 
     onValue(ref(db, "resolvidos"), snap => {
         document.getElementById("resolvidos").innerHTML = "";
-        snap.forEach(child => renderCard(child.key, child.val(), "resolvidos"));
+        snap.forEach(c => renderCard(c.key, c.val(), "resolvidos"));
     });
 
     window.toggleEscala = function(id, h){
-        const itemRef = ref(db, `ativos/${id}`);
-        onValue(itemRef, snap => {
-            const data = snap.val();
-            if(!data) return;
-            let lista = data.escalado || [];
+        const r = ref(db, `ativos/${id}`);
+        onValue(r, s => {
+            const d = s.val(); if(!d) return;
+            let lista = d.escalado || [];
             lista = lista.includes(h) ? lista.filter(x => x !== h) : [...lista, h];
-            update(itemRef, { escalado: lista });
+            update(r, { escalado: lista });
         }, { onlyOnce: true });
-    }
+    };
 
     window.finalizar = function(id){
-        const itemRef = ref(db, `ativos/${id}`);
-        onValue(itemRef, snap => {
-            const data = snap.val();
-            push(ref(db, "resolvidos"), { ...data, fim: new Date().getTime() });
-            remove(itemRef);
+        const r = ref(db, `ativos/${id}`);
+        onValue(r, s => {
+            push(ref(db, "resolvidos"), s.val());
+            remove(r);
         }, { onlyOnce: true });
-    }
+    };
+
+    window.reabrir = function(id){
+        const r = ref(db, `resolvidos/${id}`);
+        onValue(r, s => {
+            push(ref(db, "ativos"), s.val());
+            remove(r);
+        }, { onlyOnce: true });
+    };
+
+    window.apagar = function(id, path){
+        if(confirm("Deseja apagar permanentemente?")) {
+            remove(ref(db, `${path}/${id}`));
+        }
+    };
 
     window.showTab = function(tab){
         document.getElementById("ativos").classList.toggle("hidden", tab !== "ativos");
         document.getElementById("resolvidos").classList.toggle("hidden", tab !== "resolvidos");
-        document.getElementById("btn-ativos").classList.toggle("active", tab === "ativos");
-        document.getElementById("btn-resolvidos").classList.toggle("active", tab === "resolvidos");
-    }
-</script>
+        document.getElementById("btn-tab-ativos").classList.toggle("active", tab === "ativos");
+        document.getElementById("btn-tab-resolvidos").classList.toggle("active", tab === "resolvidos");
+    };
 
+    // Atualiza timers a cada minuto
+    setInterval(() => {
+        const activeTab = document.getElementById("btn-tab-ativos").classList.contains("active") ? "ativos" : "resolvidos";
+        showTab(activeTab); 
+    }, 60000);
+
+</script>
 </body>
 </html>
