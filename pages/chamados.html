@@ -1,200 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC - Documentação e Escalonamento (Escala: Horas)</title>
-    <style>
-        :root {
-            --bg: #020617;
-            --card: #1e293b;
-            --primary: #38bdf8;
-            --accent: #0ea5e9;
-            --danger: #ef4444;
-            --text: #f1f5f9;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-        }
-
-        .container { max-width: 1100px; margin: auto; }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--card);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-
-        .doc-form {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-        }
-
-        .form-group { display: flex; flex-direction: column; }
-        label { font-size: 12px; margin-bottom: 5px; color: var(--primary); font-weight: bold; }
-
-        input, select {
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-        }
-
-        button.add-btn {
-            background: var(--primary);
-            color: #020617;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            height: 40px;
-            margin-top: auto;
-            border-radius: 6px;
-        }
-
-        .chamado-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-left: 8px solid var(--accent);
-            display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 20px;
-        }
-
-        .info-section h3 { margin: 0 0 10px 0; color: var(--primary); }
-        .meta-info { font-size: 13px; opacity: 0.9; line-height: 1.6; }
-
-        .escalation-tracker {
-            background: #0f172a;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #334155;
-        }
-
-        .step {
-            font-size: 13px;
-            padding: 10px;
-            margin-bottom: 6px;
-            border-radius: 4px;
-            opacity: 0.3;
-            border-left: 3px solid transparent;
-        }
-
-        .step.active {
-            opacity: 1;
-            background: rgba(56, 189, 248, 0.15);
-            border-left-color: var(--primary);
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-
-        .step.past { opacity: 0.6; text-decoration: line-through; color: #94a3b8; }
-
-        @keyframes pulse {
-            0% { box-shadow: inset 5px 0 0 rgba(56, 189, 248, 0.5); }
-            50% { box-shadow: inset 15px 0 20px rgba(56, 189, 248, 0.1); }
-            100% { box-shadow: inset 5px 0 0 rgba(56, 189, 248, 0.5); }
-        }
-
-        .timer-badge {
-            background: var(--primary);
-            color: #020617;
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 18px;
-        }
-
-        .delete-btn {
-            background: none;
-            border: 1px solid var(--danger);
-            color: var(--danger);
-            cursor: pointer;
-            padding: 8px 15px;
-            border-radius: 6px;
-            margin-top: 20px;
-        }
-
-        .delete-btn:hover { background: var(--danger); color: white; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <div class="header">
-        <h1>📑 Documentação de Incidentes (Escala: Horas)</h1>
-        <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);"></div>
-    </div>
-
-    <div class="doc-form">
-        <div class="form-group">
-            <label>Título do Incidente</label>
-            <input type="text" id="titulo" placeholder="Ex: CHAMADO - Rompimento Backbone">
-        </div>
-        <div class="form-group">
-            <label>Data de Início</label>
-            <input type="date" id="data_inicio">
-        </div>
-        <div class="form-group">
-            <label>Hora de Início</label>
-            <input type="time" id="hora_inicio">
-        </div>
-        <div class="form-group">
-            <label>Tipo de Rede</label>
-            <select id="tipo">
-                <option value="externa">Rede Externa</option>
-                <option value="interna">Rede Interna</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>ID Chamado Filho</label>
-            <input type="text" id="filho" placeholder="Ex: 20240420-001">
-        </div>
-        <button class="add-btn" onclick="adicionarRegistro()">Iniciar Documentação</button>
-    </div>
-
-    <div id="lista-chamados"></div>
-</div>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 
 <script>
-    // Configuração oficial: Agora em HORAS
-    const contatos = {
+    // 2. Sua configuração específica que você enviou
+    const firebaseConfig = {
+        apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
+        authDomain: "chamadosnoc-c45c4.firebaseapp.com",
+        projectId: "chamadosnoc-c45c4",
+        storageBucket: "chamadosnoc-c45c4.firebasestorage.app",
+        messagingSenderId: "25502320062",
+        appId: "1:25502320062:web:0b53a68ebd5324b3b265ef",
+        // Importante: O Realtime Database precisa da URL do banco
+        databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com" 
+    };
+
+    // 3. Inicialização
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 4. Configuração dos Contatos e Tempos (Horas)
+    const escala = {
         externa: [
-            { horas: 0, nome: "Início do Evento" },
-            { horas: 4, nome: "Nível 1: Erivelton Rodrigues" },
-            { horas: 8, nome: "Nível 2: Guilherme Silva" },
-            { horas: 10, nome: "Nível 3: Valmir (Diretor de Tecnologia)" },
-            { horas: 12, nome: "Nível 4: Fernando (Diretor Executivo)" }
+            { h: 0, n: "Início" },
+            { h: 4, n: "Erivelton Rodrigues" },
+            { h: 8, n: "Guilherme Silva" },
+            { h: 10, n: "Valmir (Coordenação)" },
+            { h: 12, n: "Fernando (Gerência)" }
         ],
         interna: [
-            { horas: 0, nome: "Início do Evento" },
-            { horas: 4, nome: "Nível 1: Joao Martins" },
-            { horas: 8, nome: "Nível 2: Wescley" },
-            { horas: 10, nome: "Nível 3: Valmir (Diretor de Tecnologia)" },
-            { horas: 12, nome: "Nível 4: Fernando (Diretor Executivo)" }
+            { h: 0, n: "Início" },
+            { h: 4, n: "Joao Martins" },
+            { h: 8, n: "Wescley" },
+            { h: 10, n: "Valmir (Coordenação)" },
+            { h: 12, n: "Fernando (Gerência)" }
         ]
     };
 
-    let registros = JSON.parse(localStorage.getItem("noc_doc_hours_2026")) || [];
-    document.getElementById('data_inicio').valueAsDate = new Date();
-
+    // 5. Função para Enviar Dados para a Nuvem
     function adicionarRegistro() {
         const titulo = document.getElementById("titulo").value;
         const data = document.getElementById("data_inicio").value;
@@ -202,96 +44,87 @@
         const tipo = document.getElementById("tipo").value;
         const filho = document.getElementById("filho").value;
 
-        if (!titulo || !data || !hora) return alert("Erro: Título, Data e Hora são obrigatórios.");
+        if (!titulo || !data || !hora) return alert("Preencha Título, Data e Hora!");
 
-        const inicio = new Date(`${data}T${hora}`);
+        const inicio = new Date(`${data}T${hora}`).getTime();
         
-        registros.push({
-            id: Date.now(),
+        // Salva no Firebase
+        db.ref('incidentes').push({
             titulo,
-            inicio: inicio.getTime(),
+            inicio,
             tipo,
             filho
         });
 
-        localStorage.setItem("noc_doc_hours_2026", JSON.stringify(registros));
-        render();
+        // Limpa o campo de título
+        document.getElementById("titulo").value = "";
     }
 
+    // 6. Função para Encerrar (Deletar da Nuvem)
     function excluir(id) {
-        if(confirm("Deseja encerrar e excluir este registro?")) {
-            registros = registros.filter(r => r.id !== id);
-            localStorage.setItem("noc_doc_hours_2026", JSON.stringify(registros));
-            render();
+        if(confirm("Deseja encerrar este incidente para todos?")) {
+            db.ref('incidentes/' + id).remove();
         }
     }
 
-    function render() {
-        const container = document.getElementById("lista-chamados");
-        const agora = new Date().getTime();
-        container.innerHTML = "";
+    // 7. Escuta em Tempo Real (Sincronização)
+    db.ref('incidentes').on('value', (snapshot) => {
+        const listaDiv = document.getElementById("lista-chamados");
+        listaDiv.innerHTML = "";
+        const dados = snapshot.val();
+        const agora = Date.now();
 
-        registros.forEach(reg => {
-            const decorridoMs = agora - reg.inicio;
-            const decorridoHoras = decorridoMs / (1000 * 60 * 60);
-            
-            const card = document.createElement("div");
-            card.className = "chamado-card";
+        if (!dados) {
+            listaDiv.innerHTML = "<p style='opacity:0.5'>Nenhum incidente ativo no momento.</p>";
+            return;
+        }
 
-            const listaContatos = contatos[reg.tipo];
-            let htmlEscalation = "";
-            
-            listaContatos.forEach(c => {
+        for (let id in dados) {
+            const item = dados[id];
+            const decorridoMs = agora - item.inicio;
+            const decorridoH = decorridoMs / 3600000;
+
+            let htmlEscala = "";
+            escala[item.tipo].forEach(e => {
                 let statusClass = "";
-                if (decorridoHoras >= c.horas) {
-                    const proximo = listaContatos.find(p => p.horas > c.horas);
-                    if (!proximo || decorridoHoras < proximo.horas) {
-                        statusClass = "active";
-                    } else {
-                        statusClass = "past";
-                    }
+                if (decorridoH >= e.h) {
+                    const proximo = escala[item.tipo].find(p => p.h > e.h);
+                    statusClass = (!proximo || decorridoH < proximo.h) ? "active" : "past";
                 }
-                htmlEscalation += `<div class="step ${statusClass}">${c.horas}h - ${c.nome}</div>`;
+                htmlEscala += `<div class="step ${statusClass}">${e.h}h - ${e.n}</div>`;
             });
 
-            const dataInicioStr = new Date(reg.inicio).toLocaleString('pt-BR');
-
-            card.innerHTML = `
-                <div class="info-section">
-                    <h3>${reg.titulo}</h3>
-                    <div class="meta-info">
-                        <strong>🕗 Início:</strong> ${dataInicioStr}<br>
-                        <strong>🌐 Rede:</strong> ${reg.tipo === 'externa' ? 'Externa' : 'Interna'}<br>
-                        <strong>🔗 Referência:</strong> ${reg.filho || "Sem ID"}<br><br>
-                        <label>Tempo de Incidente:</label><br>
-                        <span class="timer-badge">${formatarTempoCompleto(decorridoMs)}</span>
+            listaDiv.innerHTML += `
+                <div class="chamado-card">
+                    <div class="info-section">
+                        <h3>${item.titulo}</h3>
+                        <div class="meta-info">
+                            <strong>Início:</strong> ${new Date(item.inicio).toLocaleString()}<br>
+                            <strong>Ref:</strong> ${item.filho || "N/A"}<br>
+                            <strong>Tempo total:</strong> <span class="timer-badge">${formatarTempo(decorridoMs)}</span>
+                        </div>
+                        <button class="delete-btn" onclick="excluir('${id}')">Encerrar e Arquivar</button>
                     </div>
-                    <button class="delete-btn" onclick="excluir(${reg.id})">Encerrar Incidente</button>
-                </div>
-                <div class="escalation-tracker">
-                    <label>Régua de Escalonamento (H):</label>
-                    ${htmlEscalation}
+                    <div class="escalation-tracker">
+                        <label>Régua de Escalonamento:</label>
+                        ${htmlEscala}
+                    </div>
                 </div>
             `;
-            container.appendChild(card);
-        });
+        }
+    });
+
+    function formatarTempo(ms) {
+        const s = Math.floor(ms / 1000);
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const seg = s % 60;
+        return `${h}h ${m}m ${seg}s`;
     }
 
-    function formatarTempoCompleto(ms) {
-        const totalSegundos = Math.floor(ms / 1000);
-        const h = Math.floor(totalSegundos / 3600);
-        const m = Math.floor((totalSegundos % 3600) / 60);
-        const s = totalSegundos % 60;
-        return `${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
-    }
-
+    // Atualiza apenas o relógio visual
     setInterval(() => {
-        document.getElementById("clock").innerText = new Date().toLocaleTimeString('pt-BR');
-        render();
+        const clock = document.getElementById("clock");
+        if(clock) clock.innerText = new Date().toLocaleTimeString();
     }, 1000);
-
-    render();
 </script>
-
-</body>
-</html>
