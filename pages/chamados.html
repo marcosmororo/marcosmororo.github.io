@@ -4,64 +4,60 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOC Monitor PRO</title>
+<title>NOC - Escalonamentos</title>
 
 <style>
 :root {
-  --bg: #020617;
-  --card: #1e293b;
-  --primary: #38bdf8;
-  --ok: #22c55e;
-  --warn: #facc15;
-  --danger: #ef4444;
+  --bg:#020617;
+  --card:#1e293b;
+  --primary:#38bdf8;
+  --ok:#22c55e;
+  --warn:#facc15;
+  --danger:#ef4444;
 }
 
-body {
-  font-family: Arial;
-  background: var(--bg);
-  color: white;
-  padding: 20px;
+body { font-family: Arial; background:var(--bg); color:#fff; padding:20px;}
+.container { max-width:1100px; margin:auto;}
+
+input,select,textarea,button{
+  padding:10px;margin:5px;border-radius:6px;border:none;
 }
 
-.container { max-width: 1100px; margin: auto; }
+button{background:var(--primary);cursor:pointer;}
 
-input, select, textarea, button {
-  padding: 10px;
-  margin: 5px;
-  border-radius: 6px;
-  border: none;
+.card{
+  background:var(--card);
+  padding:15px;
+  margin:10px 0;
+  border-radius:10px;
+  border-left:6px solid var(--ok);
 }
 
-button {
-  background: var(--primary);
-  cursor: pointer;
+.card.warn{border-color:var(--warn);}
+.card.danger{border-color:var(--danger);}
+
+.step{
+  padding:5px;
+  margin:4px 0;
+  border-radius:6px;
+  cursor:pointer;
+  background:#0f172a;
 }
 
-.card {
-  background: var(--card);
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 10px;
-  border-left: 6px solid var(--ok);
+.step.done{
+  text-decoration: line-through;
+  opacity:0.5;
 }
 
-.card.warn { border-color: var(--warn); }
-.card.danger { border-color: var(--danger); }
-
-.timer {
-  font-weight: bold;
-  margin-top: 5px;
+.step.current{
+  border-left:4px solid var(--primary);
+  font-weight:bold;
 }
 
-.escalation {
-  margin-top: 10px;
-  background: #0f172a;
-  padding: 10px;
-  border-radius: 8px;
-}
+.timer{margin-top:5px;font-weight:bold;}
 
-.tabs button { margin: 5px; }
-.hidden { display: none; }
+.tabs button{margin:5px;}
+.hidden{display:none;}
 </style>
 
 </head>
@@ -70,16 +66,15 @@ button {
 
 <div class="container">
 
-<h2>📡 NOC Monitor PRO</h2>
+<h2>📡 NOC Escalation</h2>
 
 <div>
-<input id="titulo" placeholder="Título do chamado">
-<input id="pai" placeholder="Chamado Pai">
-<input id="filho" placeholder="Chamado Filho">
-<input type="time" id="hora">
+<input id="titulo" placeholder="Título">
+<input id="pai" placeholder="Pai">
+<input id="filho" placeholder="Filho">
 <select id="tipo">
-  <option value="externa">Rede Externa</option>
-  <option value="interna">Rede Interna</option>
+<option value="externa">Rede Externa</option>
+<option value="interna">Rede Interna</option>
 </select>
 <textarea id="descricao" placeholder="Descrição"></textarea>
 <button onclick="add()">Adicionar</button>
@@ -99,11 +94,11 @@ button {
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
 import {
-  getDatabase, ref, push, onChildAdded,
-  onChildRemoved, remove, get
+getDatabase, ref, push, onChildAdded,
+onChildRemoved, update, remove, get
 } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
-// 🔥 CONFIG FIREBASE COMPLETO (NÃO ALTERAR)
+// FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
   authDomain: "chamadosnoc-c45c4.firebaseapp.com",
@@ -117,7 +112,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 📊 ESCALA COM TELEFONES
+// ESCALA COMPLETA
 const escala = {
   externa: [
     {h:4,n:"Erivelton",tel:"558898283311"},
@@ -133,26 +128,22 @@ const escala = {
   ]
 };
 
-// =====================
-// ADICIONAR
-// =====================
-window.add = function() {
-
+// ADD
+window.add = function(){
   push(ref(db,"ativos"),{
     titulo:titulo.value,
     pai:pai.value,
     filho:filho.value,
     descricao:descricao.value,
     tipo:tipo.value,
-    inicio:new Date().getTime()
+    inicio:new Date().getTime(),
+    escalado:[]
   });
 
   document.querySelectorAll("input, textarea").forEach(e=>e.value="");
-};
+}
 
-// =====================
-// RENDER CARD
-// =====================
+// RENDER
 function renderCard(id,data,container){
 
   const div = document.createElement("div");
@@ -163,16 +154,34 @@ function renderCard(id,data,container){
 
     const diff = (Date.now()-data.inicio)/3600000;
 
-    let nivel = null;
+    let nivelAtual = null;
 
     escala[data.tipo].forEach(e=>{
-      if(diff>=e.h) nivel = e;
+      if(diff>=e.h) nivelAtual = e;
     });
 
     div.classList.remove("warn","danger");
-
     if(diff>=8) div.classList.add("warn");
     if(diff>=10) div.classList.add("danger");
+
+    let stepsHTML="";
+
+    escala[data.tipo].forEach(e=>{
+
+      const done = data.escalado?.includes(e.h);
+      const current = nivelAtual && nivelAtual.h===e.h;
+
+      stepsHTML += `
+        <div class="step ${done?'done':''} ${current?'current':''}"
+             onclick="toggleEscala('${id}',${e.h})">
+          ${e.h}h - ${e.n} 
+          ${done?'✔':''}
+          <br>
+          <a href="tel:+${e.tel}">📞</a>
+          <a href="https://wa.me/${e.tel}" target="_blank">💬</a>
+        </div>
+      `;
+    });
 
     div.innerHTML = `
       <strong>${data.titulo}</strong><br>
@@ -183,16 +192,7 @@ function renderCard(id,data,container){
         ⏱ ${Math.floor(diff)}h ${Math.floor((diff%1)*60)}m
       </div>
 
-      ${
-        nivel
-        ? `<div class="escalation">
-            🚨 Escalar agora:<br>
-            <b>${nivel.n}</b><br>
-            <a href="tel:+${nivel.tel}">📞 Ligar</a> |
-            <a href="https://wa.me/${nivel.tel}" target="_blank">💬 WhatsApp</a>
-          </div>`
-        : `<div>🟢 Dentro do SLA</div>`
-      }
+      <div>${stepsHTML}</div>
 
       <br>
       ${
@@ -210,9 +210,7 @@ function renderCard(id,data,container){
   document.getElementById(container).appendChild(div);
 }
 
-// =====================
-// FIREBASE REALTIME
-// =====================
+// FIREBASE
 onChildAdded(ref(db,"ativos"), snap=>{
   renderCard(snap.key,snap.val(),"ativos");
 });
@@ -221,28 +219,39 @@ onChildAdded(ref(db,"resolvidos"), snap=>{
   renderCard(snap.key,snap.val(),"resolvidos");
 });
 
-onChildRemoved(ref(db,"ativos"), snap=>{
-  const el = document.getElementById(snap.key);
-  if(el) el.remove();
-});
+// TOGGLE ESCALA
+window.toggleEscala = function(id,h){
 
-// =====================
+  get(ref(db,"ativos/"+id)).then(snap=>{
+    let data = snap.val();
+    let lista = data.escalado || [];
+
+    if(lista.includes(h)){
+      lista = lista.filter(x=>x!==h);
+    } else {
+      lista.push(h);
+    }
+
+    update(ref(db,"ativos/"+id),{escalado:lista});
+    location.reload();
+  });
+
+}
+
 // FINALIZAR
-// =====================
 window.finalizar = function(id){
   get(ref(db,"ativos/"+id)).then(snap=>{
     push(ref(db,"resolvidos"), snap.val());
     remove(ref(db,"ativos/"+id));
+    location.reload();
   });
-};
+}
 
-// =====================
-// ABAS
-// =====================
+// TABS
 window.showTab = function(tab){
-  document.getElementById("ativos").style.display = tab==="ativos"?"block":"none";
-  document.getElementById("resolvidos").style.display = tab==="resolvidos"?"block":"none";
-};
+  ativos.style.display = tab==="ativos"?"block":"none";
+  resolvidos.style.display = tab==="resolvidos"?"block":"none";
+}
 
 </script>
 
