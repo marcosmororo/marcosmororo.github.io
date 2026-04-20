@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation - Advanced</title>
+    <title>NOC Escalation Pro - v3.0</title>
 
     <style>
         :root {
@@ -16,138 +16,98 @@
             --danger: #ef4444;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --next-step: #fbbf24; /* Cor para o próximo escalonamento */
+            --next-step: #fbbf24;
         }
 
         * { box-sizing: border-box; transition: all 0.2s ease; }
-
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background: var(--bg); 
-            color: var(--text-main); 
-            margin: 0; padding: 20px;
-        }
-
-        .container { max-width: 1200px; margin: auto; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 20px; }
+        .container { max-width: 1300px; margin: auto; }
 
         /* Form */
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            border: 1px solid var(--header);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px; background: var(--card); padding: 20px; border-radius: 12px;
+            margin-bottom: 25px; border: 1px solid var(--header);
         }
+        input, select, textarea { background: var(--bg); border: 1px solid var(--header); color: white; padding: 10px; border-radius: 6px; }
+        textarea { grid-column: 1 / -1; height: 50px; }
 
-        input, select, textarea {
-            background: var(--bg);
-            border: 1px solid var(--header);
-            color: white; padding: 12px; border-radius: 8px;
-        }
-
-        textarea { grid-column: 1 / -1; height: 60px; }
-
-        button {
-            padding: 12px; border-radius: 8px; border: none;
-            cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 12px;
-        }
-
+        /* Buttons */
+        button { padding: 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; }
         .btn-add { background: var(--primary); color: var(--bg); }
         .btn-finish { background: var(--ok); color: white; width: 100%; margin-top: 10px; }
-        .btn-reopen { background: var(--warn); color: var(--bg); flex: 1; }
-        .btn-delete { background: var(--danger); color: white; flex: 1; }
+        .btn-update { background: var(--header); color: var(--primary); margin-top: 5px; }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tabs button { background: var(--card); color: var(--text-dim); padding: 10px 20px; }
         .tabs button.active { background: var(--primary); color: var(--bg); }
 
-        /* Grid */
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
+        /* Cards Grid */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
 
-        /* Card */
         .card {
-            background: var(--card);
-            padding: 18px;
-            border-radius: 12px;
-            border-left: 6px solid var(--ok);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
+            background: var(--card); padding: 18px; border-radius: 12px;
+            border-left: 6px solid var(--ok); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; gap: 10px;
         }
-
         .card.warn { border-left-color: var(--warn); }
         .card.danger { border-left-color: var(--danger); }
 
-        .card-header { margin-bottom: 10px; border-bottom: 1px solid var(--header); padding-bottom: 8px; }
-        .card-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); display: block; }
-        
-        .timer { font-family: monospace; color: var(--warn); font-size: 1.1rem; margin: 8px 0; }
+        .card-header { border-bottom: 1px solid var(--header); padding-bottom: 8px; }
+        .card-title { font-size: 1.1rem; font-weight: bold; color: var(--primary); }
+        .card-meta { font-size: 0.75rem; color: var(--text-dim); display: block; margin-top: 4px; }
+
+        .timer { font-family: monospace; color: var(--warn); font-size: 1.2rem; font-weight: bold; }
 
         /* Steps */
         .step {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(15, 23, 42, 0.5);
-            padding: 8px 12px;
-            margin: 4px 0;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(15, 23, 42, 0.4); padding: 8px 12px; margin: 4px 0;
+            border-radius: 6px; font-size: 0.85rem; border: 1px solid transparent;
         }
-
         .step.done { opacity: 0.4; text-decoration: line-through; border-left: 3px solid var(--ok); }
-
-        /* Efeito para o PRÓXIMO que deve ser acionado */
-        .step.next-to-call {
-            border: 1px solid var(--next-step);
-            background: rgba(251, 191, 36, 0.1);
-            animation: pulse-next 2s infinite;
-        }
+        .step.next-to-call { border: 1px solid var(--next-step); background: rgba(251, 191, 36, 0.1); animation: pulse-next 2s infinite; }
 
         @keyframes pulse-next {
-            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
-            70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); background: rgba(251, 191, 36, 0.2); }
         }
 
-        .step-actions a { text-decoration: none; margin-left: 10px; font-size: 1.1rem; }
+        /* Comments Area */
+        .comments-box {
+            background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; font-size: 0.85rem;
+            max-height: 120px; overflow-y: auto; border: 1px solid var(--header);
+        }
+        .comment-item { border-bottom: 1px solid #33415566; padding: 4px 0; color: #cbd5e1; }
+        .comment-time { font-size: 0.7rem; color: var(--primary); margin-right: 5px; }
 
-        .action-group { display: flex; gap: 8px; margin-top: 15px; }
-
+        .action-group { display: flex; gap: 8px; margin-top: 10px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header style="text-align:center; margin-bottom: 20px;">
-        <h2 style="color: var(--primary);">📡 NOC DASHBOARD - ESCALONAMENTO</h2>
+    <header style="text-align:center; margin-bottom: 25px;">
+        <h2 style="color: var(--primary); letter-spacing: 2px;">📡 NOC ESCALATION PRO</h2>
     </header>
 
     <div class="form-grid">
-        <input id="titulo" placeholder="Título">
-        <input id="pai" placeholder="Pai">
-        <input id="filho" placeholder="Filho">
+        <input id="titulo" placeholder="Título do Evento">
+        <input id="pai" placeholder="Elemento Pai">
+        <input id="filho" placeholder="Elemento Filho">
         <select id="tipo">
             <option value="externa">Rede Externa</option>
             <option value="interna">Rede Interna</option>
         </select>
-        <textarea id="descricao" placeholder="Descrição da falha..."></textarea>
-        <button class="btn-add" onclick="add()">Iniciar Evento</button>
+        <textarea id="descricao" placeholder="Descrição técnica inicial..."></textarea>
+        <button class="btn-add" onclick="add()">Abrir Incidente</button>
     </div>
 
     <div class="tabs">
         <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">Incidentes Ativos</button>
-        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">Histórico / Resolvidos</button>
+        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">Histórico Finalizado</button>
     </div>
 
     <div id="ativos" class="grid-cards"></div>
@@ -156,9 +116,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import {
-        getDatabase, ref, push, update, remove, onValue
-    } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+    import { getDatabase, ref, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
@@ -190,89 +148,104 @@
 
     window.add = function(){
         const t = document.getElementById("titulo").value;
-        if(!t) return alert("Título necessário");
+        if(!t) return alert("Preencha o título");
 
+        const agora = new Date();
         push(ref(db,"ativos"), {
             titulo: t,
             pai: document.getElementById("pai").value,
             filho: document.getElementById("filho").value,
             descricao: document.getElementById("descricao").value,
             tipo: document.getElementById("tipo").value,
-            inicio: new Date().getTime(),
-            escalado: []
+            inicio: agora.getTime(),
+            dataStr: agora.toLocaleString('pt-BR'),
+            escalado: [],
+            comentarios: []
         });
         document.querySelectorAll("input, textarea").forEach(e=>e.value="");
     };
 
     function renderCard(id, data, containerId) {
         const container = document.getElementById(containerId);
-        let div = document.createElement("div");
-        
+        const div = document.createElement("div");
         const diffH = (Date.now() - data.inicio) / 3600000;
         
-        // Lógica de cores do card
-        let statusClass = "";
-        if(diffH >= 10) statusClass = "danger";
-        else if(diffH >= 8) statusClass = "warn";
+        div.className = `card ${diffH >= 10 ? 'danger' : diffH >= 8 ? 'warn' : ''}`;
         
-        div.className = `card ${statusClass}`;
-        div.id = id;
-
-        // Encontrar o próximo contato a ser feito (que ainda não foi marcado como feito)
+        // Lógica de próximo escalonamento
         let proximoH = null;
-        const contatosPosiveis = escala[data.tipo].filter(e => diffH >= e.h);
-        if(contatosPosiveis.length > 0) {
-            // O último da lista de tempos atingidos que ainda não foi marcado
-            const pendentes = contatosPosiveis.filter(e => !data.escalado?.includes(e.h));
+        const atingidos = escala[data.tipo].filter(e => diffH >= e.h);
+        if(atingidos.length > 0) {
+            const pendentes = atingidos.filter(e => !data.escalado?.includes(e.h));
             if(pendentes.length > 0) proximoH = pendentes[0].h;
         }
 
         const stepsHTML = escala[data.tipo].map(e => {
             const isDone = data.escalado?.includes(e.h);
             const isNext = e.h === proximoH && containerId === 'ativos';
-            
             return `
                 <div class="step ${isDone?'done':''} ${isNext?'next-to-call':''}" 
                      onclick="${containerId === 'ativos' ? `toggleEscala('${id}', ${e.h})` : ''}">
                     <span><strong>${e.h}h</strong> - ${e.n} ${isDone ? '✔' : ''}</span>
-                    <div class="step-actions">
-                        <a href="tel:+${e.tel}">📞</a>
-                        <a href="https://wa.me/${e.tel}" target="_blank">💬</a>
+                    <div>
+                        <a href="tel:+${e.tel}" style="text-decoration:none">📞</a>
+                        <a href="https://wa.me/${e.tel}" target="_blank" style="text-decoration:none; margin-left:8px;">💬</a>
                     </div>
-                </div>
-            `;
+                </div>`;
         }).join('');
+
+        const commentsHTML = (data.comentarios || []).map(c => `
+            <div class="comment-item">
+                <span class="comment-time">${c.hora}</span> ${c.texto}
+            </div>
+        `).reverse().join('');
 
         div.innerHTML = `
             <div class="card-header">
                 <span class="card-title">${data.titulo}</span>
-                <small>${data.pai || '-'} / ${data.filho || '-'}</small>
+                <span class="card-meta">Início: ${data.dataStr} | ${data.pai || '-'} > ${data.filho || '-'}</span>
             </div>
-            <div style="font-size:0.85rem; flex-grow:1;">${data.descricao || ''}</div>
+            
             <div class="timer">⏱ ${Math.floor(diffH)}h ${Math.floor((diffH % 1) * 60)}m</div>
+            
+            <div style="font-size:0.85rem; color:var(--text-dim)"><strong>Resumo:</strong> ${data.descricao || 'Sem descrição'}</div>
+
+            <div class="comments-box" id="cm-list-${id}">${commentsHTML || 'Nenhuma atualização...'}</div>
+
+            ${containerId === 'ativos' ? `
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="in-${id}" placeholder="Nova atualização..." style="flex:1; font-size:12px; padding:5px;">
+                    <button class="btn-update" onclick="addComment('${id}')">Anotar</button>
+                </div>
+            ` : ''}
+
             <div class="step-list">${stepsHTML}</div>
             
-            ${containerId === "ativos" 
-                ? `<button class="btn-finish" onclick="finalizar('${id}')">Finalizar</button>` 
-                : `<div class="action-group">
-                    <button class="btn-reopen" onclick="reabrir('${id}')">Reabrir</button>
-                    <button class="btn-delete" onclick="apagar('${id}', 'resolvidos')">Apagar</button>
-                   </div>`
-            }
+            <div class="action-group">
+                ${containerId === "ativos" 
+                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Encerrar e Arquivar</button>` 
+                    : `<button style="background:var(--warn); flex:1;" onclick="reabrir('${id}')">Reabrir</button>
+                       <button style="background:var(--danger); color:white; flex:1;" onclick="apagar('${id}')">Apagar</button>`
+                }
+            </div>
         `;
         container.appendChild(div);
     }
 
-    // Sincronização Firebase
-    onValue(ref(db, "ativos"), snap => {
-        document.getElementById("ativos").innerHTML = "";
-        snap.forEach(c => renderCard(c.key, c.val(), "ativos"));
-    });
-
-    onValue(ref(db, "resolvidos"), snap => {
-        document.getElementById("resolvidos").innerHTML = "";
-        snap.forEach(c => renderCard(c.key, c.val(), "resolvidos"));
-    });
+    // Ações
+    window.addComment = function(id) {
+        const input = document.getElementById(`in-${id}`);
+        if(!input.value) return;
+        
+        const r = ref(db, `ativos/${id}`);
+        onValue(r, s => {
+            const d = s.val(); if(!d) return;
+            const lista = d.comentarios || [];
+            lista.push({ texto: input.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+            update(r, { comentarios: lista });
+            input.value = "";
+        }, { onlyOnce: true });
+    };
 
     window.toggleEscala = function(id, h){
         const r = ref(db, `ativos/${id}`);
@@ -285,26 +258,33 @@
     };
 
     window.finalizar = function(id){
-        const r = ref(db, `ativos/${id}`);
-        onValue(r, s => {
+        onValue(ref(db, `ativos/${id}`), s => {
             push(ref(db, "resolvidos"), s.val());
-            remove(r);
+            remove(ref(db, `ativos/${id}`));
         }, { onlyOnce: true });
     };
 
     window.reabrir = function(id){
-        const r = ref(db, `resolvidos/${id}`);
-        onValue(r, s => {
+        onValue(ref(db, `resolvidos/${id}`), s => {
             push(ref(db, "ativos"), s.val());
-            remove(r);
+            remove(ref(db, `resolvidos/${id}`));
         }, { onlyOnce: true });
     };
 
-    window.apagar = function(id, path){
-        if(confirm("Deseja apagar permanentemente?")) {
-            remove(ref(db, `${path}/${id}`));
-        }
+    window.apagar = function(id){
+        if(confirm("Apagar permanentemente?")) remove(ref(db, `resolvidos/${id}`));
     };
+
+    // Sync e UI
+    onValue(ref(db, "ativos"), snap => {
+        document.getElementById("ativos").innerHTML = "";
+        snap.forEach(c => renderCard(c.key, c.val(), "ativos"));
+    });
+
+    onValue(ref(db, "resolvidos"), snap => {
+        document.getElementById("resolvidos").innerHTML = "";
+        snap.forEach(c => renderCard(c.key, c.val(), "resolvidos"));
+    });
 
     window.showTab = function(tab){
         document.getElementById("ativos").classList.toggle("hidden", tab !== "ativos");
@@ -313,12 +293,8 @@
         document.getElementById("btn-tab-resolvidos").classList.toggle("active", tab === "resolvidos");
     };
 
-    // Atualiza timers a cada minuto
-    setInterval(() => {
-        const activeTab = document.getElementById("btn-tab-ativos").classList.contains("active") ? "ativos" : "resolvidos";
-        showTab(activeTab); 
-    }, 60000);
-
+    setInterval(() => { if(!document.getElementById("ativos").classList.contains("hidden")) showTab('ativos'); }, 60000);
 </script>
+
 </body>
 </html>
