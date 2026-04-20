@@ -4,17 +4,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOC Monitor (Firebase)</title>
+
+<title>NOC Monitor PRO</title>
 
 <style>
 body { font-family: Arial; background:#020617; color:#fff; padding:20px;}
-.container { max-width:900px; margin:auto;}
-input, select, button { padding:10px; margin:5px; border-radius:6px; border:none;}
+.container { max-width:1000px; margin:auto;}
+input, select, textarea, button {
+  padding:10px; margin:5px; border-radius:6px; border:none;
+}
 button { background:#38bdf8; cursor:pointer;}
-.card { background:#1e293b; padding:15px; margin:10px 0; border-radius:10px; display:flex; justify-content:space-between;}
+.card {
+  background:#1e293b; padding:15px; margin:10px 0;
+  border-radius:10px;
+}
 .timer { background:#38bdf8; color:#000; padding:5px 10px; border-radius:6px;}
-.step { font-size:12px; opacity:0.3;}
-.step.active { opacity:1; font-weight:bold; }
+.step { font-size:12px; opacity:0.3; cursor:pointer;}
+.step.active { opacity:1; font-weight:bold; color:#38bdf8;}
+.tabs button { margin:5px; }
 </style>
 
 </head>
@@ -22,53 +29,56 @@ button { background:#38bdf8; cursor:pointer;}
 <body>
 
 <div class="container">
-<h2>📑 NOC Monitor (Realtime)</h2>
 
-<input type="text" id="titulo" placeholder="Chamado">
+<h2>📑 NOC Monitor PRO</h2>
+
+<div>
+<input type="text" id="pai" placeholder="Chamado Pai">
+<input type="text" id="filho" placeholder="Chamado Filho">
+<input type="text" id="titulo" placeholder="Título">
 <input type="time" id="hora">
-
 <select id="tipo">
 <option value="externa">Rede Externa</option>
 <option value="interna">Rede Interna</option>
 </select>
-
+<textarea id="descricao" placeholder="Descrição"></textarea>
 <button onclick="adicionar()">Adicionar</button>
+</div>
 
-<div id="lista"></div>
+<div class="tabs">
+<button onclick="trocarAba('ativos')">Ativos</button>
+<button onclick="trocarAba('resolvidos')">Resolvidos</button>
+</div>
+
+<div id="ativos"></div>
+<div id="resolvidos" style="display:none"></div>
+
 </div>
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, onChildRemoved, remove } 
+import { getDatabase, ref, push, onChildAdded, update, remove } 
 from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
-// 🔥 CONFIG (SEU PROJETO)
 const firebaseConfig = {
-  apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
+  apiKey: "AIzaSy...",
   authDomain: "chamadosnoc-c45c4.firebaseapp.com",
   databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com",
   projectId: "chamadosnoc-c45c4",
-  storageBucket: "chamadosnoc-c45c4.appspot.com",
-  messagingSenderId: "25502320062",
-  appId: "1:25502320062:web:a7f41ad4f61e0c38b265ef"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const lista = document.getElementById("lista");
 
-// ESCALA
 const escala = {
   externa: [
-    {h:0,n:"Início"},
     {h:4,n:"Erivelton"},
     {h:8,n:"Guilherme"},
     {h:10,n:"Valmir"},
     {h:12,n:"Fernando"}
   ],
   interna: [
-    {h:0,n:"Início"},
     {h:4,n:"Joao"},
     {h:8,n:"Wescley"},
     {h:10,n:"Valmir"},
@@ -76,84 +86,123 @@ const escala = {
   ]
 };
 
-// ➕ ADD
+// =====================
+// ADICIONAR
+// =====================
 window.adicionar = function () {
-  const titulo = document.getElementById("titulo").value;
-  const hora = document.getElementById("hora").value;
-  const tipo = document.getElementById("tipo").value;
+  const data = new Date();
 
-  if (!titulo || !hora) return alert("Preencha!");
-
-  const hoje = new Date();
-  const [h,m] = hora.split(":");
-  hoje.setHours(h,m,0,0);
-
-  push(ref(db, "incidentes"), {
-    titulo,
-    inicio: hoje.getTime(),
-    tipo
+  push(ref(db, "ativos"), {
+    pai: pai.value,
+    filho: filho.value,
+    titulo: titulo.value,
+    descricao: descricao.value,
+    tipo: tipo.value,
+    inicio: data.getTime(),
+    escalado: []
   });
 
-  document.getElementById("titulo").value = "";
-};
+  document.querySelectorAll("input, textarea").forEach(e => e.value = "");
+}
 
-// 🎯 RENDER
-function criarCard(id, item) {
+// =====================
+// RENDER
+// =====================
+function criarCard(id, item, tipoLista) {
 
-  const decorrido = (Date.now() - item.inicio) / 3600000;
-
-  let html = "";
-
-  escala[item.tipo].forEach((e,i)=>{
-    let ativo;
-
-    if (i === escala[item.tipo].length -1){
-      ativo = decorrido >= e.h;
-    } else {
-      ativo = decorrido >= e.h && decorrido < escala[item.tipo][i+1].h;
-    }
-
-    html += `<div class="step ${ativo ? 'active':''}">${e.h}h - ${e.n}</div>`;
-  });
+  const container = document.getElementById(tipoLista);
 
   const div = document.createElement("div");
   div.className = "card";
-  div.id = id;
+
+  let htmlEscala = "";
+
+  escala[item.tipo].forEach((e,i)=>{
+    const ativo = item.escalado.includes(e.h);
+
+    htmlEscala += `
+      <div class="step ${ativo ? 'active':''}" 
+           onclick="marcarEscala('${id}',${e.h})">
+        ${e.h}h - ${e.n}
+      </div>
+    `;
+  });
 
   div.innerHTML = `
-    <div>
-      <strong>${item.titulo}</strong><br>
-      <div class="timer">${Math.floor(decorrido)}h ${Math.floor((decorrido%1)*60)}m</div>
-      <button onclick="removerChamado('${id}')" style="background:red;margin-top:10px;">Encerrar</button>
-    </div>
-    <div>${html}</div>
+    <strong>${item.titulo}</strong><br>
+    Pai: ${item.pai || "-"}<br>
+    Filho: ${item.filho || "-"}<br>
+    📝 ${item.descricao}<br>
+    ⏰ ${new Date(item.inicio).toLocaleString()}<br><br>
+
+    ${tipoLista === "ativos" ? `
+      <button onclick="finalizar('${id}')">Finalizar</button>
+    ` : `
+      <small>Escalado até: ${Math.max(...(item.escalado||[0]))}h</small>
+    `}
+
+    <div>${htmlEscala}</div>
   `;
 
-  lista.appendChild(div);
+  container.appendChild(div);
 }
 
-// 🔄 REALTIME
-onChildAdded(ref(db, "incidentes"), (snap)=>{
-  criarCard(snap.key, snap.val());
+// =====================
+// FIREBASE
+// =====================
+onChildAdded(ref(db,"ativos"), snap=>{
+  criarCard(snap.key, snap.val(), "ativos");
 });
 
-onChildRemoved(ref(db, "incidentes"), (snap)=>{
-  const el = document.getElementById(snap.key);
-  if(el) el.remove();
+onChildAdded(ref(db,"resolvidos"), snap=>{
+  criarCard(snap.key, snap.val(), "resolvidos");
 });
 
-// ❌ REMOVE
-window.removerChamado = function(id){
-  remove(ref(db, "incidentes/"+id));
-}
+// =====================
+// ESCALA
+// =====================
+window.marcarEscala = function(id, h) {
+  const refItem = ref(db,"ativos/"+id);
 
-// ⏱️ UPDATE TIMER
-setInterval(()=>{
-  lista.innerHTML="";
-  onChildAdded(ref(db,"incidentes"), (snap)=>{
-    criarCard(snap.key, snap.val());
+  import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js")
+  .then(({get})=>{
+    get(refItem).then(snap=>{
+      let dados = snap.val();
+      let lista = dados.escalado || [];
+
+      if (!lista.includes(h)) lista.push(h);
+
+      update(refItem,{escalado: lista});
+      location.reload();
+    });
   });
-},60000);
+}
+
+// =====================
+// FINALIZAR
+// =====================
+window.finalizar = function(id) {
+
+  import("https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js")
+  .then(({get})=>{
+    get(ref(db,"ativos/"+id)).then(snap=>{
+      const dados = snap.val();
+
+      push(ref(db,"resolvidos"), dados);
+      remove(ref(db,"ativos/"+id));
+
+      location.reload();
+    });
+  });
+}
+
+// =====================
+// ABAS
+// =====================
+window.trocarAba = function(aba){
+  document.getElementById("ativos").style.display = aba==="ativos"?"block":"none";
+  document.getElementById("resolvidos").style.display = aba==="resolvidos"?"block":"none";
+}
 
 </script>
 
