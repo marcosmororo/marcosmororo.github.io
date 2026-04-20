@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Controle de Chamados</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: white;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+input, button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 8px;
+  border: none;
+}
+
+input {
+  width: 30%;
+}
+
+button {
+  background: #38bdf8;
+  cursor: pointer;
+}
+
+.lista {
+  margin-top: 20px;
+}
+
+.chamado {
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+.atrasado {
+  border-left: 5px solid red;
+}
+
+.proximo {
+  border-left: 5px solid orange;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+<h1>📋 Controle de Chamados</h1>
+
+<input type="text" id="titulo" placeholder="Chamado">
+<input type="time" id="hora">
+<button onclick="addChamado()">Adicionar</button>
+
+<div class="lista" id="lista"></div>
+</div>
+
+<script>
+let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
+
+function salvar() {
+  localStorage.setItem("chamados", JSON.stringify(chamados));
+}
+
+function addChamado() {
+  const titulo = document.getElementById("titulo").value;
+  const hora = document.getElementById("hora").value;
+
+  if (!titulo || !hora) return;
+
+  chamados.push({
+    titulo,
+    hora
+  });
+
+  document.getElementById("titulo").value = "";
+  salvar();
+  render();
+}
+
+function remover(index) {
+  chamados.splice(index, 1);
+  salvar();
+  render();
+}
+
+function render() {
+  const lista = document.getElementById("lista");
+  lista.innerHTML = "";
+
+  const agora = new Date();
+
+  chamados.forEach((c, i) => {
+    const div = document.createElement("div");
+    div.className = "chamado";
+
+    const [h, m] = c.hora.split(":");
+    const dataChamado = new Date();
+    dataChamado.setHours(h, m, 0);
+
+    const diff = (dataChamado - agora) / 60000; // minutos
+
+    if (diff < 0) {
+      div.classList.add("atrasado");
+    } else if (diff < 15) {
+      div.classList.add("proximo");
+    }
+
+    div.innerHTML = `
+      <strong>${c.titulo}</strong><br>
+      Escalonar até: ${c.hora}
+      <br><br>
+      <button onclick="remover(${i})">Remover</button>
+    `;
+
+    lista.appendChild(div);
+  });
+}
+
+// Atualiza a cada minuto
+setInterval(render, 60000);
+render();
+</script>
+
+</body>
+</html>
