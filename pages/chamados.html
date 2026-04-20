@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation Pro - RealTime</title>
+    <title>NOC Escalation Pro - Precision</title>
 
     <style>
         :root {
@@ -23,101 +23,102 @@
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 20px; }
         .container { max-width: 1400px; margin: auto; }
 
+        /* Header e Relógio da Página */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; border-bottom: 1px solid var(--header); padding-bottom: 15px;
+        }
+        #page-clock { font-family: monospace; font-size: 1.5rem; color: var(--primary); font-weight: bold; }
+
         /* Formulario Superior */
         .form-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 12px; background: var(--card); padding: 20px; border-radius: 12px;
             margin-bottom: 25px; border: 1px solid var(--header);
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
-        input, select, textarea { background: var(--bg); border: 1px solid var(--header); color: white; padding: 12px; border-radius: 8px; font-size: 14px; }
-        textarea { grid-column: 1 / -1; height: 60px; }
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; font-weight: bold; }
+        
+        input, select, textarea { background: var(--bg); border: 1px solid var(--header); color: white; padding: 10px; border-radius: 8px; font-size: 14px; }
+        textarea { grid-column: 1 / -1; height: 50px; }
 
-        /* Botoes */
-        button { padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; font-size: 11px; }
-        .btn-add { background: var(--primary); color: var(--bg); font-size: 13px; }
-        .btn-finish { background: var(--ok); color: white; width: 100%; margin-top: 10px; font-size: 13px; height: 40px; }
-        .btn-update { background: var(--primary); color: var(--bg); }
+        /* Botões */
+        button { padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-add { background: var(--primary); color: var(--bg); grid-column: 1 / -1; margin-top: 10px; height: 45px; }
+        .btn-finish { background: var(--ok); color: white; width: 100%; margin-top: 10px; height: 35px; font-size: 11px; }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tabs button { background: var(--card); color: var(--text-dim); padding: 12px 25px; font-size: 13px; }
-        .tabs button.active { background: var(--primary); color: var(--bg); box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+        .tabs button.active { background: var(--primary); color: var(--bg); }
 
-        /* Grid de Cards */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 20px; }
-
+        /* Cards */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
         .card {
             background: var(--card); padding: 20px; border-radius: 15px;
             border-top: 5px solid var(--ok); box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            display: flex; flex-direction: column; gap: 12px;
+            display: flex; flex-direction: column; gap: 10px;
         }
         .card.warn { border-top-color: var(--warn); }
         .card.danger { border-top-color: var(--danger); }
 
         .datetime-badge {
             background: rgba(56, 189, 248, 0.1); color: var(--primary);
-            padding: 4px 8px; border-radius: 5px; font-size: 0.75rem; font-weight: bold;
-            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: bold; text-align: center;
         }
-
-        .card-title { font-size: 1.2rem; font-weight: bold; color: #fff; margin: 5px 0 0 0; }
-        .card-sub { color: var(--text-dim); font-size: 0.85rem; }
 
         .timer-box { 
-            background: #0f172a; padding: 10px; border-radius: 8px; text-align: center;
-            border: 1px solid var(--header); margin: 5px 0;
+            background: #0f172a; padding: 12px; border-radius: 8px; text-align: center;
+            border: 1px solid var(--header);
         }
-        .timer-label { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; display: block; }
-        .timer-val { font-family: 'Courier New', monospace; color: var(--alert); font-size: 1.6rem; font-weight: bold; }
+        .timer-val { font-family: monospace; color: var(--alert); font-size: 1.6rem; font-weight: bold; }
 
         /* Escalation Steps */
         .step {
             display: flex; justify-content: space-between; align-items: center;
-            background: rgba(15, 23, 42, 0.6); padding: 12px; margin: 6px 0;
-            border-radius: 8px; font-size: 0.9rem; border: 2px solid transparent;
+            background: rgba(15, 23, 42, 0.6); padding: 10px; margin: 4px 0;
+            border-radius: 8px; font-size: 0.85rem; border: 2px solid transparent;
         }
         .step.done { opacity: 0.4; text-decoration: line-through; border-left: 5px solid var(--ok); }
-        
-        /* ALERTA DE PRÓXIMO ESCALONAMENTO */
         .step.next-to-call { 
             border-color: var(--alert); 
-            background: rgba(251, 191, 36, 0.15);
-            animation: pulse-alert 1s infinite alternate;
+            background: rgba(251, 191, 36, 0.1);
+            animation: pulse 1s infinite alternate;
         }
 
-        @keyframes pulse-alert {
-            from { box-shadow: 0 0 5px var(--alert); }
-            to { box-shadow: 0 0 15px var(--alert); }
-        }
+        @keyframes pulse { from { opacity: 0.6; } to { opacity: 1; } }
 
         .log-container {
-            background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; 
-            font-size: 0.85rem; max-height: 120px; overflow-y: auto;
+            background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; 
+            font-size: 0.8rem; max-height: 100px; overflow-y: auto;
         }
-        .log-item { border-bottom: 1px solid #334155; padding: 5px 0; }
-        .log-time { color: var(--primary); font-weight: bold; font-size: 0.75rem; margin-right: 6px; }
 
-        .action-group { display: flex; gap: 8px; margin-top: 10px; }
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header style="text-align:center; margin-bottom: 30px;">
-        <h2 style="color: var(--primary); letter-spacing: 3px; margin:0;">📡 NOC ESCALATION PRO <small style="font-size: 12px; color: var(--text-dim);">REAL-TIME</small></h2>
-    </header>
+    <div class="page-header">
+        <h2 style="color: var(--primary); margin:0;">📡 NOC ESCALATION SYSTEM</h2>
+        <div id="page-clock">00:00:00</div>
+    </div>
 
     <div class="form-grid">
-        <input id="titulo" placeholder="Título do Evento">
-        <input id="pai" placeholder="Pai (Ex: OLT Sul)">
-        <input id="filho" placeholder="Filho (Ex: Slot 02)">
-        <select id="tipo">
-            <option value="externa">Rede Externa</option>
-            <option value="interna">Rede Interna</option>
-        </select>
-        <textarea id="descricao" placeholder="Descrição técnica inicial..."></textarea>
+        <div class="form-group"><label>Título</label><input id="titulo" placeholder="Ex: Queda POP Centro"></div>
+        <div class="form-group"><label>Pai</label><input id="pai" placeholder="Elemento Pai"></div>
+        <div class="form-group"><label>Filho</label><input id="filho" placeholder="Elemento Filho"></div>
+        <div class="form-group">
+            <label>Tipo</label>
+            <select id="tipo">
+                <option value="externa">Rede Externa</option>
+                <option value="interna">Rede Interna</option>
+            </select>
+        </div>
+        <div class="form-group"><label>Data do Evento</label><input type="date" id="data_manual"></div>
+        <div class="form-group"><label>Hora do Evento</label><input type="time" id="hora_manual"></div>
+        <textarea id="descricao" placeholder="Descrição inicial do incidente..."></textarea>
         <button class="btn-add" onclick="add()">Registrar Incidente</button>
     </div>
 
@@ -148,71 +149,66 @@
     const db = getDatabase(app);
 
     const escala = {
-        externa: [
-            {h:4, n:"Erivelton", tel:"558898283311"},
-            {h:8, n:"Guilherme", tel:"558899282323"},
-            {h:10, n:"Valmir", tel:"558898287071"},
-            {h:12, n:"Fernando", tel:"5588994401255"}
-        ],
-        interna: [
-            {h:4, n:"Joao", tel:"558898283337"},
-            {h:8, n:"Wescley", tel:"558894866085"},
-            {h:10, n:"Valmir", tel:"558898287071"},
-            {h:12, n:"Fernando", tel:"5588994401255"}
-        ]
+        externa: [{h:4, n:"Erivelton", tel:"558898283311"}, {h:8, n:"Guilherme", tel:"558899282323"}, {h:10, n:"Valmir", tel:"558898287071"}, {h:12, n:"Fernando", tel:"5588994401255"}],
+        interna: [{h:4, n:"Joao", tel:"558898283337"}, {h:8, n:"Wescley", tel:"558894866085"}, {h:10, n:"Valmir", tel:"558898287071"}, {h:12, n:"Fernando", tel:"5588994401255"}]
     };
 
-    // --- RELÓGIO GLOBAL ---
-    // Esta função roda a cada 1 segundo e atualiza todos os cards sem reconstruir o HTML
-    function updateTimers() {
+    // --- RELÓGIO DA PÁGINA ---
+    function updatePageClock() {
+        document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR');
+    }
+    setInterval(updatePageClock, 1000);
+
+    // --- LOGICA DE TEMPO REAL DOS CARDS ---
+    function refreshTimers() {
         const now = Date.now();
         document.querySelectorAll('.card[data-start]').forEach(card => {
             const start = parseInt(card.dataset.start);
-            const type = card.dataset.type;
             const escalado = JSON.parse(card.dataset.escalado || "[]");
             const diffMs = now - start;
             const diffH = diffMs / 3600000;
-            
-            // Atualiza Texto do Timer
-            const hours = Math.floor(diffH);
-            const minutes = Math.floor((diffMs % 3600000) / 60000);
-            const seconds = Math.floor((diffMs % 60000) / 1000);
-            const timerVal = card.querySelector('.timer-val');
-            if(timerVal) timerVal.innerText = `${hours}h ${minutes}m ${seconds}s`;
 
-            // Atualiza Cor do Card baseado no tempo
+            // Timer do card
+            const h = Math.floor(diffH);
+            const m = Math.floor((diffMs % 3600000) / 60000);
+            const s = Math.floor((diffMs % 60000) / 1000);
+            card.querySelector('.timer-val').innerText = `${h}h ${m}m ${s}s`;
+
+            // Cores do card
             card.classList.toggle('warn', diffH >= 8 && diffH < 10);
             card.classList.toggle('danger', diffH >= 10);
 
-            // Atualiza Alerta de Próximo Escalonamento (Piscante)
-            const steps = card.querySelectorAll('.step[data-h]');
-            let achouProximo = false;
-            steps.forEach(step => {
+            // Alerta de Escalonamento Pendente
+            let jaAvisou = false;
+            card.querySelectorAll('.step[data-h]').forEach(step => {
                 const stepH = parseInt(step.dataset.h);
-                const jaPassouDoTempo = diffH >= stepH;
-                const jaFoiMarcado = escalado.includes(stepH);
-                
-                const isNext = jaPassouDoTempo && !jaFoiMarcado && !achouProximo;
+                const isNext = diffH >= stepH && !escalado.includes(stepH) && !jaAvisou;
                 step.classList.toggle('next-to-call', isNext);
-                if(isNext) achouProximo = true;
+                if(isNext) jaAvisou = true;
             });
         });
     }
-    setInterval(updateTimers, 1000);
+    setInterval(refreshTimers, 1000);
 
     window.add = function(){
         const t = document.getElementById("titulo").value;
+        const dManual = document.getElementById("data_manual").value;
+        const hManual = document.getElementById("hora_manual").value;
         if(!t) return alert("Título obrigatório");
-        const agora = new Date();
+
+        let dataEvento = new Date();
+        if(dManual && hManual) {
+            dataEvento = new Date(`${dManual}T${hManual}`);
+        }
+
         push(ref(db,"ativos"), {
             titulo: t,
             pai: document.getElementById("pai").value,
             filho: document.getElementById("filho").value,
             descricao: document.getElementById("descricao").value,
             tipo: document.getElementById("tipo").value,
-            inicio: agora.getTime(),
-            registroData: agora.toLocaleDateString('pt-BR'),
-            registroHora: agora.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+            inicio: dataEvento.getTime(),
+            dataStr: dataEvento.toLocaleString('pt-BR'),
             escalado: [],
             comentarios: []
         });
@@ -225,7 +221,6 @@
         div.className = `card`;
         div.id = id;
         div.dataset.start = data.inicio;
-        div.dataset.type = data.tipo;
         div.dataset.escalado = JSON.stringify(data.escalado || []);
 
         const stepsHTML = escala[data.tipo].map(e => `
@@ -237,77 +232,66 @@
                 </div>
             </div>`).join('');
 
-        const commentsHTML = (data.comentarios || []).map(c => `
-            <div class="log-item"><span class="log-time">[${c.hora}]</span> ${c.texto}</div>
-        `).reverse().join('');
+        const logsHTML = (data.comentarios || []).map(c => `<div><small>[${c.hora}]</small> ${c.texto}</div>`).reverse().join('');
 
         div.innerHTML = `
-            <div class="datetime-badge">📅 ${data.registroData} às ${data.registroHora}</div>
-            <h3 class="card-title">${data.titulo}</h3>
-            <div class="card-sub">${data.pai || '-'} / ${data.filho || '-'}</div>
+            <div class="datetime-badge">OCORRÊNCIA: ${data.dataStr}</div>
+            <h3 style="margin:5px 0; color:var(--primary);">${data.titulo}</h3>
+            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px;">${data.pai || '-'} / ${data.filho || '-'}</div>
             
-            <div class="timer-box">
-                <span class="timer-label">Tempo de Interrupção</span>
-                <span class="timer-val">Calculando...</span>
-            </div>
+            <div class="timer-box"><span class="timer-val">0h 0m 0s</span></div>
             
-            <div class="log-container">${commentsHTML || 'Sem atualizações...'}</div>
-
+            <div class="log-container">${logsHTML || 'Sem notas.'}</div>
             ${containerId === 'ativos' ? `
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:8px; font-size:12px;">
-                    <button class="btn-update" onclick="addComment('${id}')">Ok</button>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:5px; font-size:12px;">
+                    <button style="background:var(--header); color:white; padding:5px 10px;" onclick="addComment('${id}')">OK</button>
                 </div>
             ` : ''}
 
-            <div class="step-list">${stepsHTML}</div>
+            <div style="font-size:0.7rem; font-weight:bold; margin-top:10px; color:var(--primary);">ESCALONAMENTO:</div>
+            <div>${stepsHTML}</div>
             
             <div class="action-group">
                 ${containerId === "ativos" 
-                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Resolver</button>` 
-                    : `<button style="background:var(--warn); flex:1;" onclick="reabrir('${id}')">Reativar</button>
-                       <button style="background:var(--danger); color:white; flex:1;" onclick="apagar('${id}')">Excluir</button>`
-                }
+                    ? `<button class="btn-finish" onclick="finalizar('${id}')">Encerrar</button>` 
+                    : `<button style="background:var(--warn); width:100%; margin-top:10px;" onclick="reabrir('${id}')">Reabrir</button>`}
             </div>`;
         container.appendChild(div);
-        updateTimers(); // Força atualização imediata após renderizar
     }
 
-    window.addComment = function(id) {
-        const input = document.getElementById(`in-${id}`);
-        if(!input.value) return;
+    // --- FIREBASE OPS ---
+    window.addComment = (id) => {
+        const inp = document.getElementById(`in-${id}`);
+        if(!inp.value) return;
         onValue(ref(db, `ativos/${id}`), s => {
-            const lista = s.val().comentarios || [];
-            lista.push({ texto: input.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
-            update(ref(db, `ativos/${id}`), { comentarios: lista });
-            input.value = "";
+            const list = s.val().comentarios || [];
+            list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+            update(ref(db, `ativos/${id}`), { comentarios: list });
+            inp.value = "";
         }, { onlyOnce: true });
     };
 
-    window.toggleEscala = function(id, h){
+    window.toggleEscala = (id, h) => {
         onValue(ref(db, `ativos/${id}`), s => {
-            let lista = s.val().escalado || [];
-            lista = lista.includes(h) ? lista.filter(x => x !== h) : [...lista, h];
-            update(ref(db, `ativos/${id}`), { escalado: lista });
+            let list = s.val().escalado || [];
+            list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
+            update(ref(db, `ativos/${id}`), { escalado: list });
         }, { onlyOnce: true });
     };
 
-    window.finalizar = function(id){
+    window.finalizar = (id) => {
         onValue(ref(db, `ativos/${id}`), s => {
-            push(ref(db, "resolvidos"), { ...s.val(), dataFim: new Date().toLocaleString('pt-BR') });
+            push(ref(db, "resolvidos"), { ...s.val(), fim: new Date().toLocaleString('pt-BR') });
             remove(ref(db, `ativos/${id}`));
         }, { onlyOnce: true });
     };
 
-    window.reabrir = function(id){
+    window.reabrir = (id) => {
         onValue(ref(db, `resolvidos/${id}`), s => {
             push(ref(db, "ativos"), s.val());
             remove(ref(db, `resolvidos/${id}`));
         }, { onlyOnce: true });
-    };
-
-    window.apagar = function(id){
-        if(confirm("Excluir?")) remove(ref(db, `resolvidos/${id}`));
     };
 
     onValue(ref(db, "ativos"), snap => {
@@ -320,12 +304,13 @@
         snap.forEach(c => renderCard(c.key, c.val(), "resolvidos"));
     });
 
-    window.showTab = function(tab){
+    window.showTab = (tab) => {
         document.getElementById("ativos").classList.toggle("hidden", tab !== "ativos");
         document.getElementById("resolvidos").classList.toggle("hidden", tab !== "resolvidos");
         document.getElementById("btn-tab-ativos").classList.toggle("active", tab === "ativos");
         document.getElementById("btn-tab-resolvidos").classList.toggle("active", tab === "resolvidos");
     };
+
 </script>
 </body>
 </html>
