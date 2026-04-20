@@ -2,73 +2,149 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>CDN - Dashboard</title>
+<title>CDN - NOC Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-body { font-family: Arial; background:#0f172a; color:#fff; padding:20px; }
+body { font-family: 'Segoe UI', Arial; background:#020617; color:#e2e8f0; padding:20px; }
 
-button { padding:8px 12px; margin:5px; cursor:pointer; }
+h2 { margin-bottom:10px; }
 
-.table-container { max-height:300px; overflow-y:auto; border:1px solid #334155; border-radius:8px; }
+button {
+    padding:8px 14px;
+    margin:5px;
+    cursor:pointer;
+    border:none;
+    border-radius:6px;
+    background:#2563eb;
+    color:#fff;
+}
 
-table { width:100%; border-collapse: collapse; }
-th, td { border:1px solid #334155; padding:8px; text-align:center; font-size:14px; }
-th { background:#1e293b; position:sticky; top:0; }
+button:hover { background:#1d4ed8; }
 
-input { width:70px; padding:4px; }
+.table-container {
+    max-height:320px;
+    overflow-y:auto;
+    border:1px solid #1e293b;
+    border-radius:8px;
+}
 
-.card { background:#1e293b; padding:15px; border-radius:10px; margin-top:15px; }
+table {
+    width:100%;
+    border-collapse: collapse;
+}
 
-#grafico { max-height:250px !important; }
+th, td {
+    border:1px solid #1e293b;
+    padding:8px;
+    text-align:center;
+    font-size:13px;
+}
 
-textarea { width:100%; height:70px; }
+th {
+    background:#020617;
+    position:sticky;
+    top:0;
+    z-index:2;
+}
+
+input {
+    width:80px;
+    padding:4px;
+    background:#020617;
+    border:1px solid #334155;
+    color:#fff;
+}
+
+.card {
+    background:#020617;
+    border:1px solid #1e293b;
+    padding:15px;
+    border-radius:10px;
+    margin-top:15px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap:10px;
+}
+
+.metric {
+    background:#020617;
+    border:1px solid #334155;
+    padding:10px;
+    border-radius:8px;
+}
+
+.metric span {
+    font-size:12px;
+    color:#94a3b8;
+}
+
+.metric h3 {
+    margin:5px 0;
+}
+
+#grafico {
+    max-height:220px !important;
+}
+
+textarea {
+    width:100%;
+    height:70px;
+    background:#020617;
+    border:1px solid #334155;
+    color:#fff;
+}
+
+.alerta { color:#ef4444; font-weight:bold; }
 </style>
 </head>
 <body>
 
 <button onclick="voltar()">⬅ Voltar</button>
-<h2>CDN - Consumo</h2>
+<h2>CDN - Consumo (Gbps)</h2>
 
 <div class="table-container">
 <table id="tabela">
 <thead>
 <tr>
-<th>Provedor</th>
+<th>CDN</th>
 <th>Interface</th>
 <th>Equipamento</th>
-<th>Atual</th>
-<th>Pico Máx</th>
+<th>Atual (Gbps)</th>
+<th>Pico (Gbps)</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>GOOGLE</td><td>irb.428</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>GOOGLE</td><td>irb.400</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>FACEBOOK</td><td>ae6</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>FACEBOOK</td><td>ae8</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae0</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae3</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae4</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>NETFLIX</td><td>ae5</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>CLOUDFLARE</td><td>ae7</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>ae1</td><td>CORE</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk1</td><td>BKB</td><td><input type="number"></td><td><input type="number"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk3</td><td>BKB</td><td><input type="number"></td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>irb.428</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>GOOGLE</td><td>irb.400</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>FACEBOOK</td><td>ae6</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>FACEBOOK</td><td>ae8</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>NETFLIX</td><td>ae0</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>NETFLIX</td><td>ae3</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>NETFLIX</td><td>ae4</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>NETFLIX</td><td>ae5</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>CLOUDFLARE</td><td>ae7</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>GLOBO</td><td>ae1</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk1</td><td>BKB</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk3</td><td>BKB</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
 </tbody>
 </table>
 </div>
 
-<button onclick="calcular()">Calcular</button>
-<button onclick="window.print()">Baixar PDF</button>
+<button onclick="calcular()">Atualizar Métricas</button>
+<button onclick="window.print()">Exportar PDF</button>
 
-<div class="card" id="resultado"></div>
+<div class="grid" id="metricas"></div>
 
 <canvas id="grafico"></canvas>
 
 <div class="card">
-<h3>Comentários</h3>
-<textarea placeholder="Observações..."></textarea>
+<h3>Comentários Operacionais</h3>
+<textarea placeholder="Ex: pico alto em Netflix devido a evento..."></textarea>
 </div>
 
 <script>
@@ -76,32 +152,33 @@ let chart;
 
 function calcular() {
     const linhas = document.querySelectorAll("tbody tr");
-    let valores = [];
+    let atuais = [];
     let total = 0;
-    let maxPico = 0;
+    let picoMax = 0;
 
     linhas.forEach(l => {
         const atual = parseFloat(l.cells[3].children[0].value) || 0;
         const pico = parseFloat(l.cells[4].children[0].value) || 0;
 
-        valores.push(atual);
+        atuais.push(atual);
         total += atual;
 
-        if (pico > maxPico) maxPico = pico;
+        if (pico > picoMax) picoMax = pico;
     });
 
-    let maxAtual = Math.max(...valores);
-    let idx = valores.indexOf(maxAtual);
-    let nome = linhas[idx].cells[1].innerText;
+    let maxAtual = Math.max(...atuais);
+    let idx = atuais.indexOf(maxAtual);
+    let iface = linhas[idx].cells[1].innerText;
 
-    valores.sort((a,b)=>a-b);
-    let p95 = valores[Math.floor(valores.length * 0.95)] || 0;
+    atuais.sort((a,b)=>a-b);
+    let p95 = atuais[Math.floor(atuais.length * 0.95)] || 0;
 
-    document.getElementById("resultado").innerHTML = `
-        <p><b>Total:</b> ${total.toFixed(2)} Mbps</p>
-        <p><b>Maior consumo:</b> ${nome} (${maxAtual} Mbps)</p>
-        <p><b>Pico Máximo:</b> ${maxPico} Mbps</p>
-        <p><b>Percentil 95:</b> ${p95} Mbps</p>
+    document.getElementById("metricas").innerHTML = `
+        <div class="metric"><span>Total</span><h3>${total.toFixed(2)} Gbps</h3></div>
+        <div class="metric"><span>Maior Interface</span><h3>${iface}</h3></div>
+        <div class="metric"><span>Uso Máximo</span><h3>${maxAtual.toFixed(2)} Gbps</h3></div>
+        <div class="metric"><span>Pico Geral</span><h3>${picoMax.toFixed(2)} Gbps</h3></div>
+        <div class="metric"><span>P95</span><h3>${p95.toFixed(2)} Gbps</h3></div>
     `;
 
     gerarGrafico(linhas);
@@ -122,15 +199,14 @@ function gerarGrafico(linhas) {
         type: 'bar',
         data: {
             labels: labels,
-            datasets: [{
-                label: 'Mbps',
-                data: dados
-            }]
+            datasets: [{ data: dados }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { display: false }
+            plugins: { legend: { display:false } },
+            scales: {
+                x: { ticks: { color:'#94a3b8' } },
+                y: { ticks: { color:'#94a3b8' } }
             }
         }
     });
