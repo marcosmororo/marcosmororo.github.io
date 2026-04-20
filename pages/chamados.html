@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Controle de Chamados</title>
+<title>Controle de Chamados NOC</title>
 
 <style>
 body {
@@ -16,23 +16,19 @@ body {
   padding: 20px;
 }
 
-h1 {
-  text-align: center;
-}
-
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
 }
 
-input, button {
+input, select, button {
   padding: 10px;
   margin: 5px;
   border-radius: 8px;
   border: none;
 }
 
-input {
+input, select {
   width: 30%;
 }
 
@@ -52,12 +48,14 @@ button {
   border-radius: 10px;
 }
 
-.atrasado {
-  border-left: 5px solid red;
-}
+.atrasado { border-left: 5px solid red; }
+.proximo { border-left: 5px solid orange; }
 
-.proximo {
-  border-left: 5px solid orange;
+.escalation {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
 }
 </style>
 
@@ -66,10 +64,18 @@ button {
 <body>
 
 <div class="container">
-<h1>📋 Controle de Chamados</h1>
+<h1>📋 Controle de Chamados NOC</h1>
 
 <input type="text" id="titulo" placeholder="Chamado">
+<input type="text" id="descricao" placeholder="Descrição">
+<input type="text" id="filho" placeholder="Chamado Filho">
 <input type="time" id="hora">
+
+<select id="tipo">
+  <option value="externa">Rede Externa</option>
+  <option value="interna">Rede Interna</option>
+</select>
+
 <button onclick="addChamado()">Adicionar</button>
 
 <div class="lista" id="lista"></div>
@@ -78,30 +84,61 @@ button {
 <script>
 let chamados = JSON.parse(localStorage.getItem("chamados")) || [];
 
+const escala = {
+  externa: [
+    {min:4, nome:"Erivelton Rodrigues (88) 9 9828-3311"},
+    {min:8, nome:"Guilherme Silva (88) 9 9928-2323"},
+    {min:10, nome:"Valmir (88) 9 9828-7071"},
+    {min:12, nome:"Fernando (88) 9 9440-1255"}
+  ],
+  interna: [
+    {min:4, nome:"Joao Martins (88) 9 9828-3337"},
+    {min:8, nome:"Wescley (88) 9 9486-6085"},
+    {min:10, nome:"Valmir (88) 9 9828-7071"},
+    {min:12, nome:"Fernando (88) 9 9440-1255"}
+  ]
+};
+
 function salvar() {
   localStorage.setItem("chamados", JSON.stringify(chamados));
 }
 
 function addChamado() {
   const titulo = document.getElementById("titulo").value;
+  const descricao = document.getElementById("descricao").value;
+  const filho = document.getElementById("filho").value;
   const hora = document.getElementById("hora").value;
+  const tipo = document.getElementById("tipo").value;
 
   if (!titulo || !hora) return;
 
-  chamados.push({
-    titulo,
-    hora
-  });
+  chamados.push({ titulo, descricao, filho, hora, tipo });
 
   document.getElementById("titulo").value = "";
+  document.getElementById("descricao").value = "";
+  document.getElementById("filho").value = "";
+
   salvar();
   render();
 }
 
-function remover(index) {
-  chamados.splice(index, 1);
+function remover(i) {
+  chamados.splice(i,1);
   salvar();
   render();
+}
+
+function getEscalacao(tipo, diff) {
+  let lista = escala[tipo];
+  let contatos = [];
+
+  lista.forEach(e => {
+    if (diff <= (15 - e.min)) {
+      contatos.push(e.nome);
+    }
+  });
+
+  return contatos;
 }
 
 function render() {
@@ -114,22 +151,30 @@ function render() {
     const div = document.createElement("div");
     div.className = "chamado";
 
-    const [h, m] = c.hora.split(":");
-    const dataChamado = new Date();
-    dataChamado.setHours(h, m, 0);
+    const [h,m] = c.hora.split(":");
+    const data = new Date();
+    data.setHours(h,m,0);
 
-    const diff = (dataChamado - agora) / 60000; // minutos
+    const diff = (data - agora) / 60000;
 
-    if (diff < 0) {
-      div.classList.add("atrasado");
-    } else if (diff < 15) {
-      div.classList.add("proximo");
-    }
+    if (diff < 0) div.classList.add("atrasado");
+    else if (diff < 15) div.classList.add("proximo");
+
+    const contatos = getEscalacao(c.tipo, diff);
 
     div.innerHTML = `
       <strong>${c.titulo}</strong><br>
-      Escalonar até: ${c.hora}
-      <br><br>
+      📝 ${c.descricao || "-"}<br>
+      🔗 Filho: ${c.filho || "-"}<br>
+      ⏰ Escalonar até: ${c.hora}<br>
+      🌐 Tipo: ${c.tipo === "externa" ? "Rede Externa" : "Rede Interna"}
+
+      <div class="escalation">
+        <strong>📞 Escalonamento:</strong><br>
+        ${contatos.length ? contatos.join("<br>") : "Dentro do tempo"}
+      </div>
+
+      <br>
       <button onclick="remover(${i})">Remover</button>
     `;
 
@@ -137,7 +182,6 @@ function render() {
   });
 }
 
-// Atualiza a cada minuto
 setInterval(render, 60000);
 render();
 </script>
