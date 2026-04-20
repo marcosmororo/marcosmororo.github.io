@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>N2.NC01 - TOTAL CDN ONLINE</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial; padding: 20px; background:#0f172a; color:#fff; }
+table { width:100%; border-collapse: collapse; margin-bottom:20px; }
+th, td { border:1px solid #334155; padding:10px; text-align:center; }
+th { background:#1e293b; }
+input { width:80px; padding:5px; }
+button { padding:10px 15px; margin:5px; cursor:pointer; }
+#comentario { width:100%; height:80px; }
+.card { background:#1e293b; padding:15px; border-radius:10px; margin-top:20px; }
+</style>
+</head>
+<body>
+
+<h2>Consumo de Rede</h2>
+
+<table id="tabela">
+<thead>
+<tr>
+<th>Provedor</th>
+<th>Interface</th>
+<th>Equipamento</th>
+<th>Valor (Mbps)</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>GOOGLE</td><td>irb.428</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>irb.400</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>FACEBOOK</td><td>ae6</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>FACEBOOK</td><td>ae8</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae0</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae3</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae4</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>NETFLIX</td><td>ae5</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>CLOUDFLARE</td><td>ae7</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>ae1</td><td>CE-VJT-E01-CORE-CDN-SW001</td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk1</td><td>PI-PRP-E01-BKB-SW002</td><td><input type="number"></td></tr>
+<tr><td>GLOBO</td><td>eth-trunk3</td><td>MA-CHA-E01-BKB-SW001</td><td><input type="number"></td></tr>
+</tbody>
+</table>
+
+<button onclick="calcular()">Calcular</button>
+<button onclick="window.print()">Baixar PDF</button>
+
+<div class="card" id="resultado"></div>
+
+<canvas id="grafico"></canvas>
+
+<div class="card">
+<h3>Comentários</h3>
+<textarea id="comentario" placeholder="Adicione observações..."></textarea>
+</div>
+
+<script>
+let chart;
+
+function calcular() {
+    const linhas = document.querySelectorAll("tbody tr");
+    let valores = [];
+    let total = 0;
+
+    linhas.forEach(l => {
+        const val = parseFloat(l.cells[3].children[0].value) || 0;
+        valores.push(val);
+        total += val;
+    });
+
+    let max = Math.max(...valores);
+    let indiceMax = valores.indexOf(max);
+    let nomeMax = linhas[indiceMax].cells[1].innerText;
+
+    valores.sort((a,b)=>a-b);
+    let p95 = valores[Math.floor(valores.length * 0.95)] || 0;
+
+    document.getElementById("resultado").innerHTML = `
+        <p><b>Total:</b> ${total.toFixed(2)} Mbps</p>
+        <p><b>Maior consumo:</b> ${nomeMax} (${max} Mbps)</p>
+        <p><b>Percentil 95:</b> ${p95} Mbps</p>
+    `;
+
+    gerarGrafico(linhas);
+}
+
+function gerarGrafico(linhas) {
+    const labels = [];
+    const dados = [];
+
+    linhas.forEach(l => {
+        labels.push(l.cells[1].innerText);
+        dados.push(parseFloat(l.cells[3].children[0].value) || 0);
+    });
+
+    if (chart) chart.destroy();
+
+    chart = new Chart(document.getElementById("grafico"), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Consumo Mbps',
+                data: dados
+            }]
+        }
+    });
+}
+</script>
+
+</body>
+</html>
