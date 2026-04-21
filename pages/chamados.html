@@ -20,70 +20,60 @@
             --text-main: #1c1e21; --text-dim: #606770; --input-bg: #f5f6f7;
         }
 
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        * { box-sizing: border-box; transition: background 0.3s, border-color 0.3s; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; }
         .container { max-width: 1400px; margin: auto; }
 
-        /* Header */
-        .page-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding: 10px 20px; background: var(--card);
-            border-radius: 12px; border: 1px solid var(--header);
-        }
-        .logo-area h2 { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .header-actions { display: flex; align-items: center; gap: 15px; }
-        
-        .nav-btn {
-            background: var(--primary); color: #fff; border: none; padding: 8px 15px;
-            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
-        }
-
-        #theme-toggle { background: var(--header); border: none; color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
-        #page-clock { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary); }
-
-        /* Dashboard de Métricas */
-        .metrics-bar {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px; margin-bottom: 20px;
-        }
-        .metric-card {
-            background: var(--card); padding: 15px; border-radius: 12px;
-            border: 1px solid var(--header); display: flex; flex-direction: column; align-items: center;
-        }
-        .metric-card span { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
+        /* Header & Dashboard */
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px 20px; background: var(--card); border-radius: 12px; border: 1px solid var(--header); }
+        .metrics-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .metric-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--header); display: flex; flex-direction: column; align-items: center; }
         .metric-card b { font-size: 1.5rem; color: var(--primary); font-family: 'JetBrains Mono'; }
 
-        /* Painel Admin */
-        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 25px; margin-bottom: 30px; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 800; }
-        input, select, textarea { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 12px; border-radius: 10px; outline: none; }
-        textarea { grid-column: span 2; height: 50px; resize: none; }
-        .btn-add { background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; height: 50px; }
+        /* Admin Panel */
+        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 12px; }
+        input, select, textarea { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 10px; border-radius: 8px; outline: none; width: 100%; }
+        .btn-add { background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; height: 45px; width: 100%; }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tabs button { background: var(--card); color: var(--text-dim); padding: 12px 25px; border: 1px solid var(--header); border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .tabs button { background: var(--card); color: var(--text-dim); padding: 10px 20px; border: 1px solid var(--header); border-radius: 8px; cursor: pointer; font-weight: bold; }
         .tabs button.active { border-color: var(--primary); color: var(--primary); }
 
-        /* Grid e Cards */
+        /* Cards */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); position: relative; }
-        .card.warn { border-top-color: var(--warn); }
-        .card.danger { border-top-color: var(--danger); }
+        .card.warn { border-top-color: var(--warn); box-shadow: 0 0 15px rgba(255, 184, 0, 0.1); }
+        .card.danger { border-top-color: var(--danger); box-shadow: 0 0 20px rgba(255, 77, 77, 0.2); }
         
-        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 10px; text-align: center; margin: 10px 0; }
+        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 10px; text-align: center; margin: 10px 0; border: 1px solid var(--header); }
         .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--primary); }
 
-        .step { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 8px 12px; margin: 4px 0; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
-        .step.done { opacity: 0.3; text-decoration: line-through; }
-        .step.next-to-call { border: 1px solid var(--warn); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        /* Escalation Steps */
+        .step { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--input-bg); padding: 10px 15px; margin: 6px 0; 
+            border-radius: 10px; font-size: 0.85rem; border: 1px solid transparent;
+            cursor: pointer;
+        }
+        .step.done { opacity: 0.4; background: transparent; border: 1px dashed var(--header); }
+        
+        /* COR DE ACIONAMENTO ATIVO */
+        .step.next-to-call { 
+            border-color: var(--warn); 
+            background: rgba(255, 184, 0, 0.05);
+            animation: pulse-border 1.5s infinite; 
+        }
 
-        .wa-link { color: var(--whatsapp); font-size: 1.2rem; }
-        .log-container { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; margin: 5px 0; }
-        .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 8px; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0px rgba(255, 184, 0, 0.4); }
+            100% { box-shadow: 0 0 0 8px rgba(255, 184, 0, 0); }
+        }
+
+        .wa-link { color: var(--whatsapp); font-size: 1.3rem; }
+        .log-container { background: var(--input-bg); padding: 10px; border-radius: 8px; font-size: 0.75rem; max-height: 100px; overflow-y: auto; margin-bottom: 10px; }
+        .btn-encerrar { background: var(--ok); color: #000; width: 100%; border: none; border-radius: 8px; padding: 12px; margin-top: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
 
         .hidden { display: none; }
     </style>
@@ -91,57 +81,44 @@
 <body>
 
 <div class="container">
-    <div id="main-view">
-        <div class="page-header">
-            <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC MONITORING</h2></div>
-            <div class="header-actions">
-                <button class="nav-btn" onclick="toggleView('partners')"><i class="fa-solid fa-handshake"></i> Parceiros</button>
-                <div id="page-clock">00:00:00</div>
-                <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-            </div>
+    <div class="page-header">
+        <div class="logo-area"><h2><i class="fa-solid fa-satellite"></i> NOC HORIZON</h2></div>
+        <div class="header-actions">
+            <div id="page-clock">00:00:00</div>
+            <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
         </div>
-
-        <div class="metrics-bar">
-            <div class="metric-card"><span>Total Ativos</span><b id="count-total">0</b></div>
-            <div class="metric-card"><span>Rede Externa</span><b id="count-externa" style="color:var(--warn)">0</b></div>
-            <div class="metric-card"><span>Rede Interna</span><b id="count-interna" style="color:var(--ok)">0</b></div>
-        </div>
-
-        <div class="admin-panel">
-            <div class="form-row">
-                <div class="form-group"><label>Título</label><input id="titulo" placeholder="Ex: Queda de Link"></div>
-                <div class="form-group"><label>Chamado Pai (Nº)</label><input id="pai" placeholder="Apenas números" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                <div class="form-group"><label>Chamado Filho (Nº)</label><input id="filho" placeholder="Apenas números" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                <div class="form-group">
-                    <label>Escopo</label>
-                    <select id="tipo">
-                        <option value="externa_ne">Externa (NE)</option>
-                        <option value="externa_no">Externa (NO)</option>
-                        <option value="interna_ne">Interna (NE)</option>
-                        <option value="interna_no">Interna (NO)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 1fr;">
-                <div class="form-group"><label>Data</label><input type="date" id="data_manual"></div>
-                <div class="form-group"><label>Hora</label><input type="time" id="hora_manual"></div>
-                <div class="form-group"><label>Descrição</label><textarea id="descricao"></textarea></div>
-                <button class="btn-add" onclick="add()">Registrar</button>
-            </div>
-        </div>
-
-        <div class="tabs">
-            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS (0)</button>
-            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO (0)</button>
-        </div>
-
-        <div id="ativos" class="grid-cards"></div>
-        <div id="resolvidos" class="grid-cards hidden"></div>
     </div>
 
-    <div id="partners-view" class="hidden">
-        <button class="nav-btn" onclick="toggleView('main')">Voltar</button>
+    <div class="metrics-bar">
+        <div class="metric-card"><span>TOTAL ATIVOS</span><b id="count-total">0</b></div>
+        <div class="metric-card"><span>REDE EXTERNA</span><b id="count-externa" style="color:var(--warn)">0</b></div>
+        <div class="metric-card"><span>REDE INTERNA</span><b id="count-interna" style="color:var(--ok)">0</b></div>
     </div>
+
+    <div class="admin-panel">
+        <div class="form-row">
+            <div class="form-group"><input id="titulo" placeholder="Título do Incidente"></div>
+            <div class="form-group"><input id="pai" placeholder="Protocolo Pai" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            <div class="form-group"><input id="filho" placeholder="Protocolo Filho" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+            <div class="form-group">
+                <select id="tipo">
+                    <option value="externa_ne">Externa (NE)</option>
+                    <option value="externa_no">Externa (NO)</option>
+                    <option value="interna_ne">Interna (NE)</option>
+                    <option value="interna_no">Interna (NO)</option>
+                </select>
+            </div>
+            <div class="form-group"><button class="btn-add" onclick="add()">ABRIR CHAMADO</button></div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS (0)</button>
+        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO (0)</button>
+    </div>
+
+    <div id="ativos" class="grid-cards"></div>
+    <div id="resolvidos" class="grid-cards hidden"></div>
 </div>
 
 <script type="module">
@@ -168,87 +145,108 @@
         "interna_no": [{h:4, nome:"Nildo", tel:"558898283337"}, {h:8, nome:"Julio Gaia", tel:"558894866085"}, {h:10, nome:"Valmir", tel:"558898287071"}, {h:12, nome:"Fernando", tel:"5588994401255"}]
     };
 
-    window.toggleView = (v) => {
-        document.getElementById('main-view').classList.toggle('hidden', v==='partners');
-        document.getElementById('partners-view').classList.toggle('hidden', v==='main');
-    };
-
-    setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-    window.toggleTheme = () => { document.body.classList.toggle('light-mode'); };
-
     function formatTime(ms) {
         const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
-        return `${h}h ${m}m ${s}s`;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }
 
-    // LISTENER PARA ATIVOS E CONTADORES
+    // MONITORAMENTO DE TEMPO EM TEMPO REAL
+    setInterval(() => {
+        const now = Date.now();
+        document.querySelectorAll('.card.ativo').forEach(card => {
+            const start = parseInt(card.dataset.start);
+            const escalados = JSON.parse(card.dataset.escalado || "[]");
+            const diffH = (now - start) / 3600000;
+
+            card.querySelector('.timer-val').innerText = formatTime(now - start);
+            
+            // Cores do Card (SLA)
+            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
+            card.classList.toggle('danger', diffH >= 10);
+
+            // Logica do Proximo Acionamento
+            let foundNext = false;
+            card.querySelectorAll('.step[data-h]').forEach(step => {
+                const stepH = parseInt(step.dataset.h);
+                const jaEscalado = escalados.includes(stepH);
+                
+                // Se passou da hora e não foi marcado, ele brilha
+                if (diffH >= stepH && !jaEscalado && !foundNext) {
+                    step.classList.add('next-to-call');
+                    foundNext = true; 
+                } else {
+                    step.classList.remove('next-to-call');
+                }
+            });
+        });
+        document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR');
+    }, 1000);
+
     onValue(ref(db, "ativos"), snap => {
         const container = document.getElementById("ativos");
         container.innerHTML = "";
         let total = 0, ext = 0, int = 0;
-
         snap.forEach(c => {
             const data = c.val();
             renderCard(c.key, data, "ativos");
             total++;
             if(data.tipo.startsWith('externa')) ext++;
-            if(data.tipo.startsWith('interna')) int++;
+            else int++;
         });
-
-        // Atualiza a UI com os novos números
         document.getElementById('count-total').innerText = total;
         document.getElementById('count-externa').innerText = ext;
         document.getElementById('count-interna').innerText = int;
         document.getElementById('btn-tab-ativos').innerText = `ATIVOS (${total})`;
     });
 
-    // LISTENER PARA HISTÓRICO
     onValue(ref(db, "resolvidos"), snap => {
-        const container = document.getElementById("resolvidos");
-        container.innerHTML = "";
+        document.getElementById("resolvidos").innerHTML = "";
         let total = 0;
-        snap.forEach(c => {
-            renderCard(c.key, c.val(), "resolvidos");
-            total++;
-        });
+        snap.forEach(c => { renderCard(c.key, c.val(), "resolvidos"); total++; });
         document.getElementById('btn-tab-resolvidos').innerText = `HISTÓRICO (${total})`;
     });
 
-    // Função de renderização (mantida conforme seu código original com ajustes)
     function renderCard(id, data, containerId) {
-        const container = document.getElementById(containerId), isResolvido = containerId === 'resolvidos', div = document.createElement("div");
-        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`; 
-        div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
+        const isResolvido = containerId === 'resolvidos';
+        const div = document.createElement("div");
+        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
+        div.id = id;
+        div.dataset.start = data.inicio;
+        div.dataset.escalado = JSON.stringify(data.escalado || []);
         
         const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
             <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
-                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp"></i></a>
             </div>`).join('');
 
         const logsHTML = (data.comentarios || []).map(c => `<div><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
 
         div.innerHTML = `
-            <div style="font-size:0.7rem; color:var(--text-dim);">${data.dataStr || ''}</div>
-            <div style="font-weight:800; font-size:1.1rem; margin: 5px 0;">${data.titulo}</div>
-            <div style="font-size:0.8rem; color:var(--primary);">P: ${data.pai} | F: ${data.filho}</div>
-            <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
-            <div class="log-container">${logsHTML || 'Sem notas.'}</div>
-            ${!isResolvido ? `<div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; font-size:12px;"><button onclick="addComment('${id}')">OK</button></div>` : ''}
+            <div style="font-weight:800; font-size:1.1rem; margin-bottom: 5px;">${data.titulo}</div>
+            <div style="font-size:0.8rem; color:var(--text-dim);">PAI: ${data.pai} | FILHO: ${data.filho}</div>
+            <div class="timer-box"><div class="timer-val">00:00:00</div></div>
+            <div class="log-container">${logsHTML || 'Sem observações.'}</div>
+            ${!isResolvido ? `<input type="text" id="in-${id}" placeholder="Adicionar nota..." onkeypress="if(event.key==='Enter') addComment('${id}')">` : ''}
             <div style="margin-top:10px;">${stepsHTML}</div>
-            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">FINALIZAR</button>` : 
-            `<div style="display:flex; gap:10px; margin-top:10px;"><button style="background:var(--warn); color:white; border:none; border-radius:8px; flex:1;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); color:white; border:none; border-radius:8px; flex:1;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
+            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">Encerrar Chamado</button>` : `<button class="btn-encerrar" style="background:var(--warn)" onclick="reabrir('${id}')">Reabrir</button>`}
         `;
-        container.appendChild(div);
+        document.getElementById(containerId).appendChild(div);
     }
 
-    // Funções auxiliares (add, addComment, finalizar, etc) permanecem iguais...
-    window.add = function(){
+    window.toggleEscala = (id, h) => {
+        onValue(ref(db, `ativos/${id}`), s => {
+            let list = s.val().escalado || [];
+            list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
+            update(ref(db, `ativos/${id}`), { escalado: list });
+        }, { onlyOnce: true });
+    };
+
+    window.add = () => {
         const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
-        if(!t || !p || !f) return alert("Título e Protocolos são obrigatórios!");
-        let dE = (document.getElementById("data_manual").value && document.getElementById("hora_manual").value) ? new Date(`${document.getElementById("data_manual").value}T${document.getElementById("hora_manual").value}`) : new Date();
-        push(ref(db,"ativos"), { titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, inicio: dE.getTime(), dataStr: dE.toLocaleString('pt-BR'), escalado: [], comentarios: [] });
-        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
+        if(!t || !p) return alert("Título e Protocolo Pai são obrigatórios!");
+        push(ref(db,"ativos"), { titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, inicio: Date.now(), escalado: [], comentarios: [] });
+        document.querySelectorAll(".admin-panel input").forEach(e=>e.value="");
     };
 
     window.addComment = (id) => {
@@ -260,33 +258,10 @@
         }, { onlyOnce: true });
     };
 
-    window.toggleEscala = (id, h) => {
-        onValue(ref(db, `ativos/${id}`), s => {
-            let list = s.val().escalado || [];
-            list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
-            update(ref(db, `ativos/${id}`), { escalado: list });
-        }, { onlyOnce: true });
-    };
-
     window.finalizar = (id) => { onValue(ref(db, `ativos/${id}`), s => { push(ref(db, "resolvidos"), { ...s.val(), fim: Date.now() }); remove(ref(db, `ativos/${id}`)); }, { onlyOnce: true }); };
     window.reabrir = (id) => { onValue(ref(db, `resolvidos/${id}`), s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }, { onlyOnce: true }); };
-    window.apagar = (id) => { if(confirm("Deletar?")) remove(ref(db, `resolvidos/${id}`)); };
-
-    window.showTab = (t) => { 
-        document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); 
-        document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); 
-        document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); 
-        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); 
-    };
-
-    // Refresca timers a cada segundo
-    setInterval(() => {
-        const now = Date.now();
-        document.querySelectorAll('.card.ativo').forEach(card => {
-            const start = parseInt(card.dataset.start);
-            card.querySelector('.timer-val').innerText = formatTime(now - start);
-        });
-    }, 1000);
+    window.showTab = (t) => { document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); };
+    window.toggleTheme = () => document.body.classList.toggle('light-mode');
 </script>
 </body>
 </html>
