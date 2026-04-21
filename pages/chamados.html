@@ -88,7 +88,7 @@
 
         /* Grid */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); }
+        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); position: relative; }
         .card.warn { border-top-color: var(--warn); }
         .card.danger { border-top-color: var(--danger); }
         
@@ -107,7 +107,6 @@
         .log-container { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; margin: 5px 0; }
         
         .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 8px; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
-
         .hidden { display: none; }
     </style>
 </head>
@@ -130,10 +129,10 @@
             <div class="form-group">
                 <label>Escopo de Rede</label>
                 <select id="tipo">
-                    <option value="externa-ne">Rede Externa (Nordeste)</option>
-                    <option value="externa-no">Rede Externa (Norte)</option>
-                    <option value="interna-ne">Rede Interna (Nordeste)</option>
-                    <option value="interna-no">Rede Interna (Norte)</option>
+                    <option value="externa_ne">Rede Externa (Nordeste)</option>
+                    <option value="externa_no">Rede Externa (Norte)</option>
+                    <option value="interna_ne">Rede Interna (Nordeste)</option>
+                    <option value="interna_no">Rede Interna (Norte)</option>
                 </select>
             </div>
         </div>
@@ -172,31 +171,31 @@
     const db = getDatabase(app);
 
     // ========================================================
-    // CENTRAL DE CONTATOS (MUDE AQUI PARA ATUALIZAR A EQUIPE)
+    // CENTRAL DE CONTATOS (ORGANIZADO PARA FÁCIL MANUTENÇÃO)
     // ========================================================
     const CONFIG_ESCALATION = {
-        externa-ne: [
+        "externa_ne": [
             { h: 4,  nome: "Erivelton",  tel: "558898283311" },
             { h: 8,  nome: "Guilherme",  tel: "558899282323" },
             { h: 10, nome: "Iran Jr",    tel: "558899870725" },
             { h: 10, nome: "Valmir",     tel: "558898287071" },
             { h: 12, nome: "Fernando",   tel: "5588994401255" }
         ],
-        externa-no: [
+        "externa_no": [
             { h: 4,  nome: "Clecio",     tel: "558898283311" },
             { h: 8,  nome: "Maciel",     tel: "558899282323" },
             { h: 10, nome: "Iran Jr",    tel: "558899870725" },
             { h: 10, nome: "Valmir",     tel: "558898287071" },
             { h: 12, nome: "Fernando",   tel: "5588994401255" }
         ],
-        interna-ne: [
+        "interna_ne": [
             { h: 4,  nome: "Joao",       tel: "558898283337" },
             { h: 8,  nome: "Wescley",    tel: "558894866085" },
             { h: 10, nome: "Iran Jr",    tel: "558899870725" },
             { h: 10, nome: "Valmir",     tel: "558898287071" },
             { h: 12, nome: "Fernando",   tel: "5588994401255" }
-        ]
-        interna-no: [
+        ],
+        "interna_no": [
             { h: 4,  nome: "Nildo",      tel: "558898283337" },
             { h: 8,  nome: "Julio Gaia", tel: "558894866085" },
             { h: 10, nome: "Iran Jr",    tel: "558899870725" },
@@ -257,7 +256,7 @@
             descricao: document.getElementById("descricao").value, tipo: tipo,
             inicio: dataE.getTime(), dataStr: dataE.toLocaleString('pt-BR'), escalado: [], comentarios: []
         });
-        document.querySelectorAll("input, textarea").forEach(e=>e.value="");
+        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
     };
 
     function renderCard(id, data, containerId) {
@@ -269,7 +268,6 @@
         div.dataset.start = data.inicio;
         div.dataset.escalado = JSON.stringify(data.escalado || []);
 
-        // Usa a lista configurada no topo do script
         const listaEscalation = CONFIG_ESCALATION[data.tipo] || [];
 
         const stepsHTML = listaEscalation.map(e => `
@@ -286,7 +284,7 @@
         div.innerHTML = `
             <div style="font-size:0.7rem; font-weight:800; color:var(--text-dim);">${data.dataStr}</div>
             <div style="font-weight:800; font-size:1.1rem; margin: 5px 0;">${data.titulo}</div>
-            <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">${data.pai || '-'} / ${data.filho || '-'}</div>
+            <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">P: ${data.pai || '-'} / F: ${data.filho || '-'}</div>
             
             <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
             
@@ -304,7 +302,8 @@
         const inp = document.getElementById(`in-${id}`);
         if(!inp.value) return;
         onValue(ref(db, `ativos/${id}`), s => {
-            const list = s.val().comentarios || [];
+            const d = s.val(); if(!d) return;
+            const list = d.comentarios || [];
             list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
             update(ref(db, `ativos/${id}`), { comentarios: list });
             inp.value = "";
@@ -313,7 +312,8 @@
 
     window.toggleEscala = (id, h) => {
         onValue(ref(db, `ativos/${id}`), s => {
-            let list = s.val().escalado || [];
+            const d = s.val(); if(!d) return;
+            let list = d.escalado || [];
             list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
             update(ref(db, `ativos/${id}`), { escalado: list });
         }, { onlyOnce: true });
