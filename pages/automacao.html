@@ -14,12 +14,11 @@ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: #0f172a;
-    color: #fff;
 }
 
 .container {
     display: grid;
-    grid-template-columns: 400px 1fr;
+    grid-template-columns: 380px 1fr;
     height: 100vh;
 }
 
@@ -27,22 +26,14 @@ body {
 .form {
     background: #0b1a33;
     padding: 25px;
+    color: #fff;
     overflow-y: auto;
-}
-
-.form h2 {
-    margin-bottom: 20px;
-}
-
-.input-group {
-    margin-bottom: 15px;
 }
 
 label {
     font-size: 13px;
+    margin-top: 10px;
     display: block;
-    margin-bottom: 5px;
-    opacity: 0.8;
 }
 
 input {
@@ -52,28 +43,21 @@ input {
     border: 1px solid #2a3b5c;
     background: #091426;
     color: #fff;
-    outline: none;
-}
-
-input::placeholder {
-    color: #aaa;
+    margin-top: 5px;
 }
 
 /* PREVIEW */
 .preview {
     background: #e5e7eb;
     padding: 40px;
-    overflow-y: auto;
 }
 
 .card {
     background: #fff;
-    color: #000;
     max-width: 600px;
     margin: auto;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .header {
@@ -98,15 +82,14 @@ input::placeholder {
     color: #fff;
     text-align: center;
     padding: 8px;
-    font-size: 13px;
 }
 
-.table {
+table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table td {
+td {
     padding: 12px;
     border-bottom: 1px solid #ddd;
 }
@@ -114,17 +97,8 @@ input::placeholder {
 .label {
     font-weight: bold;
     background: #f3f4f6;
-    width: 40%;
 }
 
-.footer {
-    padding: 15px;
-    font-size: 12px;
-    text-align: center;
-    color: #555;
-}
-
-/* BUTTONS */
 .actions {
     margin-top: 20px;
 }
@@ -136,18 +110,10 @@ button {
     margin-top: 10px;
     border-radius: 6px;
     cursor: pointer;
-    font-weight: bold;
 }
 
-.png {
-    background: #2563eb;
-    color: #fff;
-}
-
-.pdf {
-    background: #16a34a;
-    color: #fff;
-}
+.png { background: #2563eb; color: #fff; }
+.pdf { background: #16a34a; color: #fff; }
 </style>
 </head>
 
@@ -158,51 +124,35 @@ button {
 <!-- FORM -->
 <div class="form">
 
-<h2>📋 Preencher Aviso</h2>
+<h2>📋 Aviso</h2>
 
-<div class="input-group">
-<label>Data (DDMMYYYY)</label>
-<input id="data" maxlength="8" oninput="formatarData(this)">
-</div>
+<label>Data</label>
+<input type="date" id="data">
 
-<div class="input-group">
-<label>Hora Início (HHMM)</label>
-<input id="inicio" maxlength="4" oninput="formatarHora(this)">
-</div>
+<label>Hora Início</label>
+<input type="time" id="inicio">
 
-<div class="input-group">
-<label>Hora Fim (HHMM)</label>
-<input id="fim" maxlength="4" oninput="formatarHora(this)">
-</div>
+<label>Hora Fim</label>
+<input type="time" id="fim">
 
-<div class="input-group">
 <label>Local</label>
 <input id="local">
-</div>
 
-<div class="input-group">
 <label>Descrição</label>
 <input id="descricao">
-</div>
 
-<div class="input-group">
 <label>Impacto</label>
 <input id="impacto">
-</div>
 
-<div class="input-group">
 <label>Setor</label>
 <input id="setor">
-</div>
 
-<div class="input-group">
-<label>Protocolo (somente números)</label>
+<label>Protocolo</label>
 <input id="protocolo" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
-</div>
 
 <div class="actions">
-<button class="png" onclick="gerarPNG()">📸 Gerar PNG</button>
-<button class="pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
+<button class="png" onclick="gerarPNG()">Gerar PNG</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 </div>
 
 </div>
@@ -213,13 +163,13 @@ button {
 <div id="card" class="card">
 
 <div class="header">
-<img src="online.png">
+<img src="../assets/img/online.png">
 </div>
 
 <div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
 <div class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
 
-<table class="table">
+<table>
 <tr><td class="label">Data</td><td id="p_data"></td></tr>
 <tr><td class="label">Período</td><td id="p_periodo"></td></tr>
 <tr><td class="label">Local</td><td id="p_local"></td></tr>
@@ -229,10 +179,6 @@ button {
 <tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
 </table>
 
-<div class="footer">
-Este aviso refere-se a uma atividade programada.
-</div>
-
 </div>
 
 </div>
@@ -240,32 +186,30 @@ Este aviso refere-se a uma atividade programada.
 </div>
 
 <script>
-function formatarData(el) {
-    el.value = el.value.replace(/\D/g,'');
-    if(el.value.length >= 5)
-        el.value = el.value.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3');
-    else if(el.value.length >= 3)
-        el.value = el.value.replace(/(\d{2})(\d+)/, '$1/$2');
-    atualizar();
-}
+const campos = ["data","inicio","fim","local","descricao","impacto","setor","protocolo"];
 
-function formatarHora(el) {
-    el.value = el.value.replace(/\D/g,'');
-    if(el.value.length >= 3)
-        el.value = el.value.replace(/(\d{2})(\d+)/, '$1:$2');
-    atualizar();
-}
+campos.forEach(id => {
+    document.getElementById(id).addEventListener("input", atualizar);
+});
 
 function atualizar() {
-    document.getElementById("p_data").innerText = document.getElementById("data").value;
-    document.getElementById("p_periodo").innerText =
-        document.getElementById("inicio").value + " às " + document.getElementById("fim").value;
+    const data = document.getElementById("data").value;
+    const inicio = document.getElementById("inicio").value;
+    const fim = document.getElementById("fim").value;
 
-    document.getElementById("p_local").innerText = local.value;
-    document.getElementById("p_descricao").innerText = descricao.value;
-    document.getElementById("p_impacto").innerText = impacto.value;
-    document.getElementById("p_setor").innerText = setor.value;
-    document.getElementById("p_protocolo").innerText = protocolo.value;
+    document.getElementById("p_data").innerText = data ? formatarData(data) : "";
+    document.getElementById("p_periodo").innerText = (inicio && fim) ? `${inicio} às ${fim}` : "";
+
+    document.getElementById("p_local").innerText = document.getElementById("local").value;
+    document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
+    document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
+    document.getElementById("p_setor").innerText = document.getElementById("setor").value;
+    document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
+}
+
+function formatarData(dataISO) {
+    const [ano, mes, dia] = dataISO.split("-");
+    return `${dia}/${mes}/${ano}`;
 }
 
 async function gerarPNG() {
