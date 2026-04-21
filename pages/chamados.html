@@ -105,6 +105,10 @@
             border-radius: 10px; padding: 12px; margin-top: 10px; font-weight: 800; cursor: pointer; 
         }
 
+        .btn-hist-group { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-reabrir { background: var(--warn); color: #000; flex: 2; border: none; border-radius: 10px; padding: 12px; font-weight: 800; cursor: pointer; }
+        .btn-excluir { background: var(--danger); color: #fff; flex: 1; border: none; border-radius: 10px; padding: 12px; font-weight: 800; cursor: pointer; }
+
         .hidden { display: none !important; }
     </style>
 </head>
@@ -138,7 +142,7 @@
                     </select>
                 </div>
             </div>
-            <button class="btn-add" onclick="add()">REGISTRAR NOVO CHAMADO</button>
+            <button class="btn-add" onclick="add()">ABRIR NOVO CHAMADO</button>
         </div>
 
         <div class="tabs">
@@ -184,7 +188,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Preencher data/hora atual
     const agora = new Date();
     document.getElementById('data_manual').value = agora.toISOString().split('T')[0];
     document.getElementById('hora_manual').value = agora.toTimeString().slice(0,5);
@@ -196,7 +199,6 @@
         "interna_no": [{h:4, nome:"Nildo", tel:"558898283337"}, {h:8, nome:"Julio Gaia", tel:"558894866085"}, {h:10, nome:"Valmir", tel:"558898287071"}, {h:12, nome:"Fernando", tel:"5588994401255"}]
     };
 
-    // Função de Cópia
     window.copyTel = (num, el) => {
         navigator.clipboard.writeText(num).then(() => {
             const originalClass = el.className;
@@ -242,7 +244,7 @@
         
         const logsHTML = (data.comentarios || []).map(c => `<div class="log-item"><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
         const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
-            <div class="step ${(data.escalado || []).includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="window.toggleEscala('${id}', ${e.h})">
+            <div class="step ${(data.escalado || []).includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `window.toggleEscala('${id}', ${e.h})` : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
                 <div class="actions-step">
                     <i class="fa-solid fa-copy copy-btn" onclick="event.stopPropagation(); window.copyTel('${e.tel}', this)"></i>
@@ -259,7 +261,10 @@
             ${!isResolvido ? `<div style="display:flex; gap:5px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:8px; font-size:14px;"><button class="nav-btn" onclick="window.addComment('${id}')">OK</button></div>` : ''}
             <div style="margin-top:10px;">${stepsHTML}</div>
             ${!isResolvido ? `<button class="btn-encerrar" onclick="window.finalizar('${id}')">FINALIZAR</button>` : 
-            `<button style="background:var(--warn); width:100%; border:none; border-radius:10px; padding:12px; font-weight:800; margin-top:10px;" onclick="window.reabrir('${id}')">REABRIR</button>`}
+            `<div class="btn-hist-group">
+                <button class="btn-reabrir" onclick="window.reabrir('${id}')">REABRIR</button>
+                <button class="btn-excluir" onclick="window.apagar('${id}')"><i class="fa-solid fa-trash"></i></button>
+            </div>`}
         `;
         container.appendChild(div);
     }
@@ -283,6 +288,7 @@
 
     window.finalizar = (id) => { get(ref(db, `ativos/${id}`)).then(s => { push(ref(db, "resolvidos"), { ...s.val(), fim: Date.now() }); remove(ref(db, `ativos/${id}`)); }); };
     window.reabrir = (id) => { get(ref(db, `resolvidos/${id}`)).then(s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }); };
+    window.apagar = (id) => { if(confirm("Deseja apagar permanentemente este registro do histórico?")) remove(ref(db, `resolvidos/${id}`)); };
 
     onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
     onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
