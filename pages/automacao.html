@@ -38,23 +38,16 @@ label {
     color: #cbd5f5;
 }
 
+/* INPUTS MELHORADOS */
 input, select {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
-    border: 1px solid #374151;
-    background: #020617;
-    color: #fff;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #000;
     margin-top: 5px;
-}
-
-/* Corrigir ícones data/hora */
-input[type="date"], input[type="time"] {
-    color-scheme: dark;
-}
-input::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    cursor: pointer;
+    font-weight: 500;
 }
 
 /* PREVIEW */
@@ -71,17 +64,6 @@ input::-webkit-calendar-picker-indicator {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    position: relative;
-}
-
-/* MARCA D'ÁGUA */
-.watermark {
-    position: absolute;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.05;
-    width: 300px;
 }
 
 /* BADGE */
@@ -206,8 +188,6 @@ button {
 
 <div id="card" class="card">
 
-<img src="../assets/img/online.png" class="watermark">
-
 <div id="badge" class="badge">EMERGENCIAL</div>
 
 <div class="header">
@@ -234,14 +214,12 @@ button {
 </div>
 
 <script>
-/* PROTOCOLO */
 function gerarProtocolo() {
     const d = new Date();
     return `${d.getFullYear()}${d.getMonth()+1}${d.getDate()}-${d.getHours()}${d.getMinutes()}`;
 }
 document.getElementById("protocolo").value = gerarProtocolo();
 
-/* UPDATE */
 const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor"];
 campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
@@ -288,7 +266,6 @@ function formatarData(d){
     return `${dia}/${m}/${a}`;
 }
 
-/* EXPORT HD */
 async function gerarPNG() {
     const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
     const link = document.createElement("a");
