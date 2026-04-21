@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOC - Aviso Programado</title>
+<title>Sistema NOC - Avisos</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,20 +12,21 @@
 <style>
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Segoe UI", sans-serif;
     background: #0f172a;
 }
 
+/* LAYOUT */
 .container {
     display: grid;
-    grid-template-columns: 380px 1fr;
+    grid-template-columns: 350px 1fr;
     height: 100vh;
 }
 
 /* FORM */
 .form {
     background: #0b1a33;
-    padding: 25px;
+    padding: 20px;
     color: #fff;
     overflow-y: auto;
 }
@@ -36,7 +37,7 @@ label {
     display: block;
 }
 
-input {
+input, select {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
@@ -49,41 +50,48 @@ input {
 /* PREVIEW */
 .preview {
     background: #e5e7eb;
-    padding: 40px;
+    padding: 30px;
 }
 
+/* CARD A4 */
 .card {
-    background: #fff;
-    max-width: 600px;
+    width: 500px;
+    min-height: 700px;
     margin: auto;
-    border-radius: 10px;
+    background: #fff;
+    border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
+/* HEADER */
 .header {
     text-align: center;
     padding: 20px;
+    background: #fff;
 }
 
 .header img {
-    max-width: 120px;
+    max-width: 140px;
+    object-fit: contain;
 }
 
+/* TITLES */
 .title {
-    background: #0f172a;
-    color: #fff;
     text-align: center;
-    padding: 12px;
+    padding: 14px;
+    color: #fff;
     font-weight: bold;
 }
 
 .subtitle {
-    background: #1d4ed8;
-    color: #fff;
     text-align: center;
     padding: 8px;
+    color: #fff;
+    font-size: 13px;
 }
 
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -95,19 +103,25 @@ td {
 }
 
 .label {
-    font-weight: bold;
     background: #f3f4f6;
+    font-weight: bold;
+    width: 40%;
 }
 
-.actions {
-    margin-top: 20px;
+/* FOOTER */
+.footer {
+    padding: 15px;
+    font-size: 12px;
+    text-align: center;
+    color: #555;
 }
 
+/* BUTTONS */
 button {
     width: 100%;
     padding: 12px;
-    border: none;
     margin-top: 10px;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
 }
@@ -124,7 +138,13 @@ button {
 <!-- FORM -->
 <div class="form">
 
-<h2>📋 Aviso</h2>
+<h2>📡 Sistema de Avisos</h2>
+
+<label>Tipo</label>
+<select id="tipo">
+<option value="programado">Programado</option>
+<option value="emergencial">Emergencial</option>
+</select>
 
 <label>Data</label>
 <input type="date" id="data">
@@ -148,12 +168,10 @@ button {
 <input id="setor">
 
 <label>Protocolo</label>
-<input id="protocolo" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+<input id="protocolo" readonly>
 
-<div class="actions">
 <button class="png" onclick="gerarPNG()">Gerar PNG</button>
 <button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
-</div>
 
 </div>
 
@@ -163,11 +181,11 @@ button {
 <div id="card" class="card">
 
 <div class="header">
-<img src="../assets/img/online.png">
+<img src="online.png">
 </div>
 
-<div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
-<div class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+<div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
+<div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA</div>
 
 <table>
 <tr><td class="label">Data</td><td id="p_data"></td></tr>
@@ -179,6 +197,10 @@ button {
 <tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
 </table>
 
+<div class="footer">
+Este aviso foi gerado automaticamente pelo sistema NOC.
+</div>
+
 </div>
 
 </div>
@@ -186,25 +208,43 @@ button {
 </div>
 
 <script>
-const campos = ["data","inicio","fim","local","descricao","impacto","setor","protocolo"];
+const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor"];
 
 campos.forEach(id => {
     document.getElementById(id).addEventListener("input", atualizar);
 });
 
+/* GERAR PROTOCOLO AUTOMÁTICO */
+function gerarProtocolo() {
+    const now = new Date();
+    return `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}-${now.getHours()}${now.getMinutes()}`;
+}
+document.getElementById("protocolo").value = gerarProtocolo();
+
 function atualizar() {
+    const tipo = document.getElementById("tipo").value;
+
+    const cor = tipo === "emergencial" ? "#dc2626" : "#0f172a";
+    const subtitulo = tipo === "emergencial"
+        ? "ATIVIDADE EMERGENCIAL"
+        : "ATIVIDADE PROGRAMADA";
+
+    document.getElementById("titulo").style.background = cor;
+    document.getElementById("subtitulo").style.background = cor;
+    document.getElementById("subtitulo").innerText = subtitulo;
+
     const data = document.getElementById("data").value;
     const inicio = document.getElementById("inicio").value;
     const fim = document.getElementById("fim").value;
 
     document.getElementById("p_data").innerText = data ? formatarData(data) : "";
-    document.getElementById("p_periodo").innerText = (inicio && fim) ? `${inicio} às ${fim}` : "";
+    document.getElementById("p_periodo").innerText = `${inicio} às ${fim}`;
 
-    document.getElementById("p_local").innerText = document.getElementById("local").value;
-    document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
-    document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
-    document.getElementById("p_setor").innerText = document.getElementById("setor").value;
-    document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
+    document.getElementById("p_local").innerText = local.value;
+    document.getElementById("p_descricao").innerText = descricao.value;
+    document.getElementById("p_impacto").innerText = impacto.value;
+    document.getElementById("p_setor").innerText = setor.value;
+    document.getElementById("p_protocolo").innerText = protocolo.value;
 }
 
 function formatarData(dataISO) {
@@ -212,6 +252,7 @@ function formatarData(dataISO) {
     return `${dia}/${mes}/${ano}`;
 }
 
+/* EXPORT */
 async function gerarPNG() {
     const canvas = await html2canvas(document.getElementById("card"));
     const link = document.createElement('a');
@@ -225,7 +266,7 @@ async function gerarPDF() {
     const canvas = await html2canvas(document.getElementById("card"));
     const img = canvas.toDataURL("image/png");
 
-    const pdf = new jsPDF();
+    const pdf = new jsPDF("p","mm","a4");
     pdf.addImage(img, 'PNG', 10, 10, 190, 0);
     pdf.save("aviso.pdf");
 }
