@@ -59,7 +59,6 @@
             cursor: pointer; font-weight: 800; height: 50px; font-size: 1rem; margin-top: 10px; width: 100%;
         }
 
-        /* Stats Bar */
         .stats-bar { 
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 15px;
             padding-top: 15px; border-top: 1px solid var(--header);
@@ -283,10 +282,11 @@
                 <button class="btn-excluir" onclick="window.apagar('${id}')"><i class="fa-solid fa-trash"></i></button>
             </div>`}
         `;
-        container.appendChild(div);
+        
+        // ORDENAÇÃO: prepend coloca o novo item no topo da lista
+        container.prepend(div);
     }
 
-    // Funções Firebase
     window.addComment = (id) => {
         const inp = document.getElementById(`in-${id}`); if(!inp.value) return;
         get(ref(db, `ativos/${id}/comentarios`)).then(s => {
@@ -308,26 +308,22 @@
     window.reabrir = (id) => { get(ref(db, `resolvidos/${id}`)).then(s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }); };
     window.apagar = (id) => { if(confirm("Deseja apagar do histórico?")) remove(ref(db, `resolvidos/${id}`)); };
 
-    // Escuta Ativos e Atualiza Contadores
     onValue(ref(db, "ativos"), snap => {
         document.getElementById("ativos").innerHTML = "";
         const counts = { externa_ne: 0, externa_no: 0, interna_ne: 0, interna_no: 0 };
-        
         snap.forEach(c => {
             const data = c.val();
             renderCard(c.key, data, "ativos");
             if(counts.hasOwnProperty(data.tipo)) counts[data.tipo]++;
         });
-
-        // Atualiza a barra de estatísticas
-        Object.keys(counts).forEach(tipo => {
-            document.getElementById(`count-${tipo}`).innerText = counts[tipo];
-        });
+        Object.keys(counts).forEach(tipo => { document.getElementById(`count-${tipo}`).innerText = counts[tipo]; });
     });
 
-    onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
+    onValue(ref(db, "resolvidos"), snap => { 
+        document.getElementById("resolvidos").innerHTML = ""; 
+        snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); 
+    });
 
-    // Loop de Cronômetros
     setInterval(() => {
         const now = Date.now();
         document.querySelectorAll('.card.ativo').forEach(card => {
