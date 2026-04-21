@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviso de Manutenção</title>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    padding: 20px;
+}
+
+.container {
+    max-width: 750px;
+    margin: auto;
+}
+
+.card {
+    background: #fff;
+    border: 2px solid #000;
+}
+
+.header {
+    text-align: center;
+    padding: 15px;
+    border-bottom: 2px solid #000;
+    font-weight: bold;
+}
+
+.title {
+    background: #444;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+}
+
+.subtitle {
+    background: #666;
+    color: #fff;
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.label {
+    background: #eee;
+    font-weight: bold;
+    width: 35%;
+}
+
+input {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #ccc;
+}
+
+.actions {
+    margin-top: 15px;
+    text-align: center;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button:hover {
+    background: #333;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- ÁREA EDITÁVEL -->
+    <div id="aviso" class="card">
+
+        <div class="header">ONLINE TELECOM</div>
+
+        <div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
+        <div class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+
+        <table>
+            <tr>
+                <td class="label">Data</td>
+                <td><input id="data" placeholder="Ex: 23/04/2026"></td>
+            </tr>
+            <tr>
+                <td class="label">Período</td>
+                <td><input id="periodo" placeholder="Ex: 02h00min até 04h00min"></td>
+            </tr>
+            <tr>
+                <td class="label">Local</td>
+                <td><input id="local" placeholder="Ex: Boa Viagem/CE"></td>
+            </tr>
+            <tr>
+                <td class="label">Descrição</td>
+                <td><input id="descricao" placeholder="Ex: Upgrade no UpLink"></td>
+            </tr>
+            <tr>
+                <td class="label">Impacto</td>
+                <td><input id="impacto" placeholder="Ex: Clientes GPON"></td>
+            </tr>
+            <tr>
+                <td class="label">Setor</td>
+                <td><input id="setor" placeholder="Ex: NOC e Manutenção"></td>
+            </tr>
+            <tr>
+                <td class="label">Protocolo</td>
+                <td><input id="protocolo" placeholder="Ex: #0000-000000"></td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!-- BOTÕES -->
+    <div class="actions">
+        <button onclick="gerarImagem()">📸 Gerar Imagem</button>
+    </div>
+
+</div>
+
+<script>
+function gerarImagem() {
+    html2canvas(document.querySelector("#aviso")).then(canvas => {
+        let link = document.createElement('a');
+        link.download = 'aviso.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+</script>
+
+</body>
+</html>
