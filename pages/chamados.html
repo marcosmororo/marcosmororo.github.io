@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation</title>
+    <title>NOC Escalation Pro - Multi-Theme</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 
     <style>
         /* DEFINIÇÃO DE TEMAS */
         :root {
-            /* Tema Dark (Padrão) */
             --bg: #05070a;
             --card: #11141d;
             --header: #1a1f2e;
@@ -26,7 +25,6 @@
         }
 
         body.light-mode {
-            /* Tema Light */
             --bg: #f0f2f5;
             --card: #ffffff;
             --header: #e4e6eb;
@@ -40,17 +38,15 @@
             --input-bg: #f5f6f7;
         }
 
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s; }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; }
-
         .container { max-width: 1400px; margin: auto; }
 
-        /* Header e Seletor de Tema */
+        /* Header */
         .page-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 20px; padding: 10px 20px; background: var(--card);
-            backdrop-filter: blur(10px); border-radius: 12px; border: 1px solid var(--header);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-radius: 12px; border: 1px solid var(--header);
         }
         .logo-area h2 { 
             margin: 0; font-size: 1.4rem; font-weight: 800;
@@ -58,70 +54,59 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
         .header-actions { display: flex; align-items: center; gap: 20px; }
-        
         #theme-toggle {
             background: var(--header); border: none; color: var(--text-main);
             width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
-            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
         }
-        #theme-toggle:hover { filter: brightness(1.2); }
-
         #page-clock { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary); }
 
-        /* Painel de Controle */
+        /* Painel Admin */
         .admin-panel {
             background: var(--card); border: 1px solid var(--header);
             border-radius: 16px; padding: 25px; margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
-        label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-        
+        label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 800; }
         input, select, textarea { 
             background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); 
             padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
         }
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
         textarea { grid-column: span 2; height: 50px; resize: none; }
-
         .btn-add { 
             background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer;
             font-weight: 800; text-transform: uppercase; height: 50px; width: 100%;
         }
-        .btn-add:hover { opacity: 0.9; transform: translateY(-2px); }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tabs button { 
             background: var(--card); color: var(--text-dim); padding: 12px 25px; 
-            border: 1px solid var(--header); border-radius: 10px; font-weight: 700; cursor: pointer;
+            border: 1px solid var(--header); border-radius: 10px; cursor: pointer; font-weight: bold;
         }
         .tabs button.active { border-color: var(--primary); color: var(--primary); }
 
-        /* Cards */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        /* Grid */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); }
         .card.warn { border-top-color: var(--warn); }
         .card.danger { border-top-color: var(--danger); }
-        .card.finalizado { opacity: 0.7; filter: grayscale(0.5); border-top-color: var(--text-dim); }
-
-        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 15px; text-align: center; margin: 15px 0; border: 1px solid var(--header); }
-        .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; color: var(--primary); font-weight: bold; }
+        
+        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 10px; text-align: center; margin: 10px 0; }
+        .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--primary); }
 
         .step {
             display: flex; justify-content: space-between; align-items: center;
-            background: var(--input-bg); padding: 10px 15px; margin: 6px 0; border-radius: 10px; font-size: 0.85rem;
+            background: var(--input-bg); padding: 8px 12px; margin: 4px 0; border-radius: 8px; font-size: 0.8rem;
         }
-        .step.done { opacity: 0.5; text-decoration: line-through; }
+        .step.done { opacity: 0.4; text-decoration: line-through; }
         .step.next-to-call { border: 1px solid var(--warn); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        @keyframes pulse { 0% { box-shadow: 0 0 0px var(--warn); } 50% { box-shadow: 0 0 10px var(--warn); } 100% { box-shadow: 0 0 0px var(--warn); } }
-
-        .wa-link { color: var(--whatsapp); font-size: 1.3rem; }
-        .log-container { background: var(--input-bg); padding: 10px; border-radius: 10px; font-size: 0.75rem; max-height: 100px; overflow-y: auto; }
+        .wa-link { color: var(--whatsapp); font-size: 1.2rem; }
+        .log-container { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; margin: 5px 0; }
         
-        .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 10px; padding: 12px; margin-top: 15px; font-weight: 800; cursor: pointer; }
+        .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 8px; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
         .hidden { display: none; }
     </style>
@@ -140,21 +125,21 @@
     <div class="admin-panel">
         <div class="form-row">
             <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Rompimento de Fibra"></div>
-            <div class="form-group"><label>Chamado Pai</label><input id="pai" placeholder="0000-000000"></div>
-            <div class="form-group"><label>Chamado Filho</label><input id="filho" placeholder="0000-000000"></div>
+            <div class="form-group"><label>Elemento Pai</label><input id="pai" placeholder="Concentrador"></div>
+            <div class="form-group"><label>Elemento Filho</label><input id="filho" placeholder="CTO/OLT"></div>
             <div class="form-group">
-                <label>Escalation</label>
+                <label>Escopo de Rede</label>
                 <select id="tipo">
-                    <option value="externa">Rede Externa</option>
-                    <option value="interna">Rede Interna</option>
+                    <option value="externa">Rede Externa (Campo)</option>
+                    <option value="interna">Rede Interna (Core)</option>
                 </select>
             </div>
         </div>
         <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 1fr;">
             <div class="form-group"><label>Data</label><input type="date" id="data_manual"></div>
             <div class="form-group"><label>Hora</label><input type="time" id="hora_manual"></div>
-            <div class="form-group"><label>Notas Iniciais</label><textarea id="descricao" placeholder="Relatório técnico breve..."></textarea></div>
-            <button class="btn-add" onclick="add()">Registrar Agora</button>
+            <div class="form-group"><label>Descrição</label><textarea id="descricao" placeholder="Relato inicial..."></textarea></div>
+            <button class="btn-add" onclick="add()">Registrar Incidente</button>
         </div>
     </div>
 
@@ -184,24 +169,30 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const escala = {
-        externa: [{h:4, n:"Erivelton", tel:"558898283311"}, {h:8, n:"Guilherme", tel:"558899282323"}, {h:10, n:"Iran Jr", tel:"88998707256"}, {h:12, n:"Fernando", tel:"5588994401255"}],
-        interna: [{h:4, n:"Joao", tel:"558898283337"}, {h:8, n:"Wescley", tel:"558894866085"}, {h:10, n:"Iran Jr", tel:"88998707256"}, {h:12, n:"Fernando", tel:"5588994401255"}]
+    // ========================================================
+    // CENTRAL DE CONTATOS (MUDE AQUI PARA ATUALIZAR A EQUIPE)
+    // ========================================================
+    const CONFIG_ESCALATION = {
+        externa: [
+            { h: 4,  nome: "Erivelton",  tel: "558898283311" },
+            { h: 8,  nome: "Guilherme",  tel: "558899282323" },
+            { h: 10, nome: "Valmir",     tel: "558898287071" },
+            { h: 12, nome: "Fernando",   tel: "5588994401255" }
+        ],
+        interna: [
+            { h: 4,  nome: "Joao",       tel: "558898283337" },
+            { h: 8,  nome: "Wescley",    tel: "558894866085" },
+            { h: 10, nome: "Valmir",     tel: "558898287071" },
+            { h: 12, nome: "Fernando",   tel: "5588994401255" }
+        ]
     };
 
-    // Lógica do Relógio
+    // Relógio e Tema
     setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-
-    // Lógica do Tema
     window.toggleTheme = () => {
-        const body = document.body;
+        document.body.classList.toggle('light-mode');
         const icon = document.querySelector('#theme-toggle i');
-        body.classList.toggle('light-mode');
-        if(body.classList.contains('light-mode')) {
-            icon.className = 'fa-solid fa-sun';
-        } else {
-            icon.className = 'fa-solid fa-moon';
-        }
+        icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     };
 
     function formatTime(ms) {
@@ -238,13 +229,14 @@
         const t = document.getElementById("titulo").value;
         const dM = document.getElementById("data_manual").value;
         const hM = document.getElementById("hora_manual").value;
+        const tipo = document.getElementById("tipo").value;
         if(!t) return alert("Título obrigatório");
 
         let dataE = dM && hM ? new Date(`${dM}T${hM}`) : new Date();
 
         push(ref(db,"ativos"), {
             titulo: t, pai: document.getElementById("pai").value, filho: document.getElementById("filho").value,
-            descricao: document.getElementById("descricao").value, tipo: document.getElementById("tipo").value,
+            descricao: document.getElementById("descricao").value, tipo: tipo,
             inicio: dataE.getTime(), dataStr: dataE.toLocaleString('pt-BR'), escalado: [], comentarios: []
         });
         document.querySelectorAll("input, textarea").forEach(e=>e.value="");
@@ -259,10 +251,13 @@
         div.dataset.start = data.inicio;
         div.dataset.escalado = JSON.stringify(data.escalado || []);
 
-        const stepsHTML = escala[data.tipo].map(e => `
+        // Usa a lista configurada no topo do script
+        const listaEscalation = CONFIG_ESCALATION[data.tipo] || [];
+
+        const stepsHTML = listaEscalation.map(e => `
             <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
-                <span><b>${e.h}h</b> - ${e.n}</span>
-                <div style="display:flex; gap:15px;">
+                <span><b>${e.h}h</b> - ${e.nome}</span>
+                <div style="display:flex; gap:12px;">
                     <a href="tel:+${e.tel}" style="color:var(--primary)"><i class="fa-solid fa-phone"></i></a>
                     <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
@@ -272,17 +267,17 @@
 
         div.innerHTML = `
             <div style="font-size:0.7rem; font-weight:800; color:var(--text-dim);">${data.dataStr}</div>
-            <div style="font-weight:800; font-size:1.2rem; margin: 8px 0;">${data.titulo}</div>
-            <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">${data.pai || 'Geral'} / ${data.filho || '-'}</div>
+            <div style="font-weight:800; font-size:1.1rem; margin: 5px 0;">${data.titulo}</div>
+            <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">${data.pai || '-'} / ${data.filho || '-'}</div>
             
             <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
             
-            <div class="log-container">${logsHTML || 'Sem registros.'}</div>
-            ${!isResolvido ? `<div style="display:flex; gap:8px; margin-top:10px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:8px;"><button style="background:var(--header); color:var(--text-main); padding:0 15px; border-radius:8px;" onclick="addComment('${id}')">OK</button></div>` : ''}
+            <div class="log-container">${logsHTML || 'Sem notas.'}</div>
+            ${!isResolvido ? `<div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:6px; border-radius:6px; border:1px solid var(--header); background:var(--input-bg); color:var(--text-main); font-size:12px;"><button style="background:var(--header); color:var(--text-main); border:none; padding:0 10px; border-radius:6px; cursor:pointer;" onclick="addComment('${id}')">OK</button></div>` : ''}
 
-            <div style="margin-top:15px;">${stepsHTML}</div>
+            <div style="margin-top:10px;">${stepsHTML}</div>
             
-            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">FINALIZAR INCIDENTE</button>` : `<div style="display:flex; gap:10px; margin-top:15px;"><button style="background:var(--warn); color:white; flex:1; border-radius:10px; padding:10px; font-weight:bold; border:none;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); color:white; flex:1; border-radius:10px; padding:10px; font-weight:bold; border:none;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
+            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">FINALIZAR INCIDENTE</button>` : `<div style="display:flex; gap:10px; margin-top:10px;"><button style="background:var(--warn); color:white; flex:1; border-radius:8px; padding:8px; border:none; cursor:pointer;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); color:white; flex:1; border-radius:8px; padding:8px; border:none; cursor:pointer;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
         `;
         container.appendChild(div);
     }
