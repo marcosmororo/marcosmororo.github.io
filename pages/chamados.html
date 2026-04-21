@@ -3,352 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Horizon - Professional Monitoring</title>
+    <title>NOC Escalation Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #080a0f; --card: #12151c; --header: #1a1f2b;
-            --primary: #0ea5e9; --primary-glow: rgba(14, 165, 233, 0.15);
-            --ok: #10b981; --warn: #f59e0b; --danger: #ef4444;
-            --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262c3a;
+            --bg: #05070a; --card: #11141d; --header: #1a1f2e;
+            --primary: #00d2ff; --ok: #00ff95; --warn: #ffb800; --danger: #ff4d4d;
+            --text-main: #e2e8f0; --text-dim: #64748b; --input-bg: #080a0f; --whatsapp: #25d366;
         }
 
         body.light-mode {
-            --bg: #f1f5f9; --card: #ffffff; --header: #e2e8f0;
-            --primary: #0284c7; --primary-glow: rgba(2, 132, 199, 0.1);
-            --ok: #059669; --warn: #d97706; --danger: #dc2626;
-            --text-main: #0f172a; --text-dim: #64748b; --border: #cbd5e1;
+            --bg: #f0f2f5; --card: #ffffff; --header: #e4e6eb;
+            --primary: #007bff; --ok: #28a745; --warn: #fd7e14; --danger: #dc3545;
+            --text-main: #1c1e21; --text-dim: #606770; --input-bg: #f5f6f7;
         }
 
-        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; font-size: 13px; letter-spacing: -0.01em; }
+        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; }
+        .container { max-width: 1400px; margin: auto; }
 
-        /* HEADER & NAVIGATION */
+        /* Header */
         .page-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 20px; background: var(--card); border-radius: 12px;
-            border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px; padding: 10px 20px; background: var(--card);
+            border-radius: 12px; border: 1px solid var(--header);
         }
-        .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-area h2 { margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
-        .status-badge { padding: 4px 8px; border-radius: 6px; background: var(--primary-glow); color: var(--primary); font-size: 10px; font-weight: 700; border: 1px solid var(--primary); }
-
-        /* HORIZON TIMELINE */
-        #horizon-timeline {
-            background: var(--card); border: 1px solid var(--border); border-radius: 12px;
-            padding: 15px; margin-bottom: 20px; position: relative; height: 75px; overflow: hidden;
-        }
-        .timeline-marks { display: flex; justify-content: space-between; color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 10px; opacity: 0.5; }
-        .timeline-line { position: absolute; top: 45px; left: 20px; right: 20px; height: 2px; background: var(--border); }
-        .timeline-point {
-            position: absolute; top: 38px; width: 14px; height: 14px; border-radius: 4px;
-            background: var(--primary); border: 2px solid var(--card); transform: translateX(-50%);
-            cursor: pointer; z-index: 10;
-        }
-        .timeline-point.danger { background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulse 1.5s infinite; }
-
-        /* TABS & FILTERS */
-        .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
-        .tabs { display: flex; gap: 5px; background: var(--card); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
-        .tabs button { 
-            background: transparent; border: none; color: var(--text-dim); 
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px;
-        }
-        .tabs button.active { background: var(--primary); color: white; }
+        .logo-area h2 { margin: 0; font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
         
-        /* FORMULARIO PROFISSIONAL */
-        .admin-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-        .form-group label { display: block; font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
-        input, select, textarea { 
-            width: 100%; background: var(--bg); border: 1px solid var(--border); 
-            color: var(--text-main); padding: 10px; border-radius: 8px; font-size: 12px;
+        .nav-btn {
+            background: var(--primary); color: #fff; border: none; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
         }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-glow); }
 
-        /* PROFISSIONAL COMMAND CARDS */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
-        .card { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 16px;
-            padding: 18px; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; gap: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--ok); }
-        .card.warn::before { background: var(--warn); }
-        .card.danger::before { background: var(--danger); }
+        #theme-toggle { background: var(--header); border: none; color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
+        #page-clock { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary); }
+
+        /* Painel Admin */
+        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 25px; margin-bottom: 30px; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; font-weight: 800; }
+        input, select, textarea { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 12px; border-radius: 10px; outline: none; }
+        textarea { grid-column: span 2; height: 50px; resize: none; }
+        .btn-add { background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: 800; height: 50px; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tabs button { background: var(--card); color: var(--text-dim); padding: 12px 25px; border: 1px solid var(--header); border-radius: 10px; cursor: pointer; font-weight: bold; }
+        .tabs button.active { border-color: var(--primary); color: var(--primary); }
+
+        /* Grid e Cards */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); position: relative; }
+        .card.warn { border-top-color: var(--warn); }
+        .card.danger { border-top-color: var(--danger); }
         
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .card-title { font-size: 15px; font-weight: 700; margin: 0; color: var(--text-main); line-height: 1.2; }
-        .card-protocol { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--primary); margin-top: 4px; display: block; }
-        
-        .timer-display { display: flex; align-items: baseline; gap: 5px; margin: 5px 0; }
-        .timer-val { font-family: 'JetBrains Mono'; font-size: 1.8rem; font-weight: 700; }
-        .timer-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
-
-        /* ESCALATION BUTTONS */
-        .escalation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-        .esc-btn {
-            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-            padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px;
-            text-decoration: none; color: var(--text-dim); font-size: 11px; font-weight: 600;
-        }
-        .esc-btn b { font-size: 12px; color: var(--text-main); }
-        .esc-btn.active { border-color: var(--warn); background: rgba(245, 158, 11, 0.05); color: var(--warn); animation: pulse-border 1.5s infinite; }
-        .esc-btn.done { border-color: var(--ok); color: var(--ok); background: rgba(16, 185, 129, 0.05); }
-
-        /* LOGS */
-        .log-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 11px; max-height: 80px; overflow-y: auto; border: 1px solid var(--border); }
-        .log-entry { margin-bottom: 4px; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
-        .log-time { color: var(--primary); font-weight: 700; margin-right: 5px; }
-
-        /* ACTIONS */
-        .card-footer { display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 5px; }
-        .btn-action { 
-            flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 11px; 
-            font-weight: 700; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-        .btn-success { background: var(--ok); color: white; }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
-
-        @keyframes pulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.2); } 100% { transform: translateX(-50%) scale(1); } }
-        @keyframes pulse-border { 0% { border-color: var(--border); } 50% { border-color: var(--warn); } 100% { border-color: var(--border); } }
-        
-        .hidden { display: none !important; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <header class="page-header">
-        <div class="logo-area">
-            <i class="fa-solid fa-satellite-dish fa-lg"></i>
-            <h2>NOC Horizon</h2>
-            <div class="status-badge">SISTEMA ATIVO</div>
-        </div>
-        <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
-            <div id="page-clock" style="font-family: 'JetBrains Mono'; font-weight: 700; font-size: 1.1rem;">00:00:00</div>
-            <button onclick="toggleTheme()" class="btn-outline" style="width: 35px; height: 35px; border-radius: 50%; padding: 0;"><i class="fa-solid fa-circle-half-stroke"></i></button>
-        </div>
-    </header>
-
-    <div id="horizon-timeline">
-        <div class="timeline-marks">
-            <span>0H</span><span>2H</span><span>4H (N1)</span><span>6H</span><span>8H (N2)</span><span>10H (N3)</span><span>12H+</span>
-        </div>
-        <div class="timeline-line"></div>
-        <div id="timeline-points-container"></div>
-    </div>
-
-    <div class="controls-row">
-        <div class="tabs">
-            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS</button>
-            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
-        </div>
-        <div style="display: flex; gap: 8px;">
-            <button class="btn-outline" onclick="toggleAdminPanel()"><i class="fa-solid fa-plus"></i> NOVO INCIDENTE</button>
-            <button class="btn-outline" onclick="toggleView('partners')"><i class="fa-solid fa-address-book"></i> PARCEIROS</button>
-        </div>
-    </div>
-
-    <div id="admin-panel" class="admin-panel hidden">
-        <div class="form-grid">
-            <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Backbone Down"></div>
-            <div class="form-group"><label>Protocolo Pai</label><input id="pai" placeholder="00000"></div>
-            <div class="form-group"><label>Protocolo Filho</label><input id="filho" placeholder="00000"></div>
-            <div class="form-group">
-                <label>Escopo da Rede</label>
-                <select id="tipo">
-                    <option value="externa_ne">Externa Nordeste</option>
-                    <option value="externa_no">Externa Norte</option>
-                    <option value="interna_ne">Interna Nordeste</option>
-                    <option value="interna_no">Interna Norte</option>
-                </select>
-            </div>
-            <div class="form-group" style="grid-column: span 2;"><label>Descrição Inicial</label><input id="descricao" placeholder="Relato técnico breve..."></div>
-            <div class="form-group" style="display: flex; align-items: flex-end;"><button class="btn-success" style="width: 100%; height: 38px; border-radius: 8px;" onclick="add()">CADASTRAR</button></div>
-        </div>
-    </div>
-
-    <div id="ativos-view">
-        <div id="ativos" class="grid-cards"></div>
-    </div>
-
-    <div id="resolvidos-view" class="hidden">
-        <div id="resolvidos" class="grid-cards"></div>
-    </div>
-
-    <div id="partners-view" class="hidden">
-        <div class="admin-panel">
-            <h3 style="margin-top: 0;">Lista de Parceiros</h3>
-            <div id="partners-list">
-                <p>Nenhum parceiro cadastrado.</p>
-            </div>
-            <button class="btn-outline" onclick="toggleView('main')">Voltar</button>
-        </div>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import { getDatabase, ref, push, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
-        authDomain: "chamadosnoc-c45c4.firebaseapp.com",
-        databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com",
-        projectId: "chamadosnoc-c45c4",
-        storageBucket: "chamadosnoc-c45c4.appspot.com",
-        messagingSenderId: "25502320062",
-        appId: "1:25502320062:web:a7f41ad4f61e0c38b265ef"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    const CONFIG_ESCALATION = {
-        "externa_ne": [{h:4, n:"Erivelton", tel:"558898283311"}, {h:8, n:"Guilherme", tel:"558899282323"}, {h:12, n:"Fernando", tel:"5588994401255"}],
-        "externa_no": [{h:4, n:"Clecio", tel:"558898283311"}, {h:8, n:"Maciel", tel:"558899282323"}, {h:12, n:"Fernando", tel:"5588994401255"}],
-        "interna_ne": [{h:4, n:"Joao", tel:"558898283337"}, {h:8, n:"Wescley", tel:"558894866085"}, {h:12, n:"Fernando", tel:"5588994401255"}],
-        "interna_no": [{h:4, n:"Nildo", tel:"558898283337"}, {h:8, n:"Julio Gaia", tel:"558894866085"}, {h:12, n:"Fernando", tel:"5588994401255"}]
-    };
-
-    // UI CONTROLS
-    window.toggleAdminPanel = () => document.getElementById('admin-panel').classList.toggle('hidden');
-    window.toggleTheme = () => document.body.classList.toggle('light-mode');
-    window.toggleView = (view) => {
-        document.getElementById('ativos-view').classList.toggle('hidden', view === 'partners');
-        document.getElementById('partners-view').classList.toggle('hidden', view !== 'partners');
-    };
-    setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-
-    function formatTime(ms) {
-        const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000), s = Math.floor((ms % 60000) / 1000);
-        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
-
-    // UPDATE CARDS & TIMELINE
-    setInterval(() => {
-        const now = Date.now();
-        const ptsContainer = document.getElementById('timeline-points-container');
-        ptsContainer.innerHTML = '';
-
-        document.querySelectorAll('.card.ativo').forEach(card => {
-            const start = parseInt(card.dataset.start);
-            const escalado = JSON.parse(card.dataset.escalado || "[]");
-            const diffH = (now - start) / 3600000;
-
-            card.querySelector('.timer-val').innerText = formatTime(now - start);
-            
-            // SLA Visual States
-            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
-            card.classList.toggle('danger', diffH >= 10);
-
-            // Timeline Points
-            const pos = Math.min(100, (diffH / 12) * 100);
-            const pt = document.createElement('div');
-            pt.className = `timeline-point ${diffH >= 10 ? 'danger' : ''}`;
-            pt.style.left = `calc(20px + (100% - 40px) * ${pos/100})`;
-            ptsContainer.appendChild(pt);
-
-            // Button Logic
-            card.querySelectorAll('.esc-btn').forEach(btn => {
-                const btnH = parseInt(btn.dataset.h);
-                if (escalado.includes(btnH)) {
-                    btn.className = 'esc-btn done';
-                } else if (diffH >= btnH) {
-                    btn.className = 'esc-btn active';
-                }
-            });
-        });
-    }, 1000);
-
-    // FIREBASE OPS
-    window.add = function(){
-        const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
-        if(!t || !p || !f) return alert("Preencha todos os campos!");
-        push(ref(db,"ativos"), { 
-            titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, 
-            inicio: Date.now(), escalado: [], 
-            comentarios: [{texto: "Incidente aberto no NOC", hora: new Date().toLocaleTimeString('pt-BR')}] 
-        });
-        document.querySelectorAll("#admin-panel input").forEach(e=>e.value="");
-        toggleAdminPanel();
-    };
-
-    function renderCard(id, data, containerId) {
-        const container = document.getElementById(containerId), isResolvido = containerId === 'resolvidos';
-        const div = document.createElement("div");
-        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
-        div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
-        
-        const escHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
-            <a href="https://wa.me/${e.tel}" target="_blank" class="esc-btn" data-h="${e.h}" onclick="markEscalated('${id}', ${e.h})">
-                <b>${e.h}h - ${e.nome}</b>
-                <span>NOTIFICAR</span>
-            </a>`).join('');
-
-        div.innerHTML = `
-            <div class="card-header">
-                <div>
-                    <h3 class="card-title">${data.titulo}</h3>
-                    <span class="card-protocol">PAI: ${data.pai} | FILHO: ${data.filho}</span>
-                </div>
-                <i class="fa-solid fa-triangle-exclamation" style="color:var(--text-dim)"></i>
-            </div>
-            <div class="timer-display">
-                <span class="timer-val">00:00:00</span>
-                <span class="timer-label">decorrido</span>
-            </div>
-            <div class="log-box">${(data.comentarios || []).map(c=>`<div class="log-entry"><span class="log-time">${c.hora}</span>${c.texto}</div>`).reverse().join('')}</div>
-            ${!isResolvido ? `
-                <input type="text" id="in-${id}" placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter') addComment('${id}')">
-                <div class="escalation-grid">${escHTML}</div>
-                <div class="card-footer">
-                    <button class="btn-action btn-success" onclick="finalizar('${id}')"><i class="fa-solid fa-check"></i> Finalizar</button>
-                    <button class="btn-action btn-outline" onclick="copyStatus('${id}')"><i class="fa-solid fa-copy"></i> Copiar</button>
-                </div>
-            ` : `<button class="btn-action btn-outline" onclick="reabrir('${id}')" style="width:100%">REABRIR</button>`}
-        `;
-        container.appendChild(div);
-    }
-
-    window.markEscalated = (id, h) => {
-        get(ref(db, `ativos/${id}`)).then(s => {
-            let e = s.val().escalado || [];
-            if(!e.includes(h)) e.push(h);
-            update(ref(db, `ativos/${id}`), { escalado: e });
-        });
-    };
-
-    window.addComment = (id) => {
-        const i = document.getElementById(`in-${id}`); if(!i.value) return;
-        get(ref(db, `ativos/${id}`)).then(s => {
-            const c = s.val().comentarios || [];
-            c.push({ texto: i.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
-            update(ref(db, `ativos/${id}`), { comentarios: c }); i.value = "";
-        });
-    };
-
-    window.copyStatus = (id) => {
-        get(ref(db, `ativos/${id}`)).then(s => {
-            const d = s.val();
-            const txt = `*NOC INFORMA*\n📌 *Status:* ${d.titulo}\n🔢 *Prot:* ${d.pai}\n⏳ *Início:* ${new Date(d.inicio).toLocaleTimeString()}`;
-            navigator.clipboard.writeText(txt); alert("Copiado!");
-        });
-    }
-
-    onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
-    onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
-    window.showTab = (t) => {
-        document.getElementById("ativos-view").classList.toggle("hidden", t!=='ativos');
-        document.getElementById("resolvidos-view").classList.toggle("hidden", t!=='resolvidos');
-        document.getElementById("btn-tab-ativos").classList.add(t==='ativos'?'active':'_');
-        document.getElementById("btn-tab-ativos").classList.remove(t!=='ativos'?'active':'_');
-        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos');
-    };
-</script>
-</body>
-</html>
+        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 10px; text-align: center; margin: 10px 0; }
+        .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--primary); }
