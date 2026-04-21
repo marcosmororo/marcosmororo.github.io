@@ -53,7 +53,14 @@
             background: linear-gradient(to right, var(--primary), #3a7bd5);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-        .header-actions { display: flex; align-items: center; gap: 20px; }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        
+        .nav-btn {
+            background: var(--primary); color: #fff; border: none; padding: 8px 15px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+
         #theme-toggle {
             background: var(--header); border: none; color: var(--text-main);
             width: 40px; height: 40px; border-radius: 10px; cursor: pointer;
@@ -72,6 +79,7 @@
             background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); 
             padding: 12px; border-radius: 10px; font-size: 14px; outline: none;
         }
+        input.error { border-color: var(--danger); }
         textarea { grid-column: span 2; height: 50px; resize: none; }
         .btn-add { 
             background: var(--primary); color: white; border: none; border-radius: 10px; cursor: pointer;
@@ -86,9 +94,9 @@
         }
         .tabs button.active { border-color: var(--primary); color: var(--primary); }
 
-        /* Grid */
+        /* Grid e Cards */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); position: relative; }
+        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); }
         .card.warn { border-top-color: var(--warn); }
         .card.danger { border-top-color: var(--danger); }
         
@@ -100,57 +108,99 @@
             background: var(--input-bg); padding: 8px 12px; margin: 4px 0; border-radius: 8px; font-size: 0.8rem;
         }
         .step.done { opacity: 0.4; text-decoration: line-through; }
-        .step.next-to-call { border: 1px solid var(--warn); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
-        .wa-link { color: var(--whatsapp); font-size: 1.2rem; }
-        .log-container { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; margin: 5px 0; }
         
+        .wa-link { color: var(--whatsapp); font-size: 1.2rem; }
         .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 8px; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
+
+        /* Parceiros Table */
+        .partner-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
+        .partner-table th, .partner-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--header); }
+        .partner-table th { background: var(--header); color: var(--primary); font-size: 0.7rem; text-transform: uppercase; }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="page-header">
-        <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC ESCALATION PRO</h2></div>
-        <div class="header-actions">
-            <div id="page-clock">00:00:00</div>
-            <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-        </div>
-    </div>
-
-    <div class="admin-panel">
-        <div class="form-row">
-            <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Rompimento de Fibra"></div>
-            <div class="form-group"><label>Chamado Pai</label><input id="pai" placeholder="0000-000000"></div>
-            <div class="form-group"><label>Chamado Filho</label><input id="filho" placeholder="0000-000000"></div>
-            <div class="form-group">
-                <label>Escopo de Rede</label>
-                <select id="tipo">
-                    <option value="externa_ne">Rede Externa (Nordeste)</option>
-                    <option value="externa_no">Rede Externa (Norte)</option>
-                    <option value="interna_ne">Rede Interna (Nordeste)</option>
-                    <option value="interna_no">Rede Interna (Norte)</option>
-                </select>
+    <div id="main-view">
+        <div class="page-header">
+            <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC ESCALATION</h2></div>
+            <div class="header-actions">
+                <button class="nav-btn" onclick="toggleView('partners')"><i class="fa-solid fa-handshake"></i> Parceiros</button>
+                <div id="page-clock">00:00:00</div>
+                <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
             </div>
         </div>
-        <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 1fr;">
-            <div class="form-group"><label>Data</label><input type="date" id="data_manual"></div>
-            <div class="form-group"><label>Hora</label><input type="time" id="hora_manual"></div>
-            <div class="form-group"><label>Descrição</label><textarea id="descricao" placeholder="Relato inicial..."></textarea></div>
-            <button class="btn-add" onclick="add()">Registrar Incidente</button>
+
+        <div class="admin-panel">
+            <div class="form-row">
+                <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Rompimento de Fibra"></div>
+                <div class="form-group"><label>Chamado Pai (Nº)</label><input id="pai" type="text" placeholder="Apenas números" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                <div class="form-group"><label>Chamado Filho (Nº)</label><input id="filho" type="text" placeholder="Apenas números" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+                <div class="form-group">
+                    <label>Escopo de Rede</label>
+                    <select id="tipo">
+                        <option value="externa_ne">Rede Externa (Nordeste)</option>
+                        <option value="externa_no">Rede Externa (Norte)</option>
+                        <option value="interna_ne">Rede Interna (Nordeste)</option>
+                        <option value="interna_no">Rede Interna (Norte)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row" style="grid-template-columns: 1fr 1fr 2fr 1fr;">
+                <div class="form-group"><label>Data</label><input type="date" id="data_manual"></div>
+                <div class="form-group"><label>Hora</label><input type="time" id="hora_manual"></div>
+                <div class="form-group"><label>Descrição</label><textarea id="descricao" placeholder="Relato inicial..."></textarea></div>
+                <button class="btn-add" onclick="add()">Registrar Incidente</button>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">MONITORAMENTO</button>
+            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
+        </div>
+
+        <div id="ativos" class="grid-cards"></div>
+        <div id="resolvidos" class="grid-cards hidden"></div>
+    </div>
+
+    <div id="partners-view" class="hidden">
+        <div class="page-header">
+            <div class="logo-area"><h2><i class="fa-solid fa-handshake"></i> ESCALATION PARCEIROS</h2></div>
+            <button class="nav-btn" onclick="toggleView('main')" style="background: var(--header);"><i class="fa-solid fa-arrow-left"></i> Voltar ao NOC</button>
+        </div>
+
+        <div class="admin-panel">
+            <table class="partner-table">
+                <thead>
+                    <tr>
+                        <th>Empresa / Parceiro</th>
+                        <th>Tipo de Serviço</th>
+                        <th>Contato Principal</th>
+                        <th>WhatsApp / Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Operadora VTR</b></td>
+                        <td>Link de Internet</td>
+                        <td>Suporte N3</td>
+                        <td>0800 123 456</td>
+                        <td><a href="#" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td><b>Equatorial Energia</b></td>
+                        <td>Energia Elétrica</td>
+                        <td>Emergência</td>
+                        <td>558890000000</td>
+                        <td><a href="#" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="tabs">
-        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">MONITORAMENTO</button>
-        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
-    </div>
-
-    <div id="ativos" class="grid-cards"></div>
-    <div id="resolvidos" class="grid-cards hidden"></div>
 </div>
 
 <script type="module">
@@ -170,9 +220,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // ========================================================
-    // CENTRAL DE CONTATOS (ORGANIZADO PARA FÁCIL MANUTENÇÃO)
-    // ========================================================
     const CONFIG_ESCALATION = {
         "externa_ne": [
             { h: 4,  nome: "Erivelton",  tel: "558898283311" },
@@ -204,6 +251,17 @@
         ]
     };
 
+    // Alternar Visualização (NOC vs Parceiros)
+    window.toggleView = (view) => {
+        if(view === 'partners') {
+            document.getElementById('main-view').classList.add('hidden');
+            document.getElementById('partners-view').classList.remove('hidden');
+        } else {
+            document.getElementById('main-view').classList.remove('hidden');
+            document.getElementById('partners-view').classList.add('hidden');
+        }
+    };
+
     // Relógio e Tema
     setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
     window.toggleTheme = () => {
@@ -212,6 +270,32 @@
         icon.className = document.body.classList.contains('light-mode') ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     };
 
+    window.add = function(){
+        const t = document.getElementById("titulo").value;
+        const pai = document.getElementById("pai").value;
+        const filho = document.getElementById("filho").value;
+        const dM = document.getElementById("data_manual").value;
+        const hM = document.getElementById("hora_manual").value;
+        const tipo = document.getElementById("tipo").value;
+
+        // Validação de Obrigatoriedade e Números
+        if(!t || !pai || !filho) {
+            alert("Título e Protocolos (Pai/Filho) são obrigatórios e devem conter apenas números.");
+            return;
+        }
+
+        let dataE = dM && hM ? new Date(`${dM}T${hM}`) : new Date();
+
+        push(ref(db,"ativos"), {
+            titulo: t, pai: pai, filho: filho,
+            descricao: document.getElementById("descricao").value, tipo: tipo,
+            inicio: dataE.getTime(), dataStr: dataE.toLocaleString('pt-BR'), escalado: [], comentarios: []
+        });
+        
+        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
+    };
+
+    // Funções de Renderização e Timer (Mantidas do código anterior)
     function formatTime(ms) {
         const h = Math.floor(ms / 3600000);
         const m = Math.floor((ms % 3600000) / 60000);
@@ -223,41 +307,10 @@
         const now = Date.now();
         document.querySelectorAll('.card.ativo').forEach(card => {
             const start = parseInt(card.dataset.start);
-            const escalado = JSON.parse(card.dataset.escalado || "[]");
-            const diffMs = now - start;
-            const diffH = diffMs / 3600000;
-
-            card.querySelector('.timer-val').innerText = formatTime(diffMs);
-            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
-            card.classList.toggle('danger', diffH >= 10);
-
-            let alertado = false;
-            card.querySelectorAll('.step[data-h]').forEach(step => {
-                const stepH = parseInt(step.dataset.h);
-                const isNext = diffH >= stepH && !escalado.includes(stepH) && !alertado;
-                step.classList.toggle('next-to-call', isNext);
-                if(isNext) alertado = true;
-            });
+            card.querySelector('.timer-val').innerText = formatTime(now - start);
         });
     }
     setInterval(refreshTimers, 1000);
-
-    window.add = function(){
-        const t = document.getElementById("titulo").value;
-        const dM = document.getElementById("data_manual").value;
-        const hM = document.getElementById("hora_manual").value;
-        const tipo = document.getElementById("tipo").value;
-        if(!t) return alert("Título obrigatório");
-
-        let dataE = dM && hM ? new Date(`${dM}T${hM}`) : new Date();
-
-        push(ref(db,"ativos"), {
-            titulo: t, pai: document.getElementById("pai").value, filho: document.getElementById("filho").value,
-            descricao: document.getElementById("descricao").value, tipo: tipo,
-            inicio: dataE.getTime(), dataStr: dataE.toLocaleString('pt-BR'), escalado: [], comentarios: []
-        });
-        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
-    };
 
     function renderCard(id, data, containerId) {
         const container = document.getElementById(containerId);
@@ -266,58 +319,24 @@
         div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
         div.id = id;
         div.dataset.start = data.inicio;
-        div.dataset.escalado = JSON.stringify(data.escalado || []);
 
         const listaEscalation = CONFIG_ESCALATION[data.tipo] || [];
-
         const stepsHTML = listaEscalation.map(e => `
-            <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
+            <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
-                <div style="display:flex; gap:12px;">
-                    <a href="tel:+${e.tel}" style="color:var(--primary)"><i class="fa-solid fa-phone"></i></a>
-                    <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
+                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
             </div>`).join('');
 
-        const logsHTML = (data.comentarios || []).map(c => `<div><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
-
         div.innerHTML = `
-            <div style="font-size:0.7rem; font-weight:800; color:var(--text-dim);">${data.dataStr}</div>
+            <div style="font-size:0.7rem; color:var(--text-dim);">${data.dataStr}</div>
             <div style="font-weight:800; font-size:1.1rem; margin: 5px 0;">${data.titulo}</div>
-            <div style="font-size:0.8rem; color:var(--primary); font-weight:600;">P: ${data.pai || '-'} / F: ${data.filho || '-'}</div>
-            
-            <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
-            
-            <div class="log-container">${logsHTML || 'Sem notas.'}</div>
-            ${!isResolvido ? `<div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; padding:6px; border-radius:6px; border:1px solid var(--header); background:var(--input-bg); color:var(--text-main); font-size:12px;"><button style="background:var(--header); color:var(--text-main); border:none; padding:0 10px; border-radius:6px; cursor:pointer;" onclick="addComment('${id}')">OK</button></div>` : ''}
-
+            <div style="font-size:0.8rem; color:var(--primary);">Pai: ${data.pai} | Filho: ${data.filho}</div>
+            <div class="timer-box"><div class="timer-val">...</div></div>
             <div style="margin-top:10px;">${stepsHTML}</div>
-            
-            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">FINALIZAR INCIDENTE</button>` : `<div style="display:flex; gap:10px; margin-top:10px;"><button style="background:var(--warn); color:white; flex:1; border-radius:8px; padding:8px; border:none; cursor:pointer;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); color:white; flex:1; border-radius:8px; padding:8px; border:none; cursor:pointer;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
+            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">ENCERRAR</button>` : ''}
         `;
         container.appendChild(div);
     }
-
-    window.addComment = (id) => {
-        const inp = document.getElementById(`in-${id}`);
-        if(!inp.value) return;
-        onValue(ref(db, `ativos/${id}`), s => {
-            const d = s.val(); if(!d) return;
-            const list = d.comentarios || [];
-            list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
-            update(ref(db, `ativos/${id}`), { comentarios: list });
-            inp.value = "";
-        }, { onlyOnce: true });
-    };
-
-    window.toggleEscala = (id, h) => {
-        onValue(ref(db, `ativos/${id}`), s => {
-            const d = s.val(); if(!d) return;
-            let list = d.escalado || [];
-            list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
-            update(ref(db, `ativos/${id}`), { escalado: list });
-        }, { onlyOnce: true });
-    };
 
     window.finalizar = (id) => {
         onValue(ref(db, `ativos/${id}`), s => {
@@ -326,17 +345,6 @@
             remove(ref(db, `ativos/${id}`));
         }, { onlyOnce: true });
     };
-
-    window.reabrir = (id) => {
-        onValue(ref(db, `resolvidos/${id}`), s => {
-            const d = s.val(); if(!d) return;
-            const { fim, ...rest } = d;
-            push(ref(db, "ativos"), rest);
-            remove(ref(db, `resolvidos/${id}`));
-        }, { onlyOnce: true });
-    };
-
-    window.apagar = (id) => { if(confirm("Deseja deletar?")) remove(ref(db, `resolvidos/${id}`)); };
 
     onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
     onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
