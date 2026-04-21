@@ -125,13 +125,15 @@
     <div class="admin-panel">
         <div class="form-row">
             <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Rompimento de Fibra"></div>
-            <div class="form-group"><label>Elemento Pai</label><input id="pai" placeholder="Concentrador"></div>
-            <div class="form-group"><label>Elemento Filho</label><input id="filho" placeholder="CTO/OLT"></div>
+            <div class="form-group"><label>Chamado Pai</label><input id="pai" placeholder="0000-000000"></div>
+            <div class="form-group"><label>Chamado Filho</label><input id="filho" placeholder="0000-000000"></div>
             <div class="form-group">
                 <label>Escopo de Rede</label>
                 <select id="tipo">
-                    <option value="externa">Rede Externa (Campo)</option>
-                    <option value="interna">Rede Interna (Core)</option>
+                    <option value="externa-ne">Rede Externa (Nordeste)</option>
+                    <option value="externa-no">Rede Externa (Norte)</option>
+                    <option value="interna-ne">Rede Interna (Nordeste)</option>
+                    <option value="interna-no">Rede Interna (Norte)</option>
                 </select>
             </div>
         </div>
@@ -173,15 +175,31 @@
     // CENTRAL DE CONTATOS (MUDE AQUI PARA ATUALIZAR A EQUIPE)
     // ========================================================
     const CONFIG_ESCALATION = {
-        externa: [
+        externa-ne: [
             { h: 4,  nome: "Erivelton",  tel: "558898283311" },
             { h: 8,  nome: "Guilherme",  tel: "558899282323" },
+            { h: 10, nome: "Iran Jr",    tel: "558899870725" },
             { h: 10, nome: "Valmir",     tel: "558898287071" },
             { h: 12, nome: "Fernando",   tel: "5588994401255" }
         ],
-        interna: [
+        externa-no: [
+            { h: 4,  nome: "Clecio",     tel: "558898283311" },
+            { h: 8,  nome: "Maciel",     tel: "558899282323" },
+            { h: 10, nome: "Iran Jr",    tel: "558899870725" },
+            { h: 10, nome: "Valmir",     tel: "558898287071" },
+            { h: 12, nome: "Fernando",   tel: "5588994401255" }
+        ],
+        interna-ne: [
             { h: 4,  nome: "Joao",       tel: "558898283337" },
             { h: 8,  nome: "Wescley",    tel: "558894866085" },
+            { h: 10, nome: "Iran Jr",    tel: "558899870725" },
+            { h: 10, nome: "Valmir",     tel: "558898287071" },
+            { h: 12, nome: "Fernando",   tel: "5588994401255" }
+        ]
+        interna-no: [
+            { h: 4,  nome: "Nildo",      tel: "558898283337" },
+            { h: 8,  nome: "Julio Gaia", tel: "558894866085" },
+            { h: 10, nome: "Iran Jr",    tel: "558899870725" },
             { h: 10, nome: "Valmir",     tel: "558898287071" },
             { h: 12, nome: "Fernando",   tel: "5588994401255" }
         ]
