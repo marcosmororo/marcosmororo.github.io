@@ -3,161 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Escalation Pro - Elite</title>
+    <title>NOC Horizon - Professional Monitoring</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #0b0e14; --card: #151921; --header: #1f242d;
-            --primary: #00d2ff; --ok: #00ff95; --warn: #ffb800; --danger: #ff4d4d;
-            --text-main: #e2e8f0; --text-dim: #94a3b8; --input-bg: #0f1218; --whatsapp: #25d366;
+            --bg: #080a0f; --card: #12151c; --header: #1a1f2b;
+            --primary: #0ea5e9; --primary-glow: rgba(14, 165, 233, 0.15);
+            --ok: #10b981; --warn: #f59e0b; --danger: #ef4444;
+            --text-main: #f1f5f9; --text-dim: #94a3b8; --border: #262c3a;
         }
 
         body.light-mode {
-            --bg: #f8fafc; --card: #ffffff; --header: #f1f5f9;
-            --primary: #2563eb; --ok: #16a34a; --warn: #ea580c; --danger: #dc2626;
-            --text-main: #1e293b; --text-dim: #64748b; --input-bg: #f1f5f9;
+            --bg: #f1f5f9; --card: #ffffff; --header: #e2e8f0;
+            --primary: #0284c7; --primary-glow: rgba(2, 132, 199, 0.1);
+            --ok: #059669; --warn: #d97706; --danger: #dc2626;
+            --text-main: #0f172a; --text-dim: #64748b; --border: #cbd5e1;
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; overflow-x: hidden; }
-        
-        /* Utility Classes */
-        .container { max-width: 1600px; margin: auto; }
-        .hidden { display: none !important; }
-        .pulse-p1 { animation: pulse-border 2s infinite; border-top: 5px solid var(--danger) !important; }
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(255, 77, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); } }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; font-size: 13px; letter-spacing: -0.01em; }
 
-        /* Header */
+        /* HEADER & NAVIGATION */
         .page-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding: 12px 25px; background: var(--card);
-            border-radius: 12px; border: 1px solid var(--header); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 12px 20px; background: var(--card); border-radius: 12px;
+            border: 1px solid var(--border); margin-bottom: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);
         }
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-area h2 { margin: 0; font-size: 1.2rem; letter-spacing: -0.5px; color: var(--primary); }
+        .logo-area h2 { margin: 0; font-size: 1.1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--primary); }
+        .status-badge { padding: 4px 8px; border-radius: 6px; background: var(--primary-glow); color: var(--primary); font-size: 10px; font-weight: 700; border: 1px solid var(--primary); }
 
-        /* Admin Panel / Form */
-        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
+        /* HORIZON TIMELINE */
+        #horizon-timeline {
+            background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+            padding: 15px; margin-bottom: 20px; position: relative; height: 75px; overflow: hidden;
+        }
+        .timeline-marks { display: flex; justify-content: space-between; color: var(--text-dim); font-family: 'JetBrains Mono'; font-size: 10px; opacity: 0.5; }
+        .timeline-line { position: absolute; top: 45px; left: 20px; right: 20px; height: 2px; background: var(--border); }
+        .timeline-point {
+            position: absolute; top: 38px; width: 14px; height: 14px; border-radius: 4px;
+            background: var(--primary); border: 2px solid var(--card); transform: translateX(-50%);
+            cursor: pointer; z-index: 10;
+        }
+        .timeline-point.danger { background: var(--danger); box-shadow: 0 0 15px var(--danger); animation: pulse 1.5s infinite; }
+
+        /* TABS & FILTERS */
+        .controls-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
+        .tabs { display: flex; gap: 5px; background: var(--card); padding: 4px; border-radius: 8px; border: 1px solid var(--border); }
+        .tabs button { 
+            background: transparent; border: none; color: var(--text-dim); 
+            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 11px;
+        }
+        .tabs button.active { background: var(--primary); color: white; }
+        
+        /* FORMULARIO PROFISSIONAL */
+        .admin-panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+        .form-group label { display: block; font-size: 10px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; margin-bottom: 5px; }
         input, select, textarea { 
-            background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); 
-            padding: 10px; border-radius: 8px; font-size: 13px;
+            width: 100%; background: var(--bg); border: 1px solid var(--border); 
+            color: var(--text-main); padding: 10px; border-radius: 8px; font-size: 12px;
         }
-        input:focus { border-color: var(--primary); outline: none; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px var(--primary-glow); }
 
-        /* Cards Design */
-        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        /* PROFISSIONAL COMMAND CARDS */
+        .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
         .card { 
-            background: var(--card); border: 1px solid var(--header); border-radius: 16px; 
-            padding: 20px; border-top: 5px solid var(--ok); position: relative;
+            background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+            padding: 18px; position: relative; overflow: hidden;
             display: flex; flex-direction: column; gap: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--ok); }
+        .card.warn::before { background: var(--warn); }
+        .card.danger::before { background: var(--danger); }
         
-        .priority-badge { position: absolute; top: 15px; right: 20px; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 900; }
-        .p1 { background: var(--danger); color: white; }
-        .p2 { background: var(--warn); color: white; }
-
-        .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; color: var(--primary); font-weight: 700; }
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-title { font-size: 15px; font-weight: 700; margin: 0; color: var(--text-main); line-height: 1.2; }
+        .card-protocol { font-family: 'JetBrains Mono'; font-size: 11px; color: var(--primary); margin-top: 4px; display: block; }
         
-        .log-container { 
-            background: var(--input-bg); padding: 10px; border-radius: 10px; 
-            font-size: 0.75rem; max-height: 120px; overflow-y: auto; border: 1px solid var(--header);
-        }
+        .timer-display { display: flex; align-items: baseline; gap: 5px; margin: 5px 0; }
+        .timer-val { font-family: 'JetBrains Mono'; font-size: 1.8rem; font-weight: 700; }
+        .timer-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
 
-        /* Action Buttons */
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .btn { 
-            padding: 10px; border-radius: 8px; border: none; cursor: pointer; 
-            font-weight: 700; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 5px;
-            flex: 1;
+        /* ESCALATION BUTTONS */
+        .escalation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .esc-btn {
+            background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+            padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 4px;
+            text-decoration: none; color: var(--text-dim); font-size: 11px; font-weight: 600;
         }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-copy { background: var(--header); color: var(--text-main); }
-        .btn-done { background: var(--ok); color: white; }
+        .esc-btn b { font-size: 12px; color: var(--text-main); }
+        .esc-btn.active { border-color: var(--warn); background: rgba(245, 158, 11, 0.05); color: var(--warn); animation: pulse-border 1.5s infinite; }
+        .esc-btn.done { border-color: var(--ok); color: var(--ok); background: rgba(16, 185, 129, 0.05); }
 
-        /* Partner View */
-        .partner-search { margin-bottom: 15px; width: 100%; max-width: 400px; }
-        .partner-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
-        .partner-table th { background: var(--header); color: var(--primary); padding: 15px; font-size: 12px; text-align: left; }
-        .partner-table td { padding: 15px; border-bottom: 1px solid var(--header); font-size: 13px; }
+        /* LOGS */
+        .log-box { background: var(--bg); border-radius: 8px; padding: 10px; font-size: 11px; max-height: 80px; overflow-y: auto; border: 1px solid var(--border); }
+        .log-entry { margin-bottom: 4px; border-bottom: 1px solid var(--border); padding-bottom: 2px; }
+        .log-time { color: var(--primary); font-weight: 700; margin-right: 5px; }
+
+        /* ACTIONS */
+        .card-footer { display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 5px; }
+        .btn-action { 
+            flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 11px; 
+            font-weight: 700; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-success { background: var(--ok); color: white; }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
+
+        @keyframes pulse { 0% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.2); } 100% { transform: translateX(-50%) scale(1); } }
+        @keyframes pulse-border { 0% { border-color: var(--border); } 50% { border-color: var(--warn); } 100% { border-color: var(--border); } }
+        
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="main-view">
-        <header class="page-header">
-            <div class="logo-area">
-                <i class="fa-solid fa-shield-pulse fa-xl"></i>
-                <h2>NOC ESCALATION <span style="font-weight: 400; opacity: 0.6;">ELITE</span></h2>
-            </div>
-            <div class="header-actions">
-                <button class="nav-btn" onclick="toggleView('partners')"><i class="fa-solid fa-users"></i> Parceiros</button>
-                <div id="page-clock" class="timer-val" style="font-size: 1.1rem;">00:00:00</div>
-                <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
-            </div>
-        </header>
-
-        <div class="admin-panel">
-            <div class="form-grid">
-                <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Backbone Rompido"></div>
-                <div class="form-group"><label>Prioridade</label>
-                    <select id="prioridade">
-                        <option value="P3">P3 - Normal</option>
-                        <option value="P2">P2 - Crítico</option>
-                        <option value="P1">P1 - Emergência</option>
-                        <option value="P4">P4 - Baixa</option>
-                    </select>
-                </div>
-                <div class="form-group"><label>Protocolo Pai</label><input id="pai" placeholder="Nº Chamado" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                <div class="form-group"><label>Protocolo Filho</label><input id="filho" placeholder="Nº Chamado" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-                <div class="form-group"><label>Escopo</label>
-                    <select id="tipo">
-                        <option value="externa_ne">Rede Externa (NE)</option>
-                        <option value="externa_no">Rede Externa (NO)</option>
-                        <option value="interna_ne">Rede Interna (NE)</option>
-                        <option value="interna_no">Rede Interna (NO)</option>
-                    </select>
-                </div>
-                <div class="form-group" style="grid-column: span 2;"><label>Relato Inicial</label><textarea id="descricao" placeholder="Detalhes técnicos..."></textarea></div>
-                <button class="btn btn-primary" style="margin-top: 18px;" onclick="add()">REGISTRAR INCIDENTE</button>
-            </div>
+    <header class="page-header">
+        <div class="logo-area">
+            <i class="fa-solid fa-satellite-dish fa-lg"></i>
+            <h2>NOC Horizon</h2>
+            <div class="status-badge">SISTEMA ATIVO</div>
         </div>
+        <div class="header-actions" style="display: flex; gap: 15px; align-items: center;">
+            <div id="page-clock" style="font-family: 'JetBrains Mono'; font-weight: 700; font-size: 1.1rem;">00:00:00</div>
+            <button onclick="toggleTheme()" class="btn-outline" style="width: 35px; height: 35px; border-radius: 50%; padding: 0;"><i class="fa-solid fa-circle-half-stroke"></i></button>
+        </div>
+    </header>
 
+    <div id="horizon-timeline">
+        <div class="timeline-marks">
+            <span>0H</span><span>2H</span><span>4H (N1)</span><span>6H</span><span>8H (N2)</span><span>10H (N3)</span><span>12H+</span>
+        </div>
+        <div class="timeline-line"></div>
+        <div id="timeline-points-container"></div>
+    </div>
+
+    <div class="controls-row">
         <div class="tabs">
-            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">PAINEL DE OPERAÇÃO</button>
+            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS</button>
             <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
         </div>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-outline" onclick="toggleAdminPanel()"><i class="fa-solid fa-plus"></i> NOVO INCIDENTE</button>
+            <button class="btn-outline" onclick="toggleView('partners')"><i class="fa-solid fa-address-book"></i> PARCEIROS</button>
+        </div>
+    </div>
 
+    <div id="admin-panel" class="admin-panel hidden">
+        <div class="form-grid">
+            <div class="form-group"><label>Título do Incidente</label><input id="titulo" placeholder="Ex: Backbone Down"></div>
+            <div class="form-group"><label>Protocolo Pai</label><input id="pai" placeholder="00000"></div>
+            <div class="form-group"><label>Protocolo Filho</label><input id="filho" placeholder="00000"></div>
+            <div class="form-group">
+                <label>Escopo da Rede</label>
+                <select id="tipo">
+                    <option value="externa_ne">Externa Nordeste</option>
+                    <option value="externa_no">Externa Norte</option>
+                    <option value="interna_ne">Interna Nordeste</option>
+                    <option value="interna_no">Interna Norte</option>
+                </select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;"><label>Descrição Inicial</label><input id="descricao" placeholder="Relato técnico breve..."></div>
+            <div class="form-group" style="display: flex; align-items: flex-end;"><button class="btn-success" style="width: 100%; height: 38px; border-radius: 8px;" onclick="add()">CADASTRAR</button></div>
+        </div>
+    </div>
+
+    <div id="ativos-view">
         <div id="ativos" class="grid-cards"></div>
-        <div id="resolvidos" class="grid-cards hidden"></div>
+    </div>
+
+    <div id="resolvidos-view" class="hidden">
+        <div id="resolvidos" class="grid-cards"></div>
     </div>
 
     <div id="partners-view" class="hidden">
-        <header class="page-header">
-            <div class="logo-area"><h2><i class="fa-solid fa-handshake"></i> CONTATOS DE PARCEIROS</h2></div>
-            <button class="nav-btn" onclick="toggleView('main')"><i class="fa-solid fa-arrow-left"></i> Voltar ao Monitoramento</button>
-        </header>
         <div class="admin-panel">
-            <input type="text" class="partner-search" placeholder="Filtrar por nome ou serviço..." onkeyup="filterPartners(this.value)">
-            <table class="partner-table" id="partner-table">
-                <thead><tr><th>Parceiro</th><th>Serviço</th><th>E-mail</th><th>Ação</th></tr></thead>
-                <tbody>
-                    <tr><td><b>Operadora VTR</b></td><td>Link IP</td><td>suporte@vtr.com.br</td><td><a href="https://wa.me/558890000000" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a></td></tr>
-                    <tr><td><b>Energy-Fix</b></td><td>Geradores</td><td>plantao@energy.com</td><td><a href="#" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a></td></tr>
-                </tbody>
-            </table>
+            <h3 style="margin-top: 0;">Lista de Parceiros</h3>
+            <div id="partners-list">
+                <p>Nenhum parceiro cadastrado.</p>
+            </div>
+            <button class="btn-outline" onclick="toggleView('main')">Voltar</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import { getDatabase, ref, push, update, remove, onValue } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
+    import { getDatabase, ref, push, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
@@ -173,122 +209,146 @@
     const db = getDatabase(app);
 
     const CONFIG_ESCALATION = {
-        "externa_ne": [{h:4, nome:"Erivelton", tel:"558898283311"}, {h:8, nome:"Guilherme", tel:"558899282323"}, {h:10, nome:"Iran Jr", tel:"558899870725"}],
-        "externa_no": [{h:4, nome:"Clecio", tel:"558898283311"}, {h:8, nome:"Maciel", tel:"558899282323"}, {h:10, nome:"Valmir", tel:"558898287071"}],
-        "interna_ne": [{h:4, nome:"Joao", tel:"558898283337"}, {h:8, nome:"Wescley", tel:"558894866085"}, {h:10, nome:"Iran Jr", tel:"558899870725"}],
-        "interna_no": [{h:4, nome:"Nildo", tel:"558898283337"}, {h:8, nome:"Julio Gaia", tel:"558894866085"}, {h:10, nome:"Valmir", tel:"558898287071"}]
+        "externa_ne": [{h:4, n:"Erivelton", tel:"558898283311"}, {h:8, n:"Guilherme", tel:"558899282323"}, {h:12, n:"Fernando", tel:"5588994401255"}],
+        "externa_no": [{h:4, n:"Clecio", tel:"558898283311"}, {h:8, n:"Maciel", tel:"558899282323"}, {h:12, n:"Fernando", tel:"5588994401255"}],
+        "interna_ne": [{h:4, n:"Joao", tel:"558898283337"}, {h:8, n:"Wescley", tel:"558894866085"}, {h:12, n:"Fernando", tel:"5588994401255"}],
+        "interna_no": [{h:4, n:"Nildo", tel:"558898283337"}, {h:8, n:"Julio Gaia", tel:"558894866085"}, {h:12, n:"Fernando", tel:"5588994401255"}]
     };
 
-    window.toggleView = (v) => {
-        document.getElementById('main-view').classList.toggle('hidden', v==='partners');
-        document.getElementById('partners-view').classList.toggle('hidden', v==='main');
-    };
-
+    // UI CONTROLS
+    window.toggleAdminPanel = () => document.getElementById('admin-panel').classList.toggle('hidden');
     window.toggleTheme = () => document.body.classList.toggle('light-mode');
+    window.toggleView = (view) => {
+        document.getElementById('ativos-view').classList.toggle('hidden', view === 'partners');
+        document.getElementById('partners-view').classList.toggle('hidden', view !== 'partners');
+    };
     setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-    // Adicionar Incidente
+    function formatTime(ms) {
+        const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000), s = Math.floor((ms % 60000) / 1000);
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    // UPDATE CARDS & TIMELINE
+    setInterval(() => {
+        const now = Date.now();
+        const ptsContainer = document.getElementById('timeline-points-container');
+        ptsContainer.innerHTML = '';
+
+        document.querySelectorAll('.card.ativo').forEach(card => {
+            const start = parseInt(card.dataset.start);
+            const escalado = JSON.parse(card.dataset.escalado || "[]");
+            const diffH = (now - start) / 3600000;
+
+            card.querySelector('.timer-val').innerText = formatTime(now - start);
+            
+            // SLA Visual States
+            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
+            card.classList.toggle('danger', diffH >= 10);
+
+            // Timeline Points
+            const pos = Math.min(100, (diffH / 12) * 100);
+            const pt = document.createElement('div');
+            pt.className = `timeline-point ${diffH >= 10 ? 'danger' : ''}`;
+            pt.style.left = `calc(20px + (100% - 40px) * ${pos/100})`;
+            ptsContainer.appendChild(pt);
+
+            // Button Logic
+            card.querySelectorAll('.esc-btn').forEach(btn => {
+                const btnH = parseInt(btn.dataset.h);
+                if (escalado.includes(btnH)) {
+                    btn.className = 'esc-btn done';
+                } else if (diffH >= btnH) {
+                    btn.className = 'esc-btn active';
+                }
+            });
+        });
+    }, 1000);
+
+    // FIREBASE OPS
     window.add = function(){
         const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
-        const prio = document.getElementById("prioridade").value;
-        if(!t || !p || !f) return alert("Preencha Título e Protocolos!");
-
-        push(ref(db,"ativos"), {
-            titulo: t, pai: p, filho: f, prioridade: prio,
-            tipo: document.getElementById("tipo").value,
+        if(!t || !p || !f) return alert("Preencha todos os campos!");
+        push(ref(db,"ativos"), { 
+            titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, 
             inicio: Date.now(), escalado: [], 
-            comentarios: [{texto: `Incidente iniciado (${prio})`, hora: new Date().toLocaleTimeString('pt-BR')}]
+            comentarios: [{texto: "Incidente aberto no NOC", hora: new Date().toLocaleTimeString('pt-BR')}] 
         });
-        document.querySelectorAll("input, textarea").forEach(e=>e.value="");
+        document.querySelectorAll("#admin-panel input").forEach(e=>e.value="");
+        toggleAdminPanel();
     };
 
-    // Renderizar Card
     function renderCard(id, data, containerId) {
         const container = document.getElementById(containerId), isResolvido = containerId === 'resolvidos';
         const div = document.createElement("div");
-        div.className = `card ${isResolvido ? '' : 'ativo'} ${data.prioridade === 'P1' ? 'pulse-p1' : ''}`;
-        div.id = id; div.dataset.start = data.inicio;
+        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
+        div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
         
-        const tempoDecorrido = isResolvido ? formatDiff(data.fim - data.inicio) : '...';
-        const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
-            <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
-                <span><b>${e.h}h</b> - ${e.nome}</span>
-                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
-            </div>`).join('');
+        const escHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
+            <a href="https://wa.me/${e.tel}" target="_blank" class="esc-btn" data-h="${e.h}" onclick="markEscalated('${id}', ${e.h})">
+                <b>${e.h}h - ${e.nome}</b>
+                <span>NOTIFICAR</span>
+            </a>`).join('');
 
         div.innerHTML = `
-            <span class="priority-badge ${data.prioridade?.toLowerCase()}">${data.prioridade}</span>
-            <div style="font-weight:800; font-size:1.1rem;">${data.titulo}</div>
-            <div style="font-size:0.75rem; color:var(--text-dim);">Pai: ${data.pai} | Filho: ${data.filho}</div>
-            <div class="timer-box"><div class="timer-val">${tempoDecorrido}</div></div>
-            <div class="log-container">${(data.comentarios || []).map(c=>`<div><b>${c.hora}</b> ${c.texto}</div>`).reverse().join('')}</div>
-            ${!isResolvido ? `
-                <input type="text" id="in-${id}" placeholder="Nota rápida..." onkeypress="if(event.key==='Enter') addComment('${id}')">
-                <div class="btn-group">
-                    <button class="btn btn-copy" onclick="copyStatus('${id}')"><i class="fa-solid fa-copy"></i> Status</button>
-                    <button class="btn btn-done" onclick="finalizar('${id}')"><i class="fa-solid fa-check"></i> Finalizar</button>
+            <div class="card-header">
+                <div>
+                    <h3 class="card-title">${data.titulo}</h3>
+                    <span class="card-protocol">PAI: ${data.pai} | FILHO: ${data.filho}</span>
                 </div>
-            ` : `<button class="btn btn-primary" onclick="reabrir('${id}')">REATIVAR</button>`}
-            <div style="margin-top:10px;">${stepsHTML}</div>
+                <i class="fa-solid fa-triangle-exclamation" style="color:var(--text-dim)"></i>
+            </div>
+            <div class="timer-display">
+                <span class="timer-val">00:00:00</span>
+                <span class="timer-label">decorrido</span>
+            </div>
+            <div class="log-box">${(data.comentarios || []).map(c=>`<div class="log-entry"><span class="log-time">${c.hora}</span>${c.texto}</div>`).reverse().join('')}</div>
+            ${!isResolvido ? `
+                <input type="text" id="in-${id}" placeholder="Adicionar comentário..." onkeypress="if(event.key==='Enter') addComment('${id}')">
+                <div class="escalation-grid">${escHTML}</div>
+                <div class="card-footer">
+                    <button class="btn-action btn-success" onclick="finalizar('${id}')"><i class="fa-solid fa-check"></i> Finalizar</button>
+                    <button class="btn-action btn-outline" onclick="copyStatus('${id}')"><i class="fa-solid fa-copy"></i> Copiar</button>
+                </div>
+            ` : `<button class="btn-action btn-outline" onclick="reabrir('${id}')" style="width:100%">REABRIR</button>`}
         `;
         container.appendChild(div);
     }
 
-    // Copiar Status (Template Útil)
-    window.copyStatus = (id) => {
-        onValue(ref(db, `ativos/${id}`), s => {
-            const d = s.val();
-            const txt = `🚨 *INCIDENTE NOC - ${d.prioridade}*\n📌 *Tít:* ${d.titulo}\n🔢 *Prot:* ${d.pai}\n⏳ *Início:* ${new Date(d.inicio).toLocaleTimeString()}\n💬 *Última:* ${d.comentarios.slice(-1)[0].texto}`;
-            navigator.clipboard.writeText(txt);
-            alert("Status copiado!");
-        }, {onlyOnce:true});
+    window.markEscalated = (id, h) => {
+        get(ref(db, `ativos/${id}`)).then(s => {
+            let e = s.val().escalado || [];
+            if(!e.includes(h)) e.push(h);
+            update(ref(db, `ativos/${id}`), { escalado: e });
+        });
     };
 
-    // Lógica de Timers e Cores
-    function formatDiff(ms) {
-        const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
-        return `${h}h ${m}m ${s}s`;
-    }
-
-    setInterval(() => {
-        document.querySelectorAll('.card.ativo').forEach(card => {
-            const diff = Date.now() - parseInt(card.dataset.start);
-            card.querySelector('.timer-val').innerText = formatDiff(diff);
-            if(diff > 36000000) card.style.borderTopColor = 'var(--danger)'; // 10h
-            else if(diff > 28800000) card.style.borderTopColor = 'var(--warn)'; // 8h
-        });
-    }, 1000);
-
-    // Firebase Listeners
-    onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
-    onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
-
-    // Funções de Suporte
     window.addComment = (id) => {
         const i = document.getElementById(`in-${id}`); if(!i.value) return;
-        onValue(ref(db, `ativos/${id}`), s => {
+        get(ref(db, `ativos/${id}`)).then(s => {
             const c = s.val().comentarios || [];
-            c.push({texto: i.value, hora: new Date().toLocaleTimeString('pt-BR')});
-            update(ref(db, `ativos/${id}`), {comentarios: c}); i.value = "";
-        }, {onlyOnce:true});
+            c.push({ texto: i.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
+            update(ref(db, `ativos/${id}`), { comentarios: c }); i.value = "";
+        });
     };
-    window.toggleEscala = (id, h) => {
-        onValue(ref(db, `ativos/${id}`), s => {
-            let e = s.val().escalado || [];
-            e = e.includes(h) ? e.filter(x=>x!==h) : [...e, h];
-            update(ref(db, `ativos/${id}`), {escalado: e});
-        }, {onlyOnce:true});
-    };
-    window.finalizar = (id) => { onValue(ref(db, `ativos/${id}`), s => { push(ref(db, "resolvidos"), {...s.val(), fim: Date.now()}); remove(ref(db, `ativos/${id}`)); }, {onlyOnce:true}); };
-    window.reabrir = (id) => { onValue(ref(db, `resolvidos/${id}`), s => { const {fim, ...r} = s.val(); push(ref(db, "ativos"), r); remove(ref(db, `resolvidos/${id}`)); }, {onlyOnce:true}); };
-    window.showTab = (t) => { document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); };
 
-    window.filterPartners = (val) => {
-        const rows = document.querySelectorAll("#partner-table tbody tr");
-        rows.forEach(r => {
-            r.style.display = r.innerText.toLowerCase().includes(val.toLowerCase()) ? "" : "none";
+    window.copyStatus = (id) => {
+        get(ref(db, `ativos/${id}`)).then(s => {
+            const d = s.val();
+            const txt = `*NOC INFORMA*\n📌 *Status:* ${d.titulo}\n🔢 *Prot:* ${d.pai}\n⏳ *Início:* ${new Date(d.inicio).toLocaleTimeString()}`;
+            navigator.clipboard.writeText(txt); alert("Copiado!");
         });
     }
+
+    onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
+    onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
+    window.showTab = (t) => {
+        document.getElementById("ativos-view").classList.toggle("hidden", t!=='ativos');
+        document.getElementById("resolvidos-view").classList.toggle("hidden", t!=='resolvidos');
+        document.getElementById("btn-tab-ativos").classList.add(t==='ativos'?'active':'_');
+        document.getElementById("btn-tab-ativos").classList.remove(t!=='ativos'?'active':'_');
+        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos');
+    };
 </script>
 </body>
 </html>
