@@ -3,36 +3,84 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aviso de Manutenção</title>
+
+<title>Aviso de Manutenção - NOC</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
+:root {
+    --primary: #1f2a44;
+    --secondary: #2f3b5c;
+    --accent: #007bff;
+    --border: #dcdcdc;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f4f4;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #eef1f5;
+    margin: 0;
     padding: 20px;
 }
 
 .container {
-    max-width: 750px;
+    max-width: 1100px;
     margin: auto;
 }
 
-.card {
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form, .preview {
     background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+h2 {
+    margin-top: 0;
+    color: var(--primary);
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    margin-top: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-top: 4px;
+}
+
+.preview-card {
     border: 2px solid #000;
 }
 
 .header {
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 15px;
     border-bottom: 2px solid #000;
+}
+
+.logo {
     font-weight: bold;
+    font-size: 18px;
 }
 
 .title {
-    background: #444;
+    background: var(--primary);
     color: #fff;
     text-align: center;
     padding: 10px;
@@ -40,51 +88,46 @@ body {
 }
 
 .subtitle {
-    background: #666;
+    background: var(--secondary);
     color: #fff;
     text-align: center;
     padding: 8px;
-    font-size: 14px;
+    font-size: 13px;
 }
 
-table {
+.table {
     width: 100%;
     border-collapse: collapse;
 }
 
-td {
+.table td {
     padding: 10px;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid var(--border);
 }
 
 .label {
-    background: #eee;
     font-weight: bold;
-    width: 35%;
-}
-
-input {
-    width: 100%;
-    padding: 6px;
-    border: 1px solid #ccc;
+    background: #f7f7f7;
+    width: 40%;
 }
 
 .actions {
-    margin-top: 15px;
+    margin-top: 20px;
     text-align: center;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 12px 20px;
     border: none;
-    background: #000;
+    border-radius: 6px;
+    background: var(--primary);
     color: #fff;
     cursor: pointer;
     margin: 5px;
 }
 
 button:hover {
-    background: #333;
+    background: #000;
 }
 </style>
 </head>
@@ -92,63 +135,99 @@ button:hover {
 <body>
 
 <div class="container">
+<div class="grid">
 
-    <!-- ÁREA EDITÁVEL -->
-    <div id="aviso" class="card">
+<!-- FORM -->
+<div class="form">
+<h2>📋 Preencher Aviso</h2>
 
-        <div class="header">ONLINE TELECOM</div>
+<label>Empresa</label>
+<input id="empresa" value="ONLINE TELECOM">
 
-        <div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
-        <div class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+<label>Data</label>
+<input id="data">
 
-        <table>
-            <tr>
-                <td class="label">Data</td>
-                <td><input id="data" placeholder="Ex: 23/04/2026"></td>
-            </tr>
-            <tr>
-                <td class="label">Período</td>
-                <td><input id="periodo" placeholder="Ex: 02h00min até 04h00min"></td>
-            </tr>
-            <tr>
-                <td class="label">Local</td>
-                <td><input id="local" placeholder="Ex: Boa Viagem/CE"></td>
-            </tr>
-            <tr>
-                <td class="label">Descrição</td>
-                <td><input id="descricao" placeholder="Ex: Upgrade no UpLink"></td>
-            </tr>
-            <tr>
-                <td class="label">Impacto</td>
-                <td><input id="impacto" placeholder="Ex: Clientes GPON"></td>
-            </tr>
-            <tr>
-                <td class="label">Setor</td>
-                <td><input id="setor" placeholder="Ex: NOC e Manutenção"></td>
-            </tr>
-            <tr>
-                <td class="label">Protocolo</td>
-                <td><input id="protocolo" placeholder="Ex: #0000-000000"></td>
-            </tr>
-        </table>
+<label>Período</label>
+<input id="periodo">
 
-    </div>
+<label>Local</label>
+<input id="local">
 
-    <!-- BOTÕES -->
-    <div class="actions">
-        <button onclick="gerarImagem()">📸 Gerar Imagem</button>
-    </div>
+<label>Descrição</label>
+<input id="descricao">
 
+<label>Impacto</label>
+<input id="impacto">
+
+<label>Setor</label>
+<input id="setor">
+
+<label>Protocolo</label>
+<input id="protocolo">
+
+<div class="actions">
+<button onclick="gerarPNG()">📸 Gerar PNG</button>
+<button onclick="gerarPDF()">📄 Gerar PDF</button>
+</div>
+</div>
+
+<!-- PREVIEW -->
+<div class="preview">
+<h2>👁️ Visualização</h2>
+
+<div id="preview" class="preview-card">
+
+<div class="header">
+<div class="logo" id="p_empresa">ONLINE TELECOM</div>
+<div>AVISO OFICIAL</div>
+</div>
+
+<div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
+<div class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+
+<table class="table">
+<tr><td class="label">Data</td><td id="p_data"></td></tr>
+<tr><td class="label">Período</td><td id="p_periodo"></td></tr>
+<tr><td class="label">Local</td><td id="p_local"></td></tr>
+<tr><td class="label">Descrição</td><td id="p_descricao"></td></tr>
+<tr><td class="label">Impacto</td><td id="p_impacto"></td></tr>
+<tr><td class="label">Setor</td><td id="p_setor"></td></tr>
+<tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
+</table>
+
+</div>
+</div>
+
+</div>
 </div>
 
 <script>
-function gerarImagem() {
-    html2canvas(document.querySelector("#aviso")).then(canvas => {
+const campos = ["empresa","data","periodo","local","descricao","impacto","setor","protocolo"];
+
+campos.forEach(campo => {
+    document.getElementById(campo).addEventListener("input", () => {
+        document.getElementById("p_" + campo).innerText =
+            document.getElementById(campo).value;
+    });
+});
+
+function gerarPNG() {
+    html2canvas(document.querySelector("#preview")).then(canvas => {
         let link = document.createElement('a');
         link.download = 'aviso.png';
         link.href = canvas.toDataURL();
         link.click();
     });
+}
+
+async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(document.querySelector("#preview"));
+    const img = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF();
+    pdf.addImage(img, 'PNG', 10, 10, 190, 0);
+    pdf.save("aviso.pdf");
 }
 </script>
 
