@@ -24,17 +24,22 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; }
         .container { max-width: 1400px; margin: auto; }
 
-        /* Header & Dashboard */
+        /* Header */
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px 20px; background: var(--card); border-radius: 12px; border: 1px solid var(--header); }
+        .header-actions { display: flex; align-items: center; gap: 15px; }
+        
+        .nav-btn { background: var(--primary); color: #fff; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; }
+
+        /* Metrics */
         .metrics-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .metric-card { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid var(--header); display: flex; flex-direction: column; align-items: center; }
         .metric-card b { font-size: 1.5rem; color: var(--primary); font-family: 'JetBrains Mono'; }
 
         /* Admin Panel */
         .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 20px; margin-bottom: 25px; }
-        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 12px; }
-        input, select, textarea { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 10px; border-radius: 8px; outline: none; width: 100%; }
-        .btn-add { background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; height: 45px; width: 100%; }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        input, select { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 10px; border-radius: 8px; outline: none; }
+        .btn-add { background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; height: 45px; }
 
         /* Tabs */
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
@@ -44,81 +49,97 @@
         /* Cards */
         .grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
         .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 20px; border-top: 5px solid var(--ok); position: relative; }
-        .card.warn { border-top-color: var(--warn); box-shadow: 0 0 15px rgba(255, 184, 0, 0.1); }
-        .card.danger { border-top-color: var(--danger); box-shadow: 0 0 20px rgba(255, 77, 77, 0.2); }
-        
         .timer-box { background: var(--input-bg); border-radius: 12px; padding: 10px; text-align: center; margin: 10px 0; border: 1px solid var(--header); }
         .timer-val { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--primary); }
 
         /* Escalation Steps */
-        .step { 
-            display: flex; justify-content: space-between; align-items: center; 
-            background: var(--input-bg); padding: 10px 15px; margin: 6px 0; 
-            border-radius: 10px; font-size: 0.85rem; border: 1px solid transparent;
-            cursor: pointer;
-        }
-        .step.done { opacity: 0.4; background: transparent; border: 1px dashed var(--header); }
-        
-        /* COR DE ACIONAMENTO ATIVO */
-        .step.next-to-call { 
-            border-color: var(--warn); 
-            background: rgba(255, 184, 0, 0.05);
-            animation: pulse-border 1.5s infinite; 
-        }
+        .step { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 10px 15px; margin: 6px 0; border-radius: 10px; font-size: 0.85rem; border: 1px solid transparent; }
+        .step.done { opacity: 0.4; }
+        .step.next-to-call { border-color: var(--warn); animation: pulse-border 1.5s infinite; }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0px rgba(255, 184, 0, 0.4); } 100% { box-shadow: 0 0 0 8px rgba(255, 184, 0, 0); } }
 
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0px rgba(255, 184, 0, 0.4); }
-            100% { box-shadow: 0 0 0 8px rgba(255, 184, 0, 0); }
-        }
+        /* Aba Parceiros - Estilo */
+        .partner-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .partner-table th { text-align: left; padding: 12px; color: var(--primary); font-size: 0.8rem; text-transform: uppercase; border-bottom: 2px solid var(--header); }
+        .partner-table td { padding: 15px; border-bottom: 1px solid var(--header); }
+        .wa-btn { color: var(--whatsapp); font-size: 1.5rem; text-decoration: none; }
 
-        .wa-link { color: var(--whatsapp); font-size: 1.3rem; }
-        .log-container { background: var(--input-bg); padding: 10px; border-radius: 8px; font-size: 0.75rem; max-height: 100px; overflow-y: auto; margin-bottom: 10px; }
-        .btn-encerrar { background: var(--ok); color: #000; width: 100%; border: none; border-radius: 8px; padding: 12px; margin-top: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-
-        .hidden { display: none; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="page-header">
-        <div class="logo-area"><h2><i class="fa-solid fa-satellite"></i> NOC HORIZON</h2></div>
+        <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC HORIZON</h2></div>
         <div class="header-actions">
+            <button id="btn-view-partners" class="nav-btn" onclick="toggleView('partners')"><i class="fa-solid fa-address-book"></i> Parceiros</button>
+            <button id="btn-view-main" class="nav-btn hidden" onclick="toggleView('main')"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
             <div id="page-clock">00:00:00</div>
             <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
         </div>
     </div>
 
-    <div class="metrics-bar">
-        <div class="metric-card"><span>TOTAL ATIVOS</span><b id="count-total">0</b></div>
-        <div class="metric-card"><span>REDE EXTERNA</span><b id="count-externa" style="color:var(--warn)">0</b></div>
-        <div class="metric-card"><span>REDE INTERNA</span><b id="count-interna" style="color:var(--ok)">0</b></div>
-    </div>
+    <div id="view-main">
+        <div class="metrics-bar">
+            <div class="metric-card"><span>ATIVOS</span><b id="count-total">0</b></div>
+            <div class="metric-card"><span>EXTERNA</span><b id="count-externa" style="color:var(--warn)">0</b></div>
+            <div class="metric-card"><span>INTERNA</span><b id="count-interna" style="color:var(--ok)">0</b></div>
+        </div>
 
-    <div class="admin-panel">
-        <div class="form-row">
-            <div class="form-group"><input id="titulo" placeholder="Título do Incidente"></div>
-            <div class="form-group"><input id="pai" placeholder="Protocolo Pai" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-            <div class="form-group"><input id="filho" placeholder="Protocolo Filho" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
-            <div class="form-group">
+        <div class="admin-panel">
+            <div class="form-row">
+                <input id="titulo" placeholder="Título do Incidente">
+                <input id="pai" placeholder="Protocolo Pai" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input id="filho" placeholder="Protocolo Filho" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 <select id="tipo">
                     <option value="externa_ne">Externa (NE)</option>
                     <option value="externa_no">Externa (NO)</option>
                     <option value="interna_ne">Interna (NE)</option>
                     <option value="interna_no">Interna (NO)</option>
                 </select>
+                <button class="btn-add" onclick="add()">ABRIR</button>
             </div>
-            <div class="form-group"><button class="btn-add" onclick="add()">ABRIR CHAMADO</button></div>
+        </div>
+
+        <div class="tabs">
+            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS (0)</button>
+            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO (0)</button>
+        </div>
+
+        <div id="ativos" class="grid-cards"></div>
+        <div id="resolvidos" class="grid-cards hidden"></div>
+    </div>
+
+    <div id="view-partners" class="hidden">
+        <div class="admin-panel">
+            <h3 style="margin-top:0"><i class="fa-solid fa-address-book" style="color:var(--primary)"></i> Contatos de Emergência e Operadoras</h3>
+            <table class="partner-table">
+                <thead>
+                    <tr>
+                        <th>Parceiro / Operadora</th>
+                        <th>Tipo de Link / Serviço</th>
+                        <th>Telefone / Contato</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Operadora X</b></td>
+                        <td>Link Principal IP</td>
+                        <td>0800 123 4567</td>
+                        <td><a href="https://wa.me/558899999999" target="_blank" class="wa-btn"><i class="fa-brands fa-whatsapp"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td><b>Data Center Y</b></td>
+                        <td>Colocation / Cloud</td>
+                        <td>suporte@datacenter.com</td>
+                        <td><a href="#" class="wa-btn" style="color:var(--primary)"><i class="fa-solid fa-envelope"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <div class="tabs">
-        <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS (0)</button>
-        <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO (0)</button>
-    </div>
-
-    <div id="ativos" class="grid-cards"></div>
-    <div id="resolvidos" class="grid-cards hidden"></div>
 </div>
 
 <script type="module">
@@ -145,94 +166,93 @@
         "interna_no": [{h:4, nome:"Nildo", tel:"558898283337"}, {h:8, nome:"Julio Gaia", tel:"558894866085"}, {h:10, nome:"Valmir", tel:"558898287071"}, {h:12, nome:"Fernando", tel:"5588994401255"}]
     };
 
-    function formatTime(ms) {
-        const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
-        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+    // ALTERNAR ENTRE TELAS
+    window.toggleView = (view) => {
+        const isPartner = view === 'partners';
+        document.getElementById('view-main').classList.toggle('hidden', isPartner);
+        document.getElementById('view-partners').classList.toggle('hidden', !isPartner);
+        document.getElementById('btn-view-partners').classList.toggle('hidden', isPartner);
+        document.getElementById('btn-view-main').classList.toggle('hidden', !isPartner);
+    };
 
-    // MONITORAMENTO DE TEMPO EM TEMPO REAL
+    // RELOGIO E MONITORAMENTO DE TEMPO
     setInterval(() => {
         const now = Date.now();
         document.querySelectorAll('.card.ativo').forEach(card => {
             const start = parseInt(card.dataset.start);
-            const escalados = JSON.parse(card.dataset.escalado || "[]");
             const diffH = (now - start) / 3600000;
+            const escalados = JSON.parse(card.dataset.escalado || "[]");
 
-            card.querySelector('.timer-val').innerText = formatTime(now - start);
+            card.querySelector('.timer-val').innerText = new Date(now - start).toISOString().substr(11, 8);
             
-            // Cores do Card (SLA)
-            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
-            card.classList.toggle('danger', diffH >= 10);
+            // Cores de Alerta
+            if(diffH >= 10) card.style.borderTopColor = "var(--danger)";
+            else if(diffH >= 8) card.style.borderTopColor = "var(--warn)";
 
-            // Logica do Proximo Acionamento
-            let foundNext = false;
-            card.querySelectorAll('.step[data-h]').forEach(step => {
-                const stepH = parseInt(step.dataset.h);
-                const jaEscalado = escalados.includes(stepH);
-                
-                // Se passou da hora e não foi marcado, ele brilha
-                if (diffH >= stepH && !jaEscalado && !foundNext) {
+            // Proximo Escalonamento
+            let alertSet = false;
+            card.querySelectorAll('.step').forEach(step => {
+                const h = parseInt(step.dataset.h);
+                if(diffH >= h && !escalados.includes(h) && !alertSet) {
                     step.classList.add('next-to-call');
-                    foundNext = true; 
+                    alertSet = true;
                 } else {
                     step.classList.remove('next-to-call');
                 }
             });
         });
-        document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR');
+        document.getElementById('page-clock').innerText = new Date().toLocaleTimeString();
     }, 1000);
 
+    // DADOS DO FIREBASE
     onValue(ref(db, "ativos"), snap => {
         const container = document.getElementById("ativos");
         container.innerHTML = "";
-        let total = 0, ext = 0, int = 0;
+        let t=0, e=0, i=0;
         snap.forEach(c => {
             const data = c.val();
             renderCard(c.key, data, "ativos");
-            total++;
-            if(data.tipo.startsWith('externa')) ext++;
-            else int++;
+            t++; (data.tipo.includes('externa')) ? e++ : i++;
         });
-        document.getElementById('count-total').innerText = total;
-        document.getElementById('count-externa').innerText = ext;
-        document.getElementById('count-interna').innerText = int;
-        document.getElementById('btn-tab-ativos').innerText = `ATIVOS (${total})`;
+        document.getElementById('count-total').innerText = t;
+        document.getElementById('count-externa').innerText = e;
+        document.getElementById('count-interna').innerText = i;
+        document.getElementById('btn-tab-ativos').innerText = `ATIVOS (${t})`;
     });
 
     onValue(ref(db, "resolvidos"), snap => {
         document.getElementById("resolvidos").innerHTML = "";
-        let total = 0;
-        snap.forEach(c => { renderCard(c.key, c.val(), "resolvidos"); total++; });
-        document.getElementById('btn-tab-resolvidos').innerText = `HISTÓRICO (${total})`;
+        let t=0; snap.forEach(c => { renderCard(c.key, c.val(), "resolvidos"); t++; });
+        document.getElementById('btn-tab-resolvidos').innerText = `HISTÓRICO (${t})`;
     });
 
     function renderCard(id, data, containerId) {
-        const isResolvido = containerId === 'resolvidos';
+        const isRes = containerId === 'resolvidos';
         const div = document.createElement("div");
-        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`;
-        div.id = id;
-        div.dataset.start = data.inicio;
-        div.dataset.escalado = JSON.stringify(data.escalado || []);
+        div.className = `card ${isRes ? 'res' : 'ativo'}`;
+        div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
         
-        const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
-            <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
+        const steps = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
+            <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isRes ? `toggleEscala('${id}', ${e.h})` : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
-                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://wa.me/${e.tel}" target="_blank" class="wa-btn" onclick="event.stopPropagation()" style="font-size:1.1rem"><i class="fa-brands fa-whatsapp"></i></a>
             </div>`).join('');
 
-        const logsHTML = (data.comentarios || []).map(c => `<div><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
-
         div.innerHTML = `
-            <div style="font-weight:800; font-size:1.1rem; margin-bottom: 5px;">${data.titulo}</div>
-            <div style="font-size:0.8rem; color:var(--text-dim);">PAI: ${data.pai} | FILHO: ${data.filho}</div>
+            <div style="font-weight:800">${data.titulo}</div>
+            <div style="font-size:0.7rem; color:var(--text-dim)">P: ${data.pai} | F: ${data.filho}</div>
             <div class="timer-box"><div class="timer-val">00:00:00</div></div>
-            <div class="log-container">${logsHTML || 'Sem observações.'}</div>
-            ${!isResolvido ? `<input type="text" id="in-${id}" placeholder="Adicionar nota..." onkeypress="if(event.key==='Enter') addComment('${id}')">` : ''}
-            <div style="margin-top:10px;">${stepsHTML}</div>
-            ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">Encerrar Chamado</button>` : `<button class="btn-encerrar" style="background:var(--warn)" onclick="reabrir('${id}')">Reabrir</button>`}
+            <div style="margin-top:10px">${steps}</div>
+            ${!isRes ? `<button class="btn-add" style="width:100%; margin-top:10px" onclick="finalizar('${id}')">Finalizar</button>` : ''}
         `;
         document.getElementById(containerId).appendChild(div);
     }
+
+    window.add = () => {
+        const t = document.getElementById("titulo").value, p = document.getElementById("pai").value;
+        if(!t || !p) return alert("Preencha o título e protocolo pai!");
+        push(ref(db,"ativos"), { titulo: t, pai: p, filho: document.getElementById("filho").value, tipo: document.getElementById("tipo").value, inicio: Date.now(), escalado: [] });
+    };
 
     window.toggleEscala = (id, h) => {
         onValue(ref(db, `ativos/${id}`), s => {
@@ -242,24 +262,7 @@
         }, { onlyOnce: true });
     };
 
-    window.add = () => {
-        const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
-        if(!t || !p) return alert("Título e Protocolo Pai são obrigatórios!");
-        push(ref(db,"ativos"), { titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, inicio: Date.now(), escalado: [], comentarios: [] });
-        document.querySelectorAll(".admin-panel input").forEach(e=>e.value="");
-    };
-
-    window.addComment = (id) => {
-        const inp = document.getElementById(`in-${id}`); if(!inp.value) return;
-        onValue(ref(db, `ativos/${id}`), s => {
-            const list = s.val().comentarios || [];
-            list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
-            update(ref(db, `ativos/${id}`), { comentarios: list }); inp.value = "";
-        }, { onlyOnce: true });
-    };
-
     window.finalizar = (id) => { onValue(ref(db, `ativos/${id}`), s => { push(ref(db, "resolvidos"), { ...s.val(), fim: Date.now() }); remove(ref(db, `ativos/${id}`)); }, { onlyOnce: true }); };
-    window.reabrir = (id) => { onValue(ref(db, `resolvidos/${id}`), s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }, { onlyOnce: true }); };
     window.showTab = (t) => { document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); };
     window.toggleTheme = () => document.body.classList.toggle('light-mode');
 </script>
