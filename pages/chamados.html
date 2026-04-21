@@ -41,6 +41,18 @@
         #theme-toggle { background: var(--header); border: none; color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
         #page-clock { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--primary); }
 
+        /* Dashboard de Métricas */
+        .metrics-bar {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px; margin-bottom: 20px;
+        }
+        .metric-card {
+            background: var(--card); padding: 15px; border-radius: 12px;
+            border: 1px solid var(--header); display: flex; flex-direction: column; align-items: center;
+        }
+        .metric-card span { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
+        .metric-card b { font-size: 1.5rem; color: var(--primary); font-family: 'JetBrains Mono'; }
+
         /* Painel Admin */
         .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 25px; margin-bottom: 30px; }
         .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px; }
@@ -73,11 +85,6 @@
         .log-container { background: var(--input-bg); padding: 8px; border-radius: 8px; font-size: 0.75rem; max-height: 80px; overflow-y: auto; margin: 5px 0; }
         .btn-encerrar { background: var(--ok); color: white; width: 100%; border: none; border-radius: 8px; padding: 10px; margin-top: 10px; font-weight: bold; cursor: pointer; }
 
-        /* Tabela Parceiros */
-        .partner-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
-        .partner-table th, .partner-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--header); }
-        .partner-table th { background: var(--header); color: var(--primary); font-size: 0.7rem; }
-
         .hidden { display: none; }
     </style>
 </head>
@@ -92,6 +99,12 @@
                 <div id="page-clock">00:00:00</div>
                 <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
             </div>
+        </div>
+
+        <div class="metrics-bar">
+            <div class="metric-card"><span>Total Ativos</span><b id="count-total">0</b></div>
+            <div class="metric-card"><span>Rede Externa</span><b id="count-externa" style="color:var(--warn)">0</b></div>
+            <div class="metric-card"><span>Rede Interna</span><b id="count-interna" style="color:var(--ok)">0</b></div>
         </div>
 
         <div class="admin-panel">
@@ -118,8 +131,8 @@
         </div>
 
         <div class="tabs">
-            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS</button>
-            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
+            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS (0)</button>
+            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO (0)</button>
         </div>
 
         <div id="ativos" class="grid-cards"></div>
@@ -127,18 +140,7 @@
     </div>
 
     <div id="partners-view" class="hidden">
-        <div class="page-header">
-            <div class="logo-area"><h2><i class="fa-solid fa-handshake"></i> CONTATOS PARCEIROS</h2></div>
-            <button class="nav-btn" onclick="toggleView('main')" style="background: var(--header);"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        </div>
-        <div class="admin-panel">
-            <table class="partner-table">
-                <thead><tr><th>Parceiro</th><th>Serviço</th><th>Contato</th><th>Ação</th></tr></thead>
-                <tbody>
-                    <tr><td><b>Operadora X</b></td><td>Link IP</td><td>Suporte Noc 24h</td><td><a href="#" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a></td></tr>
-                </tbody>
-            </table>
-        </div>
+        <button class="nav-btn" onclick="toggleView('main')">Voltar</button>
     </div>
 </div>
 
@@ -179,37 +181,44 @@
         return `${h}h ${m}m ${s}s`;
     }
 
-    function refreshTimers() {
-        const now = Date.now();
-        document.querySelectorAll('.card.ativo').forEach(card => {
-            const start = parseInt(card.dataset.start);
-            const escalado = JSON.parse(card.dataset.escalado || "[]");
-            const diffH = (now - start) / 3600000;
-            card.querySelector('.timer-val').innerText = formatTime(now - start);
-            card.classList.toggle('warn', diffH >= 8 && diffH < 10);
-            card.classList.toggle('danger', diffH >= 10);
-            
-            let alertado = false;
-            card.querySelectorAll('.step[data-h]').forEach(step => {
-                const isNext = diffH >= parseInt(step.dataset.h) && !escalado.includes(parseInt(step.dataset.h)) && !alertado;
-                step.classList.toggle('next-to-call', isNext);
-                if(isNext) alertado = true;
-            });
+    // LISTENER PARA ATIVOS E CONTADORES
+    onValue(ref(db, "ativos"), snap => {
+        const container = document.getElementById("ativos");
+        container.innerHTML = "";
+        let total = 0, ext = 0, int = 0;
+
+        snap.forEach(c => {
+            const data = c.val();
+            renderCard(c.key, data, "ativos");
+            total++;
+            if(data.tipo.startsWith('externa')) ext++;
+            if(data.tipo.startsWith('interna')) int++;
         });
-    }
-    setInterval(refreshTimers, 1000);
 
-    window.add = function(){
-        const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
-        if(!t || !p || !f) return alert("Título e Protocolos (apenas números) são obrigatórios!");
-        let dE = (document.getElementById("data_manual").value && document.getElementById("hora_manual").value) ? new Date(`${document.getElementById("data_manual").value}T${document.getElementById("hora_manual").value}`) : new Date();
-        push(ref(db,"ativos"), { titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, inicio: dE.getTime(), dataStr: dE.toLocaleString('pt-BR'), escalado: [], comentarios: [] });
-        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
-    };
+        // Atualiza a UI com os novos números
+        document.getElementById('count-total').innerText = total;
+        document.getElementById('count-externa').innerText = ext;
+        document.getElementById('count-interna').innerText = int;
+        document.getElementById('btn-tab-ativos').innerText = `ATIVOS (${total})`;
+    });
 
+    // LISTENER PARA HISTÓRICO
+    onValue(ref(db, "resolvidos"), snap => {
+        const container = document.getElementById("resolvidos");
+        container.innerHTML = "";
+        let total = 0;
+        snap.forEach(c => {
+            renderCard(c.key, c.val(), "resolvidos");
+            total++;
+        });
+        document.getElementById('btn-tab-resolvidos').innerText = `HISTÓRICO (${total})`;
+    });
+
+    // Função de renderização (mantida conforme seu código original com ajustes)
     function renderCard(id, data, containerId) {
         const container = document.getElementById(containerId), isResolvido = containerId === 'resolvidos', div = document.createElement("div");
-        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`; div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
+        div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`; 
+        div.id = id; div.dataset.start = data.inicio; div.dataset.escalado = JSON.stringify(data.escalado || []);
         
         const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
             <div class="step ${data.escalado?.includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `toggleEscala('${id}', ${e.h})` : ''}">
@@ -220,7 +229,7 @@
         const logsHTML = (data.comentarios || []).map(c => `<div><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
 
         div.innerHTML = `
-            <div style="font-size:0.7rem; color:var(--text-dim);">${data.dataStr}</div>
+            <div style="font-size:0.7rem; color:var(--text-dim);">${data.dataStr || ''}</div>
             <div style="font-weight:800; font-size:1.1rem; margin: 5px 0;">${data.titulo}</div>
             <div style="font-size:0.8rem; color:var(--primary);">P: ${data.pai} | F: ${data.filho}</div>
             <div class="timer-box"><div class="timer-val">${isResolvido ? formatTime(data.fim - data.inicio) : '...'}</div></div>
@@ -228,10 +237,19 @@
             ${!isResolvido ? `<div style="display:flex; gap:5px; margin-top:5px;"><input type="text" id="in-${id}" placeholder="Nota..." style="flex:1; font-size:12px;"><button onclick="addComment('${id}')">OK</button></div>` : ''}
             <div style="margin-top:10px;">${stepsHTML}</div>
             ${!isResolvido ? `<button class="btn-encerrar" onclick="finalizar('${id}')">FINALIZAR</button>` : 
-            `<div style="display:flex; gap:10px; margin-top:10px;"><button style="background:var(--warn); flex:1;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); flex:1;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
+            `<div style="display:flex; gap:10px; margin-top:10px;"><button style="background:var(--warn); color:white; border:none; border-radius:8px; flex:1;" onclick="reabrir('${id}')">REABRIR</button><button style="background:var(--danger); color:white; border:none; border-radius:8px; flex:1;" onclick="apagar('${id}')">EXCLUIR</button></div>`}
         `;
         container.appendChild(div);
     }
+
+    // Funções auxiliares (add, addComment, finalizar, etc) permanecem iguais...
+    window.add = function(){
+        const t = document.getElementById("titulo").value, p = document.getElementById("pai").value, f = document.getElementById("filho").value;
+        if(!t || !p || !f) return alert("Título e Protocolos são obrigatórios!");
+        let dE = (document.getElementById("data_manual").value && document.getElementById("hora_manual").value) ? new Date(`${document.getElementById("data_manual").value}T${document.getElementById("hora_manual").value}`) : new Date();
+        push(ref(db,"ativos"), { titulo: t, pai: p, filho: f, tipo: document.getElementById("tipo").value, inicio: dE.getTime(), dataStr: dE.toLocaleString('pt-BR'), escalado: [], comentarios: [] });
+        document.querySelectorAll(".admin-panel input, .admin-panel textarea").forEach(e=>e.value="");
+    };
 
     window.addComment = (id) => {
         const inp = document.getElementById(`in-${id}`); if(!inp.value) return;
@@ -254,9 +272,21 @@
     window.reabrir = (id) => { onValue(ref(db, `resolvidos/${id}`), s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }, { onlyOnce: true }); };
     window.apagar = (id) => { if(confirm("Deletar?")) remove(ref(db, `resolvidos/${id}`)); };
 
-    onValue(ref(db, "ativos"), snap => { document.getElementById("ativos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "ativos")); });
-    onValue(ref(db, "resolvidos"), snap => { document.getElementById("resolvidos").innerHTML = ""; snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); });
-    window.showTab = (t) => { document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); };
+    window.showTab = (t) => { 
+        document.getElementById("ativos").classList.toggle("hidden", t!=='ativos'); 
+        document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos'); 
+        document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos'); 
+        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos'); 
+    };
+
+    // Refresca timers a cada segundo
+    setInterval(() => {
+        const now = Date.now();
+        document.querySelectorAll('.card.ativo').forEach(card => {
+            const start = parseInt(card.dataset.start);
+            card.querySelector('.timer-val').innerText = formatTime(now - start);
+        });
+    }, 1000);
 </script>
 </body>
 </html>
