@@ -4,91 +4,97 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Aviso de Manutenção - NOC</title>
+<title>NOC - Aviso Programado</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-:root {
-    --primary: #1f2a44;
-    --secondary: #2f3b5c;
-    --accent: #007bff;
-    --border: #dcdcdc;
-}
-
 body {
-    font-family: "Segoe UI", Arial, sans-serif;
-    background: #eef1f5;
     margin: 0;
-    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f172a;
+    color: #fff;
 }
 
 .container {
-    max-width: 1100px;
-    margin: auto;
-}
-
-.grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 400px 1fr;
+    height: 100vh;
 }
 
-.form, .preview {
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+/* FORM */
+.form {
+    background: #0b1a33;
+    padding: 25px;
+    overflow-y: auto;
 }
 
-h2 {
-    margin-top: 0;
-    color: var(--primary);
+.form h2 {
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
 }
 
 label {
     font-size: 13px;
-    font-weight: 600;
     display: block;
-    margin-top: 10px;
+    margin-bottom: 5px;
+    opacity: 0.8;
 }
 
 input {
     width: 100%;
-    padding: 8px;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    margin-top: 4px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #2a3b5c;
+    background: #091426;
+    color: #fff;
+    outline: none;
 }
 
-.preview-card {
-    border: 2px solid #000;
+input::placeholder {
+    color: #aaa;
+}
+
+/* PREVIEW */
+.preview {
+    background: #e5e7eb;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.card {
+    background: #fff;
+    color: #000;
+    max-width: 600px;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    border-bottom: 2px solid #000;
+    text-align: center;
+    padding: 20px;
 }
 
-.logo {
-    font-weight: bold;
-    font-size: 18px;
+.header img {
+    max-width: 120px;
 }
 
 .title {
-    background: var(--primary);
+    background: #0f172a;
     color: #fff;
     text-align: center;
-    padding: 10px;
+    padding: 12px;
     font-weight: bold;
 }
 
 .subtitle {
-    background: var(--secondary);
+    background: #1d4ed8;
     color: #fff;
     text-align: center;
     padding: 8px;
@@ -101,33 +107,46 @@ input {
 }
 
 .table td {
-    padding: 10px;
-    border-bottom: 1px solid var(--border);
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
 }
 
 .label {
     font-weight: bold;
-    background: #f7f7f7;
+    background: #f3f4f6;
     width: 40%;
 }
 
+.footer {
+    padding: 15px;
+    font-size: 12px;
+    text-align: center;
+    color: #555;
+}
+
+/* BUTTONS */
 .actions {
     margin-top: 20px;
-    text-align: center;
 }
 
 button {
-    padding: 12px 20px;
+    width: 100%;
+    padding: 12px;
     border: none;
+    margin-top: 10px;
     border-radius: 6px;
-    background: var(--primary);
-    color: #fff;
     cursor: pointer;
-    margin: 5px;
+    font-weight: bold;
 }
 
-button:hover {
-    background: #000;
+.png {
+    background: #2563eb;
+    color: #fff;
+}
+
+.pdf {
+    background: #16a34a;
+    color: #fff;
 }
 </style>
 </head>
@@ -135,51 +154,66 @@ button:hover {
 <body>
 
 <div class="container">
-<div class="grid">
 
 <!-- FORM -->
 <div class="form">
+
 <h2>📋 Preencher Aviso</h2>
 
-<label>Empresa</label>
-<input id="empresa" value="ONLINE TELECOM">
+<div class="input-group">
+<label>Data (DDMMYYYY)</label>
+<input id="data" maxlength="8" oninput="formatarData(this)">
+</div>
 
-<label>Data</label>
-<input id="data">
+<div class="input-group">
+<label>Hora Início (HHMM)</label>
+<input id="inicio" maxlength="4" oninput="formatarHora(this)">
+</div>
 
-<label>Período</label>
-<input id="periodo">
+<div class="input-group">
+<label>Hora Fim (HHMM)</label>
+<input id="fim" maxlength="4" oninput="formatarHora(this)">
+</div>
 
+<div class="input-group">
 <label>Local</label>
 <input id="local">
+</div>
 
+<div class="input-group">
 <label>Descrição</label>
 <input id="descricao">
+</div>
 
+<div class="input-group">
 <label>Impacto</label>
 <input id="impacto">
+</div>
 
+<div class="input-group">
 <label>Setor</label>
 <input id="setor">
+</div>
 
-<label>Protocolo</label>
-<input id="protocolo">
+<div class="input-group">
+<label>Protocolo (somente números)</label>
+<input id="protocolo" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+</div>
 
 <div class="actions">
-<button onclick="gerarPNG()">📸 Gerar PNG</button>
-<button onclick="gerarPDF()">📄 Gerar PDF</button>
+<button class="png" onclick="gerarPNG()">📸 Gerar PNG</button>
+<button class="pdf" onclick="gerarPDF()">📄 Gerar PDF</button>
 </div>
+
 </div>
 
 <!-- PREVIEW -->
 <div class="preview">
-<h2>👁️ Visualização</h2>
 
-<div id="preview" class="preview-card">
+<div id="card" class="card">
 
 <div class="header">
-<div class="logo" id="p_empresa">ONLINE TELECOM</div>
-<div>AVISO OFICIAL</div>
+<img src="online.png">
 </div>
 
 <div class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
@@ -195,34 +229,56 @@ button:hover {
 <tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
 </table>
 
-</div>
+<div class="footer">
+Este aviso refere-se a uma atividade programada.
 </div>
 
 </div>
+
+</div>
+
 </div>
 
 <script>
-const campos = ["empresa","data","periodo","local","descricao","impacto","setor","protocolo"];
+function formatarData(el) {
+    el.value = el.value.replace(/\D/g,'');
+    if(el.value.length >= 5)
+        el.value = el.value.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3');
+    else if(el.value.length >= 3)
+        el.value = el.value.replace(/(\d{2})(\d+)/, '$1/$2');
+    atualizar();
+}
 
-campos.forEach(campo => {
-    document.getElementById(campo).addEventListener("input", () => {
-        document.getElementById("p_" + campo).innerText =
-            document.getElementById(campo).value;
-    });
-});
+function formatarHora(el) {
+    el.value = el.value.replace(/\D/g,'');
+    if(el.value.length >= 3)
+        el.value = el.value.replace(/(\d{2})(\d+)/, '$1:$2');
+    atualizar();
+}
 
-function gerarPNG() {
-    html2canvas(document.querySelector("#preview")).then(canvas => {
-        let link = document.createElement('a');
-        link.download = 'aviso.png';
-        link.href = canvas.toDataURL();
-        link.click();
-    });
+function atualizar() {
+    document.getElementById("p_data").innerText = document.getElementById("data").value;
+    document.getElementById("p_periodo").innerText =
+        document.getElementById("inicio").value + " às " + document.getElementById("fim").value;
+
+    document.getElementById("p_local").innerText = local.value;
+    document.getElementById("p_descricao").innerText = descricao.value;
+    document.getElementById("p_impacto").innerText = impacto.value;
+    document.getElementById("p_setor").innerText = setor.value;
+    document.getElementById("p_protocolo").innerText = protocolo.value;
+}
+
+async function gerarPNG() {
+    const canvas = await html2canvas(document.getElementById("card"));
+    const link = document.createElement('a');
+    link.download = 'aviso.png';
+    link.href = canvas.toDataURL();
+    link.click();
 }
 
 async function gerarPDF() {
     const { jsPDF } = window.jspdf;
-    const canvas = await html2canvas(document.querySelector("#preview"));
+    const canvas = await html2canvas(document.getElementById("card"));
     const img = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF();
