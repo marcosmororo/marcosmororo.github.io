@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sistema NOC - Avisos</title>
+<title>NOC Avisos Pro</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,67 +13,64 @@
 body {
     margin: 0;
     font-family: "Segoe UI", sans-serif;
-    background: #0f172a;
+    background: #020617;
+    color: #fff;
 }
 
-/* LAYOUT */
 .container {
     display: grid;
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 340px 1fr;
     height: 100vh;
 }
 
-/* FORM */
+/* FORM DARK */
 .form {
-    background: #0b1a33;
+    background: #020617;
     padding: 20px;
-    color: #fff;
-    overflow-y: auto;
+    border-right: 1px solid #1e293b;
 }
 
 label {
-    font-size: 13px;
+    font-size: 12px;
     margin-top: 10px;
     display: block;
+    color: #94a3b8;
 }
 
 input, select {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
-    border: 1px solid #2a3b5c;
-    background: #091426;
+    border: 1px solid #1e293b;
+    background: #020617;
     color: #fff;
     margin-top: 5px;
 }
 
 /* PREVIEW */
 .preview {
-    background: #e5e7eb;
-    padding: 30px;
+    background: #020617;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* CARD A4 */
+/* CARD OTIMIZADO */
 .card {
-    width: 500px;
-    min-height: 700px;
-    margin: auto;
+    width: 650px;
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
 /* HEADER */
 .header {
     text-align: center;
     padding: 20px;
-    background: #fff;
 }
 
 .header img {
-    max-width: 140px;
-    object-fit: contain;
+    max-width: 160px;
 }
 
 /* TITLES */
@@ -98,22 +95,15 @@ table {
 }
 
 td {
-    padding: 12px;
+    padding: 14px;
     border-bottom: 1px solid #ddd;
+    font-size: 14px;
 }
 
 .label {
-    background: #f3f4f6;
+    background: #f1f5f9;
     font-weight: bold;
     width: 40%;
-}
-
-/* FOOTER */
-.footer {
-    padding: 15px;
-    font-size: 12px;
-    text-align: center;
-    color: #555;
 }
 
 /* BUTTONS */
@@ -138,12 +128,12 @@ button {
 <!-- FORM -->
 <div class="form">
 
-<h2>📡 Sistema de Avisos</h2>
+<h3>📡 Aviso NOC</h3>
 
 <label>Tipo</label>
 <select id="tipo">
-<option value="programado">Programado</option>
-<option value="emergencial">Emergencial</option>
+<option value="normal">Programado</option>
+<option value="critico">Emergencial</option>
 </select>
 
 <label>Data</label>
@@ -170,8 +160,8 @@ button {
 <label>Protocolo</label>
 <input id="protocolo" readonly>
 
-<button class="png" onclick="gerarPNG()">Gerar PNG</button>
-<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+<button class="png" onclick="gerarPNG()">PNG Alta Qualidade</button>
+<button class="pdf" onclick="gerarPDF()">PDF Profissional</button>
 
 </div>
 
@@ -181,7 +171,7 @@ button {
 <div id="card" class="card">
 
 <div class="header">
- <img src="../assets/img/online.png">
+<img src="online.png">
 </div>
 
 <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
@@ -197,10 +187,6 @@ button {
 <tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
 </table>
 
-<div class="footer">
-Este aviso foi gerado automaticamente pelo sistema NOC.
-</div>
-
 </div>
 
 </div>
@@ -208,38 +194,27 @@ Este aviso foi gerado automaticamente pelo sistema NOC.
 </div>
 
 <script>
-const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor"];
-
-campos.forEach(id => {
-    document.getElementById(id).addEventListener("input", atualizar);
-});
-
-/* GERAR PROTOCOLO AUTOMÁTICO */
+/* AUTO PROTOCOLO */
 function gerarProtocolo() {
-    const now = new Date();
-    return `${now.getFullYear()}${now.getMonth()+1}${now.getDate()}-${now.getHours()}${now.getMinutes()}`;
+    const d = new Date();
+    return `${d.getFullYear()}${(d.getMonth()+1)}${d.getDate()}-${d.getHours()}${d.getMinutes()}`;
 }
 document.getElementById("protocolo").value = gerarProtocolo();
 
-function atualizar() {
-    const tipo = document.getElementById("tipo").value;
+/* UPDATE */
+const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor"];
+campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
-    const cor = tipo === "emergencial" ? "#dc2626" : "#0f172a";
-    const subtitulo = tipo === "emergencial"
-        ? "ATIVIDADE EMERGENCIAL"
-        : "ATIVIDADE PROGRAMADA";
+function atualizar() {
+    const tipo = tipoInput().value;
+
+    const cor = tipo === "critico" ? "#dc2626" : "#0f172a";
 
     document.getElementById("titulo").style.background = cor;
     document.getElementById("subtitulo").style.background = cor;
-    document.getElementById("subtitulo").innerText = subtitulo;
 
-    const data = document.getElementById("data").value;
-    const inicio = document.getElementById("inicio").value;
-    const fim = document.getElementById("fim").value;
-
-    document.getElementById("p_data").innerText = data ? formatarData(data) : "";
-    document.getElementById("p_periodo").innerText = `${inicio} às ${fim}`;
-
+    document.getElementById("p_data").innerText = formatarData(data.value);
+    document.getElementById("p_periodo").innerText = `${inicio.value} às ${fim.value}`;
     document.getElementById("p_local").innerText = local.value;
     document.getElementById("p_descricao").innerText = descricao.value;
     document.getElementById("p_impacto").innerText = impacto.value;
@@ -247,27 +222,34 @@ function atualizar() {
     document.getElementById("p_protocolo").innerText = protocolo.value;
 }
 
-function formatarData(dataISO) {
-    const [ano, mes, dia] = dataISO.split("-");
-    return `${dia}/${mes}/${ano}`;
+function tipoInput(){ return document.getElementById("tipo"); }
+
+function formatarData(d){
+    if(!d) return "";
+    const [a,m,dia] = d.split("-");
+    return `${dia}/${m}/${a}`;
 }
 
-/* EXPORT */
+/* EXPORT ALTA QUALIDADE */
 async function gerarPNG() {
-    const canvas = await html2canvas(document.getElementById("card"));
-    const link = document.createElement('a');
-    link.download = 'aviso.png';
+    const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
+    const link = document.createElement("a");
+    link.download = "aviso.png";
     link.href = canvas.toDataURL();
     link.click();
 }
 
 async function gerarPDF() {
     const { jsPDF } = window.jspdf;
-    const canvas = await html2canvas(document.getElementById("card"));
+    const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
+
     const img = canvas.toDataURL("image/png");
 
     const pdf = new jsPDF("p","mm","a4");
-    pdf.addImage(img, 'PNG', 10, 10, 190, 0);
+    const largura = 190;
+    const altura = (canvas.height * largura) / canvas.width;
+
+    pdf.addImage(img, "PNG", 10, 10, largura, altura);
     pdf.save("aviso.pdf");
 }
 </script>
