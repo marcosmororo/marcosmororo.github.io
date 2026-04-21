@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOC Avisos</title>
+<title>NOC Avisos PRO</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -48,6 +48,15 @@ input, select {
     margin-top: 5px;
 }
 
+/* Corrigir ícones data/hora */
+input[type="date"], input[type="time"] {
+    color-scheme: dark;
+}
+input::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
 /* PREVIEW */
 .preview {
     background: #e5e7eb;
@@ -58,11 +67,35 @@ input, select {
 
 /* CARD */
 .card {
-    width: 600px;
+    width: 620px;
     background: #fff;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+/* MARCA D'ÁGUA */
+.watermark {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.05;
+    width: 300px;
+}
+
+/* BADGE */
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    display: none;
 }
 
 /* HEADER */
@@ -72,7 +105,7 @@ input, select {
 }
 
 .header img {
-    max-width: 150px;
+    max-width: 140px;
 }
 
 /* TITLES */
@@ -173,6 +206,10 @@ button {
 
 <div id="card" class="card">
 
+<img src="../assets/img/online.png" class="watermark">
+
+<div id="badge" class="badge">EMERGENCIAL</div>
+
 <div class="header">
 <img src="../assets/img/online.png">
 </div>
@@ -210,10 +247,26 @@ campos.forEach(id => document.getElementById(id).addEventListener("input", atual
 
 function atualizar() {
     const tipo = document.getElementById("tipo").value;
-    const cor = tipo === "critico" ? "#dc2626" : "#1e3a8a";
+
+    let cor, titulo, subtitulo;
+
+    if (tipo === "critico") {
+        cor = "#dc2626";
+        titulo = "INFORME DE ATIVIDADE EMERGENCIAL";
+        subtitulo = "ATIVIDADE EMERGENCIAL EM ANDAMENTO";
+        document.getElementById("badge").style.display = "block";
+    } else {
+        cor = "#1e3a8a";
+        titulo = "INFORME DE ATIVIDADE PROGRAMADA";
+        subtitulo = "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
+        document.getElementById("badge").style.display = "none";
+    }
 
     document.getElementById("titulo").style.background = cor;
     document.getElementById("subtitulo").style.background = cor;
+
+    document.getElementById("titulo").innerText = titulo;
+    document.getElementById("subtitulo").innerText = subtitulo;
 
     const data = document.getElementById("data").value;
     const inicio = document.getElementById("inicio").value;
@@ -222,11 +275,11 @@ function atualizar() {
     document.getElementById("p_data").innerText = formatarData(data);
     document.getElementById("p_periodo").innerText = `${inicio} às ${fim}`;
 
-    document.getElementById("p_local").innerText = document.getElementById("local").value;
-    document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
-    document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
-    document.getElementById("p_setor").innerText = document.getElementById("setor").value;
-    document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
+    document.getElementById("p_local").innerText = local.value;
+    document.getElementById("p_descricao").innerText = descricao.value;
+    document.getElementById("p_impacto").innerText = impacto.value;
+    document.getElementById("p_setor").innerText = setor.value;
+    document.getElementById("p_protocolo").innerText = protocolo.value;
 }
 
 function formatarData(d){
