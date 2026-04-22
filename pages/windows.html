@@ -1,182 +1,58 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Suporte Windows - NOC</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+<button class="tab-btn" onclick="openTab(event,'senior')">Sênior/Core</button>
+<button class="tab-btn" onclick="openTab(event,'infra_win')">Infra Windows</button>
+
+<div id="senior" class="tab-content">
     
-    <style>
-        /* Estilo para manter o padrão das OLTs */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 8px 12px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; background: var(--card-dark); color: inherit; }
-        .tab-btn.active { background: #ffffff; color: #000; font-weight: bold; border: 2px solid #ffffff; }
-        
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .accordion { cursor: pointer; display: flex; justify-content: space-between; padding: 12px; background: var(--card-dark); border-radius: 8px; margin-top: 5px; }
-        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-        
-        /* Estilo do Bloco de Comando (Copy-Paste) */
-        pre { 
-            position: relative;
-            background: #1e1e1e; 
-            padding: 15px; 
-            border-radius: 8px; 
-            color: #dcdcdc; 
-            font-size: 0.9em; 
-            border-left: 4px solid var(--primary);
-            margin: 10px 0;
-        }
-
-        .copy-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: var(--primary);
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.7em;
-            color: #000;
-        }
-
-        .download-section {
-            background: var(--primary);
-            color: #000;
-            padding: 15px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .btn-black { background: #000; color: #fff; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; }
-    </style>
-</head>
-
-<body>
-
-<button class="theme-btn" onclick="toggleTheme()">🌙</button>
-
-<nav>
-    <a href="index.html">Home</a>
-    <a href="ferramentas.html">Ferramentas</a>
-    <a href="infra.html">Infraestrutura</a>
-</nav>
-
-<section>
-    <h1>🪟 Windows Diagnostic Cheat Sheet</h1>
-    <a href="ferramentas.html" class="back-btn">← Voltar</a>
-
-    <div class="download-section">
-        <div>
-            <strong>Script de Diagnóstico Completo (.BAT)</strong>
-            <br><small>Gera relatório automático diag_%COMPUTERNAME%.txt</small>
-        </div>
-        <a href="files/diagnostico_noc.bat" class="btn-black">Baixar Script</a>
+    <div class="card accordion critical">Mapear Conexões Ativas com PID (Process ID)</div>
+    <div class="panel">
+        <div class="panel-body">Utilitário para descobrir qual programa está "sequestrando" a banda ou abrindo conexões suspeitas.</div>
+        <pre><code>netstat -ano | findstr ESTABLISHED</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
     </div>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'basico')">Comandos Básicos</button>
-        <button class="tab-btn" onclick="openTab(event,'avancado')">Troubleshooting</button>
-        <button class="tab-btn" onclick="openTab(event,'reparo')">Reparo Rápido</button>
+    <div class="card accordion major">Análise de Tabela ARP (Detecção de IP Duplicado)</div>
+    <div class="panel">
+        <div class="panel-body">Verifica se o MAC Address do Gateway é o correto. Útil para identificar conflitos de IP na rede local.</div>
+        <pre><code>arp -a</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
     </div>
 
-    <div id="basico" class="tab-content active">
-        
-        <div class="card accordion info">Descobrir IP Público (v4 e v6)</div>
-        <div class="panel">
-            <pre><code>curl -4 ifconfig.me && curl -6 ifconfig.me</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
-        <div class="card accordion info">Verificar Gateway (Roteador)</div>
-        <div class="panel">
-            <pre><code>ipconfig | findstr "Gateway"</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
-        <div class="card accordion info">Teste de Latência Contínuo</div>
-        <div class="panel">
-            <pre><code>ping 8.8.8.8 -t</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
-        <div class="card accordion info">Rastreio de Rota (Sem resolução de nome)</div>
-        <div class="panel">
-            <pre><code>tracert -d 8.8.8.8</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
+    <div class="card accordion info">Persistência de Rota Estática</div>
+    <div class="panel">
+        <div class="panel-body">Forçar o tráfego de um destino específico para um Gateway alternativo.</div>
+        <pre><code>route add 192.168.10.0 mask 255.255.255.0 192.168.1.254 -p</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
     </div>
 
-    <div id="avancado" class="tab-content">
-        
-        <div class="card accordion major">Teste de MTU (Fragmentação)</div>
-        <div class="panel">
-            <pre><code>ping 8.8.8.8 -f -l 1472</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
-        <div class="card accordion major">Verificar Estatísticas da Placa de Rede</div>
-        <div class="panel">
-            <pre><code>netstat -e</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
-        <div class="card accordion major">Listar Conexões Ativas (Processos)</div>
-        <div class="panel">
-            <pre><code>netstat -abno</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-
+    <div class="card accordion info">Dump de Configuração de Interface (Netsh)</div>
+    <div class="panel">
+        <div class="panel-body">Exporta todas as configurações de IP, DNS e rotas em formato de texto técnico.</div>
+        <pre><code>netsh interface ip show config</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
     </div>
 
-    <div id="reparo" class="tab-content">
-        
-        <div class="card accordion critical">Reset Total de Rede (Flush/Reset)</div>
-        <div class="panel">
-            <pre><code>ipconfig /flushdns && netsh winsock reset && netsh int ip reset</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+</div>
 
-        <div class="card accordion info">Renovar Endereço IP (DHCP)</div>
-        <div class="panel">
-            <pre><code>ipconfig /release && ipconfig /renew</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+<div id="infra_win" class="tab-content">
 
+    <div class="card accordion info">Verificar Cache DNS Local</div>
+    <div class="panel">
+        <div class="panel-body">Veja o que o Windows já resolveu de DNS antes de consultar o servidor externo.</div>
+        <pre><code>ipconfig /displaydns</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
     </div>
 
-</section>
+    <div class="card accordion major">Captura de Pacotes Nativa (Pktmon)</div>
+    <div class="panel">
+        <div class="panel-body">O Wireshark do próprio Windows (sem instalar nada). Captura tráfego em tempo real.</div>
+        <pre><code>pktmon start --etw</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </div>
 
-<footer>
-    <p>© 2026 - Marcos Renan | Suporte Técnico NOC</p>
-</footer>
+    <div class="card accordion info">Diagnóstico de DNS Específico</div>
+    <div class="panel">
+        <div class="panel-body">Forçar a consulta DNS usando um servidor específico (Ex: Google) para testar se o DNS do cliente está filtrando algo.</div>
+        <pre><code>nslookup google.com 8.8.8.8</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </div>
 
-<script>
-function openTab(evt, tabName) {
-    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
-}
+    <div class="card accordion major">Relatório de Bateria/Energia (Útil para Laptops/ONTs via USB)</div>
+    <div class="panel">
+        <div class="panel-body">Gera um relatório HTML sobre a saúde da bateria (importante se o cliente reclama de queda ao flutuar energia).</div>
+        <pre><code>powercfg /batteryreport</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
+    </div>
 
-document.querySelectorAll(".accordion").forEach(btn => {
-    btn.onclick = () => {
-        btn.classList.toggle("active");
-        let panel = btn.nextElementSibling;
-        panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
-    };
-});
-
-function copyCode(button) {
-    const code = button.parentElement.querySelector("code").innerText;
-    navigator.clipboard.writeText(code).then(() => {
-        const originalText = button.innerText;
-        button.innerText = "Copiado!";
-        button.style.background = "#28a745";
-        setTimeout(() => {
-            button.innerText = originalText;
-            button.style.background = "var(--primary)";
-        }, 2000);
-    });
-}
-</script>
-
-</body>
-</html>
+</div>
