@@ -2,173 +2,48 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>NOC Diagnóstico PRO</title>
+    <title>Download Diagnóstico NOC</title>
     <style>
-        :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --primary: #38bdf8;
-            --text: #f8fafc;
-            --success: #22c55e;
-            --warning: #facc15;
-            --danger: #ef4444;
-        }
-
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            padding: 30px;
-            margin: 0;
-        }
-
-        .container { max-width: 1000px; margin: auto; }
-        
-        .header { margin-bottom: 30px; border-left: 4px solid var(--primary); padding-left: 15px; }
-        h1 { margin: 0; font-size: 24px; }
-        
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-        
-        .card { 
-            background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 12px; 
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        .card h3 { margin: 0; font-size: 14px; color: #94a3b8; text-transform: uppercase; }
-        .card .value { font-size: 32px; font-weight: bold; margin: 10px 0; display: block; }
-        
-        .status-tag { padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
-        .ok { color: var(--success); }
-        .warn { color: var(--warning); }
-        .bad { color: var(--danger); }
-
-        textarea { 
-            width: 100%; height: 300px; 
-            background: #020617; color: #10b981; 
-            border: 1px solid #334155; border-radius: 8px;
-            padding: 15px; font-family: monospace; font-size: 13px;
-            box-sizing: border-box;
-        }
-
-        .actions { display: flex; gap: 10px; margin-bottom: 20px; }
-
-        button { 
-            padding: 15px 25px; border-radius: 8px; border: none; 
-            cursor: pointer; font-weight: bold; font-size: 14px;
-            transition: 0.2s;
-        }
-
-        .btn-run { background: var(--primary); color: #0f172a; flex: 2; }
-        .btn-run:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-        .btn-save { background: #334155; color: white; flex: 1; }
-        
-        button:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 50px; }
+        .container { max-width: 800px; margin: auto; background: #1e293b; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h1 { color: #38bdf8; margin-bottom: 10px; }
+        p { color: #94a3b8; margin-bottom: 40px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: #334155; padding: 25px; border-radius: 15px; transition: 0.3s; cursor: pointer; border: 1px solid transparent; text-decoration: none; color: white; display: block; }
+        .card:hover { border-color: #38bdf8; transform: translateY(-5px); background: #3f4e66; }
+        .card i { font-size: 40px; display: block; margin-bottom: 15px; }
+        .card span { font-weight: bold; font-size: 18px; }
+        .card small { display: block; color: #94a3b8; margin-top: 5px; }
+        .footer-note { margin-top: 40px; font-size: 13px; color: #64748b; border-top: 1px solid #334155; padding-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>NOC Diagnóstico PRO</h1>
-        <span>Ferramenta de Verificação de Conectividade</span>
-    </div>
+    <h1>Central de Diagnóstico</h1>
+    <p>Selecione o seu sistema operacional para baixar a ferramenta de teste.</p>
 
     <div class="grid">
-        <div class="card">
-            <h3>Latência</h3>
-            <span id="latencia" class="value">-</span>
-        </div>
-        <div class="card">
-            <h3>Perda de Pacotes</h3>
-            <span id="perda" class="value">-</span>
-        </div>
-        <div class="card">
-            <h3>Status Geral</h3>
-            <span id="status" class="value">-</span>
-        </div>
+        <a href="diagnostico_windows.bat" download class="card">
+            <span>Windows</span>
+            <small>Arquivo .bat</small>
+        </a>
+
+        <a href="diagnostico_unix.sh" download class="card">
+            <span>Linux</span>
+            <small>Arquivo .sh</small>
+        </a>
+
+        <a href="diagnostico_unix.sh" download class="card">
+            <span>MacOS</span>
+            <small>Arquivo .command / .sh</small>
+        </a>
     </div>
 
-    <div class="actions">
-        <button id="btnRodar" class="btn-run" onclick="executarTeste()">Iniciar Teste de Diagnóstico</button>
-        <button class="btn-save" onclick="baixarTXT()">Salvar Log</button>
+    <div class="footer-note">
+        <b>Instruções:</b> Após baixar, execute o arquivo. Um relatório chamado <u>resultado_diagnostico.txt</u> será criado na mesma pasta. Envie este arquivo para o nosso técnico.
     </div>
-
-    <textarea id="output" readonly placeholder="Os resultados aparecerão aqui após o teste..."></textarea>
 </div>
-
-<script>
-    // Correção do Erro de Inicialização: Importação segura
-    let ipcRenderer;
-    try {
-        const electron = require('electron');
-        ipcRenderer = electron.ipcRenderer;
-    } catch (e) {
-        console.error("Erro ao carregar ipcRenderer: ", e);
-    }
-
-    function analisarPing(texto) {
-        // Regex para Windows e Linux
-        let perdaMatch = texto.match(/(\d+)% (loss|perda)/i);
-        let tempoMatch = texto.match(/(Average|media|avg) = (\d+)ms/i) || texto.match(/avg.*?\/(\d+\.\d+)/);
-
-        let perda = perdaMatch ? parseInt(perdaMatch[1]) : 0;
-        let tempo = tempoMatch ? Math.round(parseFloat(tempoMatch[1] || tempoMatch[2])) : 0;
-
-        document.getElementById('latencia').innerText = tempo > 0 ? tempo + ' ms' : '---';
-        document.getElementById('perda').innerText = perda + '%';
-
-        let statusText = 'ESTÁVEL';
-        let statusClass = 'ok';
-
-        if (perda > 5 || tempo > 150) {
-            statusText = 'CRÍTICO';
-            statusClass = 'bad';
-        } else if (perda > 0 || tempo > 80) {
-            statusText = 'ALERTA';
-            statusClass = 'warn';
-        }
-
-        document.getElementById('status').innerHTML = `<span class="status-tag ${statusClass}">${statusText}</span>`;
-    }
-
-    async function executarTeste() {
-        const btn = document.getElementById('btnRodar');
-        const output = document.getElementById('output');
-
-        if (!ipcRenderer) {
-            alert("Erro: O processo do Electron não foi detectado corretamente.");
-            return;
-        }
-
-        btn.disabled = true;
-        btn.innerText = "Executando testes de rede... aguarde";
-        output.value = "Iniciando Ping...\nIniciando NSLOOKUP...\nIniciando Rota (Traceroute)...\n\nIsso pode levar até 20 segundos.";
-
-        try {
-            const result = await ipcRenderer.invoke('run-tests');
-            output.value = result;
-            analisarPing(result);
-        } catch (err) {
-            output.value = "Erro na execução: " + err;
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Iniciar Teste de Diagnóstico";
-        }
-    }
-
-    function baixarTXT() {
-        const conteudo = document.getElementById('output').value;
-        if (!conteudo) return;
-        const blob = new Blob([conteudo], { type: 'text/plain' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `diag_noc_${Date.now()}.txt`;
-        link.click();
-    }
-</script>
 
 </body>
 </html>
