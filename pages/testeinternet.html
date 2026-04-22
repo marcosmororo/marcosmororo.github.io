@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste de Internet - NOC</title>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+
+h1 {
+    text-align: center;
+    color: #38bdf8;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: none;
+    background: #0f172a;
+    color: #fff;
+}
+
+button {
+    margin-top: 15px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    background: #38bdf8;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.result {
+    margin-top: 20px;
+    padding: 15px;
+    background: #020617;
+    border-radius: 10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="report">
+    <h1>Teste de Internet - NOC</h1>
+
+    <label>Nome do Técnico</label>
+    <input type="text" id="tecnico">
+
+    <label>Cliente</label>
+    <input type="text" id="cliente">
+
+    <label>Localização</label>
+    <input type="text" id="local">
+
+    <label>IP</label>
+    <input type="text" id="ip">
+
+    <label>Download (Mbps)</label>
+    <input type="number" id="download">
+
+    <label>Upload (Mbps)</label>
+    <input type="number" id="upload">
+
+    <label>Ping (ms)</label>
+    <input type="number" id="ping">
+
+    <label>Observações</label>
+    <textarea id="obs"></textarea>
+
+    <button onclick="gerarRelatorio()">Gerar Relatório</button>
+
+    <div class="result" id="resultado"></div>
+
+    <button onclick="baixarPDF()">Salvar em PDF</button>
+    <button onclick="baixarTXT()">Salvar em TXT</button>
+</div>
+
+<script>
+function gerarRelatorio() {
+    const data = new Date().toLocaleString();
+
+    const texto = `
+DATA: ${data}
+TÉCNICO: ${document.getElementById('tecnico').value}
+CLIENTE: ${document.getElementById('cliente').value}
+LOCAL: ${document.getElementById('local').value}
+IP: ${document.getElementById('ip').value}
+DOWNLOAD: ${document.getElementById('download').value} Mbps
+UPLOAD: ${document.getElementById('upload').value} Mbps
+PING: ${document.getElementById('ping').value} ms
+OBS: ${document.getElementById('obs').value}
+    `;
+
+    document.getElementById('resultado').innerText = texto;
+}
+
+async function baixarPDF() {
+    const { jsPDF } = window.jspdf;
+    const elemento = document.getElementById('report');
+
+    const canvas = await html2canvas(elemento);
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF();
+    pdf.addImage(imgData, 'PNG', 10, 10, 190, 0);
+    pdf.save('relatorio_teste_internet.pdf');
+}
+
+function baixarTXT() {
+    const conteudo = document.getElementById('resultado').innerText;
+    const blob = new Blob([conteudo], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'relatorio_teste_internet.txt';
+    link.click();
+}
+</script>
+
+</body>
+</html>
