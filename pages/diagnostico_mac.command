@@ -1,49 +1,31 @@
+do shell script "
+cat << 'EOF' > /tmp/diag_noc.sh
 #!/bin/bash
-cd "$(dirname "$0")"
-FILE="resultado_diagnostico_mac.txt"
+FILE=\"$HOME/Desktop/resultado_diagnostico_mac.txt\"
+echo \"========================================\" > \"$FILE\"
+echo \"RELATÓRIO DE REDE - macOS\" >> \"$FILE\"
+echo \"Data/Hora: \$(date)\" >> \"$FILE\"
+echo \"========================================\" >> \"$FILE\"
 
-# Garante que a janela fique aberta
-trap 'echo ""; echo "Pressione qualquer tecla para sair..."; read -n 1 -s' EXIT
+echo \"1. VERIFICANDO IPS PÚBLICOS...\"
+echo \"[IPV4]: \$(curl -s -4 https://ifconfig.me || echo 'Falha')\" >> \"$FILE\"
+echo \"[IPV6]: \$(curl -s -6 https://ifconfig.me || echo 'Sem suporte')\" >> \"$FILE\"
 
-clear
-echo "==================================================="
-echo "    DIAGNÓSTICO DE REDE NOC - macOS"
-echo "==================================================="
+echo \"2. TESTANDO LATÊNCIA...\"
+ping -c 5 8.8.8.8 >> \"$FILE\"
 
-echo "========================================" > "$FILE"
-echo "RELATÓRIO DE REDE - macOS" >> "$FILE"
-echo "Data/Hora: $(date)" >> "$FILE"
-echo "========================================" >> "$FILE"
+echo \"3. TESTANDO DNS...\"
+nslookup google.com >> \"$FILE\"
 
-echo "1. VERIFICANDO IPS PÚBLICOS..."
-IPV4=$(curl -s -4 https://ifconfig.me || echo "Nao detectado")
-IPV6=$(curl -s -6 https://ifconfig.me || echo "Nao detectado ou sem suporte")
+echo \"4. RASTREANDO ROTA...\"
+traceroute -m 15 -n 8.8.8.8 >> \"$FILE\"
 
-echo "IPv4: $IPV4"
-echo "IPv6: $IPV6"
+echo \"5. TEMPO HTTP...\"
+curl -o /dev/null -s -w \"%{time_total}s\" http://www.google.com >> \"$FILE\"
+EOF
 
-echo "[IPV4]: $IPV4" >> "$FILE"
-echo "[IPV6]: $IPV6" >> "$FILE"
+chmod +x /tmp/diag_noc.sh
+/tmp/diag_noc.sh
+" with administrator privileges
 
-echo -e "\n2. TESTANDO LATÊNCIA..."
-echo "[PING 8.8.8.8]" >> "$FILE"
-ping -c 5 8.8.8.8 >> "$FILE"
-
-echo -e "\n3. TESTANDO DNS..." >> "$FILE"
-echo "[NSLOOKUP]" >> "$FILE"
-nslookup google.com >> "$FILE"
-
-echo -e "\n4. RASTREANDO ROTA..."
-echo "[TRACEROUTE]" >> "$FILE"
-traceroute -m 15 -n 8.8.8.8 >> "$FILE"
-
-echo -e "\n5. TEMPO DE RESPOSTA HTTP..."
-echo "[CURL TIME]" >> "$FILE"
-curl -o /dev/null -s -w "Tempo total: %{time_total}s\n" http://www.google.com >> "$FILE"
-
-echo -e "\n========================================" >> "$FILE"
-echo "FIM DO DIAGNÓSTICO" >> "$FILE"
-
-echo "==================================================="
-echo "CONCLUÍDO! Arquivo: $FILE"
-echo "==================================================="
+display dialog "Diagnóstico concluído com sucesso! O arquivo 'resultado_diagnostico_mac.txt' foi salvo na sua Mesa (Desktop)." buttons {"OK"} default button "OK" with icon note
