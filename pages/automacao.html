@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOC Avisos PRO</title>
+<title>NOC Avisos</title>
 
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -16,14 +16,12 @@ body {
     background: #0f172a;
 }
 
-/* LAYOUT */
 .container {
     display: grid;
     grid-template-columns: 350px 1fr;
     height: 100vh;
 }
 
-/* FORM */
 .form {
     background: #111827;
     padding: 20px;
@@ -38,7 +36,6 @@ label {
     color: #cbd5f5;
 }
 
-/* INPUTS MELHORADOS */
 input, select {
     width: 100%;
     padding: 10px;
@@ -50,7 +47,6 @@ input, select {
     font-weight: 500;
 }
 
-/* PREVIEW */
 .preview {
     background: #e5e7eb;
     display: flex;
@@ -58,7 +54,6 @@ input, select {
     justify-content: center;
 }
 
-/* CARD */
 .card {
     width: 620px;
     background: #fff;
@@ -66,7 +61,6 @@ input, select {
     overflow: hidden;
 }
 
-/* BADGE */
 .badge {
     position: absolute;
     top: 10px;
@@ -80,7 +74,6 @@ input, select {
     display: none;
 }
 
-/* HEADER */
 .header {
     text-align: center;
     padding: 20px;
@@ -90,7 +83,6 @@ input, select {
     max-width: 140px;
 }
 
-/* TITLES */
 .title {
     text-align: center;
     padding: 12px;
@@ -107,7 +99,6 @@ input, select {
     font-size: 13px;
 }
 
-/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -124,7 +115,6 @@ td {
     width: 40%;
 }
 
-/* BUTTONS */
 button {
     width: 100%;
     padding: 12px;
@@ -143,7 +133,6 @@ button {
 
 <div class="container">
 
-<!-- FORM -->
 <div class="form">
 
 <h3>📡 Aviso NOC</h3>
@@ -176,14 +165,13 @@ button {
 <input id="setor">
 
 <label>Protocolo</label>
-<input id="protocolo" readonly>
+<input id="protocolo" placeholder="Digite o protocolo" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
 
 <button class="png" onclick="gerarPNG()">Gerar PNG</button>
 <button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
 
 </div>
 
-<!-- PREVIEW -->
 <div class="preview">
 
 <div id="card" class="card">
@@ -214,13 +202,7 @@ button {
 </div>
 
 <script>
-function gerarProtocolo() {
-    const d = new Date();
-    return `${d.getFullYear()}${d.getMonth()+1}${d.getDate()}-${d.getHours()}${d.getMinutes()}`;
-}
-document.getElementById("protocolo").value = gerarProtocolo();
-
-const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor"];
+const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
 campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
 function atualizar() {
@@ -251,13 +233,13 @@ function atualizar() {
     const fim = document.getElementById("fim").value;
 
     document.getElementById("p_data").innerText = formatarData(data);
-    document.getElementById("p_periodo").innerText = `${inicio} às ${fim}`;
+    document.getElementById("p_periodo").innerText = (inicio && fim) ? `${inicio} às ${fim}` : "";
 
-    document.getElementById("p_local").innerText = local.value;
-    document.getElementById("p_descricao").innerText = descricao.value;
-    document.getElementById("p_impacto").innerText = impacto.value;
-    document.getElementById("p_setor").innerText = setor.value;
-    document.getElementById("p_protocolo").innerText = protocolo.value;
+    document.getElementById("p_local").innerText = document.getElementById("local").value;
+    document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
+    document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
+    document.getElementById("p_setor").innerText = document.getElementById("setor").value;
+    document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
 }
 
 function formatarData(d){
