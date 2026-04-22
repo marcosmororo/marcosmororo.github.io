@@ -59,6 +59,7 @@ input, select {
     background: #fff;
     border-radius: 12px;
     overflow: hidden;
+    position: relative;
 }
 
 .badge {
@@ -165,7 +166,7 @@ button {
 <input id="setor">
 
 <label>Protocolo</label>
-<input id="protocolo" placeholder="Digite o protocolo" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+<input id="protocolo" placeholder="Ex: NOC-2026-00123">
 
 <button class="png" onclick="gerarPNG()">Gerar PNG</button>
 <button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
