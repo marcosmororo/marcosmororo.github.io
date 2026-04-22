@@ -1,80 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Windows Diagnostic - NOC</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    
-    <style>
-        /* DEFINIÇÃO DE VARIÁVEIS (DARK MODE DEFAULT) */
-        :root {
-            --bg-page: #121212;
-            --text-main: #e0e0e0;
-            --card-bg: #1e1e1e;
-            --primary: #00ff00; /* Cor padrão NOC (Verde) */
-            --nav-bg: #181818;
-            --pre-bg: #000000;
-        }
+<meta charset="UTF-8">
+<title>NOC - Windows Diagnostics</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/js/script.js"></script>
 
-        /* AJUSTE PARA LIGHT MODE */
-        body.light {
-            --bg-page: #f4f7f9;
-            --text-main: #333;
-            --card-bg: #ffffff;
-            --primary: #0056b3; /* Azul para modo claro */
-            --nav-bg: #0056b3;
-            --pre-bg: #f1f1f1;
-        }
+<style>
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: var(--card-dark);
+  color: inherit;
+}
+body.light .tab-btn { background: var(--card-light); }
+.tab-btn.active { background: #ffffff; color: #000; font-weight: bold; border: 2px solid #ffffff; }
+body.light .tab-btn.active { background: var(--primary); color: #000; border: 2px solid #000; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.accordion { cursor: pointer; display: flex; justify-content: space-between; }
+.panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+pre { background: var(--card-dark); padding: 10px; border-radius: 8px; position: relative; }
+body.light pre { background: var(--card-light); }
 
-        body {
-            background-color: var(--bg-page);
-            color: var(--text-main);
-            font-family: sans-serif;
-            transition: all 0.3s ease;
-            margin: 0;
-        }
-
-        nav { background: var(--nav-bg); padding: 15px; display: flex; gap: 15px; }
-        nav a { color: #fff; text-decoration: none; font-weight: bold; }
-
-        section { max-width: 1000px; margin: 30px auto; padding: 20px; }
-
-        /* TABS */
-        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .tab-btn { 
-            padding: 10px 15px; border-radius: 8px; border: 2px solid transparent; 
-            cursor: pointer; background: var(--card-bg); color: var(--text-main); font-weight: bold;
-        }
-        .tab-btn.active { background: var(--primary); color: #000; border-color: var(--text-main); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* ACCORDION & CARDS */
-        .card { 
-            background: var(--card-bg); padding: 15px; margin-top: 10px; 
-            border-radius: 8px; cursor: pointer; display: flex; justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold;
-        }
-        .critical { border-left: 5px solid #ff4444; }
-        .major { border-left: 5px solid #ffbb33; }
-        .info { border-left: 5px solid #33b5e5; }
-
-        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.05); }
-        .panel-body { padding: 15px; font-size: 0.9em; }
-
-        /* COMANDOS E CÓPIA */
-        pre { 
-            background: var(--pre-bg); padding: 15px; border-radius: 8px; 
-            position: relative; color: var(--primary); overflow-x: auto; 
-        }
-        .copy-btn {
-            position: absolute; top: 5px; right: 5px; background: var(--primary);
-            color: #000; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.7em;
-        }
-
-        .theme-btn { position: fixed; top: 20px; right: 20px; z-index: 100; padding: 10px; border-radius: 50%; cursor: pointer; }
-    </style>
+/* Estilo para o botão de cópia rápido */
+.copy-badge {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: var(--primary);
+    color: #000;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
 </head>
 
 <body>
@@ -82,113 +47,109 @@
 <button class="theme-btn" onclick="toggleTheme()">🌙</button>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="ferramentas.html">Ferramentas</a>
-    <a href="infra.html">Infraestrutura</a>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
 </nav>
 
 <section>
-    <h1>🪟 Diagnóstico Windows</h1>
-    
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'basico')">Básico</button>
-        <button class="tab-btn" onclick="openTab(event,'senior')">Sênior/Core</button>
-        <button class="tab-btn" onclick="openTab(event,'infra_win')">Infra Windows</button>
-    </div>
 
-    <div id="basico" class="tab-content active">
-        <div class="card accordion info">Identificar IP Válido e WAN</div>
-        <div class="panel">
-            <div class="panel-body">Consulta rápida de IPs externos IPv4 e IPv6.</div>
-            <pre><code>curl -4 ifconfig.me && curl -6 ifconfig.me</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-        
-        <div class="card accordion major">Traceroute Direto (Sem DNS)</div>
-        <div class="panel">
-            <div class="panel-body">Rastreio de rota ignorando nomes de host para maior velocidade.</div>
-            <pre><code>tracert -d 8.8.8.8</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-    </div>
+<h1>🪟 Windows NOC Tools</h1>
+<a href="ferramentas.html" class="back-btn">← Voltar</a>
 
-    <div id="senior" class="tab-content">
-        <div class="card accordion critical">Mapear Conexões com PID</div>
-        <div class="panel">
-            <div class="panel-body">Descobre qual Process ID está gerando conexões estabelecidas.</div>
-            <pre><code>netstat -ano | findstr ESTABLISHED</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+<div class="tabs" style="margin-bottom: 20px;">
+<button class="tab-btn active" onclick="openTab(event,'essencial')">Essencial</button>
+<button class="tab-btn" onclick="openTab(event,'l3_diag')">L3 & Rotas</button>
+<button class="tab-btn" onclick="openTab(event,'l2_infra')">L2 & Infra</button>
+<button class="tab-btn" onclick="openTab(event,'reparo')">Reparo Rápido</button>
+<button class="tab-btn" onclick="openTab(event,'scripts')">Downloads</button>
+</div>
 
-        <div class="card accordion major">Tabela ARP (Conflitos de IP)</div>
-        <div class="panel">
-            <pre><code>arp -a</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+<div id="essencial" class="tab-content active">
+<div class="card accordion info">IP Público (WAN)</div>
+<div class="panel"><pre>curl -4 ifconfig.me && curl -6 ifconfig.me</pre></div>
 
-        <div class="card accordion info">Persistência de Rota Estática</div>
-        <div class="panel">
-            <pre><code>route add 192.168.10.0 mask 255.255.255.0 192.168.1.254 -p</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-    </div>
+<div class="card accordion info">Configuração de IP e Gateway</div>
+<div class="panel"><pre>ipconfig /all | findstr /C:"IPv4" /C:"Gateway" /C:"DNS"</pre></div>
 
-    <div id="infra_win" class="tab-content">
-        <div class="card accordion info">Cache DNS Local</div>
-        <div class="panel">
-            <pre><code>ipconfig /displaydns</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+<div class="card accordion major">Teste de Latência (Ping Contínuo)</div>
+<div class="panel"><pre>ping 8.8.8.8 -t</pre></div>
 
-        <div class="card accordion major">Captura Nativa (Pktmon)</div>
-        <div class="panel">
-            <div class="panel-body">Inicia monitoramento de pacotes sem instalar Wireshark.</div>
-            <pre><code>pktmon start --etw</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
+<div class="card accordion major">Rastreio de Rota Rápido</div>
+<div class="panel"><pre>tracert -d 8.8.8.8</pre></div>
+</div>
 
-        <div class="card accordion info">Diagnóstico DNS (Servidor Específico)</div>
-        <div class="panel">
-            <pre><code>nslookup google.com 8.8.8.8</code><button class="copy-btn" onclick="copyCode(this)">Copiar</button></pre>
-        </div>
-    </div>
+<div id="l3_diag" class="tab-content">
+<div class="card accordion critical">Mapear Conexões Ativas (Processos)</div>
+<div class="panel"><pre>netstat -ano | findstr ESTABLISHED</pre></div>
+
+<div class="card accordion major">Tabela de Roteamento Local</div>
+<div class="panel"><pre>route print</pre></div>
+
+<div class="card accordion info">Forçar Rota Estática</div>
+<div class="panel"><pre>route add 192.168.50.0 mask 255.255.255.0 192.168.1.254 -p</pre></div>
+
+<div class="card accordion major">Teste de MTU (Caminho)</div>
+<div class="panel"><pre># Testa se o pacote 1500 passa sem fragmentar
+ping 8.8.8.8 -f -l 1472</pre></div>
+</div>
+
+<div id="l2_infra" class="tab-content">
+<div class="card accordion critical">Tabela ARP (Conflitos de MAC/IP)</div>
+<div class="panel"><pre>arp -a</pre></div>
+
+<div class="card accordion info">Cache DNS Local</div>
+<div class="panel"><pre>ipconfig /displaydns</pre></div>
+
+<div class="card accordion major">Diagnóstico de DNS Externo</div>
+<div class="panel"><pre>nslookup google.com 1.1.1.1</pre></div>
+
+<div class="card accordion major">Captura de Pacotes (Nativa Windows)</div>
+<div class="panel"><pre>pktmon start --etw                      # Inicia captura
+pktmon stop                             # Para e gera log</pre></div>
+</div>
+
+<div id="reparo" class="tab-content">
+<div class="card accordion critical">Reset de Pilha TCP/IP e DNS</div>
+<div class="panel"><pre>ipconfig /flushdns && ipconfig /release && ipconfig /renew && netsh winsock reset && netsh int ip reset</pre></div>
+
+<div class="card accordion major">Limpeza de Cache ARP</div>
+<div class="panel"><pre>arp -d *</pre></div>
+
+<div class="card accordion info">Saúde do Sistema (SFC)</div>
+<div class="panel"><pre>sfc /scannow</pre></div>
+</div>
+
+<div id="scripts" class="tab-content">
+<div class="card info" onclick="window.location.href='files/diagnostico_noc.bat'">📥 Baixar Script de Diagnóstico (.BAT)</div>
+<div class="card info" onclick="window.location.href='files/reset_network.bat'">📥 Baixar Script de Reset de Rede (.BAT)</div>
+</div>
+
 </section>
 
+<footer>
+<p>© 2026 - Marcos Renan | Suporte NOC</p>
+</footer>
+
 <script>
-    // TROCA DE TEMA
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle("light");
-        const isLight = body.classList.contains("light");
-        localStorage.setItem("theme", isLight ? "light" : "dark");
-        document.querySelector(".theme-btn").innerText = isLight ? "☀️" : "🌙";
-    }
+function openTab(evt, tabName) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-    // CARREGAR TEMA SALVO
-    if (localStorage.getItem("theme") === "light") {
-        document.body.classList.add("light");
-        document.querySelector(".theme-btn").innerText = "☀️";
-    }
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
 
-    // CONTROLE DE ABAS
-    function openTab(evt, tabName) {
-        document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    // ACORDEÃO
-    document.querySelectorAll(".accordion").forEach(btn => {
-        btn.onclick = () => {
-            btn.classList.toggle("active");
-            let panel = btn.nextElementSibling;
-            panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
-        };
-    });
-
-    // COPIAR CÓDIGO
-    function copyCode(button) {
-        const code = button.parentElement.querySelector("code").innerText;
-        navigator.clipboard.writeText(code).then(() => {
-            const original = button.innerText;
-            button.innerText = "Copiado!";
-            setTimeout(() => button.innerText = original, 2000);
-        });
-    }
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    let panel = btn.nextElementSibling;
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+  };
+});
 </script>
 
 </body>
