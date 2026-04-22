@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NOC Avisos</title>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: #0f172a;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    height: 100vh;
+}
+
+.form {
+    background: #111827;
+    padding: 20px;
+    color: #fff;
+    border-right: 1px solid #1f2937;
+}
+
+label {
+    font-size: 12px;
+    margin-top: 10px;
+    display: block;
+    color: #cbd5f5;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+    background: #ffffff;
+    color: #000;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.preview {
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    width: 620px;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: red;
+    color: #fff;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    display: none;
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header img {
+    max-width: 140px;
+}
+
+.title {
+    text-align: center;
+    padding: 12px;
+    color: #fff;
+    font-weight: bold;
+    background: #1e3a8a;
+}
+
+.subtitle {
+    text-align: center;
+    padding: 8px;
+    color: #fff;
+    background: #2563eb;
+    font-size: 13px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+}
+
+.label {
+    background: #f1f5f9;
+    font-weight: bold;
+    width: 40%;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.png { background: #2563eb; color: #fff; }
+.pdf { background: #16a34a; color: #fff; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="form">
+
+<h3>📡 Aviso NOC</h3>
+
+<label>Tipo</label>
+<select id="tipo">
+<option value="normal">Programado</option>
+<option value="critico">Emergencial</option>
+</select>
+
+<label>Data</label>
+<input type="date" id="data">
+
+<label>Hora Início</label>
+<input type="time" id="inicio">
+
+<label>Hora Fim</label>
+<input type="time" id="fim">
+
+<label>Local</label>
+<input id="local">
+
+<label>Descrição</label>
+<input id="descricao">
+
+<label>Impacto</label>
+<input id="impacto">
+
+<label>Setor</label>
+<input id="setor">
+
+<label>Protocolo</label>
+<input id="protocolo" placeholder="Ex: NOC-2026-00123">
+
+<button class="png" onclick="gerarPNG()">Gerar PNG</button>
+<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>
+
+</div>
+
+<div class="preview">
+
+<div id="card" class="card">
+
+<div id="badge" class="badge">EMERGENCIAL</div>
+
+<div class="header">
+<img src="../assets/img/online.png">
+</div>
+
+<div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
+<div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA</div>
+
+<table>
+<tr><td class="label">Data</td><td id="p_data"></td></tr>
+<tr><td class="label">Período</td><td id="p_periodo"></td></tr>
+<tr><td class="label">Local</td><td id="p_local"></td></tr>
+<tr><td class="label">Descrição</td><td id="p_descricao"></td></tr>
+<tr><td class="label">Impacto</td><td id="p_impacto"></td></tr>
+<tr><td class="label">Setor</td><td id="p_setor"></td></tr>
+<tr><td class="label">Protocolo</td><td id="p_protocolo"></td></tr>
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
+campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
+
+function atualizar() {
+    const tipo = document.getElementById("tipo").value;
+
+    let cor, titulo, subtitulo;
+
+    if (tipo === "critico") {
+        cor = "#dc2626";
+        titulo = "INFORME DE ATIVIDADE EMERGENCIAL";
+        subtitulo = "ATIVIDADE EMERGENCIAL EM ANDAMENTO";
+        document.getElementById("badge").style.display = "block";
+    } else {
+        cor = "#1e3a8a";
+        titulo = "INFORME DE ATIVIDADE PROGRAMADA";
+        subtitulo = "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
+        document.getElementById("badge").style.display = "none";
+    }
+
+    document.getElementById("titulo").style.background = cor;
+    document.getElementById("subtitulo").style.background = cor;
+
+    document.getElementById("titulo").innerText = titulo;
+    document.getElementById("subtitulo").innerText = subtitulo;
+
+    const data = document.getElementById("data").value;
+    const inicio = document.getElementById("inicio").value;
+    const fim = document.getElementById("fim").value;
+
+    document.getElementById("p_data").innerText = formatarData(data);
+    document.getElementById("p_periodo").innerText = (inicio && fim) ? `${inicio} às ${fim}` : "";
+
+    document.getElementById("p_local").innerText = document.getElementById("local").value;
+    document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
+    document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
+    document.getElementById("p_setor").innerText = document.getElementById("setor").value;
+    document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
+}
+
+function formatarData(d){
+    if(!d) return "";
+    const [a,m,dia] = d.split("-");
+    return `${dia}/${m}/${a}`;
+}
+
+async function gerarPNG() {
+    const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
+    const link = document.createElement("a");
+    link.download = "aviso.png";
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+async function gerarPDF() {
+    const { jsPDF } = window.jspdf;
+    const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
+
+    const img = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p","mm","a4");
+    const largura = 190;
+    const altura = (canvas.height * largura) / canvas.width;
+
+    pdf.addImage(img, "PNG", 10, 10, largura, altura);
+    pdf.save("aviso.pdf");
+}
+</script>
+
+</body>
+</html>
