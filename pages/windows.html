@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Central de Diagnóstico - NOC</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    
+    <style>
+        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+        .tab-btn { padding: 8px 12px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; background: var(--card-dark); color: inherit; transition: 0.3s; }
+        
+        /* DARK MODE (DEFAULT) */
+        .tab-btn.active { background: #ffffff; color: #000; font-weight: bold; border: 2px solid #ffffff; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .accordion { cursor: pointer; display: flex; justify-content: space-between; padding: 15px; margin-top: 10px; background: var(--card-dark); border-radius: 8px; font-weight: bold; }
+        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(255,255,255,0.05); border-radius: 0 0 8px 8px; }
+        
+        .panel-body { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
+        
+        pre { background: #1e1e1e; padding: 12px; border-radius: 8px; overflow-x: auto; color: #00ff00; font-size: 0.9em; border: 1px solid #333; }
+        
+        .download-box { background: var(--primary); color: #000; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+        .btn-main { background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 10px; }
+        
+        .step-list { margin-top: 10px; padding-left: 20px; }
+        .step-list li { margin-bottom: 8px; }
+    </style>
+</head>
+
+<body>
+
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="metodos.html">Métodos</a>
+    <a href="ferramentas.html">Ferramentas</a>
+    <a href="sobre.html">Sobre</a>
+</nav>
+
+<section>
+    <h1>🛠️ Central de Diagnóstico</h1>
+    <p>Selecione o sistema operacional para baixar a ferramenta de coleta de evidências.</p>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab(event,'windows')">Windows</button>
+        <button class="tab-btn" onclick="openTab(event,'macos')">macOS</button>
+        <button class="tab-btn" onclick="openTab(event,'linux')">Linux</button>
+    </div>
+
+    <div id="windows" class="tab-content active">
+        <div class="download-box">
+            <h3>Ferramenta de Diagnóstico v2.1 (Windows)</h3>
+            <p>Executa Ping, Tracert, MTU e coleta IPs Públicos automaticamente.</p>
+            <a href="ferramentas/diagnostico_noc.bat" class="btn-main">⬇️ Baixar .BAT</a>
+        </div>
+
+        <div class="card accordion info">📖 Como utilizar</div>
+        <div class="panel">
+            <div class="panel-body">
+                <ol class="step-list">
+                    <li>Baixe o arquivo <code>.bat</code> acima.</li>
+                    <li>Clique com o botão direito e selecione <b>"Executar como Administrador"</b>.</li>
+                    <li>Aguarde o término (a janela fechará ou pedirá para pressionar uma tecla).</li>
+                    <li>Envie o arquivo <code>diag_NOME-DO-PC.txt</code> gerado na mesma pasta.</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="card accordion info">🖥️ Visualizar Código (Batch)</div>
+        <div class="panel">
+            <pre>
+@echo off
+setlocal enabledelayedexpansion
+title Diagnostico NOC Pro
+set "FILE=diag_%COMPUTERNAME%.txt"
+echo [1/4] Identificando IPs...
+curl -s -4 https://ifconfig.me > temp.txt
+set /p IP=<temp.txt
+echo IPv4: %IP% > %FILE%
+echo [2/4] Testando Gateway...
+ping 8.8.8.8 -n 10 >> %FILE%
+echo [3/4] Rastreando Rota...
+tracert -d -h 15 8.8.8.8 >> %FILE%
+echo [4/4] Teste MTU...
+ping 8.8.8.8 -f -l 1472 -n 1 >> %FILE%
+pause</pre>
+        </div>
+    </div>
+
+    <div id="macos" class="tab-content">
+        <div class="download-box">
+            <h3>Ferramenta de Diagnóstico (macOS)</h3>
+            <p>Script Shell configurado para não fechar o terminal automaticamente.</p>
+            <a href="ferramentas/diagnostico_mac.command" class="btn-main">⬇️ Baixar .COMMAND</a>
+        </div>
+
+        <div class="card accordion critical">⚠️ Atenção: Permissão de Execução</div>
+        <div class="panel">
+            <div class="panel-body">
+                <p>Caso o arquivo não abra, execute no terminal:</p>
+                <pre>chmod +x ~/Downloads/diagnostico_mac.command</pre>
+            </div>
+        </div>
+    </div>
+
+    <div id="linux" class="tab-content">
+        <div class="card accordion info">Execução via Terminal</div>
+        <div class="panel">
+            <div class="panel-body">
+                <p>Baixe o script e execute:</p>
+                <pre>bash diagnostico_linux.sh</pre>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer>
+    <p>© 2026 - Marcos Renan | NOC Diagnostics</p>
+</footer>
+
+<script>
+// Lógica das Tabs
+function openTab(evt, tabName) {
+    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+    document.getElementById(tabName).classList.add("active");
+    evt.currentTarget.classList.add("active");
+}
+
+// Lógica dos Accordions
+document.querySelectorAll(".accordion").forEach(btn => {
+    btn.onclick = () => {
+        btn.classList.toggle("active");
+        let panel = btn.nextElementSibling;
+        if (panel.style.maxHeight) {
+            panel.style.maxHeight = null;
+        } else {
+            panel.style.maxHeight = panel.scrollHeight + "px";
+        }
+    };
+});
+
+// Mock da função de tema (se não estiver no script.js externo)
+function toggleTheme() {
+    document.body.classList.toggle("light");
+}
+</script>
+
+</body>
+</html>
