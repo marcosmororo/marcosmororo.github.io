@@ -1,164 +1,222 @@
-// ======================================
-// APP NOC DIAGNÓSTICO PRO - INTERFACE AVANÇADA
-// MULTIPLATAFORMA (WIN / LINUX / MAC)
-// ======================================
-
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { exec } = require('child_process');
-const os = require('os');
-
-function createWindow() {
-  const win = new BrowserWindow({
-    width: 1100,
-    height: 750,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  });
-
-  win.loadFile('index.html');
-}
-
-app.whenReady().then(createWindow);
-
-function getCommands() {
-  const platform = os.platform();
-
-  if (platform === 'win32') {
-    return `ping 8.8.8.8 -n 10 && tracert 8.8.8.8 && nslookup google.com 191.7.213.230`;
-  }
-
-  return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
-}
-
-ipcMain.handle('run-tests', async () => {
-  return new Promise((resolve) => {
-    exec(getCommands(), (error, stdout, stderr) => {
-      resolve(stdout || stderr);
-    });
-  });
-});
-
-
-// ======================================
-// index.html
-// ======================================
-
-/*
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>NOC Diagnóstico PRO</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOC Diagnóstico PRO</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --success: #22c55e;
+            --warning: #facc15;
+            --danger: #ef4444;
+        }
 
-<style>
-body { font-family: Arial; background:#0f172a; color:#e2e8f0; padding:20px; }
-h1 { color:#38bdf8; }
-.container { max-width:1100px; margin:auto; }
-.grid { display:grid; grid-template-columns: repeat(3,1fr); gap:15px; margin-top:20px; }
-.card { background:#1e293b; padding:15px; border-radius:10px; }
-.status-ok { color:#22c55e; }
-.status-warn { color:#facc15; }
-.status-bad { color:#ef4444; }
-button { padding:12px; width:100%; background:#38bdf8; border:none; margin-top:15px; cursor:pointer; font-weight:bold; }
-textarea { width:100%; height:300px; margin-top:15px; background:#020617; color:#fff; border:none; padding:10px; }
-</style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 20px;
+            line-height: 1.5;
+        }
 
+        .container { max-width: 1000px; margin: auto; }
+
+        header { border-bottom: 1px solid var(--card-bg); padding-bottom: 20px; margin-bottom: 30px; }
+        h1 { color: var(--primary); margin: 0; font-size: 1.5rem; }
+        p.subtitle { color: var(--text-dim); margin-top: 5px; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid #334155;
+            transition: transform 0.2s;
+        }
+
+        .card h3 { margin: 0; font-size: 0.9rem; text-transform: uppercase; color: var(--text-dim); letter-spacing: 1px; }
+        .card .value { font-size: 2rem; font-weight: bold; margin-top: 10px; display: block; }
+
+        /* Status Dinâmico */
+        .status-badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
+        .bg-ok { color: var(--success); }
+        .bg-warn { color: var(--warning); }
+        .bg-bad { color: var(--danger); }
+
+        .controls { margin-top: 30px; display: flex; gap: 10px; }
+
+        button { 
+            flex: 1;
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-primary:hover { background: #7dd3fc; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-outline { background: transparent; border: 1px solid var(--text-dim); color: var(--text); }
+        .btn-outline:hover { background: var(--card-bg); }
+
+        .terminal-container { margin-top: 25px; position: relative; }
+        label { display: block; margin-bottom: 8px; color: var(--text-dim); font-size: 0.9rem; }
+        
+        textarea { 
+            width: 100%; 
+            height: 250px; 
+            background: #020617; 
+            color: #10b981; 
+            border: 1px solid #334155; 
+            border-radius: 8px;
+            padding: 15px; 
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        /* Loading Animation */
+        .loader {
+            width: 18px; height: 18px;
+            border: 3px solid rgba(0,0,0,0.1);
+            border-top: 3px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
 </head>
 <body>
 
 <div class="container">
-<h1>Diagnóstico NOC PRO</h1>
+    <header>
+        <h1>NOC Diagnóstico PRO</h1>
+        <p class="subtitle">Análise de conectividade de rede em tempo real</p>
+    </header>
 
-<button onclick="rodar()">Iniciar Diagnóstico</button>
+    <main>
+        <div class="grid">
+            <div class="card" aria-live="polite">
+                <h3>Latência (Média)</h3>
+                <span id="latencia" class="value">-</span>
+            </div>
+            <div class="card" aria-live="polite">
+                <h3>Perda de Pacotes</h3>
+                <span id="perda" class="value">-</span>
+            </div>
+            <div class="card" aria-live="polite">
+                <h3>Status da Conexão</h3>
+                <span id="status" class="value">-</span>
+            </div>
+        </div>
 
-<div class="grid">
-  <div class="card">
-    <h3>Latência</h3>
-    <p id="latencia">-</p>
-  </div>
-  <div class="card">
-    <h3>Perda</h3>
-    <p id="perda">-</p>
-  </div>
-  <div class="card">
-    <h3>Status</h3>
-    <p id="status">-</p>
-  </div>
-</div>
+        <div class="controls">
+            <button id="btnRodar" class="btn-primary" onclick="rodar()">
+                <div id="loader" class="loader"></div>
+                <span id="btnText">Iniciar Diagnóstico Completo</span>
+            </button>
+        </div>
 
-<textarea id="output"></textarea>
+        <div class="terminal-container">
+            <label for="output">Logs detalhados do sistema:</label>
+            <textarea id="output" readonly placeholder="Aguardando início do teste..."></textarea>
+        </div>
 
-<button onclick="baixarTXT()">Salvar TXT</button>
-
+        <div class="controls">
+            <button class="btn-outline" onclick="copiarTexto()">Copiar Logs</button>
+            <button class="btn-outline" onclick="baixarTXT()">Salvar Relatório (.txt)</button>
+        </div>
+    </main>
 </div>
 
 <script>
 const { ipcRenderer } = require('electron');
 
-function analisarPing(texto){
-  let perda = texto.match(/(\d+)% loss/) || texto.match(/(\d+)% de perda/);
-  let tempo = texto.match(/Average = (\d+)/) || texto.match(/avg.*?(\d+)/);
+function analisarPing(texto) {
+    // Regex melhorada para capturar diferentes formatos de saída
+    let perdaMatch = texto.match(/(\d+)% (loss|perda)/i);
+    let tempoMatch = texto.match(/(Average|media|avg) = (\d+)ms/i) || texto.match(/avg.*?\/(\d+\.\d+)/);
 
-  perda = perda ? parseInt(perda[1]) : 0;
-  tempo = tempo ? parseInt(tempo[1]) : 0;
+    let perda = perdaMatch ? parseInt(perdaMatch[1]) : 0;
+    let tempo = tempoMatch ? Math.round(parseFloat(tempoMatch[1] || tempoMatch[2])) : 0;
 
-  document.getElementById('latencia').innerHTML = tempo + ' ms';
-  document.getElementById('perda').innerHTML = perda + '%';
+    document.getElementById('latencia').innerText = tempo > 0 ? `${tempo} ms` : '---';
+    document.getElementById('perda').innerText = `${perda}%`;
 
-  let status = 'OK';
-  let classe = 'status-ok';
+    let status = 'EXCELENTE';
+    let classe = 'bg-ok';
 
-  if(perda > 5 || tempo > 150){ status = 'CRÍTICO'; classe='status-bad'; }
-  else if(perda > 0 || tempo > 80){ status = 'ATENÇÃO'; classe='status-warn'; }
+    if (perda > 10 || tempo > 200) { 
+        status = 'CRÍTICO'; 
+        classe = 'bg-bad'; 
+    } else if (perda > 0 || tempo > 80) { 
+        status = 'INSTÁVEL'; 
+        classe = 'bg-warn'; 
+    }
 
-  document.getElementById('status').innerHTML = `<span class="${classe}">${status}</span>`;
+    document.getElementById('status').innerHTML = `<span class="status-badge ${classe}">${status}</span>`;
 }
 
-async function rodar(){
-  document.getElementById('output').value = 'Executando testes...';
+async function rodar() {
+    const btn = document.getElementById('btnRodar');
+    const btnText = document.getElementById('btnText');
+    const loader = document.getElementById('loader');
+    const output = document.getElementById('output');
 
-  const result = await ipcRenderer.invoke('run-tests');
+    // UI State: Loading
+    btn.disabled = true;
+    loader.style.display = 'block';
+    btnText.innerText = 'Executando (aguarde até 30s)...';
+    output.value = '> Iniciando testes de rede...\n> Verificando Latência, Rota e DNS...';
 
-  document.getElementById('output').value = result;
-
-  analisarPing(result);
+    try {
+        const result = await ipcRenderer.invoke('run-tests');
+        output.value = result;
+        analisarPing(result);
+    } catch (err) {
+        output.value = "Erro ao executar diagnóstico: " + err;
+    } finally {
+        btn.disabled = false;
+        loader.style.display = 'none';
+        btnText.innerText = 'Iniciar Diagnóstico Completo';
+    }
 }
 
-function baixarTXT(){
-  const conteudo = document.getElementById('output').value;
-  const blob = new Blob([conteudo], { type: 'text/plain' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'diagnostico_noc.txt';
-  link.click();
+function copiarTexto() {
+    const output = document.getElementById('output');
+    output.select();
+    document.execCommand('copy');
+    alert('Log copiado para a área de transferência!');
 }
 
+function baixarTXT() {
+    const conteudo = document.getElementById('output').value;
+    if(!conteudo || conteudo.startsWith('Aguardando')) return alert('Rode o teste primeiro!');
+    
+    const blob = new Blob([`RELATÓRIO DE DIAGNÓSTICO NOC\nData: ${new Date().toLocaleString()}\n\n${conteudo}`], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `diagnostico_${new Date().getTime()}.txt`;
+    link.click();
+}
 </script>
 
 </body>
 </html>
-*/
-
-
-// ======================================
-// MELHORIAS IMPLEMENTADAS
-// ======================================
-
-// ✔ Interface em cards estilo NOC
-// ✔ Análise automática de ping
-// ✔ Status visual (OK / ATENÇÃO / CRÍTICO)
-// ✔ Multiplataforma
-// ✔ Exportação TXT
-
-
-// ======================================
-// PRÓXIMO NÍVEL (POSSO FAZER)
-// ======================================
-
-// - PDF profissional com logo
-// - Histórico por cliente
-// - Identificar salto ruim no traceroute
-// - Dashboard com gráficos
-// - Integração com sistema NOC real
