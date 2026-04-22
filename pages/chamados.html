@@ -126,7 +126,7 @@
 <div class="container">
     <div id="main-view">
         <div class="page-header">
-            <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC MONITORING</h2></div>
+            <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC ESCALATION</h2></div>
             <div class="header-actions">
                 <button class="nav-btn" onclick="toggleView('partners')">OPERADORAS</button>
                 <div id="page-clock">00:00:00</div>
@@ -136,7 +136,7 @@
 
         <div class="admin-panel">
             <div class="form-grid">
-                <div class="form-group span-2-desktop"><label>Título da Ocorrência</label><input id="titulo" placeholder="Ex: Pop Juazeiro Fora"></div>
+                <div class="form-group span-2-desktop"><label>Título da Ocorrência</label><input id="titulo" placeholder="Ex: Rompimento Varjota x Fortaleza"></div>
                 <div class="form-group"><label>Prot. Pai</label><input id="pai" type="tel" placeholder="Nº Pai"></div>
                 <div class="form-group"><label>Prot. Filho</label><input id="filho" type="tel" placeholder="Nº Filho"></div>
                 <div class="form-group"><label>Data Início</label><input type="date" id="data_manual"></div>
@@ -208,12 +208,42 @@
     document.getElementById('data_manual').value = agora.toISOString().split('T')[0];
     document.getElementById('hora_manual').value = agora.toTimeString().slice(0,5);
 
-    const CONFIG_ESCALATION = {
-        "externa_ne": [{h:4, nome:"Erivelton", tel:"558898283311"}, {h:8, nome:"Guilherme", tel:"558899282323"}, {h:10, nome:"Iran Jr", tel:"558899870725"}, {h:12, nome:"Fernando", tel:"5588994401255"}],
-        "externa_no": [{h:4, nome:"Clecio", tel:"558898283311"}, {h:8, nome:"Maciel", tel:"558899282323"}, {h:10, nome:"Valmir", tel:"558898287071"}, {h:12, nome:"Fernando", tel:"5588994401255"}],
-        "interna_ne": [{h:4, nome:"Joao", tel:"558898283337"}, {h:8, nome:"Wescley", tel:"558894866085"}, {h:10, nome:"Iran Jr", tel:"558899870725"}, {h:12, nome:"Fernando", tel:"5588994401255"}],
-        "interna_no": [{h:4, nome:"Nildo", tel:"558898283337"}, {h:8, nome:"Julio Gaia", tel:"558894866085"}, {h:10, nome:"Valmir", tel:"558898287071"}, {h:12, nome:"Fernando", tel:"5588994401255"}]
-    };
+const CONFIG_ESCALATION = {
+    externa_ne: [
+        {h: 0, nome: "Michel Taylon", tel: "5588997357308"},
+        {h: 0, nome: "Bruno", tel: "5588998286655"},
+        {h: 0, nome: "Erivelton", tel: "5588998283311"},
+        {h: 6, nome: "Guilherme Silva", tel: "5588998282323"},
+        {h: 10, nome: "Iran Junior", tel: "5588998707256"},
+        {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
+    ],
+
+    externa_no: [
+        {h: 0, nome: "Wender Lima", tel: "5591995328141"},
+        {h: 0, nome: "Antônio Clécio", tel: "5591993843282"},
+        {h: 4, nome: "Francisco Maciel", tel: "5591985338894"},
+        {h: 8, nome: "Guilherme", tel: "5588998282323"},
+        {h: 10, nome: "Iran Junior", tel: "5588998707256"},
+        {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
+    ],
+
+    interna_ne: [
+        {h: 0, nome: "Eduardo Oliveira", tel: "5588993556007"},
+        {h: 0, nome: "Valdemídio", tel: "5588982191541"},
+        {h: 4, nome: "Silvio de Moraes", tel: "5588996055060"},
+        {h: 6, nome: "João Martins", tel: "5588996649640"},
+        {h: 8, nome: "Wescley Costa", tel: "5588994866085"},
+        {h: 10, nome: "Iran Júnior", tel: "5588998707256"}
+    ],
+
+    interna_no: [
+        {h: 0, nome: "Oracenildo", tel: "5591991358874"},
+        {h: 4, nome: "Julio Gaia", tel: "5591985938544"},
+        {h: 6, nome: "Wescley Costa", tel: "5588994866085"},
+        {h: 8, nome: "Iran Júnior", tel: "5588998707256"},
+        {h: 10, nome: "Valmir Bertoldo", tel: "5588998287071"}
+    ]
+};
 
     window.copyTel = (num, el) => {
         navigator.clipboard.writeText(num).then(() => {
