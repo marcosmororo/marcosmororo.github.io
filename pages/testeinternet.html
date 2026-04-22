@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico Internet PRO (NOC)</title>
+<title>Diagnóstico Internet NOC (LOCAL)</title>
 
 <style>
 body {font-family: Arial; background:#0f172a; color:#e2e8f0; padding:20px;}
@@ -11,39 +11,70 @@ body {font-family: Arial; background:#0f172a; color:#e2e8f0; padding:20px;}
 h1 {text-align:center; color:#38bdf8;}
 button {margin-top:10px; padding:10px; width:100%; border:none; border-radius:6px; background:#38bdf8; font-weight:bold; cursor:pointer;}
 .result {margin-top:20px; background:#020617; padding:15px; border-radius:10px; white-space:pre-line;}
+textarea {width:100%; height:200px; margin-top:10px; background:#020617; color:#fff; border:none; padding:10px; border-radius:8px;}
 </style>
 </head>
 <body>
 
 <div class="container">
-<h1>Diagnóstico Internet - NOC REAL</h1>
+<h1>Diagnóstico Internet - NOC LOCAL</h1>
 
-<button onclick="rodar()">Rodar Testes (Ping / DNS / Rota)</button>
+<button onclick="gerarScript()">Gerar Script de Testes (Ping / Traceroute / DNS)</button>
+<button onclick="baixarBAT()">Baixar Arquivo .BAT (Executar no PC)</button>
 
-<div class="result" id="out">Clique para iniciar os testes...</div>
+<div class="result" id="cmd"></div>
+
+<label>COLE AQUI O RESULTADO DO CMD:</label>
+<textarea id="resultado"></textarea>
+
+<button onclick="baixarTXT()">Salvar Resultado TXT</button>
 </div>
 
 <script>
-async function rodar(){
-    const out = document.getElementById('out');
-    out.innerText = 'Executando testes reais via API...';
+let script = `@echo off
+cls
+echo ======================================
+echo TESTE DE REDE - NOC
+ echo ======================================
 
-    try{
-        // API pública que faz testes reais (ping, traceroute, dns)
-        const res = await fetch('https://api.hackertarget.com/mtr/?q=google.com');
-        const traceroute = await res.text();
+echo.
+echo ==== PING GOOGLE ====
+ping 8.8.8.8 -n 10
 
-        const pingRes = await fetch('https://api.hackertarget.com/nping/?q=google.com');
-        const ping = await pingRes.text();
+echo.
+echo ==== PING CLOUDFLARE ====
+ping 1.1.1.1 -n 10
 
-        const dnsRes = await fetch('https://api.hackertarget.com/dnslookup/?q=191.7.213.230');
-        const dns = await dnsRes.text();
+echo.
+echo ==== TRACEROUTE GOOGLE ====
+tracert 8.8.8.8
 
-        out.innerText = `\n==== PING REAL ====\n${ping}\n\n==== TRACEROUTE (MTR) ====\n${traceroute}\n\n==== DNS LOOKUP ====\n${dns}`;
+echo.
+echo ==== TESTE DNS (SEU SERVIDOR) ====
+nslookup google.com 191.7.213.230
 
-    }catch(e){
-        out.innerText = 'Erro ao executar testes externos. Pode estar bloqueado pelo navegador/rede.';
-    }
+echo.
+pause`;
+
+function gerarScript(){
+    document.getElementById('cmd').innerText = script;
+}
+
+function baixarBAT(){
+    const blob = new Blob([script], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'teste_rede_noc.bat';
+    link.click();
+}
+
+function baixarTXT(){
+    const conteudo = document.getElementById('resultado').value;
+    const blob = new Blob([conteudo], { type: 'text/plain' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'resultado_teste.txt';
+    link.click();
 }
 </script>
 
