@@ -15,12 +15,21 @@ echo RELATORIO DE REDE - WINDOWS >> %FILE%
 echo Data/Hora: %date% %time% >> %FILE%
 echo ======================================== >> %FILE%
 
-echo 1. VERIFICANDO IP PUBLICO...
-echo [IP PUBLICO] >> %FILE%
-for /f "delims=" %%a in ('curl -s https://ifconfig.me') do set IP=%%a
-echo Seu IP Publico e: %IP%
-echo IP Publico: %IP% >> %FILE%
+echo 1. VERIFICANDO IPS PUBLICOS...
+echo [IPS PUBLICOS] >> %FILE%
 
+:: Captura IPv4
+for /f "delims=" %%a in ('curl -s -4 https://ifconfig.me') do set IPV4=%%a
+echo IPv4: %IPV4%
+echo IPv4 Publico: %IPV4% >> %FILE%
+
+:: Captura IPv6 (Se houver suporte na rede)
+for /f "delims=" %%a in ('curl -s -6 https://ifconfig.me') do set IPV6=%%a
+if "%IPV6%"=="" set IPV6=Nao detectado ou sem suporte
+echo IPv6: %IPV6%
+echo IPv6 Publico: %IPV6% >> %FILE%
+
+echo. >> %FILE%
 echo 2. TESTANDO LATENCIA (Google)...
 echo [PING 8.8.8.8] >> %FILE%
 ping 8.8.8.8 -n 5 >> %FILE%
@@ -39,12 +48,10 @@ powershell -Command "$t = Measure-Command { iwr -Uri http://www.google.com -Meth
 echo ms >> %FILE%
 
 echo ======================================== >> %FILE%
-echo FIM DO DIAGNOSTICO >> %FILE%
+echo FIM DO DIAGNÓSTICO >> %FILE%
 
 echo.
 echo ===================================================
-echo CONCLUIDO!
-echo Arquivo gerado: %FILE%
-echo Envie este arquivo para o suporte.
+echo CONCLUIDO! Arquivo: %FILE%
 echo ===================================================
 pause
