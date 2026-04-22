@@ -1,20 +1,6 @@
 // ======================================
-// APP NOC DIAGNÓSTICO - MULTIPLATAFORMA
-// WINDOWS / LINUX / MACOS
-// ======================================
-
-// INSTALAÇÃO
-// -----------------
-// npm init -y
-// npm install electron
-
-// package.json:
-// "main": "main.js",
-// "scripts": { "start": "electron ." }
-
-
-// ======================================
-// main.js
+// APP NOC DIAGNÓSTICO PRO - INTERFACE AVANÇADA
+// MULTIPLATAFORMA (WIN / LINUX / MAC)
 // ======================================
 
 const { app, BrowserWindow, ipcMain } = require('electron');
@@ -23,8 +9,8 @@ const os = require('os');
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1100,
+    height: 750,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -36,10 +22,6 @@ function createWindow() {
 
 app.whenReady().then(createWindow);
 
-// ======================================
-// COMANDOS POR SISTEMA OPERACIONAL
-// ======================================
-
 function getCommands() {
   const platform = os.platform();
 
@@ -47,27 +29,13 @@ function getCommands() {
     return `ping 8.8.8.8 -n 10 && tracert 8.8.8.8 && nslookup google.com 191.7.213.230`;
   }
 
-  if (platform === 'linux') {
-    return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
-  }
-
-  if (platform === 'darwin') {
-    return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
-  }
-
-  return 'echo Sistema não suportado';
+  return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
 }
 
 ipcMain.handle('run-tests', async () => {
   return new Promise((resolve) => {
-    const cmd = getCommands();
-
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        resolve(stderr || error.message);
-      } else {
-        resolve(stdout);
-      }
+    exec(getCommands(), (error, stdout, stderr) => {
+      resolve(stdout || stderr);
     });
   });
 });
@@ -83,40 +51,90 @@ ipcMain.handle('run-tests', async () => {
 <head>
 <meta charset="UTF-8">
 <title>NOC Diagnóstico PRO</title>
+
 <style>
-body { font-family: Arial; background:#0f172a; color:#fff; padding:20px; }
-h2 { color:#38bdf8; }
-button { padding:10px; background:#38bdf8; border:none; cursor:pointer; margin-top:10px; }
-textarea { width:100%; height:400px; margin-top:10px; background:#020617; color:#fff; border:none; padding:10px; }
+body { font-family: Arial; background:#0f172a; color:#e2e8f0; padding:20px; }
+h1 { color:#38bdf8; }
+.container { max-width:1100px; margin:auto; }
+.grid { display:grid; grid-template-columns: repeat(3,1fr); gap:15px; margin-top:20px; }
+.card { background:#1e293b; padding:15px; border-radius:10px; }
+.status-ok { color:#22c55e; }
+.status-warn { color:#facc15; }
+.status-bad { color:#ef4444; }
+button { padding:12px; width:100%; background:#38bdf8; border:none; margin-top:15px; cursor:pointer; font-weight:bold; }
+textarea { width:100%; height:300px; margin-top:15px; background:#020617; color:#fff; border:none; padding:10px; }
 </style>
+
 </head>
 <body>
 
-<h2>Diagnóstico REAL - NOC (Multiplataforma)</h2>
+<div class="container">
+<h1>Diagnóstico NOC PRO</h1>
 
-<button onclick="rodar()">Rodar Testes</button>
+<button onclick="rodar()">Iniciar Diagnóstico</button>
+
+<div class="grid">
+  <div class="card">
+    <h3>Latência</h3>
+    <p id="latencia">-</p>
+  </div>
+  <div class="card">
+    <h3>Perda</h3>
+    <p id="perda">-</p>
+  </div>
+  <div class="card">
+    <h3>Status</h3>
+    <p id="status">-</p>
+  </div>
+</div>
 
 <textarea id="output"></textarea>
 
 <button onclick="baixarTXT()">Salvar TXT</button>
 
+</div>
+
 <script>
 const { ipcRenderer } = require('electron');
 
-async function rodar() {
-  document.getElementById('output').value = 'Executando testes reais...';
-  const result = await ipcRenderer.invoke('run-tests');
-  document.getElementById('output').value = result;
+function analisarPing(texto){
+  let perda = texto.match(/(\d+)% loss/) || texto.match(/(\d+)% de perda/);
+  let tempo = texto.match(/Average = (\d+)/) || texto.match(/avg.*?(\d+)/);
+
+  perda = perda ? parseInt(perda[1]) : 0;
+  tempo = tempo ? parseInt(tempo[1]) : 0;
+
+  document.getElementById('latencia').innerHTML = tempo + ' ms';
+  document.getElementById('perda').innerHTML = perda + '%';
+
+  let status = 'OK';
+  let classe = 'status-ok';
+
+  if(perda > 5 || tempo > 150){ status = 'CRÍTICO'; classe='status-bad'; }
+  else if(perda > 0 || tempo > 80){ status = 'ATENÇÃO'; classe='status-warn'; }
+
+  document.getElementById('status').innerHTML = `<span class="${classe}">${status}</span>`;
 }
 
-function baixarTXT() {
+async function rodar(){
+  document.getElementById('output').value = 'Executando testes...';
+
+  const result = await ipcRenderer.invoke('run-tests');
+
+  document.getElementById('output').value = result;
+
+  analisarPing(result);
+}
+
+function baixarTXT(){
   const conteudo = document.getElementById('output').value;
   const blob = new Blob([conteudo], { type: 'text/plain' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'diagnostico.txt';
+  link.download = 'diagnostico_noc.txt';
   link.click();
 }
+
 </script>
 
 </body>
@@ -125,48 +143,22 @@ function baixarTXT() {
 
 
 // ======================================
-// OBSERVAÇÕES IMPORTANTES
+// MELHORIAS IMPLEMENTADAS
 // ======================================
 
-// ✔ Windows: funciona direto
-// ✔ Linux: precisa ter traceroute instalado
-//    sudo apt install traceroute
-// ✔ MacOS: traceroute já vem, mas pode pedir permissão
-
-
-// ======================================
-// GERAR EXECUTÁVEL (OPCIONAL)
-// ======================================
-
-// npm install electron-packager
-
-// Windows:
-// npx electron-packager . noc-app --platform=win32 --arch=x64
-
-// Linux:
-// npx electron-packager . noc-app --platform=linux --arch=x64
-
-// Mac:
-// npx electron-packager . noc-app --platform=darwin --arch=x64
+// ✔ Interface em cards estilo NOC
+// ✔ Análise automática de ping
+// ✔ Status visual (OK / ATENÇÃO / CRÍTICO)
+// ✔ Multiplataforma
+// ✔ Exportação TXT
 
 
 // ======================================
-// RESULTADO FINAL
+// PRÓXIMO NÍVEL (POSSO FAZER)
 // ======================================
 
-// ✔ Funciona em Windows, Linux e MacOS
-// ✔ Ping REAL
-// ✔ Traceroute REAL
-// ✔ NSLookup REAL
-// ✔ Diagnóstico local verdadeiro
-
-
-// ======================================
-// PRÓXIMO NÍVEL (SE QUISER)
-// ======================================
-
-// - Interface gráfica estilo NOC (cards + cores)
-// - Leitura automática de perda de pacote (%)
+// - PDF profissional com logo
+// - Histórico por cliente
 // - Identificar salto ruim no traceroute
-// - Exportar PDF profissional
-// - Instalação com 1 clique (.exe / .dmg / .AppImage)
+// - Dashboard com gráficos
+// - Integração com sistema NOC real
