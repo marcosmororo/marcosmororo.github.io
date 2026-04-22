@@ -1,82 +1,172 @@
+// ======================================
+// APP NOC DIAGNÓSTICO - MULTIPLATAFORMA
+// WINDOWS / LINUX / MACOS
+// ======================================
+
+// INSTALAÇÃO
+// -----------------
+// npm init -y
+// npm install electron
+
+// package.json:
+// "main": "main.js",
+// "scripts": { "start": "electron ." }
+
+
+// ======================================
+// main.js
+// ======================================
+
+const { app, BrowserWindow, ipcMain } = require('electron');
+const { exec } = require('child_process');
+const os = require('os');
+
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1000,
+    height: 700,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  win.loadFile('index.html');
+}
+
+app.whenReady().then(createWindow);
+
+// ======================================
+// COMANDOS POR SISTEMA OPERACIONAL
+// ======================================
+
+function getCommands() {
+  const platform = os.platform();
+
+  if (platform === 'win32') {
+    return `ping 8.8.8.8 -n 10 && tracert 8.8.8.8 && nslookup google.com 191.7.213.230`;
+  }
+
+  if (platform === 'linux') {
+    return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
+  }
+
+  if (platform === 'darwin') {
+    return `ping -c 10 8.8.8.8; traceroute 8.8.8.8; nslookup google.com 191.7.213.230`;
+  }
+
+  return 'echo Sistema não suportado';
+}
+
+ipcMain.handle('run-tests', async () => {
+  return new Promise((resolve) => {
+    const cmd = getCommands();
+
+    exec(cmd, (error, stdout, stderr) => {
+      if (error) {
+        resolve(stderr || error.message);
+      } else {
+        resolve(stdout);
+      }
+    });
+  });
+});
+
+
+// ======================================
+// index.html
+// ======================================
+
+/*
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico Internet NOC (LOCAL)</title>
-
+<title>NOC Diagnóstico PRO</title>
 <style>
-body {font-family: Arial; background:#0f172a; color:#e2e8f0; padding:20px;}
-.container {max-width:1000px; margin:auto; background:#1e293b; padding:20px; border-radius:12px;}
-h1 {text-align:center; color:#38bdf8;}
-button {margin-top:10px; padding:10px; width:100%; border:none; border-radius:6px; background:#38bdf8; font-weight:bold; cursor:pointer;}
-.result {margin-top:20px; background:#020617; padding:15px; border-radius:10px; white-space:pre-line;}
-textarea {width:100%; height:200px; margin-top:10px; background:#020617; color:#fff; border:none; padding:10px; border-radius:8px;}
+body { font-family: Arial; background:#0f172a; color:#fff; padding:20px; }
+h2 { color:#38bdf8; }
+button { padding:10px; background:#38bdf8; border:none; cursor:pointer; margin-top:10px; }
+textarea { width:100%; height:400px; margin-top:10px; background:#020617; color:#fff; border:none; padding:10px; }
 </style>
 </head>
 <body>
 
-<div class="container">
-<h1>Diagnóstico Internet - NOC LOCAL</h1>
+<h2>Diagnóstico REAL - NOC (Multiplataforma)</h2>
 
-<button onclick="gerarScript()">Gerar Script de Testes (Ping / Traceroute / DNS)</button>
-<button onclick="baixarBAT()">Baixar Arquivo .BAT (Executar no PC)</button>
+<button onclick="rodar()">Rodar Testes</button>
 
-<div class="result" id="cmd"></div>
+<textarea id="output"></textarea>
 
-<label>COLE AQUI O RESULTADO DO CMD:</label>
-<textarea id="resultado"></textarea>
-
-<button onclick="baixarTXT()">Salvar Resultado TXT</button>
-</div>
+<button onclick="baixarTXT()">Salvar TXT</button>
 
 <script>
-let script = `@echo off
-cls
-echo ======================================
-echo TESTE DE REDE - NOC
- echo ======================================
+const { ipcRenderer } = require('electron');
 
-echo.
-echo ==== PING GOOGLE ====
-ping 8.8.8.8 -n 10
-
-echo.
-echo ==== PING CLOUDFLARE ====
-ping 1.1.1.1 -n 10
-
-echo.
-echo ==== TRACEROUTE GOOGLE ====
-tracert 8.8.8.8
-
-echo.
-echo ==== TESTE DNS (SEU SERVIDOR) ====
-nslookup google.com 191.7.213.230
-
-echo.
-pause`;
-
-function gerarScript(){
-    document.getElementById('cmd').innerText = script;
+async function rodar() {
+  document.getElementById('output').value = 'Executando testes reais...';
+  const result = await ipcRenderer.invoke('run-tests');
+  document.getElementById('output').value = result;
 }
 
-function baixarBAT(){
-    const blob = new Blob([script], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'teste_rede_noc.bat';
-    link.click();
-}
-
-function baixarTXT(){
-    const conteudo = document.getElementById('resultado').value;
-    const blob = new Blob([conteudo], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'resultado_teste.txt';
-    link.click();
+function baixarTXT() {
+  const conteudo = document.getElementById('output').value;
+  const blob = new Blob([conteudo], { type: 'text/plain' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'diagnostico.txt';
+  link.click();
 }
 </script>
 
 </body>
 </html>
+*/
+
+
+// ======================================
+// OBSERVAÇÕES IMPORTANTES
+// ======================================
+
+// ✔ Windows: funciona direto
+// ✔ Linux: precisa ter traceroute instalado
+//    sudo apt install traceroute
+// ✔ MacOS: traceroute já vem, mas pode pedir permissão
+
+
+// ======================================
+// GERAR EXECUTÁVEL (OPCIONAL)
+// ======================================
+
+// npm install electron-packager
+
+// Windows:
+// npx electron-packager . noc-app --platform=win32 --arch=x64
+
+// Linux:
+// npx electron-packager . noc-app --platform=linux --arch=x64
+
+// Mac:
+// npx electron-packager . noc-app --platform=darwin --arch=x64
+
+
+// ======================================
+// RESULTADO FINAL
+// ======================================
+
+// ✔ Funciona em Windows, Linux e MacOS
+// ✔ Ping REAL
+// ✔ Traceroute REAL
+// ✔ NSLookup REAL
+// ✔ Diagnóstico local verdadeiro
+
+
+// ======================================
+// PRÓXIMO NÍVEL (SE QUISER)
+// ======================================
+
+// - Interface gráfica estilo NOC (cards + cores)
+// - Leitura automática de perda de pacote (%)
+// - Identificar salto ruim no traceroute
+// - Exportar PDF profissional
+// - Instalação com 1 clique (.exe / .dmg / .AppImage)
