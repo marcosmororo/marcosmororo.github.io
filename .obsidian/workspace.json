@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "8d583d0ef9b71281",
+        "id": "57cc018479fc35f1",
         "type": "tabs",
         "children": [
           {
-            "id": "1a0798b9a3df853a",
+            "id": "62b25394162687cc",
             "type": "leaf",
             "state": {
               "type": "graph",
@@ -157,13 +157,23 @@
               "icon": "lucide-list",
               "title": "Sumário"
             }
+          },
+          {
+            "id": "dddc984b503f63be",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
-        ]
+        ],
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -173,11 +183,24 @@
       "daily-notes:Abrir a nota de hoje": false,
       "templates:Inserir modelo": false,
       "command-palette:Abrir paleta de comandos": false,
-      "bases:Criar nova base": false
+      "bases:Criar nova base": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1a0798b9a3df853a",
+  "active": "62b25394162687cc",
   "lastOpenFiles": [
+    "Sem título.base",
+    "Sem título.canvas",
+    "pages/testeinternet.html",
+    "pages/noc-aviso.html",
+    "pages/icg.html",
+    "pages/diagnostico_windows.bat",
+    "pages/diagnostico_mac.command",
+    "pages/chamados.html",
+    "pages/cdn.html",
+    "pages/automacao.html",
+    "assets/img/online.png",
     "README.md",
     "index.md",
     "index - cópia.html",
