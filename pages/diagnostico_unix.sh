@@ -1,42 +1,53 @@
 #!/bin/bash
 
-# Define que o script rodará na pasta onde o arquivo está salvo
+# Garante que o script rode na pasta onde ele está salvo
 cd "$(dirname "$0")"
 
 FILE="resultado_diagnostico_mac.txt"
 
+# Limpa a tela do terminal do usuário
+clear
+echo "==================================================="
+echo "    DIAGNOSTICO DE REDE NOC - macOS"
+echo "==================================================="
+
+echo "Gerando relatório... Isso pode levar 1 minuto."
+
 echo "========================================" > "$FILE"
 echo "RELATÓRIO DE REDE - macOS" >> "$FILE"
 echo "Data/Hora: $(date)" >> "$FILE"
-echo "Modelo: $(sysctl -n hw.model)" >> "$FILE"
 echo "========================================" >> "$FILE"
 
-echo "1. Testando Latência (Ping)..."
+echo "1. VERIFICANDO IP PÚBLICO..."
+IP_PUB=$(curl -s https://ifconfig.me)
+echo "[IP PÚBLICO]: $IP_PUB" >> "$FILE"
+echo "Seu IP Público é: $IP_PUB"
+
+echo "2. TESTANDO LATÊNCIA..."
 echo "[PING 8.8.8.8]" >> "$FILE"
 ping -c 5 8.8.8.8 >> "$FILE"
 
-echo -e "\n2. Testando Resolução DNS..." >> "$FILE"
-echo "[NSLOOKUP google.com]" >> "$FILE"
+echo -e "\n3. TESTANDO DNS..." >> "$FILE"
+echo "[NSLOOKUP]" >> "$FILE"
 nslookup google.com >> "$FILE"
 
-echo -e "\n3. Rastreando Rota (Traceroute)..."
-echo "[TRACEROUTE 8.8.8.8]" >> "$FILE"
-# -m 15 limita a 15 saltos para ser mais rápido
+echo -e "\n4. RASTREANDO ROTA..."
+echo "[TRACEROUTE]" >> "$FILE"
 traceroute -m 15 -n 8.8.8.8 >> "$FILE"
 
-echo -e "\n4. Tempo de Abertura de Página (HTTP)..."
-echo "[CURL - LATÊNCIA WEB]" >> "$FILE"
-# Mede o tempo total para conectar e receber o primeiro byte
-curl -o /dev/null -s -w "Tempo total: %{time_total}s\nConexão: %{time_connect}s\n" http://www.google.com >> "$FILE"
+echo -e "\n5. TEMPO DE RESPOSTA HTTP..."
+echo "[CURL TIME]" >> "$FILE"
+curl -o /dev/null -s -w "Tempo total: %{time_total}s\n" http://www.google.com >> "$FILE"
 
 echo -e "\n========================================" >> "$FILE"
 echo "FIM DO DIAGNÓSTICO" >> "$FILE"
 
-echo "------------------------------------------------"
-echo "TESTE CONCLUÍDO COM SUCESSO!"
-echo "O arquivo '$FILE' foi criado na sua Mesa ou pasta atual."
-echo "Envie este arquivo para o técnico responsável."
-echo "------------------------------------------------"
+echo ""
+echo "==================================================="
+echo "TESTE CONCLUÍDO!"
+echo "Arquivo gerado: $FILE"
+echo "Pode fechar esta janela e enviar o arquivo ao técnico."
+echo "==================================================="
 
-# Mantém a janela aberta para o usuário ver que terminou
-read -p "Pressione Enter para fechar esta janela..."
+# Comando para manter aberto até o usuário ler
+exec $SHELL
