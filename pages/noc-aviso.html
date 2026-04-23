@@ -49,7 +49,7 @@
             color: var(--text-gray);
         }
 
-        input, select, textarea {
+        input, select {
             width: 100%;
             padding: 10px;
             border-radius: 6px;
@@ -164,7 +164,7 @@
 
         .png { background: #2563eb; color: #fff; }
         .pdf { background: #16a34a; color: #fff; }
-        .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 12px; padding: 5px 10px; margin-bottom: 10px; }
+        .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; cursor: pointer; }
         button:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
@@ -236,7 +236,7 @@
 
         <div class="email-copy-box">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="copy-header">CONTEÚDO PARA E-MAIL / WHATSAPP</div>
+                <div class="copy-header">CONTEÚDO PARA E-MAIL</div>
                 <button class="copy-btn" onclick="copiarTexto()">Copiar Texto</button>
             </div>
             <div id="email-content">
@@ -269,6 +269,7 @@
         const eData = document.getElementById("data").value;
         const eInicio = document.getElementById("inicio").value || "YY:YY";
         const eFim = document.getElementById("fim").value || "YY:YY";
+        const protocoloVal = document.getElementById("protocolo").value;
         
         const infoData = formatarData(eData);
         const ehEmergencial = tipo === "critico";
@@ -290,12 +291,13 @@
         document.getElementById("p_descricao").innerText = document.getElementById("descricao").value;
         document.getElementById("p_impacto").innerText = document.getElementById("impacto").value;
         document.getElementById("p_setor").innerText = document.getElementById("setor").value;
-        document.getElementById("p_protocolo").innerText = document.getElementById("protocolo").value;
+        document.getElementById("p_protocolo").innerText = protocoloVal;
 
-        // Atualização do Texto de E-mail
-        const tipoTexto = ehEmergencial ? "emergencial" : "programada";
-        document.getElementById("mail_titulo").innerText = `GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo}`;
+        // ATUALIZAÇÃO DO TÍTULO COM PROTOCOLO
+        const prefixoProtocolo = protocoloVal ? `(${protocoloVal}) ` : "(GMUD) ";
+        document.getElementById("mail_titulo").innerText = `${prefixoProtocolo}GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo.toUpperCase()}`;
         
+        const tipoTexto = ehEmergencial ? "emergencial" : "programada";
         const corpoEmail = `Prezados, Bom Dia
 
 Gostaríamos de informar que na madrugada do dia ${infoData.formatada} (${infoData.diaSemana}), no intervalo entre ${eInicio} até ${eFim} horas, ocorrerá uma manutenção ${tipoTexto} na qual afetará alguns dos serviços entregues, conforme aviso em anexo.
@@ -311,12 +313,11 @@ NOC - Online Telecom`;
     async function copiarTexto() {
         const texto = document.getElementById("email-body").innerText;
         await navigator.clipboard.writeText(texto);
-        alert("Texto copiado!");
+        alert("Corpo do e-mail copiado!");
     }
 
     async function gerarPNG() {
-        const card = document.getElementById("card");
-        const canvas = await html2canvas(card, { scale: 3, backgroundColor: "#f1f5f9" });
+        const canvas = await html2canvas(document.getElementById("card"), { scale: 3, backgroundColor: "#f1f5f9" });
         const link = document.createElement("a");
         link.download = `AVISO_NOC_${document.getElementById("protocolo").value || 'NEW'}.png`;
         link.href = canvas.toDataURL();
@@ -332,7 +333,6 @@ NOC - Online Telecom`;
         pdf.save("aviso_noc.pdf");
     }
 
-    // Inicializa o texto
     atualizar();
 </script>
 
