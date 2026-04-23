@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventário de Rede - BNG & A10</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 20px; }
+        .container { max-width: 1200px; margin: auto; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        
+        .search-box { margin-bottom: 20px; padding: 10px; width: 100%; border: 1px solid #ddd; border-radius: 5px; }
+        
+        table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background-color: #3498db; color: white; }
+        tr:hover { background-color: #f1f1f1; }
+        
+        .status-ok { color: #27ae60; font-weight: bold; }
+        .status-alert { color: #e74c3c; font-weight: bold; }
+        .tag { padding: 4px 8px; border-radius: 4px; font-size: 0.85em; background: #ebf5fb; color: #2980b9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Painel de Recursos de Rede</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Buscar por IP, BNG ou Descrição...">
+
+    <h2>Infraestrutura BNG Juniper</h2>
+    <table id="bngTable">
+        <thead>
+            <tr>
+                <th>Equipamento</th>
+                <th>IPv4 / IPv6</th>
+                <th>Capacidade Porta</th>
+                <th>Bloco Google (GGC)</th>
+                <th>Descrição / Localidade</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>BNG-01-JUNIPER</td>
+                <td>187.X.X.0/22<br><small>2804:X::/32</small></td>
+                <td><span class="tag">100G (Bundle)</span></td>
+                <td><span class="status-ok">✔ Anunciado</span></td>
+                <td>Concentrador Principal - Centro</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Links PTP (Juniper <> A10)</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Interface</th>
+                <th>IP Lado A (Juniper)</th>
+                <th>IP Lado B (A10)</th>
+                <th>VLAN</th>
+                <th>Status / Uso</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>PTP-CGNAT-01</td>
+                <td>10.50.1.1/30</td>
+                <td>10.50.1.2/30</td>
+                <td>1001</td>
+                <td>Tráfego CGNAT Primário</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Função simples de busca para facilitar o acesso rápido
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        let value = this.value.toLowerCase();
+        let rows = document.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(value) ? '' : 'none';
+        });
+    });
+</script>
+
+</body>
+</html>
