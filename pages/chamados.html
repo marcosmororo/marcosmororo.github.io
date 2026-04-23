@@ -188,22 +188,6 @@
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import { getDatabase, ref, push, update, remove, onValue, get } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-database.js";
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyCdSj6somJinHJvcGGJs3C6Od6Sri92ETg",
-        authDomain: "chamadosnoc-c45c4.firebaseapp.com",
-        databaseURL: "https://chamadosnoc-c45c4-default-rtdb.firebaseio.com",
-        projectId: "chamadosnoc-c45c4",
-        storageBucket: "chamadosnoc-c45c4.appspot.com",
-        messagingSenderId: "25502320062",
-        appId: "1:25502320062:web:a7f41ad4f61e0c38b265ef"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
     const agora = new Date();
     document.getElementById('data_manual').value = agora.toISOString().split('T')[0];
     document.getElementById('hora_manual').value = agora.toTimeString().slice(0,5);
