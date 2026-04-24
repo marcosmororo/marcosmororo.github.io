@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório NOC - Online Telecom</title>
+    <style>
+        :root {
+            --primary-color: #004085;
+            --secondary-color: #f8f9fa;
+            --border-color: #dee2e6;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #525659;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Página A4 */
+        .report-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .brand h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin: 2px 0;
+            font-size: 12px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        /* Grid de Informações Vazias */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .field {
+            border-bottom: 1px solid var(--border-color);
+            padding: 5px 0;
+        }
+
+        .field label {
+            display: block;
+            font-size: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        /* Área Editável */
+        [contenteditable="true"] {
+            outline: none;
+            min-height: 1.2em;
+            font-size: 14px;
+            color: #000;
+        }
+
+        /* Destaque para edição (não sai no PDF) */
+        [contenteditable="true"]:empty:before {
+            content: "Clique para preencher...";
+            color: #ccc;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 16px;
+            color: white;
+            background: var(--primary-color);
+            padding: 6px 12px;
+            margin-top: 25px;
+            border-radius: 2px;
+        }
+
+        .content-box {
+            border: 1px dashed #eee;
+            padding: 10px;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            font-size: 11px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Botão de Impressão */
+        .toolbar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .toolbar { display: none; }
+            .report-page { box-shadow: none; width: 100%; margin: 0; }
+            .content-box { border: none; }
+            [contenteditable="true"]:empty:before { content: ""; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button onclick="window.print()">GERAR RELATÓRIO (PDF)</button>
+        <p style="font-size: 10px; margin-top: 8px; color: #666;">Preencha os campos abaixo<br>antes de clicar.</p>
+    </div>
+
+    <div class="report-page">
+        <header>
+            <div class="brand">
+                <h1>ONLINE TELECOM</h1>
+                <p>DEPARTAMENTO DE SUPERVISÃO - NOC</p>
+            </div>
+            <div style="text-align: right;">
+                <div class="field" style="border: none;">
+                    <label>ID DO TICKET</label>
+                    <div contenteditable="true" style="font-weight: bold;"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="info-grid">
+            <div class="field">
+                <label>Data do Relatório</label>
+                <div contenteditable="true"></div>
+            </div>
+            <div class="field">
+                <label>Prioridade</label>
+                <div contenteditable="true"></div>
+            </div>
+            <div class="field">
+                <label>Início do Incidente (Data/Hora)</label>
+                <div contenteditable="true"></div>
+            </div>
+            <div class="field">
+                <label>Fim do Incidente (Data/Hora)</label>
+                <div contenteditable="true"></div>
+            </div>
+            <div class="field">
+                <label>Localização da Falha</label>
+                <div contenteditable="true"></div>
+            </div>
+            <div class="field">
+                <label>Causa Raiz</label>
+                <div contenteditable="true"></div>
+            </div>
+        </div>
+
+        <h2>Sumário do Incidente</h2>
+        <div class="content-box" contenteditable="true"></div>
+
+        <h2>Ações de Mitigação e Resolução</h2>
+        <div class="content-box" contenteditable="true"></div>
+
+        <h2>Status Final e Referências</h2>
+        <div class="content-box" contenteditable="true">
+            O serviço encontra-se operacional e sob monitoramento. Não foram detectadas novas interrupções.
+        </div>
+
+        <p style="margin-top: 40px; font-size: 13px;">
+            Lamentamos o ocorrido e estamos à disposição para quaisquer esclarecimentos adicionais.
+        </p>
+
+        <footer>
+            <div>
+                <strong>Online Telecom</strong><br>
+                Comercial: comercial@onlinetelecom.com.br<br>
+                Suporte: 0800 088 1111
+            </div>
+            <div style="text-align: right;">
+                NOC: noc@onlinetelecom.com.br<br>
+                www.onlinetelecom.com.br
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>
