@@ -19,9 +19,10 @@
 
         body {
             margin: 0;
-            font-family: 'Inter', "Segoe UI", sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
             color: white;
+            overflow: hidden; /* Evita rolagem no body, usamos nas divs */
         }
 
         .container {
@@ -30,14 +31,17 @@
             height: 100vh;
         }
 
+        /* Formulário Lateral */
         .form {
             background: var(--panel-dark);
             padding: 25px;
             overflow-y: auto;
             border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
         }
 
-        h3 { margin-top: 0; color: #f8fafc; }
+        h3 { margin: 0 0 20px 0; color: #f8fafc; font-size: 1.2rem; }
 
         label {
             font-size: 11px;
@@ -59,17 +63,17 @@
             box-sizing: border-box;
         }
 
+        /* Área de Visualização */
         .preview-area {
             background: #f1f5f9;
             padding: 40px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto;
-            color: #1e293b;
         }
 
-        /* CARD AJUSTADO PARA EVITAR CORTES */
+        /* CARD - Design idêntico ao solicitado */
         .card {
             width: 650px;
             background: #fff;
@@ -77,8 +81,7 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
-            margin-bottom: 30px;
-            padding-top: 5px; /* Espaço de segurança no topo */
+            flex-shrink: 0; /* Impede que o flex encolha o card */
         }
 
         .badge {
@@ -92,11 +95,10 @@
             font-weight: 800;
             border-radius: 4px;
             display: none;
-            z-index: 10;
         }
 
-        .header { text-align: center; padding: 30px 25px 20px 25px; }
-        .header img { max-width: 180px; height: auto; display: inline-block; }
+        .header { text-align: center; padding: 30px 25px; background: #fff; }
+        .header img { max-width: 180px; height: auto; }
 
         .title {
             text-align: center;
@@ -116,8 +118,8 @@
             font-weight: 500;
         }
 
-        table { width: 100%; border-collapse: collapse; background: white; }
-        td { padding: 14px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
 
         .label-cell {
             background: #f8fafc;
@@ -126,33 +128,26 @@
             color: #64748b;
         }
 
+        /* Utilitários */
         .copy-box {
             width: 650px;
             background: white;
             padding: 20px;
             border-radius: 8px;
             border: 1px dashed #cbd5e1;
-            margin-bottom: 20px;
-        }
-
-        .copy-header {
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 5px;
-            font-weight: bold;
+            margin-top: 25px;
+            color: #1e293b;
         }
 
         #email-body, #sheet-row {
             font-size: 13px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            color: #334155;
             background: #f8fafc;
             padding: 10px;
             border-radius: 4px;
             border: 1px solid #e2e8f0;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -168,14 +163,14 @@
 
         .png { background: #2563eb; color: #fff; }
         .pdf { background: #16a34a; color: #fff; }
-        .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
+        .copy-btn { background: #64748b; color: #fff; font-size: 11px; padding: 5px 10px; width: auto; flex: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="form">
-        <h3>📡 Gerador de Avisos NOC</h3>
+        <h3>📡 Gerador NOC</h3>
         
         <label>Tipo de Manutenção</label>
         <select id="tipo">
@@ -183,157 +178,147 @@
             <option value="critico">Emergencial</option>
         </select>
 
-        <label>Data da Atividade</label>
+        <label>Data</label>
         <input type="date" id="data">
 
         <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;">
-                <label>Início</label>
-                <input type="time" id="inicio">
-            </div>
-            <div style="flex: 1;">
-                <label>Fim</label>
-                <input type="time" id="fim">
-            </div>
+            <div style="flex: 1;"><label>Início</label><input type="time" id="inicio"></div>
+            <div style="flex: 1;"><label>Fim</label><input type="time" id="fim"></div>
         </div>
 
-        <label>Local / Abrangência</label>
+        <label>Local</label>
         <input id="local" placeholder="Ex: Castanhal/PA">
 
-        <label>Descrição Técnica</label>
-        <input id="descricao" placeholder="Ex: Reboot da OLT1">
+        <label>Descrição</label>
+        <input id="descricao" placeholder="Ex: Reboot de Equipamento">
 
-        <label>Impacto Previsto</label>
-        <input id="impacto" placeholder="Ex: Clientes residenciais">
+        <label>Impacto</label>
+        <input id="impacto" placeholder="Ex: Clientes Residenciais">
 
-        <label>Setor Responsável</label>
-        <input id="setor" placeholder="Ex: NOC">
+        <label>Setor</label>
+        <input id="setor" value="NOC">
 
-        <label>Protocolo / Ticket</label>
-        <input id="protocolo" placeholder="Ex: 0426-003850">
+        <label>Protocolo</label>
+        <input id="protocolo" placeholder="0000-000000">
 
         <div class="btn-group">
-            <button class="png" onclick="gerarPNG()">Salvar PNG</button>
-            <button class="pdf" onclick="gerarPDF()">Salvar PDF</button>
+            <button class="png" onclick="exportar('png')">Salvar PNG</button>
+            <button class="pdf" onclick="exportar('pdf')">Salvar PDF</button>
         </div>
     </div>
 
-    <div class="preview-area" id="captura-container">
+    <div class="preview-area">
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
-            <div class="header">
-                <img src="../assets/img/online.png" alt="Logo Online Telecom">
-            </div>
+            <div class="header"><img src="../assets/img/online.png" alt="Logo"></div>
             <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
-            <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+            <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA</div>
             <table>
                 <tr><td class="label-cell">Data</td><td id="p_data">-</td></tr>
                 <tr><td class="label-cell">Período</td><td id="p_periodo">-</td></tr>
                 <tr><td class="label-cell">Local</td><td id="p_local">-</td></tr>
                 <tr><td class="label-cell">Descrição</td><td id="p_descricao">-</td></tr>
                 <tr><td class="label-cell">Impacto</td><td id="p_impacto">-</td></tr>
-                <tr><td class="label-cell">Setor</td><td id="p_setor">-</td></tr>
+                <tr><td class="label-cell">Setor</td><td id="p_setor">NOC</td></tr>
                 <tr><td class="label-cell">Protocolo</td><td id="p_protocolo">-</td></tr>
             </table>
         </div>
 
         <div class="copy-box">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="copy-header">CONTEÚDO PARA E-MAIL</div>
-                <button class="copy-btn" onclick="copiarTexto('email-body')">Copiar Texto</button>
-            </div>
-            <div id="email-content">
-                <strong>TÍTULO:</strong> <span id="mail_titulo">GMUD - NOC | AVISO DE MANUTENÇÃO PROGRAMADA</span><br><br>
-                <div id="email-body"></div>
-            </div>
+            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">CONTEÚDO E-MAIL</div>
+            <div id="email-body"></div>
+            <button class="copy-btn" onclick="copiar('email-body')">Copiar E-mail</button>
         </div>
 
         <div class="copy-box">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="copy-header">LANÇAMENTO EM PLANILHA</div>
-                <div style="display: flex; gap: 5px;">
-                    <a href="#" target="_blank" class="copy-btn" style="background: #16a34a; text-decoration: none;">Abrir Planilha</a>
-                    <button class="copy-btn" onclick="copiarTexto('sheet-row')">Copiar Linha</button>
-                </div>
-            </div>
+            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">PLANILHA (COPIA E COLA)</div>
             <div id="sheet-row"></div>
+            <div style="display:flex; gap:10px;">
+                <button class="copy-btn" onclick="copiar('sheet-row')">Copiar Linha</button>
+                <a href="#" target="_blank" style="font-size:11px; color:#16a34a; text-decoration:none; font-weight:bold; padding-top:5px;">Abrir Planilha</a>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    const ids = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
-    ids.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
-
-    function formatarData(d){
-        if(!d) return { f: "", s: "" };
-        const dataObj = new Date(d + 'T00:00:00');
-        const dias = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
-        return { f: dataObj.toLocaleDateString('pt-BR'), s: dias[dataObj.getDay()] };
-    }
+    const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
+    campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
     function atualizar() {
         const v = {};
-        ids.forEach(id => v[id] = document.getElementById(id).value);
-        const dataInfo = formatarData(v.data);
-        const ehCritico = v.tipo === "critico";
-        const cor = ehCritico ? "#dc2626" : "#1e3a8a";
+        campos.forEach(id => v[id] = document.getElementById(id).value);
+        
+        const dataObj = v.data ? new Date(v.data + 'T00:00:00') : null;
+        const dataF = dataObj ? dataObj.toLocaleDateString('pt-BR') : "XX/XX/XXXX";
+        const diaS = dataObj ? ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"][dataObj.getDay()] : "dia";
 
-        // Card
-        document.getElementById("badge").style.display = ehCritico ? "block" : "none";
-        document.getElementById("titulo").style.backgroundColor = cor;
-        document.getElementById("subtitulo").style.backgroundColor = cor;
-        document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${ehCritico ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
-        document.getElementById("subtitulo").innerText = ehCritico ? "ATIVIDADE EMERGENCIAL EM ANDAMENTO" : "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
+        const ehC = v.tipo === "critico";
+        const cor = ehC ? "#dc2626" : "#1e3a8a";
 
-        document.getElementById("p_data").innerText = dataInfo.f ? `${dataInfo.f} (${dataInfo.s})` : "-";
-        document.getElementById("p_periodo").innerText = (v.inicio && v.fim) ? `${v.inicio} às ${v.fim}` : "-";
+        // Atualiza Card
+        document.getElementById("badge").style.display = ehC ? "block" : "none";
+        document.getElementById("titulo").style.background = cor;
+        document.getElementById("subtitulo").style.background = cor;
+        document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
+        document.getElementById("subtitulo").innerText = ehC ? "ATIVIDADE EMERGENCIAL EM ANDAMENTO" : "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
+        
+        document.getElementById("p_data").innerText = `${dataF} (${diaS})`;
+        document.getElementById("p_periodo").innerText = `${v.inicio || '00:00'} às ${v.fim || '00:00'}`;
         document.getElementById("p_local").innerText = v.local || "-";
         document.getElementById("p_descricao").innerText = v.descricao || "-";
         document.getElementById("p_impacto").innerText = v.impacto || "-";
         document.getElementById("p_setor").innerText = v.setor || "-";
         document.getElementById("p_protocolo").innerText = v.protocolo || "-";
 
-        // Email
-        document.getElementById("mail_titulo").innerText = `${v.protocolo ? '('+v.protocolo+') ' : ''}GMUD - NOC | AVISO DE MANUTENÇÃO ${v.tipo.toUpperCase()}`;
-        document.getElementById("email-body").innerText = `Prezados,\n\nGostaríamos de informar que na madrugada do dia ${dataInfo.f || 'XX/XX'} (${dataInfo.s || 'dia'}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${v.tipo} na qual afetará os serviços, conforme aviso em anexo.\n\nAtenciosamente,\nNOC - Online Telecom`;
-
-        // Planilha
-        const linha = [v.protocolo, v.setor, "Equipe NOC", v.tipo, dataInfo.f, v.inicio, dataInfo.f, v.fim, "1h", v.local, v.descricao, "Varejo", v.impacto, "OK"].join('\t');
-        document.getElementById("sheet-row").innerText = linha;
+        // E-mail e Planilha
+        document.getElementById("email-body").innerText = `Prezados,\n\nInformamos manutenção ${ehC?'emergencial':'programada'} em ${dataF}.\nLocal: ${v.local}\nProtocolo: ${v.protocolo}`;
+        document.getElementById("sheet-row").innerText = [v.protocolo, v.setor, "NOC", v.tipo, dataF, v.inicio, dataF, v.fim, "1h", v.local, v.descricao, "Varejo", v.impacto, "OK"].join('\t');
     }
 
-    async function copiarTexto(id) {
+    async function copiar(id) {
         await navigator.clipboard.writeText(document.getElementById(id).innerText);
         alert("Copiado!");
     }
 
-    // FUNÇÕES DE EXPORTAÇÃO CORRIGIDAS (SEM CORTES)
-    async function gerarPNG() {
-        const elemento = document.getElementById("card");
-        const canvas = await html2canvas(elemento, {
-            scale: 3,
-            backgroundColor: "#ffffff",
-            logging: false,
-            useCORS: true,
-            y: 0, // Garante que comece do topo do elemento
-            scrollX: 0,
-            scrollY: -window.scrollY // Compensa o scroll da página para não cortar
-        });
-        const link = document.createElement("a");
-        link.download = `AVISO_${document.getElementById("protocolo").value || 'NOC'}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-    }
+    // FUNÇÃO MESTRA PARA EXPORTAR SEM CORTES
+    async function exportar(formato) {
+        const originalCard = document.getElementById("card");
+        
+        // Técnica de Clone Invisível: Criamos uma cópia do card e colocamos no body
+        // com posição absoluta e z-index negativo para não aparecer na tela, mas ser "visto" pelo script
+        const clone = originalCard.cloneNode(true);
+        clone.style.position = "absolute";
+        clone.style.top = "-9999px";
+        clone.style.left = "0";
+        clone.style.width = "650px"; // Mantém a largura fixa
+        document.body.appendChild(clone);
 
-    async function gerarPDF() {
-        const { jsPDF } = window.jspdf;
-        const elemento = document.getElementById("card");
-        const canvas = await html2canvas(elemento, { scale: 3, y: 0, scrollY: -window.scrollY });
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
-        pdf.save("aviso_noc.pdf");
+        try {
+            const canvas = await html2canvas(clone, {
+                scale: 3, // Alta qualidade
+                backgroundColor: "#ffffff",
+                useCORS: true,
+                logging: false,
+                width: 650,
+                windowWidth: 650 // Força o canvas a entender que a largura é essa
+            });
+
+            if (formato === 'png') {
+                const link = document.createElement("a");
+                link.download = `Aviso_NOC_${document.getElementById("protocolo").value || 'Atividade'}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            } else {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF("p", "mm", "a4");
+                const imgData = canvas.toDataURL("image/png");
+                pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
+                pdf.save("Aviso_NOC.pdf");
+            }
+        } finally {
+            document.body.removeChild(clone); // Limpa o clone
+        }
     }
 
     atualizar();
