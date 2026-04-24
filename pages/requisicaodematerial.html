@@ -1,0 +1,245 @@
+from weasyprint import HTML
+
+# Conteúdo HTML baseado nos dados fornecidos
+html_content = """
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+            background-color: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 24pt;
+            color: #444;
+            margin: 0;
+            text-transform: uppercase;
+        }
+        .header h1 span {
+            color: #e31e24;
+        }
+        .field-group {
+            margin-bottom: 10px;
+        }
+        .field {
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            padding: 8px 15px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .field-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .field-value {
+            color: #000;
+        }
+        .checkbox-section {
+            font-size: 10pt;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .checkbox-item {
+            margin: 0 5px;
+        }
+        .tables-container {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-wrapper {
+            display: table-cell;
+            width: 50%;
+            padding: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+        th {
+            background-color: #999;
+            color: white;
+            padding: 5px;
+            text-align: left;
+            border: 1px solid #777;
+        }
+        td {
+            border: 1px solid #ccc;
+            height: 20px;
+            padding: 4px;
+        }
+        .footer-signatures {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            font-size: 8pt;
+        }
+        .sig-block {
+            width: 45%;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 40px;
+            padding-top: 5px;
+        }
+        .logo {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .logo-text {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #e31e24;
+        }
+        .logo-subtext {
+            display: block;
+            font-size: 8pt;
+            letter-spacing: 2px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>REQUISIÇÃO DE <span>MATERIAL</span></h1>
+        </div>
+
+        <div class="field-group">
+            <div class="field">
+                <span class="field-label">Solicitante supervisor:</span>
+                <span class="field-value">Gleison Silva</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Responsável pela atividade:</span>
+                <span class="field-value">Santiago</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Atividade: Configuração</span>
+                <span class="field-label">Local: LAB, CO – Varjota, CE</span>
+            </div>
+            <div class="field">
+                <span class="field-label">Data da solicitação: 09/03/2026</span>
+                <span class="field-label">Data da entrega: ___________</span>
+            </div>
+        </div>
+
+        <div class="checkbox-section">
+            Manutenção: ( ) Rompimento: ( ) Ampliação: ( ) EPI/EPC: ( ) Uso e Consumo: ( X )<br>
+            Devolução: ( ) Bom uso: Sim ( ) Não ( )
+        </div>
+
+        <div class="tables-container">
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align:center; background-color: #666;">MATERIAL EXTERNO</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Cod. Prod.</th>
+                            <th style="width: 60%;">Descrição do produto</th>
+                            <th style="width: 20%;">Quant.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td></td><td>Huawei S5720 (Irauçuba)</td><td>1</td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="3" style="text-align:center; background-color: #666;">MATERIAL EXTERNO</th>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Cod. Prod.</th>
+                            <th style="width: 60%;">Descrição do produto</th>
+                            <th style="width: 20%;">Quant.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                        <tr><td></td><td></td><td></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer-signatures" style="display: table; width: 100%; margin-top: 20px;">
+            <div style="display: table-cell; width: 50%; padding: 10px;">
+                <div style="font-style: italic; font-size: 12pt; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Fernanda Ribeiro</div>
+                <div style="font-weight: bold;">Supervisor Almoxarifado</div>
+            </div>
+            <div style="display: table-cell; width: 50%; padding: 10px;">
+                <div style="font-style: italic; font-size: 12pt; border-bottom: 1px solid #ccc; padding-bottom: 5px;">Nayra Rodrigues</div>
+                <div style="font-weight: bold;">Responsável Almoxarifado</div>
+            </div>
+        </div>
+
+        <div style="display: table; width: 100%; margin-top: 30px; text-align: center; font-size: 7pt;">
+            <div style="display: table-cell; width: 33%;">
+                <div style="border-top: 1px solid #000; margin: 0 10px; padding-top: 5px;">Motorista Responsável</div>
+            </div>
+            <div style="display: table-cell; width: 33%;">
+                <div style="border-top: 1px solid #000; margin: 0 10px; padding-top: 5px;">Responsável Pelo Recebimento</div>
+            </div>
+            <div style="display: table-cell; width: 33%;">
+                <div style="border-top: 1px solid #000; margin: 0 10px; padding-top: 5px;">Responsável Pela Entrega</div>
+            </div>
+        </div>
+
+        <div class="logo">
+            <span class="logo-text">online</span>
+            <span class="logo-subtext">TELECOM</span>
+        </div>
+    </div>
+</body>
+</html>
+"""
+
+# Salva o arquivo HTML
+with open("requisicao_preenchida.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
