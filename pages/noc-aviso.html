@@ -31,7 +31,6 @@
             height: 100vh;
         }
 
-        /* Formulário Lateral */
         .form {
             background: var(--panel-dark);
             padding: 25px;
@@ -52,7 +51,6 @@
             color: var(--text-gray);
         }
 
-        /* Ajuste para inputs no Modo Dark */
         input, select {
             width: 100%;
             padding: 12px;
@@ -66,9 +64,6 @@
             font-size: 14px;
         }
 
-        input:focus { border-color: var(--accent-blue); outline: none; }
-
-        /* Área de Visualização */
         .preview-area {
             background: #f1f5f9;
             padding: 40px;
@@ -78,7 +73,6 @@
             align-items: center;
         }
 
-        /* CARD */
         .card {
             width: 650px;
             background: #fff;
@@ -143,7 +137,7 @@
             color: #1e293b;
         }
 
-        #email-preview-container, #sheet-row {
+        #email-preview-container, #sheet-preview {
             font-size: 14px;
             background: #f8fafc;
             padding: 15px;
@@ -241,9 +235,9 @@
 
         <div class="copy-box">
             <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">LANÇAMENTO EM PLANILHA</div>
-            <div id="sheet-row"></div>
+            <div id="sheet-preview" style="font-family: monospace; white-space: nowrap; overflow-x: auto;"></div>
             <div style="display:flex; gap:10px;">
-                <button class="copy-btn" onclick="copiar('sheet-row')">Copiar Linha</button>
+                <button class="copy-btn" onclick="copiarPlanilha()">Copiar Linha para Planilha</button>
                 <a href="#" target="_blank" style="font-size:11px; color:#16a34a; text-decoration:none; font-weight:bold; padding-top:5px;">Abrir Planilha</a>
             </div>
         </div>
@@ -252,7 +246,26 @@
 
 <script>
     const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
+    let dadosPlanilhaRaw = ""; // Variável global para guardar os tabs reais
+
     campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
+
+    function calcularDuracao(inicio, fim) {
+        if (!inicio || !fim) return "1h";
+        const [h1, m1] = inicio.split(':').map(Number);
+        let [h2, m2] = fim.split(':').map(Number);
+        
+        let min1 = h1 * 60 + m1;
+        let min2 = h2 * 60 + m2;
+        
+        if (min2 <= min1) min2 += 1440; // Ajuste para virada de dia
+        
+        const diff = min2 - min1;
+        const h = Math.floor(diff / 60);
+        const m = diff % 60;
+        
+        return m > 0 ? `${h}h${m}min` : `${h}h`;
+    }
 
     function atualizar() {
         const v = {};
@@ -264,14 +277,13 @@
 
         const ehC = v.tipo === "critico";
         const cor = ehC ? "#dc2626" : "#1e3a8a";
-        const tipoTexto = ehC ? "emergencial" : "normal";
+        const duracao = calcularDuracao(v.inicio, v.fim);
 
-        // Atualiza Card
+        // Card
         document.getElementById("badge").style.display = ehC ? "block" : "none";
         document.getElementById("titulo").style.background = cor;
         document.getElementById("subtitulo").style.background = cor;
         document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
-        
         document.getElementById("p_data").innerText = v.data ? `${dataObj.toLocaleDateString('pt-BR')} (${diaS})` : "-";
         document.getElementById("p_periodo").innerText = `${v.inicio || '00:00'} até ${v.fim || '00:00'} horas`;
         document.getElementById("p_local").innerText = v.local || "-";
@@ -280,25 +292,43 @@
         document.getElementById("p_setor").innerText = v.setor || "-";
         document.getElementById("p_protocolo").innerText = v.protocolo || "-";
 
-        // Atualiza Título do E-mail
-        const prefixo = v.protocolo ? `(${v.protocolo}) ` : "";
-        document.getElementById("mail_titulo").innerText = `${prefixo}GMUD - NOC | AVISO DE MANUTENÇÃO ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
-
-        // Atualiza Corpo do E-mail (Texto Original)
+        // E-mail
+        document.getElementById("mail_titulo").innerText = `${v.protocolo ? '('+v.protocolo+') ' : ''}GMUD - NOC | AVISO DE MANUTENÇÃO ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
         document.getElementById("email-body").innerText = `Prezados,
 
-Gostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${tipoTexto} na qual afetará os serviços, conforme aviso em anexo.
+Gostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${ehC ? 'emergencial' : 'normal'} na qual afetará os serviços, conforme aviso em anexo.
 
 Atenciosamente,
 NOC - Online Telecom`;
 
-        // Planilha
-        document.getElementById("sheet-row").innerText = [v.protocolo, v.setor, "Equipe NOC", v.tipo, dataF, v.inicio, dataF, v.fim, "1h", v.local, v.descricao, "Varejo", v.impacto, "OK"].join('\t');
+        // Planilha - Montagem com TAB real (\t)
+        const colunas = [
+            v.protocolo || "",
+            v.setor || "NOC",
+            "Equipe NOC",
+            ehC ? "EMERGENCIAL" : "PROGRAMADA",
+            dataF,
+            v.inicio || "00:00",
+            dataF,
+            v.fim || "00:00",
+            duracao,
+            v.local || "",
+            v.descricao || "",
+            "Varejo",
+            v.impacto || ""
+        ];
+        
+        dadosPlanilhaRaw = colunas.join('\t');
+        document.getElementById("sheet-preview").innerText = colunas.join(' | '); // Visual amigável na tela
     }
 
-    async function copiar(id) {
-        await navigator.clipboard.writeText(document.getElementById(id).innerText);
-        alert("Copiado!");
+    async function copiarPlanilha() {
+        try {
+            await navigator.clipboard.writeText(dadosPlanilhaRaw);
+            alert("Linha copiada com divisões de colunas!");
+        } catch (err) {
+            alert("Erro ao copiar.");
+        }
     }
 
     async function copiarEmail() {
@@ -315,13 +345,7 @@ NOC - Online Telecom`;
         document.body.appendChild(clone);
 
         try {
-            const canvas = await html2canvas(clone, {
-                scale: 3,
-                backgroundColor: "#ffffff",
-                useCORS: true,
-                width: 650
-            });
-
+            const canvas = await html2canvas(clone, { scale: 3, backgroundColor: "#ffffff", useCORS: true });
             const imgData = canvas.toDataURL("image/png");
             if (formato === 'png') {
                 const link = document.createElement("a");
