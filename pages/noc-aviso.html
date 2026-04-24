@@ -58,19 +58,15 @@
             padding: 12px;
             border-radius: 6px;
             border: 1px solid #334155;
-            background: #1e293b; /* Fundo um pouco mais claro que o painel */
+            background: #1e293b;
             color: #ffffff;
             margin-top: 5px;
             box-sizing: border-box;
-            color-scheme: dark; /* CRÍTICO: Faz o ícone do calendário/relógio ficar branco */
+            color-scheme: dark; 
             font-size: 14px;
         }
 
-        input:focus {
-            border-color: var(--accent-blue);
-            outline: none;
-            background: #2d3748;
-        }
+        input:focus { border-color: var(--accent-blue); outline: none; }
 
         /* Área de Visualização */
         .preview-area {
@@ -147,17 +143,18 @@
             color: #1e293b;
         }
 
-        #email-body, #sheet-row {
+        #email-preview-container, #sheet-row {
             font-size: 14px;
             background: #f8fafc;
             padding: 15px;
             border-radius: 4px;
             border: 1px solid #e2e8f0;
             margin: 10px 0;
-            white-space: pre-wrap;
             color: #334155;
             line-height: 1.6;
         }
+
+        #email-body { white-space: pre-wrap; }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         button {
@@ -235,8 +232,11 @@
 
         <div class="copy-box">
             <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">CONTEÚDO PARA E-MAIL</div>
-            <div id="email-body"></div>
-            <button class="copy-btn" onclick="copiar('email-body')">Copiar E-mail</button>
+            <div id="email-preview-container">
+                <strong>TÍTULO:</strong> <span id="mail_titulo"></span><br><br>
+                <div id="email-body"></div>
+            </div>
+            <button class="copy-btn" onclick="copiarEmail()">Copiar Corpo do E-mail</button>
         </div>
 
         <div class="copy-box">
@@ -280,7 +280,11 @@
         document.getElementById("p_setor").innerText = v.setor || "-";
         document.getElementById("p_protocolo").innerText = v.protocolo || "-";
 
-        // RESTAURAÇÃO DO E-MAIL ORIGINAL SOLICITADO
+        // Atualiza Título do E-mail
+        const prefixo = v.protocolo ? `(${v.protocolo}) ` : "";
+        document.getElementById("mail_titulo").innerText = `${prefixo}GMUD - NOC | AVISO DE MANUTENÇÃO ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
+
+        // Atualiza Corpo do E-mail (Texto Original)
         document.getElementById("email-body").innerText = `Prezados,
 
 Gostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${tipoTexto} na qual afetará os serviços, conforme aviso em anexo.
@@ -295,6 +299,11 @@ NOC - Online Telecom`;
     async function copiar(id) {
         await navigator.clipboard.writeText(document.getElementById(id).innerText);
         alert("Copiado!");
+    }
+
+    async function copiarEmail() {
+        await navigator.clipboard.writeText(document.getElementById("email-body").innerText);
+        alert("Corpo do e-mail copiado!");
     }
 
     async function exportar(formato) {
