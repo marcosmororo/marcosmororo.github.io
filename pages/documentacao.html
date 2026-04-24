@@ -32,11 +32,11 @@
     <div class="card">
         <h2>➕ Adicionar Informação de Rede</h2>
         <div class="grid-form">
-            <input type="text" id="bng" placeholder="Nome do Equipamento">
-            <input type="text" id="ipv4" placeholder="IP Lado A">
-            <input type="text" id="ipv6" placeholder="IP Lado B ">
+            <input type="text" id="equip" placeholder="Nome do Equipamento">
+            <input type="text" id="ipv4-a" placeholder="IP Lado A">
+            <input type="text" id="ipv4-b" placeholder="IP Lado B ">
             <input type="text" id="cap" placeholder="Capacidade (ex: 100G)">
-            <input type="text" id="ptp" placeholder="Descrição">
+            <input type="text" id="desc" placeholder="Descrição">
             <select id="google">
                 <option value="OK">Ping: OK</option>
                 <option value="Falha">Ping: Falha</option>
@@ -52,11 +52,11 @@
             <thead>
                 <tr>
                     <th>BNG</th>
-                    <th>IPv4</th>
-                    <th>IPv6</th>
+                    <th>LADO A</th>
+                    <th>LADO B</th>
                     <th>Capacidade</th>
-                    <th>PTP</th>
-                    <th>Google</th>
+                    <th>Descrição</th>
+                    <th>Ping</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,12 +71,12 @@
         const novaLinha = tabela.insertRow();
 
         const campos = [
-            document.getElementById('bng').value,
-            document.getElementById('ipv4').value,
-            document.getElementById('ipv6').value,
+            document.getElementById('equip').value,
+            document.getElementById('ipv4-a').value,
+            document.getElementById('ipv4-b').value,
             document.getElementById('cap').value,
-            document.getElementById('ptp').value,
-            document.getElementById('google').value
+            document.getElementById('desc').value,
+            document.getElementById('ping').value
         ];
 
         campos.forEach((texto, index) => {
