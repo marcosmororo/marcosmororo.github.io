@@ -3,34 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Incident Report | RFO - Reason For Outage</title>
+    <title>Incident Report | RFO - Online Telecom</title>
     <style>
         :root {
             --primary-color: #004085;
-            --border-color: #dee2e6;
+            --secondary-color: #002752;
+            --accent-color: #eef4fb;
+            --border-color: #ced4da;
+            --text-dark: #333;
         }
 
         @page {
-            size: auto;
-            margin: 10mm 15mm !important;
+            size: A4;
+            margin: 0 !important; /* Gerido pelo padding da página para evitar links do browser */
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: #525659;
             margin: 0;
-            padding: 20px;
+            padding: 40px 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            color: var(--text-dark);
         }
 
+        /* Página Principal */
         .report-page {
             background: white;
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm 20mm;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            padding: 20mm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
             box-sizing: border-box;
             position: relative;
             display: flex;
@@ -40,37 +45,64 @@
         header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            align-items: flex-end;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
         }
 
-        /* ESTILO DA LOGO PADRONIZADA */
         .logo-container img {
-            max-height: 60px; /* Ajuste a altura conforme necessário */
+            max-height: 70px;
             width: auto;
-            display: block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
         }
 
         .brand h1 {
             color: var(--primary-color);
             margin: 0;
-            font-size: 22px;
-            letter-spacing: 1px;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
 
-        .brand p { margin: 2px 0; font-size: 11px; color: #555; font-weight: bold; }
+        .protocol-box {
+            text-align: right;
+        }
 
+        .protocol-box label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 2px;
+        }
+
+        .protocol-box input {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d9534f;
+            text-align: right;
+            border: none;
+            outline: none;
+            width: 200px;
+        }
+
+        /* Grid de Informações Técnicas */
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            background: var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
         }
 
-        .field { border-bottom: 1px solid var(--border-color); padding: 5px 0; }
+        .field {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding: 4px 0;
+        }
+
         .field label {
             display: block;
             font-size: 10px;
@@ -79,152 +111,226 @@
             text-transform: uppercase;
         }
 
-        input[type="datetime-local"], input[type="text"], input[type="date"] {
+        .field input {
             border: none;
             width: 100%;
-            font-size: 14px;
-            font-family: 'Arial', sans-serif;
-            outline: none;
+            font-size: 13px;
             background: transparent;
-        }
-
-        [contenteditable="true"] {
             outline: none;
-            min-height: 1.2em;
-            font-size: 14px;
-        }
-
-        [contenteditable="true"]:empty:before {
-            content: "Clique para descrever...";
-            color: #ccc;
-            font-style: italic;
+            padding: 2px 0;
         }
 
         h2 {
-            font-size: 15px;
+            font-size: 14px;
             color: white;
-            background: var(--primary-color);
-            padding: 6px 12px;
-            margin-top: 15px;
-            border-radius: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 8px 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .content-box {
-            border: 1px dashed #eee;
-            padding: 10px;
-            min-height: 50px;
-            line-height: 1.5;
+            border: 1px solid #f0f0f0;
+            padding: 12px;
+            min-height: 80px;
+            line-height: 1.6;
             font-size: 14px;
+            text-align: justify;
+            margin-bottom: 10px;
+            border-radius: 4px;
         }
 
         .image-container {
             margin-top: 15px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
         }
 
-        .image-wrapper { position: relative; }
-        .image-wrapper img { max-width: 100%; max-height: 250px; border: 1px solid #ddd; }
+        .image-wrapper {
+            position: relative;
+            border: 1px solid #eee;
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+        }
+
         .remove-btn {
-            position: absolute; top: 0; right: 0; background: red; color: white;
-            border: none; cursor: pointer; padding: 2px 6px;
+            position: absolute; top: -10px; right: -10px;
+            background: #ff4d4d; color: white; border: none;
+            cursor: pointer; width: 24px; height: 24px;
+            border-radius: 50%; font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Rodapé e Assinatura */
+        .footer-content {
+            margin-top: auto;
+            padding-top: 30px;
+        }
+
+        .signature-area {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 30px;
+        }
+
+        .signature-box {
+            border-top: 1px solid #333;
+            width: 250px;
+            text-align: center;
+            font-size: 12px;
+            padding-top: 5px;
         }
 
         footer {
-            margin-top: auto;
-            border-top: 1px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
             padding-top: 15px;
             font-size: 11px;
-            color: #666;
+            color: #555;
             display: flex;
             justify-content: space-between;
         }
 
+        /* Toolbar de Comandos */
         .toolbar {
-            position: fixed; top: 20px; right: 20px; background: white;
-            padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            width: 200px; z-index: 999;
+            position: fixed; top: 20px; right: 20px;
+            background: white; padding: 25px; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 220px; z-index: 999;
         }
 
+        .toolbar h3 { margin: 0 0 15px 0; font-size: 16px; color: var(--primary-color); }
+
         .toolbar button {
-            width: 100%; padding: 10px; margin-bottom: 10px;
-            font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
+            width: 100%; padding: 12px; margin-bottom: 12px;
+            font-weight: bold; cursor: pointer; border: none;
+            border-radius: 6px; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px;
         }
+
         .btn-print { background: #28a745; color: white; }
+        .btn-print:hover { background: #218838; }
+
         .btn-img { background: #007bff; color: white; }
+        .btn-img:hover { background: #0069d9; }
 
         @media print {
             body { background: none; padding: 0; }
             .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; width: 100%; margin: 0; border: none; }
-            .content-box { border: none; }
-            [contenteditable="true"]:empty:before { content: ""; }
-            a { text-decoration: none; color: black; }
+            .report-page { box-shadow: none; width: 100%; margin: 0; padding: 15mm; }
+            .content-box { border: none; padding: 0; }
+            .info-grid { background: #f8f9fa !important; -webkit-print-color-adjust: exact; }
+            h2 { -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h3 style="margin:0 0 10px 0; font-size: 14px;">Controles</h3>
-        <button class="btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR EVIDÊNCIA</button>
-        <button class="btn-print" onclick="window.print()">GERAR PDF</button>
+        <h3>Painel RFO</h3>
+        <button class="btn-img" onclick="document.getElementById('fileInput').click()">
+            <span>📷</span> ANEXAR EVIDÊNCIA
+        </button>
+        <button class="btn-print" onclick="generatePDF()">
+            <span>📄</span> GERAR RELATÓRIO
+        </button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
-        <p style="font-size: 10px; color: #d9534f;">Nota: No menu de impressão, desative "Cabeçalhos e Rodapés".</p>
+        <hr>
+        <p style="font-size: 10px; color: #666; line-height: 1.4;">
+            <strong>Dica:</strong> O nome do arquivo será o número do protocolo. Desative "Cabeçalhos e Rodapés" no menu de impressão.
+        </p>
     </div>
 
-    <div class="report-page">
+    <div class="report-page" id="printable">
         <header>
             <div class="brand">
                 <div class="logo-container">
                     <img src="../assets/img/online.png" alt="Online Telecom Logo">
                 </div>
-                <h1>Incident Report | RFO - Reason For Outage</h1>
+                <h1>Reason For Outage | RFO</h1>
+                <p style="margin:0; font-size: 12px; color: #666;">Relatório de Análise Pós-Incidente</p>
             </div>
-            <div style="text-align: right;">
-                <div class="field" style="border: none;">
-                    <label>ID DO PROTOCOLO</label>
-                    <input type="text" placeholder="INC-000000" style="font-weight: bold; font-size: 16px; text-align: right;">
-                </div>
+            <div class="protocol-box">
+                <label>PROTOCOLO DE INCIDENTE</label>
+                <input type="text" id="protocolID" placeholder="INC-000000" oninput="updateTitle()">
             </div>
         </header>
 
         <div class="info-grid">
-            <div class="field"><label>Data do Relatório</label><input type="date"></div>
-            <div class="field"><label>Prioridade</label><input type="text" placeholder="Alta / Crítica"></div>
-            <div class="field"><label>Início do Incidente</label><input type="datetime-local"></div>
-            <div class="field"><label>Fim do Incidente</label><input type="datetime-local"></div>
-            <div class="field"><label>Localização</label><input type="text" placeholder="Segmento / Cidade"></div>
-            <div class="field"><label>Causa Raiz</label><input type="text" placeholder="Causa da falha"></div>
+            <div class="field"><label>Data do Relatório</label><input type="date" id="reportDate"></div>
+            <div class="field"><label>Prioridade</label><input type="text" placeholder="Crítica / Alta / Média"></div>
+            <div class="field"><label>Início (Data/Hora)</label><input type="datetime-local"></div>
+            <div class="field"><label>Término (Data/Hora)</label><input type="datetime-local"></div>
+            <div class="field"><label>Localização / Nó</label><input type="text" placeholder="Ex: POP-STQ-01"></div>
+            <div class="field"><label>Causa Raiz</label><input type="text" placeholder="Ex: Rompimento de Fibra"></div>
         </div>
 
-        <h2>Sumário do Incidente</h2>
+        <h2>1. Sumário Executivo</h2>
         <div class="content-box" contenteditable="true"></div>
 
-        <h2>Ações Realizadas e Mitigação</h2>
+        <h2>2. Descrição Técnica e Impacto</h2>
         <div class="content-box" contenteditable="true"></div>
 
-        <h2>Anexos / Evidências</h2>
+        <h2>3. Ações de Resolução e Mitigação</h2>
+        <div class="content-box" contenteditable="true"></div>
+
+        <h2>4. Evidências e Anexos</h2>
         <div id="imageContainer" class="image-container"></div>
 
-        <h2>Conclusão</h2>
+        <h2>5. Conclusão Técnica</h2>
         <div class="content-box" contenteditable="true">
-            Serviço normalizado. Monitoramento ativo sem novas falhas detectadas.
+            O incidente foi encerrado e a redundância do link restabelecida. Não há alarmes pendentes no sistema de monitoramento (Zabbix/Grafana).
         </div>
 
-        <footer>
-            <div>
-                <strong>Online Telecom</strong><br>
-                Suporte: 0800 088 1111 | 88 3695 3095 | noc@online.net.br
+        <div class="footer-content">
+            <div class="signature-area">
+                <div class="signature-box">
+                    NOC | Online Telecom<br>
+                    Responsável Técnico
+                </div>
             </div>
-            <div style="text-align: right;">
-                www.onlinetelecom.com.br
-            </div>
-        </footer>
+
+            <footer>
+                <div>
+                    <strong>Online Telecom</strong><br>
+                    Suporte: 0800 088 1111 | 88 3695 3095<br>
+                    E-mail: noc@online.net.br
+                </div>
+                <div style="text-align: right;">
+                    Documento Oficial NOC<br>
+                    www.onlinetelecom.com.br
+                </div>
+            </footer>
+        </div>
     </div>
 
     <script>
+        // Define a data de hoje automaticamente
+        document.getElementById('reportDate').valueAsDate = new Date();
+
+        function updateTitle() {
+            const protocol = document.getElementById('protocolID').value;
+            if (protocol) {
+                document.title = `RFO_${protocol}`;
+            } else {
+                document.title = "Incident_Report_RFO";
+            }
+        }
+
+        function generatePDF() {
+            updateTitle(); // Garante que o título está atualizado antes de imprimir
+            window.print();
+        }
+
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -234,7 +340,7 @@
                     wrapper.className = 'image-wrapper';
                     wrapper.innerHTML = `
                         <img src="${e.target.result}">
-                        <button class="remove-btn" onclick="this.parentElement.remove()">X</button>
+                        <button class="remove-btn" onclick="this.parentElement.remove()">×</button>
                     `;
                     container.appendChild(wrapper);
                 };
