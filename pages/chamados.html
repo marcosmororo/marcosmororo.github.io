@@ -21,7 +21,7 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 10px; line-height: 1.4; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 10px; line-height: 1.4; transition: background 0.3s; }
         .container { max-width: 1400px; margin: auto; }
 
         .page-header {
@@ -78,7 +78,7 @@
         .grid-cards { display: grid; grid-template-columns: 1fr; gap: 15px; }
         @media (min-width: 768px) { .grid-cards { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); } }
 
-        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 15px; border-top: 5px solid var(--ok); }
+        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 15px; border-top: 5px solid var(--ok); position: relative;}
         .card.warn { border-top-color: var(--warn); }
         .card.danger { border-top-color: var(--danger); }
         
@@ -88,7 +88,7 @@
         .step { 
             display: flex; justify-content: space-between; align-items: center; 
             background: var(--input-bg); padding: 12px; margin: 6px 0; border-radius: 10px; 
-            font-size: 0.85rem; border: 1px solid transparent;
+            font-size: 0.85rem; border: 1px solid transparent; cursor: pointer;
         }
         .step.done { opacity: 0.3; border-style: dashed; background: transparent; }
         .step.next-to-call { border-color: var(--warn); animation: pulse-border 1.5s infinite; }
@@ -101,7 +101,6 @@
         .actions-step { display: flex; gap: 12px; align-items: center; }
         .wa-link { color: var(--whatsapp); font-size: 1.4rem; text-decoration: none; }
         .copy-btn { color: var(--text-dim); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; }
-        .copy-btn:active { color: var(--ok); }
 
         .log-container { 
             background: var(--input-bg); padding: 10px; border-radius: 8px; 
@@ -119,6 +118,7 @@
         .btn-excluir { background: var(--danger); color: #fff; flex: 1; border: none; border-radius: 10px; padding: 12px; font-weight: 800; cursor: pointer; }
 
         .hidden { display: none !important; }
+        #theme-toggle { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -187,57 +187,74 @@
     </div>
 </div>
 
-<script type="module">
+<script>
+    // --- CONFIGURAÇÃO E DADOS INICIAIS ---
+    const CONFIG_ESCALATION = {
+        externa_ne: [
+            {h: 0, nome: "Michel Taylon", tel: "5588997357308"},
+            {h: 0, nome: "Bruno", tel: "5588998286655"},
+            {h: 0, nome: "Erivelton", tel: "5588998283311"},
+            {h: 6, nome: "Guilherme Silva", tel: "5588998282323"},
+            {h: 10, nome: "Iran Junior", tel: "5588998707256"},
+            {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
+        ],
+        externa_no: [
+            {h: 0, nome: "Wender Lima", tel: "5591995328141"},
+            {h: 0, nome: "Antônio Clécio", tel: "5591993843282"},
+            {h: 4, nome: "Francisco Maciel", tel: "5591985338894"},
+            {h: 8, nome: "Guilherme", tel: "5588998282323"},
+            {h: 10, nome: "Iran Junior", tel: "5588998707256"},
+            {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
+        ],
+        interna_ne: [
+            {h: 0, nome: "Eduardo Oliveira", tel: "5588993556007"},
+            {h: 0, nome: "Valdemídio", tel: "5588982191541"},
+            {h: 4, nome: "Silvio de Moraes", tel: "5588996055060"},
+            {h: 6, nome: "João Martins", tel: "5588996649640"},
+            {h: 8, nome: "Wescley Costa", tel: "5588994866085"},
+            {h: 10, nome: "Iran Júnior", tel: "5588998707256"}
+        ],
+        interna_no: [
+            {h: 0, nome: "Oracenildo", tel: "5591991358874"},
+            {h: 4, nome: "Julio Gaia", tel: "5591985938544"},
+            {h: 6, nome: "Wescley Costa", tel: "5588994866085"},
+            {h: 8, nome: "Iran Júnior", tel: "5588998707256"},
+            {h: 10, nome: "Valmir Bertoldo", tel: "5588998287071"}
+        ]
+    };
+
+    // --- BANCO DE DADOS LOCAL (LocalStorage) ---
+    let db = {
+        ativos: JSON.parse(localStorage.getItem('noc_ativos')) || {},
+        resolvidos: JSON.parse(localStorage.getItem('noc_resolvidos')) || {}
+    };
+
+    function saveDB() {
+        localStorage.setItem('noc_ativos', JSON.stringify(db.ativos));
+        localStorage.setItem('noc_resolvidos', JSON.stringify(db.resolvidos));
+        updateStats();
+    }
+
+    // --- UTILITÁRIOS ---
     const agora = new Date();
     document.getElementById('data_manual').value = agora.toISOString().split('T')[0];
     document.getElementById('hora_manual').value = agora.toTimeString().slice(0,5);
 
-const CONFIG_ESCALATION = {
-    externa_ne: [
-        {h: 0, nome: "Michel Taylon", tel: "5588997357308"},
-        {h: 0, nome: "Bruno", tel: "5588998286655"},
-        {h: 0, nome: "Erivelton", tel: "5588998283311"},
-        {h: 6, nome: "Guilherme Silva", tel: "5588998282323"},
-        {h: 10, nome: "Iran Junior", tel: "5588998707256"},
-        {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
-    ],
+    window.toggleTheme = () => document.body.classList.toggle('light-mode');
+    setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
 
-    externa_no: [
-        {h: 0, nome: "Wender Lima", tel: "5591995328141"},
-        {h: 0, nome: "Antônio Clécio", tel: "5591993843282"},
-        {h: 4, nome: "Francisco Maciel", tel: "5591985338894"},
-        {h: 8, nome: "Guilherme", tel: "5588998282323"},
-        {h: 10, nome: "Iran Junior", tel: "5588998707256"},
-        {h: 12, nome: "Valmir Filho", tel: "5588998287071"}
-    ],
-
-    interna_ne: [
-        {h: 0, nome: "Eduardo Oliveira", tel: "5588993556007"},
-        {h: 0, nome: "Valdemídio", tel: "5588982191541"},
-        {h: 4, nome: "Silvio de Moraes", tel: "5588996055060"},
-        {h: 6, nome: "João Martins", tel: "5588996649640"},
-        {h: 8, nome: "Wescley Costa", tel: "5588994866085"},
-        {h: 10, nome: "Iran Júnior", tel: "5588998707256"}
-    ],
-
-    interna_no: [
-        {h: 0, nome: "Oracenildo", tel: "5591991358874"},
-        {h: 4, nome: "Julio Gaia", tel: "5591985938544"},
-        {h: 6, nome: "Wescley Costa", tel: "5588994866085"},
-        {h: 8, nome: "Iran Júnior", tel: "5588998707256"},
-        {h: 10, nome: "Valmir Bertoldo", tel: "5588998287071"}
-    ]
-};
+    function formatDuration(ms) {
+        if (ms < 0) return "0h 0m 0s";
+        const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
+        return `${h}h ${m}m ${s}s`;
+    }
 
     window.copyTel = (num, el) => {
         navigator.clipboard.writeText(num).then(() => {
             const originalClass = el.className;
             el.className = "fa-solid fa-check copy-btn";
             el.style.color = "var(--ok)";
-            setTimeout(() => {
-                el.className = originalClass;
-                el.style.color = "";
-            }, 1500);
+            setTimeout(() => { el.className = originalClass; el.style.color = ""; }, 1500);
         });
     };
 
@@ -246,41 +263,86 @@ const CONFIG_ESCALATION = {
         document.getElementById('partners-view').classList.toggle('hidden', v==='main');
     };
 
-    setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
-    window.toggleTheme = () => document.body.classList.toggle('light-mode');
-
-    function formatDuration(ms) {
-        const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
-        return `${h}h ${m}m ${s}s`;
-    }
-
+    // --- CORE LOGIC ---
     window.add = function(){
         const t = document.getElementById("titulo").value, p = document.getElementById("pai").value;
         if(!t || !p) return alert("Título e Pai são obrigatórios!");
+        
         const fullDate = new Date(`${document.getElementById("data_manual").value}T${document.getElementById("hora_manual").value}`);
-        push(ref(db,"ativos"), { 
+        const id = 'id' + Date.now();
+        
+        db.ativos[id] = { 
             titulo: t, pai: p, filho: document.getElementById("filho").value || "N/A", 
             tipo: document.getElementById("tipo").value, 
             inicio: fullDate.getTime(), dataStr: fullDate.toLocaleString('pt-BR'), 
             escalado: [], comentarios: [] 
-        });
+        };
+        
         document.getElementById("titulo").value = "";
+        saveDB();
+        renderAll();
     };
 
+    window.addComment = (id) => {
+        const inp = document.getElementById(`in-${id}`); 
+        if(!inp.value) return;
+        db.ativos[id].comentarios.push({ 
+            texto: inp.value, 
+            hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) 
+        });
+        saveDB();
+        renderAll();
+    };
+
+    window.toggleEscala = (id, h) => {
+        let list = db.ativos[id].escalado || [];
+        db.ativos[id].escalado = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
+        saveDB();
+        renderAll();
+    };
+
+    window.finalizar = (id) => { 
+        db.resolvidos[id] = { ...db.ativos[id], fim: Date.now() }; 
+        delete db.ativos[id]; 
+        saveDB(); 
+        renderAll(); 
+    };
+
+    window.reabrir = (id) => { 
+        const {fim, ...rest} = db.resolvidos[id]; 
+        db.ativos[id] = rest; 
+        delete db.resolvidos[id]; 
+        saveDB(); 
+        renderAll(); 
+    };
+
+    window.apagar = (id) => { 
+        if(confirm("Deseja apagar do histórico?")) {
+            delete db.resolvidos[id]; 
+            saveDB(); 
+            renderAll(); 
+        }
+    };
+
+    // --- RENDERIZAÇÃO ---
     function renderCard(id, data, containerId) {
-        const container = document.getElementById(containerId), isResolvido = containerId === 'resolvidos', div = document.createElement("div");
+        const isResolvido = containerId === 'resolvidos';
+        const div = document.createElement("div");
         div.className = `card ${isResolvido ? 'finalizado' : 'ativo'}`; 
-        div.id = id; div.dataset.start = data.inicio; div.dataset.tipo = data.tipo; div.dataset.esc = JSON.stringify(data.escalado || []);
+        div.id = id;
         
         const logsHTML = (data.comentarios || []).map(c => `<div class="log-item"><b style="color:var(--primary)">[${c.hora}]</b> ${c.texto}</div>`).reverse().join('');
-        const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => `
-            <div class="step ${(data.escalado || []).includes(e.h) ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `window.toggleEscala('${id}', ${e.h})` : ''}">
+        const stepsHTML = (CONFIG_ESCALATION[data.tipo] || []).map(e => {
+            const isDone = (data.escalado || []).includes(e.h);
+            return `
+            <div class="step ${isDone ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `window.toggleEscala('${id}', ${e.h})` : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
                 <div class="actions-step">
                     <i class="fa-solid fa-copy copy-btn" onclick="event.stopPropagation(); window.copyTel('${e.tel}', this)"></i>
                     <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
 
         div.innerHTML = `
             <div style="font-size:0.65rem; color:var(--text-dim);">${data.dataStr}</div>
@@ -296,58 +358,47 @@ const CONFIG_ESCALATION = {
                 <button class="btn-excluir" onclick="window.apagar('${id}')"><i class="fa-solid fa-trash"></i></button>
             </div>`}
         `;
-        
-        // ORDENAÇÃO: prepend coloca o novo item no topo da lista
-        container.prepend(div);
+        document.getElementById(containerId).prepend(div);
     }
 
-    window.addComment = (id) => {
-        const inp = document.getElementById(`in-${id}`); if(!inp.value) return;
-        get(ref(db, `ativos/${id}/comentarios`)).then(s => {
-            const list = s.val() || [];
-            list.push({ texto: inp.value, hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) });
-            update(ref(db, `ativos/${id}`), { comentarios: list });
-        });
-    };
-
-    window.toggleEscala = (id, h) => {
-        get(ref(db, `ativos/${id}/escalado`)).then(s => {
-            let list = s.val() || [];
-            list = list.includes(h) ? list.filter(x => x !== h) : [...list, h];
-            update(ref(db, `ativos/${id}`), { escalado: list });
-        });
-    };
-
-    window.finalizar = (id) => { get(ref(db, `ativos/${id}`)).then(s => { push(ref(db, "resolvidos"), { ...s.val(), fim: Date.now() }); remove(ref(db, `ativos/${id}`)); }); };
-    window.reabrir = (id) => { get(ref(db, `resolvidos/${id}`)).then(s => { const {fim, ...rest} = s.val(); push(ref(db, "ativos"), rest); remove(ref(db, `resolvidos/${id}`)); }); };
-    window.apagar = (id) => { if(confirm("Deseja apagar do histórico?")) remove(ref(db, `resolvidos/${id}`)); };
-
-    onValue(ref(db, "ativos"), snap => {
+    function renderAll() {
         document.getElementById("ativos").innerHTML = "";
+        document.getElementById("resolvidos").innerHTML = "";
+        
+        Object.keys(db.ativos).forEach(id => renderCard(id, db.ativos[id], "ativos"));
+        Object.keys(db.resolvidos).forEach(id => renderCard(id, db.resolvidos[id], "resolvidos"));
+        updateStats();
+    }
+
+    function updateStats() {
         const counts = { externa_ne: 0, externa_no: 0, interna_ne: 0, interna_no: 0 };
-        snap.forEach(c => {
-            const data = c.val();
-            renderCard(c.key, data, "ativos");
-            if(counts.hasOwnProperty(data.tipo)) counts[data.tipo]++;
-        });
+        Object.values(db.ativos).forEach(item => { if(counts.hasOwnProperty(item.tipo)) counts[item.tipo]++; });
         Object.keys(counts).forEach(tipo => { document.getElementById(`count-${tipo}`).innerText = counts[tipo]; });
-    });
+    }
 
-    onValue(ref(db, "resolvidos"), snap => { 
-        document.getElementById("resolvidos").innerHTML = ""; 
-        snap.forEach(c => renderCard(c.key, c.val(), "resolvidos")); 
-    });
+    window.showTab = (t) => {
+        document.getElementById("ativos").classList.toggle("hidden", t!=='ativos');
+        document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos');
+        document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos');
+        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos');
+    };
 
+    // --- LOOP DE ATUALIZAÇÃO DOS TIMERS ---
     setInterval(() => {
         const now = Date.now();
-        document.querySelectorAll('.card.ativo').forEach(card => {
-            const start = parseInt(card.dataset.start);
-            const diffH = (now - start) / 3600000;
-            const timerEl = document.getElementById(`timer-${card.id}`);
-            if(timerEl) timerEl.innerText = formatDuration(now - start);
+        Object.keys(db.ativos).forEach(id => {
+            const data = db.ativos[id];
+            const diffH = (now - data.inicio) / 3600000;
+            const card = document.getElementById(id);
+            if(!card) return;
+
+            const timerEl = document.getElementById(`timer-${id}`);
+            if(timerEl) timerEl.innerText = formatDuration(now - data.inicio);
+
             card.classList.toggle('warn', diffH >= 8 && diffH < 10);
             card.classList.toggle('danger', diffH >= 10);
-            const escFeito = JSON.parse(card.dataset.esc);
+
+            const escFeito = data.escalado || [];
             let alertSet = false;
             card.querySelectorAll('.step').forEach(step => {
                 const h = parseInt(step.dataset.h);
@@ -358,12 +409,8 @@ const CONFIG_ESCALATION = {
         });
     }, 1000);
 
-    window.showTab = (t) => {
-        document.getElementById("ativos").classList.toggle("hidden", t!=='ativos');
-        document.getElementById("resolvidos").classList.toggle("hidden", t!=='resolvidos');
-        document.getElementById("btn-tab-ativos").classList.toggle("active", t==='ativos');
-        document.getElementById("btn-tab-resolvidos").classList.toggle("active", t==='resolvidos');
-    };
+    // Inicialização
+    renderAll();
 </script>
 </body>
 </html>
