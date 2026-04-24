@@ -61,6 +61,8 @@
             box-sizing: border-box;
         }
 
+        input:focus { border-color: var(--accent-blue); outline: none; }
+
         /* Preview Area */
         .preview-area {
             background: #f1f5f9;
@@ -96,7 +98,7 @@
         }
 
         .header { text-align: center; padding: 25px; }
-        .header img { max-width: 160px; height: auto; }
+        .header img { max-width: 160px; }
 
         .title {
             text-align: center;
@@ -126,7 +128,7 @@
             color: #64748b;
         }
 
-        /* Copy Boxes */
+        /* Boxes Inferiores */
         .copy-box {
             width: 650px;
             background: white;
@@ -138,34 +140,25 @@
 
         .copy-header {
             font-size: 12px;
-            font-weight: bold;
             color: #64748b;
             margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #e2e8f0;
             padding-bottom: 5px;
+            font-weight: bold;
         }
 
-        #row-preview {
-            font-family: monospace;
-            background: #f8fafc;
-            padding: 10px;
-            font-size: 11px;
-            overflow-x: auto;
-            color: #334155;
-        }
-
-        #email-body {
-            font-size: 14px;
+        #email-body, #sheet-row {
+            font-size: 13px;
             line-height: 1.6;
             white-space: pre-wrap;
             color: #334155;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
         }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        
         button {
             flex: 1;
             padding: 12px;
@@ -178,21 +171,9 @@
 
         .png { background: #2563eb; color: #fff; }
         .pdf { background: #16a34a; color: #fff; }
-        .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; }
-        
-        .btn-sheet { 
-            background: #0f172a; 
-            color: white; 
-            text-decoration: none; 
-            text-align: center; 
-            display: block;
-            margin-top: 15px;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            border: 1px solid #334155;
-        }
-        .btn-sheet:hover { background: #1e293b; }
+        .sheet { background: #10b981; color: #fff; text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: bold; }
+        .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; cursor: pointer; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -201,8 +182,6 @@
     <div class="form">
         <h3>📡 Gerador de Avisos NOC</h3>
         
-        <a href="https://docs.google.com/spreadsheets/d/1wzG3PYX7nBzQzXsO-1LAprrjOt-F5KOgvtaJN6appFQ/edit?gid=1877008006#gid=1877008006" target="_blank" class="btn-sheet">📂 Abrir Planilha Oficial</a>
-
         <label>Tipo de Manutenção</label>
         <select id="tipo">
             <option value="normal">Programada</option>
@@ -248,7 +227,7 @@
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
             <div class="header">
-                <img id="logo-img" src="../assets/img/online.png" alt="Logo" crossorigin="anonymous">
+                <img src="../assets/img/online.png" alt="Logo">
             </div>
             <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
             <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA</div>
@@ -264,22 +243,28 @@
         </div>
 
         <div class="copy-box">
-            <div class="copy-header">
-                <span>DADOS PARA PLANILHA (LINHA ÚNICA)</span>
-                <button class="copy-btn" onclick="copiarLinha()">Copiar Linha</button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="copy-header">CONTEÚDO PARA E-MAIL</div>
+                <button class="copy-btn" onclick="copiarTexto('email-body')">Copiar Texto</button>
             </div>
-            <div id="row-preview">...</div>
+            <div id="email-content">
+                <strong>DESTINATÁRIOS:</strong> Grupo de avisos de manutenção<br>
+                <strong>CC:</strong> gmud.ops@online.net.br<br>
+                <strong>TÍTULO:</strong> <span id="mail_titulo">GMUD - NOC | AVISO DE MANUTENÇÃO PROGRAMADA</span><br><br>
+                <div id="email-body"></div>
+            </div>
         </div>
 
         <div class="copy-box">
-            <div class="copy-header">
-                <span>CONTEÚDO PARA E-MAIL</span>
-                <button class="copy-btn" onclick="copiarEmail()">Copiar Texto</button>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="copy-header">LANÇAMENTO EM PLANILHA (COPIA E COLA)</div>
+                <div style="display: flex; gap: 5px;">
+                    <a href="https://docs.google.com/spreadsheets/d/SEU_LINK_AQUI" target="_blank" class="copy-btn sheet" style="background: #16a34a; text-decoration: none;">Abrir Planilha</a>
+                    <button class="copy-btn" onclick="copiarTexto('sheet-row')">Copiar Linha</button>
+                </div>
             </div>
-            <div id="email-content">
-                <strong>TÍTULO:</strong> <span id="mail_titulo">...</span><br><br>
-                <div id="email-body"></div>
-            </div>
+            <div id="sheet-row"></div>
+            <small style="font-size: 10px; color: #64748b; margin-top: 5px; display: block;">* A linha acima segue a sequência exata das colunas da planilha. Basta colar na primeira célula da linha nova.</small>
         </div>
     </div>
 </div>
@@ -289,12 +274,14 @@
     campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
     function formatarData(d){
-        if(!d) return { formatada: "XX/XX", diaSemana: "(dia da semana)" };
+        if(!d) return { formatada: "XX/XX/XXXX", diaSemana: "(dia da semana)", original: "" };
         const dataObj = new Date(d + 'T00:00:00');
         const dias = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
+        
         return {
-            formatada: dataObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}),
-            diaSemana: dias[dataObj.getDay()]
+            formatada: dataObj.toLocaleDateString('pt-BR'),
+            diaSemana: dias[dataObj.getDay()],
+            original: dataObj.toLocaleDateString('pt-BR')
         };
     }
 
@@ -303,86 +290,97 @@
         const eData = document.getElementById("data").value;
         const eInicio = document.getElementById("inicio").value || "00:00";
         const eFim = document.getElementById("fim").value || "00:00";
-        const protocolo = document.getElementById("protocolo").value;
-        const local = document.getElementById("local").value;
-        const descricao = document.getElementById("descricao").value;
-        const impacto = document.getElementById("impacto").value;
-        const setor = document.getElementById("setor").value;
+        const localVal = document.getElementById("local").value;
+        const descVal = document.getElementById("descricao").value;
+        const impactoVal = document.getElementById("impacto").value;
+        const setorVal = document.getElementById("setor").value;
+        const protocoloVal = document.getElementById("protocolo").value;
         
         const infoData = formatarData(eData);
         const ehEmergencial = tipo === "critico";
+
+        // Atualização Visual do Card
         const cor = ehEmergencial ? "#dc2626" : "#1e3a8a";
         const txtTipo = ehEmergencial ? "EMERGENCIAL" : "PROGRAMADA";
-
-        // Card Visual
+        
         document.getElementById("badge").style.display = ehEmergencial ? "block" : "none";
         document.getElementById("titulo").style.background = cor;
         document.getElementById("subtitulo").style.background = cor;
         document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${txtTipo}`;
         document.getElementById("subtitulo").innerText = ehEmergencial ? "ATIVIDADE EMERGENCIAL EM ANDAMENTO" : "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
 
-        document.getElementById("p_data").innerText = infoData.formatada === "XX/XX" ? "" : `${infoData.formatada} (${infoData.diaSemana})`;
+        // Preenchimento da Tabela do Card
+        document.getElementById("p_data").innerText = infoData.original === "" ? "" : `${infoData.original} (${infoData.diaSemana})`;
         document.getElementById("p_periodo").innerText = `${eInicio} às ${eFim}`;
-        document.getElementById("p_local").innerText = local;
-        document.getElementById("p_descricao").innerText = descricao;
-        document.getElementById("p_impacto").innerText = impacto;
-        document.getElementById("p_setor").innerText = setor;
-        document.getElementById("p_protocolo").innerText = protocolo;
+        document.getElementById("p_local").innerText = localVal;
+        document.getElementById("p_descricao").innerText = descVal;
+        document.getElementById("p_impacto").innerText = impactoVal;
+        document.getElementById("p_setor").innerText = setorVal;
+        document.getElementById("p_protocolo").innerText = protocoloVal;
 
-        // E-mail
-        const prefixo = protocolo ? `(${protocolo}) ` : "(GMUD) ";
-        document.getElementById("mail_titulo").innerText = `${prefixo}GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo}`;
-        document.getElementById("email-body").innerText = `Prezados,\n\nGostaríamos de informar que na madrugada do dia ${infoData.formatada} (${infoData.diaSemana}), no intervalo entre ${eInicio} até ${eFim} horas, ocorrerá uma manutenção ${ehEmergencial ? 'emergencial' : 'programada'} na qual afetará alguns dos serviços entregues, conforme aviso em anexo.\n\nO serviço poderá sofrer indisponibilidade e impacto de base no varejo.\n\nAtenciosamente,\nNOC - Online Telecom`;
+        // Atualização E-mail
+        const prefixoProtocolo = protocoloVal ? `(${protocoloVal}) ` : "(GMUD) ";
+        document.getElementById("mail_titulo").innerText = `${prefixoProtocolo}GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo.toUpperCase()}`;
+        
+        const tipoTexto = ehEmergencial ? "emergencial" : "programada";
+        const corpoEmail = `Prezados,
 
-        // Linha Planilha (Tabs para colunas corretas no Sheets/Excel)
-        const colunas = [
-            protocolo, setor, "NOC - Online Telecom", txtTipo, 
-            eData, eInicio, eData, eFim, `${eInicio}-${eFim}`, 
-            local, descricao, "Ver anexo", impacto, "PLANEJADA"
-        ];
-        document.getElementById("row-preview").innerText = colunas.join(" | ");
-        window.dadosPlanilha = colunas.join("\t");
+Gostaríamos de informar que na madrugada do dia ${infoData.formatada} (${infoData.diaSemana}), no intervalo entre ${eInicio} até ${eFim} horas, ocorrerá uma manutenção ${tipoTexto} na qual afetará alguns dos serviços entregues, conforme aviso em anexo.
+
+O serviço poderá sofrer indisponibilidade e impacto de base no varejo.
+
+Atenciosamente,
+NOC - Online Telecom`;
+
+        document.getElementById("email-body").innerText = corpoEmail;
+
+        // GERADOR DE LINHA PARA PLANILHA
+        // Sequência: PROTOCOLO | DEPARTAMENTO | RESPONSÁVEL | ATIVIDADE | DATA INICIO | HORA INICIO | DATA TÉRMINO | HORA TÉRMINO | INDISP | LOCAL | DESCRIÇÃO | CIRCUITOS | IMPACTO | STATUS
+        const statusGmud = "AGENDADO";
+        const circuitos = "Clientes Residenciais"; // Padrão
+        const responsavel = "Equipe NOC"; // Padrão
+        
+        const linhaPlanilha = [
+            protocoloVal,       // PROTOCOLO
+            setorVal,           // DEPARTAMENTO
+            responsavel,        // RESPONSÁVEL
+            txtTipo,            // ATIVIDADE
+            infoData.formatada, // DATA DE INICIO
+            eInicio,            // HORA DE INICIO
+            infoData.formatada, // DATA DO TÉRMINO
+            eFim,               // HORA DO TÉRMINO
+            "1 Hora",           // TEMPO DE INDISPONIBILIDADE (Estimado)
+            localVal,           // LOCAL
+            descVal,            // DESCRIÇÃO DA ATIVIDADE
+            circuitos,          // CIRCUITOS IMPACTADOS
+            impactoVal,         // IMPACTO
+            statusGmud          // STATUS
+        ].join('\t'); // O '\t' simula a tecla TAB para pular células na planilha
+
+        document.getElementById("sheet-row").innerText = linhaPlanilha;
     }
 
-    async function copiarLinha() {
-        await navigator.clipboard.writeText(window.dadosPlanilha);
-        alert("Linha copiada! Vá na planilha e dê CTRL+V na primeira coluna.");
-    }
-
-    async function copiarEmail() {
-        await navigator.clipboard.writeText(document.getElementById("email-body").innerText);
-        alert("Corpo do e-mail copiado!");
+    async function copiarTexto(id) {
+        const texto = document.getElementById(id).innerText;
+        await navigator.clipboard.writeText(texto);
+        alert("Copiado com sucesso!");
     }
 
     async function gerarPNG() {
-        const card = document.getElementById("card");
-        const canvas = await html2canvas(card, { 
-            scale: 3, 
-            useCORS: true, 
-            backgroundColor: "#ffffff" 
-        });
+        const canvas = await html2canvas(document.getElementById("card"), { scale: 3, backgroundColor: "#f1f5f9" });
         const link = document.createElement("a");
         link.download = `AVISO_NOC_${document.getElementById("protocolo").value || 'NEW'}.png`;
-        link.href = canvas.toDataURL("image/png");
+        link.href = canvas.toDataURL();
         link.click();
     }
 
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
-        const card = document.getElementById("card");
-        const canvas = await html2canvas(card, { 
-            scale: 3, 
-            useCORS: true, 
-            backgroundColor: "#ffffff" 
-        });
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a4");
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        
-        pdf.addImage(imgData, "PNG", 10, 10, pdfWidth, pdfHeight);
-        pdf.save(`AVISO_NOC_${document.getElementById("protocolo").value || 'NEW'}.pdf`);
+        const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
+        const img = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p","mm","a4");
+        pdf.addImage(img, "PNG", 10, 10, 190, (canvas.height * 190) / canvas.width);
+        pdf.save("aviso_noc.pdf");
     }
 
     atualizar();
