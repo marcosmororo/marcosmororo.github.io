@@ -14,7 +14,6 @@
             --panel-dark: #1e293b;
             --accent-blue: #3b82f6;
             --accent-red: #ef4444;
-            --accent-green: #10b981;
             --text-gray: #94a3b8;
         }
 
@@ -31,7 +30,6 @@
             height: 100vh;
         }
 
-        /* Painel Lateral */
         .form {
             background: var(--panel-dark);
             padding: 25px;
@@ -39,7 +37,7 @@
             border-right: 1px solid #334155;
         }
 
-        h3 { margin-top: 0; color: #f8fafc; display: flex; align-items: center; gap: 10px; }
+        h3 { margin-top: 0; color: #f8fafc; }
 
         label {
             font-size: 11px;
@@ -61,9 +59,6 @@
             box-sizing: border-box;
         }
 
-        input:focus { border-color: var(--accent-blue); outline: none; }
-
-        /* Preview Area */
         .preview-area {
             background: #f1f5f9;
             padding: 40px;
@@ -74,6 +69,7 @@
             color: #1e293b;
         }
 
+        /* CARD AJUSTADO PARA EVITAR CORTES */
         .card {
             width: 650px;
             background: #fff;
@@ -82,13 +78,13 @@
             overflow: hidden;
             position: relative;
             margin-bottom: 30px;
-            padding-bottom: 10px;
+            padding-top: 5px; /* Espaço de segurança no topo */
         }
 
         .badge {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background: var(--accent-red);
             color: #fff;
             padding: 6px 12px;
@@ -96,10 +92,11 @@
             font-weight: 800;
             border-radius: 4px;
             display: none;
+            z-index: 10;
         }
 
-        .header { text-align: center; padding: 25px; }
-        .header img { max-width: 160px; }
+        .header { text-align: center; padding: 30px 25px 20px 25px; }
+        .header img { max-width: 180px; height: auto; display: inline-block; }
 
         .title {
             text-align: center;
@@ -119,7 +116,7 @@
             font-weight: 500;
         }
 
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; background: white; }
         td { padding: 14px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
 
         .label-cell {
@@ -129,7 +126,6 @@
             color: #64748b;
         }
 
-        /* Boxes Inferiores */
         .copy-box {
             width: 650px;
             background: white;
@@ -172,9 +168,7 @@
 
         .png { background: #2563eb; color: #fff; }
         .pdf { background: #16a34a; color: #fff; }
-        .sheet { background: #10b981; color: #fff; text-decoration: none; display: flex; align-items: center; justify-content: center; border-radius: 6px; font-weight: bold; }
         .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; cursor: pointer; border-radius: 4px; }
-        button:hover { opacity: 0.9; transform: translateY(-1px); }
     </style>
 </head>
 <body>
@@ -204,19 +198,19 @@
         </div>
 
         <label>Local / Abrangência</label>
-        <input id="local" placeholder="Ex: Backbone Ceará">
+        <input id="local" placeholder="Ex: Castanhal/PA">
 
         <label>Descrição Técnica</label>
-        <input id="descricao" placeholder="Ex: Troca de Switch Core">
+        <input id="descricao" placeholder="Ex: Reboot da OLT1">
 
         <label>Impacto Previsto</label>
-        <input id="impacto" placeholder="Ex: Lentidão e perda de pacotes">
+        <input id="impacto" placeholder="Ex: Clientes residenciais">
 
         <label>Setor Responsável</label>
-        <input id="setor" placeholder="Ex: Engenharia de Redes">
+        <input id="setor" placeholder="Ex: NOC">
 
         <label>Protocolo / Ticket</label>
-        <input id="protocolo" placeholder="Ex: NOC-2026-00123">
+        <input id="protocolo" placeholder="Ex: 0426-003850">
 
         <div class="btn-group">
             <button class="png" onclick="gerarPNG()">Salvar PNG</button>
@@ -224,7 +218,7 @@
         </div>
     </div>
 
-    <div class="preview-area">
+    <div class="preview-area" id="captura-container">
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
             <div class="header">
@@ -256,136 +250,92 @@
 
         <div class="copy-box">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div class="copy-header">LANÇAMENTO EM PLANILHA (COPIA E COLA)</div>
+                <div class="copy-header">LANÇAMENTO EM PLANILHA</div>
                 <div style="display: flex; gap: 5px;">
-                    <a href="https://docs.google.com/spreadsheets/d/SEU_LINK_AQUI" target="_blank" class="copy-btn sheet" style="background: #16a34a; text-decoration: none; padding: 4px 10px; font-size: 11px;">Abrir Planilha</a>
+                    <a href="#" target="_blank" class="copy-btn" style="background: #16a34a; text-decoration: none;">Abrir Planilha</a>
                     <button class="copy-btn" onclick="copiarTexto('sheet-row')">Copiar Linha</button>
                 </div>
             </div>
             <div id="sheet-row"></div>
-            <small style="font-size: 10px; color: #64748b; margin-top: 5px; display: block;">Seq: Protocolo > Setor > Resp > Tipo > Início > Fim > Indisp > Local > Desc > Circuitos > Impacto > Status</small>
         </div>
     </div>
 </div>
 
 <script>
-    const idsCampos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
-    
-    // Escuta mudanças em todos os campos para atualizar em tempo real
-    idsCampos.forEach(id => {
-        document.getElementById(id).addEventListener("input", atualizar);
-    });
+    const ids = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
+    ids.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
     function formatarData(d){
-        if(!d) return { formatada: "", diaSemana: "" };
+        if(!d) return { f: "", s: "" };
         const dataObj = new Date(d + 'T00:00:00');
         const dias = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
-        
-        return {
-            formatada: dataObj.toLocaleDateString('pt-BR'),
-            diaSemana: dias[dataObj.getDay()]
-        };
+        return { f: dataObj.toLocaleDateString('pt-BR'), s: dias[dataObj.getDay()] };
     }
 
     function atualizar() {
-        const valores = {};
-        idsCampos.forEach(id => valores[id] = document.getElementById(id).value);
-        
-        const infoData = formatarData(valores.data);
-        const ehEmergencial = valores.tipo === "critico";
-        const cor = ehEmergencial ? "#dc2626" : "#1e3a8a";
-        const txtTipo = ehEmergencial ? "EMERGENCIAL" : "PROGRAMADA";
+        const v = {};
+        ids.forEach(id => v[id] = document.getElementById(id).value);
+        const dataInfo = formatarData(v.data);
+        const ehCritico = v.tipo === "critico";
+        const cor = ehCritico ? "#dc2626" : "#1e3a8a";
 
-        // 1. Atualizar Visual do Card (Tabela)
-        document.getElementById("badge").style.display = ehEmergencial ? "block" : "none";
-        document.getElementById("titulo").style.background = cor;
-        document.getElementById("subtitulo").style.background = cor;
-        document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${txtTipo}`;
-        document.getElementById("subtitulo").innerText = ehEmergencial ? "ATIVIDADE EMERGENCIAL EM ANDAMENTO" : "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
+        // Card
+        document.getElementById("badge").style.display = ehCritico ? "block" : "none";
+        document.getElementById("titulo").style.backgroundColor = cor;
+        document.getElementById("subtitulo").style.backgroundColor = cor;
+        document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${ehCritico ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
+        document.getElementById("subtitulo").innerText = ehCritico ? "ATIVIDADE EMERGENCIAL EM ANDAMENTO" : "ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO";
 
-        document.getElementById("p_data").innerText = infoData.formatada ? `${infoData.formatada} (${infoData.diaSemana})` : "-";
-        document.getElementById("p_periodo").innerText = (valores.inicio || valores.fim) ? `${valores.inicio || '00:00'} às ${valores.fim || '00:00'}` : "-";
-        document.getElementById("p_local").innerText = valores.local || "-";
-        document.getElementById("p_descricao").innerText = valores.descricao || "-";
-        document.getElementById("p_impacto").innerText = valores.impacto || "-";
-        document.getElementById("p_setor").innerText = valores.setor || "-";
-        document.getElementById("p_protocolo").innerText = valores.protocolo || "-";
+        document.getElementById("p_data").innerText = dataInfo.f ? `${dataInfo.f} (${dataInfo.s})` : "-";
+        document.getElementById("p_periodo").innerText = (v.inicio && v.fim) ? `${v.inicio} às ${v.fim}` : "-";
+        document.getElementById("p_local").innerText = v.local || "-";
+        document.getElementById("p_descricao").innerText = v.descricao || "-";
+        document.getElementById("p_impacto").innerText = v.impacto || "-";
+        document.getElementById("p_setor").innerText = v.setor || "-";
+        document.getElementById("p_protocolo").innerText = v.protocolo || "-";
 
-        // 2. Atualizar Texto do E-mail
-        const prefixoProtocolo = valores.protocolo ? `(${valores.protocolo}) ` : "";
-        document.getElementById("mail_titulo").innerText = `${prefixoProtocolo}GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo.toUpperCase()}`;
-        
-        document.getElementById("email-body").innerText = `Prezados,
+        // Email
+        document.getElementById("mail_titulo").innerText = `${v.protocolo ? '('+v.protocolo+') ' : ''}GMUD - NOC | AVISO DE MANUTENÇÃO ${v.tipo.toUpperCase()}`;
+        document.getElementById("email-body").innerText = `Prezados,\n\nGostaríamos de informar que na madrugada do dia ${dataInfo.f || 'XX/XX'} (${dataInfo.s || 'dia'}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${v.tipo} na qual afetará os serviços, conforme aviso em anexo.\n\nAtenciosamente,\nNOC - Online Telecom`;
 
-Gostaríamos de informar que na madrugada do dia ${infoData.formatada || 'XX/XX'} (${infoData.diaSemana || 'dia'}), no intervalo entre ${valores.inicio || '00:00'} até ${valores.fim || '00:00'} horas, ocorrerá uma manutenção ${txtTipo.toLowerCase()} na qual afetará alguns dos serviços entregues, conforme aviso em anexo.
-
-O serviço poderá sofrer indisponibilidade e impacto de base no varejo.
-
-Atenciosamente,
-NOC - Online Telecom`;
-
-        // 3. Gerar Linha da Planilha (Tab-Separated)
-        const linha = [
-            valores.protocolo,
-            valores.setor,
-            "Equipe NOC", 
-            txtTipo,
-            infoData.formatada,
-            valores.inicio,
-            infoData.formatada,
-            valores.fim,
-            "1 Hora", // Estimativa
-            valores.local,
-            valores.descricao,
-            "Clientes Residenciais",
-            valores.impacto,
-            "AGENDADO"
-        ].join('\t');
-
+        // Planilha
+        const linha = [v.protocolo, v.setor, "Equipe NOC", v.tipo, dataInfo.f, v.inicio, dataInfo.f, v.fim, "1h", v.local, v.descricao, "Varejo", v.impacto, "OK"].join('\t');
         document.getElementById("sheet-row").innerText = linha;
     }
 
     async function copiarTexto(id) {
-        const texto = document.getElementById(id).innerText;
-        try {
-            await navigator.clipboard.writeText(texto);
-            alert("Copiado para a área de transferência!");
-        } catch (err) {
-            alert("Erro ao copiar texto.");
-        }
+        await navigator.clipboard.writeText(document.getElementById(id).innerText);
+        alert("Copiado!");
     }
 
+    // FUNÇÕES DE EXPORTAÇÃO CORRIGIDAS (SEM CORTES)
     async function gerarPNG() {
-        atualizar(); // Garante que o card está com os dados mais recentes
-        const card = document.getElementById("card");
-        const canvas = await html2canvas(card, { 
-            scale: 2, 
+        const elemento = document.getElementById("card");
+        const canvas = await html2canvas(elemento, {
+            scale: 3,
             backgroundColor: "#ffffff",
-            useCORS: true 
+            logging: false,
+            useCORS: true,
+            y: 0, // Garante que comece do topo do elemento
+            scrollX: 0,
+            scrollY: -window.scrollY // Compensa o scroll da página para não cortar
         });
         const link = document.createElement("a");
-        link.download = `Aviso_NOC_${document.getElementById("protocolo").value || 'Atividade'}.png`;
+        link.download = `AVISO_${document.getElementById("protocolo").value || 'NOC'}.png`;
         link.href = canvas.toDataURL("image/png");
         link.click();
     }
 
     async function gerarPDF() {
-        atualizar(); 
         const { jsPDF } = window.jspdf;
-        const card = document.getElementById("card");
-        const canvas = await html2canvas(card, { scale: 2, backgroundColor: "#ffffff" });
+        const elemento = document.getElementById("card");
+        const canvas = await html2canvas(elemento, { scale: 3, y: 0, scrollY: -window.scrollY });
         const imgData = canvas.toDataURL("image/png");
-        
         const pdf = new jsPDF("p", "mm", "a4");
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-        
-        pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-        pdf.save(`Aviso_NOC_${document.getElementById("protocolo").value || 'Atividade'}.pdf`);
+        pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
+        pdf.save("aviso_noc.pdf");
     }
 
-    // Inicializa campos vazios
     atualizar();
 </script>
 
