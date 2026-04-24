@@ -8,23 +8,25 @@
         :root {
             --primary-color: #004085;
             --border-color: #dee2e6;
+            --bg-gray: #f8f9fa;
         }
 
         @page {
-            size: auto;
-            margin: 10mm 15mm !important;
+            size: A4;
+            margin: 0;
         }
 
         body {
             font-family: 'Arial', sans-serif;
             background-color: #525659;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
+        /* Estrutura Base das Páginas */
         .report-page {
             background: white;
             width: 210mm;
@@ -35,13 +37,15 @@
             position: relative;
             display: flex;
             flex-direction: column;
+            margin: 10mm 0;
+            page-break-after: always;
         }
 
-        /* HEADER CENTRALIZADO */
+        /* --- ESTILOS DA PÁGINA 1 (TÉCNICA) --- */
         header {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centraliza tudo horizontalmente */
+            align-items: center;
             text-align: center;
             border-bottom: 3px solid var(--primary-color);
             padding-bottom: 15px;
@@ -49,7 +53,7 @@
         }
 
         .logo-container img {
-            max-height: 80px; /* Aumentei um pouco para destaque no centro */
+            max-height: 70px;
             width: auto;
             display: block;
             margin-bottom: 10px;
@@ -63,7 +67,6 @@
             text-transform: uppercase;
         }
 
-        /* PROTOCOLO POSICIONADO ABAIXO DO TÍTULO OU NAS INFOS */
         .protocol-area {
             margin-top: 10px;
             width: 100%;
@@ -115,21 +118,8 @@
             border: none;
             width: 100%;
             font-size: 14px;
-            font-family: 'Arial', sans-serif;
             outline: none;
             background: transparent;
-        }
-
-        [contenteditable="true"] {
-            outline: none;
-            min-height: 1.2em;
-            font-size: 14px;
-        }
-
-        [contenteditable="true"]:empty:before {
-            content: "Clique para descrever...";
-            color: #ccc;
-            font-style: italic;
         }
 
         h2 {
@@ -139,9 +129,6 @@
             padding: 6px 12px;
             margin-top: 15px;
             border-radius: 2px;
-            text-align: left;
-            width: 100%;
-            box-sizing: border-box;
         }
 
         .content-box {
@@ -150,8 +137,7 @@
             min-height: 50px;
             line-height: 1.5;
             font-size: 14px;
-            width: 100%;
-            box-sizing: border-box;
+            outline: none;
         }
 
         .image-container {
@@ -162,12 +148,62 @@
         }
 
         .image-wrapper { position: relative; }
-        .image-wrapper img { max-width: 100%; max-height: 250px; border: 1px solid #ddd; }
-        .remove-btn {
-            position: absolute; top: 0; right: 0; background: red; color: white;
-            border: none; cursor: pointer; padding: 2px 6px;
+        .image-wrapper img { max-width: 100%; max-height: 200px; border: 1px solid #ddd; }
+        
+        /* --- ESTILOS DA PÁGINA 2 (ENCERRAMENTO) --- */
+        .closing-content {
+            text-align: center;
+            padding-top: 30mm;
         }
 
+        .department-tag {
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .report-title-end {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .message-container {
+            max-width: 600px;
+            margin: 0 auto 60px auto;
+        }
+
+        .message-container p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .contact-card {
+            background: var(--bg-gray);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .contact-item { display: flex; flex-direction: column; }
+        .contact-item strong { color: var(--primary-color); font-size: 11px; text-transform: uppercase; margin-bottom: 5px; }
+        .contact-item span { font-size: 18px; font-weight: bold; color: #333; }
+
+        /* Rodapés */
         footer {
             margin-top: auto;
             border-top: 1px solid var(--border-color);
@@ -178,6 +214,7 @@
             justify-content: space-between;
         }
 
+        /* Toolbar */
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
             padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -190,13 +227,15 @@
         }
         .btn-print { background: #28a745; color: white; }
         .btn-img { background: #007bff; color: white; }
+        .remove-btn { position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; padding: 2px 6px; }
 
         @media print {
-            body { background: none; padding: 0; }
+            body { background: none; }
             .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; width: 100%; margin: 0; border: none; }
+            .report-page { box-shadow: none; margin: 0; border: none; }
             .content-box { border: none; }
             [contenteditable="true"]:empty:before { content: ""; }
+            .contact-card { background-color: #f8f9fa !important; -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
@@ -207,7 +246,7 @@
         <button class="btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR EVIDÊNCIA</button>
         <button class="btn-print" onclick="generatePDF()">GERAR PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
-        <p style="font-size: 10px; color: #d9534f;">Nota: O nome do arquivo será o protocolo digitado.</p>
+        <p style="font-size: 10px; color: #d9534f;">Nota: O arquivo será salvo com o nome do protocolo.</p>
     </div>
 
     <div class="report-page">
@@ -253,7 +292,7 @@
         <footer>
             <div>
                 <strong>Online Telecom</strong><br>
-                Suporte: 0800 088 1111 | 88 3695 3095 | noc@online.net.br
+                NOC: noc@online.net.br
             </div>
             <div style="text-align: right;">
                 www.onlinetelecom.com.br
@@ -261,9 +300,51 @@
         </footer>
     </div>
 
+    <div class="report-page closing-page">
+        <div class="closing-content">
+            <div class="department-tag">Supervision Department</div>
+            <div class="report-title-end">Report - NOC</div>
+
+            <div class="message-container">
+                <p><strong>Lamentamos esta ocorrência.</strong></p>
+                <p>
+                    Podemos garantir que estamos sempre dispostos a oferecer todos os esforços possíveis para contornar qualquer situação como esta.
+                </p>
+                <p>Agradecemos desde já a sua confiança.</p>
+                <p>Abaixo nossos contactos para quaisquer esclarecimentos:</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-item">
+                    <strong>Supervisão da rede</strong>
+                    <span>noc@online.net.br</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Contacto Direto</strong>
+                    <span>88 3695-3095</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Suporte Técnico</strong>
+                    <span>0800 088 1111</span>
+                </div>
+            </div>
+        </div>
+
+        <footer style="margin-top: auto;">
+            <div>
+                <strong>Online Telecom S.A.</strong><br>
+                Departamento de Infraestrutura
+            </div>
+            <div style="text-align: right;">
+                Documento Gerado pelo NOC
+            </div>
+        </footer>
+    </div>
+
     <script>
         function generatePDF() {
             const idProtocolo = document.getElementById('protocolo').value;
+            // Define o título que o navegador usará como nome de arquivo
             if (idProtocolo) {
                 document.title = "RFO_" + idProtocolo;
             } else {
