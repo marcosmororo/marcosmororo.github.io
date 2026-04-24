@@ -7,11 +7,15 @@
     <style>
         :root {
             --primary-color: #004085;
-            --secondary-color: #f8f9fa;
             --border-color: #dee2e6;
         }
 
-        /* Configuração da Página para Visualização */
+        /* CONFIGURAÇÃO PARA MATAR LINKS DO NAVEGADOR NO PDF */
+        @page {
+            size: auto;
+            margin: 10mm 15mm !important; /* Margem interna que empurra o conteúdo e ignora cabeçalhos */
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #525659;
@@ -30,6 +34,8 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
             box-sizing: border-box;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         header {
@@ -48,12 +54,7 @@
             letter-spacing: 1px;
         }
 
-        .brand p {
-            margin: 2px 0;
-            font-size: 12px;
-            color: #555;
-            font-weight: bold;
-        }
+        .brand p { margin: 2px 0; font-size: 12px; color: #555; font-weight: bold; }
 
         .info-grid {
             display: grid;
@@ -62,17 +63,23 @@
             margin-bottom: 20px;
         }
 
-        .field {
-            border-bottom: 1px solid var(--border-color);
-            padding: 5px 0;
-        }
-
+        .field { border-bottom: 1px solid var(--border-color); padding: 5px 0; }
         .field label {
             display: block;
             font-size: 10px;
             color: var(--primary-color);
             font-weight: bold;
             text-transform: uppercase;
+        }
+
+        /* INPUTS DE DATA E HORA ESTILIZADOS */
+        input[type="datetime-local"], input[type="text"], input[type="date"] {
+            border: none;
+            width: 100%;
+            font-size: 14px;
+            font-family: 'Arial', sans-serif;
+            outline: none;
+            background: transparent;
         }
 
         [contenteditable="true"] {
@@ -82,61 +89,44 @@
         }
 
         [contenteditable="true"]:empty:before {
-            content: "Clique para preencher...";
+            content: "Clique para descrever...";
             color: #ccc;
             font-style: italic;
         }
 
         h2 {
-            font-size: 16px;
+            font-size: 15px;
             color: white;
             background: var(--primary-color);
             padding: 6px 12px;
-            margin-top: 20px;
+            margin-top: 15px;
             border-radius: 2px;
         }
 
         .content-box {
             border: 1px dashed #eee;
             padding: 10px;
-            min-height: 60px;
+            min-height: 50px;
             line-height: 1.5;
             font-size: 14px;
         }
 
-        /* Área de Imagens */
         .image-container {
-            margin-top: 20px;
+            margin-top: 15px;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        .image-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .image-wrapper img {
-            max-width: 100%;
-            border: 1px solid #ddd;
-            display: block;
-        }
-
+        .image-wrapper { position: relative; }
+        .image-wrapper img { max-width: 100%; max-height: 250px; border: 1px solid #ddd; }
         .remove-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: red;
-            color: white;
-            border: none;
-            cursor: pointer;
-            padding: 2px 6px;
-            font-size: 10px;
+            position: absolute; top: 0; right: 0; background: red; color: white;
+            border: none; cursor: pointer; padding: 2px 6px;
         }
 
         footer {
-            margin-top: 40px;
+            margin-top: auto; /* Garante que fique no fim da página */
             border-top: 1px solid var(--border-color);
             padding-top: 15px;
             font-size: 11px;
@@ -145,91 +135,96 @@
             justify-content: space-between;
         }
 
-        /* Painel de Controle (Não sai no PDF) */
         .toolbar {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            width: 200px;
-            z-index: 999;
+            position: fixed; top: 20px; right: 20px; background: white;
+            padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 200px; z-index: 999;
         }
 
         .toolbar button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
         }
-
         .btn-print { background: #28a745; color: white; }
         .btn-img { background: #007bff; color: white; }
 
-        /* REGRAS DE IMPRESSÃO (PDF) */
+        /* REGRAS EXCLUSIVAS PARA O PDF */
         @media print {
             body { background: none; padding: 0; }
             .toolbar, .remove-btn { display: none !important; }
             .report-page { box-shadow: none; width: 100%; margin: 0; border: none; }
             .content-box { border: none; }
+            input { border: none !important; }
             [contenteditable="true"]:empty:before { content: ""; }
             
-            /* Remove links e URLs automáticas do rodapé do navegador */
-            @page { margin: 1cm; }
+            /* Remove links azuis e decorações */
+            a { text-decoration: none; color: black; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h3 style="margin-top:0; font-size: 14px;">Ações</h3>
+        <h3 style="margin:0 0 10px 0; font-size: 14px;">Controles</h3>
         <button class="btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR IMAGEM</button>
         <button class="btn-print" onclick="window.print()">GERAR PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
-        <p style="font-size: 10px; color: #666;">Dica: No menu de impressão, desmarque "Cabeçalhos e Rodapés".</p>
+        <p style="font-size: 10px; color: #d9534f; font-weight: bold;">IMPORTANTE: Na tela de impressão, desmarque "Cabeçalhos e Rodapés" nas definições.</p>
     </div>
 
     <div class="report-page">
         <header>
             <div class="brand">
                 <h1>ONLINE TELECOM</h1>
-                <p>NOC - RELATÓRIO TÉCNICO DE INCIDENTE</p>
+                <p>NOC - RELATÓRIO TÉCNICO</p>
             </div>
             <div style="text-align: right;">
                 <div class="field" style="border: none;">
                     <label>ID DO TICKET</label>
-                    <div contenteditable="true" style="font-weight: bold; font-size: 16px;"></div>
+                    <input type="text" placeholder="Ex: INC0001" style="font-weight: bold; font-size: 16px; text-align: right;">
                 </div>
             </div>
         </header>
 
         <div class="info-grid">
-            <div class="field"><label>Data do Relatório</label><div contenteditable="true"></div></div>
-            <div class="field"><label>Prioridade</label><div contenteditable="true"></div></div>
-            <div class="field"><label>Início do Incidente</label><div contenteditable="true"></div></div>
-            <div class="field"><label>Fim do Incidente</label><div contenteditable="true"></div></div>
-            <div class="field"><label>Localização</label><div contenteditable="true"></div></div>
-            <div class="field"><label>Causa Raiz</label><div contenteditable="true"></div></div>
+            <div class="field">
+                <label>Data do Relatório</label>
+                <input type="date">
+            </div>
+            <div class="field">
+                <label>Prioridade</label>
+                <input type="text" placeholder="Alta / Média / Baixa">
+            </div>
+            <div class="field">
+                <label>Início do Incidente</label>
+                <input type="datetime-local">
+            </div>
+            <div class="field">
+                <label>Fim do Incidente</label>
+                <input type="datetime-local">
+            </div>
+            <div class="field">
+                <label>Localização do Evento</label>
+                <input type="text" placeholder="Ex: Backhaul Fortaleza - CE">
+            </div>
+            <div class="field">
+                <label>Causa Raiz</label>
+                <input type="text" placeholder="Ex: Rompimento de Fibra">
+            </div>
         </div>
 
         <h2>Sumário do Incidente</h2>
         <div class="content-box" contenteditable="true"></div>
 
-        <h2>Ações de Resolução</h2>
+        <h2>Ações de Resolução e Testes</h2>
         <div class="content-box" contenteditable="true"></div>
 
-        <h2>Evidências / Anexos</h2>
-        <div id="imageContainer" class="image-container">
-            </div>
+        <h2>Evidências Fotográficas / Mapas</h2>
+        <div id="imageContainer" class="image-container"></div>
 
-        <h2>Status Final</h2>
+        <h2>Conclusão e Status</h2>
         <div class="content-box" contenteditable="true">
-            Serviço restabelecido e estabilizado. Redundância operacional.
+            Serviço normalizado. Monitoramento ativo sem novas falhas detectadas.
         </div>
 
         <footer>
@@ -251,9 +246,8 @@
                     const container = document.getElementById('imageContainer');
                     const wrapper = document.createElement('div');
                     wrapper.className = 'image-wrapper';
-                    
                     wrapper.innerHTML = `
-                        <img src="${e.target.result}" style="width: 300px; resize: both;">
+                        <img src="${e.target.result}">
                         <button class="remove-btn" onclick="this.parentElement.remove()">X</button>
                     `;
                     container.appendChild(wrapper);
