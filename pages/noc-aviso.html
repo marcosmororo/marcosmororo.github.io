@@ -96,7 +96,7 @@
         }
 
         .header { text-align: center; padding: 25px; }
-        .header img { max-width: 160px; }
+        .header img { max-width: 160px; height: auto; }
 
         .title {
             text-align: center;
@@ -126,7 +126,7 @@
             color: #64748b;
         }
 
-        /* Email e Planilha Box */
+        /* Copy Boxes */
         .copy-box {
             width: 650px;
             background: white;
@@ -148,19 +148,20 @@
             padding-bottom: 5px;
         }
 
-        #email-body, #row-preview {
-            font-size: 14px;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            color: #334155;
-        }
-
         #row-preview {
             font-family: monospace;
             background: #f8fafc;
             padding: 10px;
             font-size: 11px;
             overflow-x: auto;
+            color: #334155;
+        }
+
+        #email-body {
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            color: #334155;
         }
 
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -180,16 +181,18 @@
         .copy-btn { background: #64748b; color: #fff; width: auto; font-size: 11px; padding: 4px 8px; }
         
         .btn-sheet { 
-            background: var(--accent-green); 
+            background: #0f172a; 
             color: white; 
             text-decoration: none; 
             text-align: center; 
             display: block;
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 15px;
+            padding: 12px;
             border-radius: 6px;
             font-weight: bold;
+            border: 1px solid #334155;
         }
+        .btn-sheet:hover { background: #1e293b; }
     </style>
 </head>
 <body>
@@ -198,8 +201,7 @@
     <div class="form">
         <h3>📡 Gerador de Avisos NOC</h3>
         
-        <label>Link da Planilha Oficial</label>
-        <input type="text" id="inputLinkPlanilha" placeholder="Cole o link aqui" oninput="vincularPlanilha()">
+        <a href="https://docs.google.com/spreadsheets/d/1wzG3PYX7nBzQzXsO-1LAprrjOt-F5KOgvtaJN6appFQ/edit?gid=1877008006#gid=1877008006" target="_blank" class="btn-sheet">📂 Abrir Planilha Oficial</a>
 
         <label>Tipo de Manutenção</label>
         <select id="tipo">
@@ -240,14 +242,13 @@
             <button class="png" onclick="gerarPNG()">Salvar PNG</button>
             <button class="pdf" onclick="gerarPDF()">Salvar PDF</button>
         </div>
-        <a id="btnAbrirPlanilha" href="#" target="_blank" class="btn-sheet" style="display:none;">📂 Abrir Planilha Oficial</a>
     </div>
 
     <div class="preview-area">
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
             <div class="header">
-                <img src="../assets/img/online.png" alt="Logo">
+                <img id="logo-img" src="../assets/img/online.png" alt="Logo" crossorigin="anonymous">
             </div>
             <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
             <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA</div>
@@ -313,7 +314,7 @@
         const cor = ehEmergencial ? "#dc2626" : "#1e3a8a";
         const txtTipo = ehEmergencial ? "EMERGENCIAL" : "PROGRAMADA";
 
-        // Atualização Visual do Card
+        // Card Visual
         document.getElementById("badge").style.display = ehEmergencial ? "block" : "none";
         document.getElementById("titulo").style.background = cor;
         document.getElementById("subtitulo").style.background = cor;
@@ -328,12 +329,12 @@
         document.getElementById("p_setor").innerText = setor;
         document.getElementById("p_protocolo").innerText = protocolo;
 
-        // Atualização E-mail
+        // E-mail
         const prefixo = protocolo ? `(${protocolo}) ` : "(GMUD) ";
         document.getElementById("mail_titulo").innerText = `${prefixo}GMUD - NOC | AVISO DE MANUTENÇÃO ${txtTipo}`;
         document.getElementById("email-body").innerText = `Prezados,\n\nGostaríamos de informar que na madrugada do dia ${infoData.formatada} (${infoData.diaSemana}), no intervalo entre ${eInicio} até ${eFim} horas, ocorrerá uma manutenção ${ehEmergencial ? 'emergencial' : 'programada'} na qual afetará alguns dos serviços entregues, conforme aviso em anexo.\n\nO serviço poderá sofrer indisponibilidade e impacto de base no varejo.\n\nAtenciosamente,\nNOC - Online Telecom`;
 
-        // Atualização Linha Planilha (Sequência solicitada)
+        // Linha Planilha (Tabs para colunas corretas no Sheets/Excel)
         const colunas = [
             protocolo, setor, "NOC - Online Telecom", txtTipo, 
             eData, eInicio, eData, eFim, `${eInicio}-${eFim}`, 
@@ -343,41 +344,45 @@
         window.dadosPlanilha = colunas.join("\t");
     }
 
-    function vincularPlanilha() {
-        const link = document.getElementById("inputLinkPlanilha").value;
-        const btn = document.getElementById("btnAbrirPlanilha");
-        if(link) {
-            btn.href = link;
-            btn.style.display = "block";
-        } else {
-            btn.style.display = "none";
-        }
-    }
-
     async function copiarLinha() {
         await navigator.clipboard.writeText(window.dadosPlanilha);
-        alert("Linha copiada para a planilha!");
+        alert("Linha copiada! Vá na planilha e dê CTRL+V na primeira coluna.");
     }
 
     async function copiarEmail() {
         await navigator.clipboard.writeText(document.getElementById("email-body").innerText);
-        alert("E-mail copiado!");
+        alert("Corpo do e-mail copiado!");
     }
 
     async function gerarPNG() {
-        const canvas = await html2canvas(document.getElementById("card"), { scale: 3, backgroundColor: "#f1f5f9" });
+        const card = document.getElementById("card");
+        const canvas = await html2canvas(card, { 
+            scale: 3, 
+            useCORS: true, 
+            backgroundColor: "#ffffff" 
+        });
         const link = document.createElement("a");
         link.download = `AVISO_NOC_${document.getElementById("protocolo").value || 'NEW'}.png`;
-        link.href = canvas.toDataURL();
+        link.href = canvas.toDataURL("image/png");
         link.click();
     }
 
     async function gerarPDF() {
         const { jsPDF } = window.jspdf;
-        const canvas = await html2canvas(document.getElementById("card"), { scale: 3 });
-        const pdf = new jsPDF("p","mm","a4");
-        pdf.addImage(canvas.toDataURL("image/png"), "PNG", 10, 10, 190, 0);
-        pdf.save("aviso_noc.pdf");
+        const card = document.getElementById("card");
+        const canvas = await html2canvas(card, { 
+            scale: 3, 
+            useCORS: true, 
+            backgroundColor: "#ffffff" 
+        });
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        
+        pdf.addImage(imgData, "PNG", 10, 10, pdfWidth, pdfHeight);
+        pdf.save(`AVISO_NOC_${document.getElementById("protocolo").value || 'NEW'}.pdf`);
     }
 
     atualizar();
