@@ -32,14 +32,14 @@
     <div class="card">
         <h2>➕ Adicionar Informação de Rede</h2>
         <div class="grid-form">
-            <input type="text" id="bng" placeholder="Nome do BNG (ex: BNG-01)">
-            <input type="text" id="ipv4" placeholder="Bloco IPv4">
-            <input type="text" id="ipv6" placeholder="Bloco IPv6">
+            <input type="text" id="bng" placeholder="Nome do Equipamento">
+            <input type="text" id="ipv4" placeholder="IP Lado A">
+            <input type="text" id="ipv6" placeholder="IP Lado B ">
             <input type="text" id="cap" placeholder="Capacidade (ex: 100G)">
-            <input type="text" id="ptp" placeholder="PTP Juniper/A10">
+            <input type="text" id="ptp" placeholder="Descrição">
             <select id="google">
-                <option value="OK">Google GGC: OK</option>
-                <option value="Falha">Google GGC: Falha</option>
+                <option value="OK">Ping: OK</option>
+                <option value="Falha">Ping: Falha</option>
             </select>
         </div>
         <button class="btn-add" onclick="adicionarLinha()">Adicionar à Tabela</button>
