@@ -7,11 +7,11 @@
     <style>
         :root {
             --primary-color: #004085;
-            --accent-color: #007bff;
+            --accent-color: #00d4ff;
             --text-white: #ffffff;
         }
 
-        /* Configuração de Impressão e Página */
+        /* Configuração de Impressão */
         @page {
             size: A4;
             margin: 0;
@@ -20,16 +20,16 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #525659;
         }
 
         .page {
             width: 210mm;
-            height: 296mm; /* Ajuste leve para evitar quebra errada */
+            height: 296.5mm;
             background: white;
             margin: 10px auto;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
             position: relative;
             overflow: hidden;
             display: flex;
@@ -37,45 +37,50 @@
             page-break-after: always;
         }
 
-        /* --- ESTILO DA PÁGINA 1 (CAPA) --- */
+        /* --- PÁGINA 1: CAPA COM IMAGEM IMPACTANTE --- */
         .cover-page {
-            background: linear-gradient(rgba(0, 40, 85, 0.8), rgba(0, 40, 85, 0.9)), 
-                        url('https://images.unsplash.com/photo-1558494949-ef010cbdcc48?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); /* Imagem de rede/datacenter */
+            background: linear-gradient(rgba(0, 30, 60, 0.7), rgba(0, 30, 60, 0.85)), 
+                        url('https://images.unsplash.com/photo-1558494949-ef010cbdcc48?auto=format&fit=crop&w=1600&q=80');
             background-size: cover;
             background-position: center;
             color: var(--text-white);
             text-align: center;
             justify-content: center;
-            align-items: center;
         }
 
         .cover-logo img {
-            max-width: 250px;
-            margin-bottom: 50px;
+            max-width: 280px;
+            margin-bottom: 40px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
         }
 
         .cover-title h1 {
-            font-size: 48pt;
+            font-size: 60pt;
             margin: 0;
-            letter-spacing: 2px;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
 
         .cover-title h2 {
-            font-size: 24pt;
+            font-size: 22pt;
             font-weight: 300;
-            margin: 10px 0 50px 0;
+            margin: 5px 0 60px 0;
             color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .cover-footer {
             position: absolute;
-            bottom: 50px;
+            bottom: 60px;
             width: 100%;
             font-size: 14pt;
             font-weight: 300;
+            opacity: 0.9;
         }
 
-        /* --- ESTILO DA PÁGINA 2 (RELATÓRIO) --- */
+        /* --- PÁGINA 2: RELATÓRIO TÉCNICO --- */
         .report-content {
             padding: 15mm 20mm;
         }
@@ -84,58 +89,63 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 3px solid var(--primary-color);
+            border-bottom: 4px solid var(--primary-color);
             padding-bottom: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .brand-header img { max-height: 50px; }
-        .brand-header h3 { margin: 5px 0 0 0; color: var(--primary-color); font-size: 14pt; }
+        .brand-header img { max-height: 55px; }
+        .brand-header h3 { margin: 5px 0 0 0; color: var(--primary-color); font-size: 14pt; font-weight: 800; }
 
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
-        .field { border-bottom: 1px solid #ddd; padding: 5px 0; }
-        .field label { display: block; font-size: 8pt; color: var(--primary-color); font-weight: bold; text-transform: uppercase; }
-        .field input { border: none; width: 100%; font-size: 11pt; outline: none; background: transparent; }
+        .field { border-bottom: 1px solid #eee; padding: 6px 0; }
+        .field label { display: block; font-size: 8pt; color: var(--primary-color); font-weight: 800; text-transform: uppercase; margin-bottom: 2px; }
+        .field input { border: none; width: 100%; font-size: 11pt; outline: none; background: transparent; font-family: inherit; }
 
-        h2 { font-size: 14pt; color: white; background: var(--primary-color); padding: 5px 10px; margin-top: 15px; }
+        h2 { font-size: 13pt; color: white; background: var(--primary-color); padding: 7px 12px; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
 
-        .content-box { border: 1px dashed #ccc; padding: 10px; min-height: 60px; font-size: 11pt; line-height: 1.5; outline: none; }
+        .content-box { border: 1px dashed #ddd; padding: 12px; min-height: 70px; font-size: 11pt; line-height: 1.6; outline: none; text-align: justify; }
 
         .image-area { margin-top: 15px; display: flex; flex-wrap: wrap; gap: 10px; }
-        .img-wrap { position: relative; }
-        .img-wrap img { max-height: 200px; border: 1px solid #ddd; }
+        .img-wrap { position: relative; border: 1px solid #ddd; padding: 5px; background: #f9f9f9; }
+        .img-wrap img { max-height: 220px; display: block; }
 
-        footer { margin-top: auto; border-top: 1px solid #ddd; padding-top: 10px; font-size: 9pt; color: #666; display: flex; justify-content: space-between; }
+        footer { margin-top: auto; border-top: 1px solid #eee; padding-top: 15px; font-size: 9pt; color: #777; display: flex; justify-content: space-between; }
 
-        /* Controles flutuantes */
+        /* Painel de Ações */
         .toolbar {
-            position: fixed; top: 20px; right: 20px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 999; width: 180px;
+            position: fixed; top: 20px; right: 20px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 999; width: 200px;
         }
-        .toolbar button { width: 100%; padding: 10px; margin-bottom: 8px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
+        .toolbar button { width: 100%; padding: 12px; margin-bottom: 10px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
         .btn-print { background: #28a745; color: white; }
         .btn-img { background: #007bff; color: white; }
+        .toolbar button:hover { opacity: 0.8; transform: translateY(-2px); }
 
         @media print {
             body { background: none; }
             .page { margin: 0; box-shadow: none; border: none; width: 100%; height: 100%; }
             .toolbar, .remove-btn { display: none !important; }
             .content-box { border: none; }
+            .img-wrap { border: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <button class="btn-img" onclick="document.getElementById('fileInput').click()">ADICIONAR IMAGEM</button>
+        <h4 style="margin: 0 0 15px 0; text-align: center; color: #333;">Ferramentas RFO</h4>
+        <button class="btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR IMAGEM</button>
         <button class="btn-print" onclick="window.print()">GERAR PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="addImage(this)">
-        <p style="font-size: 9px; color: red;">Desative "Cabeçalhos e Rodapés" nas opções de impressão.</p>
+        <p style="font-size: 10px; color: #666; text-align: center; margin-top: 10px;">
+            Dica: Nas opções de impressão, oculte "Cabeçalhos e Rodapés".
+        </p>
     </div>
 
     <div class="page cover-page">
@@ -144,11 +154,12 @@
         </div>
         <div class="cover-title">
             <h1>RFO</h1>
-            <h2>REASON FOR OUTAGE</h2>
-            <p style="font-size: 18pt;">2026</p>
+            <h2>Reason For Outage</h2>
+            <p style="font-size: 20pt; font-weight: bold;">2026</p>
         </div>
         <div class="cover-footer">
-            <p>Este documento esclarece os principais pontos do incidente.</p>
+            <p>Relatório de Incidente e Análise de Falha</p>
+            <p style="font-size: 10pt; margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;">NOC - Online Telecom</p>
         </div>
     </div>
 
@@ -156,55 +167,59 @@
         <header>
             <div class="brand-header">
                 <img src="../assets/img/online.png" alt="Logo">
-                <h3>RELATÓRIO DE INCIDENTE</h3>
+                <h3>RELATÓRIO TÉCNICO NOC</h3>
             </div>
             <div style="text-align: right;">
                 <div class="field" style="border: none;">
-                    <label>TICKET ID</label>
-                    <input type="text" placeholder="INC000000" style="text-align: right; font-weight: bold; font-size: 14pt;">
+                    <label>ID DO INCIDENTE</label>
+                    <input type="text" placeholder="INC000000" style="text-align: right; font-weight: 900; font-size: 16pt; color: var(--primary-color);">
                 </div>
             </div>
         </header>
 
         <div class="info-grid">
-            <div class="field"><label>Data do Relatório</label><input type="date"></div>
-            <div class="field"><label>Prioridade</label><input type="text" placeholder="Alta / Crítica"></div>
+            <div class="field"><label>Data de Emissão</label><input type="date"></div>
+            <div class="field"><label>Prioridade</label><input type="text" placeholder="Ex: Crítica"></div>
             <div class="field"><label>Início do Incidente</label><input type="datetime-local"></div>
             <div class="field"><label>Término do Incidente</label><input type="datetime-local"></div>
-            <div class="field"><label>Localização da Falha</label><input type="text" placeholder="Ex: Angonap Fortaleza"></div>
-            <div class="field"><label>Razão da Falha</label><input type="text" placeholder="Ex: Trip disjuntor"></div>
+            <div class="field"><label>Local da Falha</label><input type="text" placeholder="Ex: Data Center Fortaleza"></div>
+            <div class="field"><label>Razão da Falha</label><input type="text" placeholder="Ex: Disparo de Disjuntor"></div>
         </div>
 
-        <h2>Resumo do Incidente</h2>
+        <h2>Sumário e Descrição do Incidente</h2>
         <div class="content-box" contenteditable="true">
-            Descreva aqui o que aconteceu detalhadamente...
+            Clique aqui para descrever detalhadamente o evento ocorrido...
         </div>
 
-        <h2>Ações Realizadas</h2>
+        <h2>Análise de Causa e Ações Tomadas</h2>
         <div class="content-box" contenteditable="true">
-            Descreva as medidas tomadas para normalização...
+            Descreva as medidas de correção aplicadas para restaurar o serviço...
         </div>
 
-        <h2>Evidências / Gráficos</h2>
+        <h2>Evidências de Campo / Monitoramento</h2>
         <div id="imageContainer" class="image-area"></div>
 
-        <h2>Status e Conclusão</h2>
+        <h2>Conclusão e Recomendações</h2>
         <div class="content-box" contenteditable="true">
-            Serviço normalizado. Monitoramento ativo sem novas falhas detectadas.
+            O serviço foi restabelecido. Recomendamos a revisão periódica dos...
         </div>
 
         <footer>
             <div>
-                <strong>Online Telecom - NOC</strong><br>
-                Suporte: 0800 088 1111 | noc@onlinet.net.br
+                <strong>Online Telecom S/A</strong><br>
+                Central NOC: 0800 088 1111 | noc@onlinetelecom.com.br
             </div>
             <div style="text-align: right;">
+                Gerado em: <span id="currentDate"></span><br>
                 www.onlinetelecom.com.br
             </div>
         </footer>
     </div>
 
     <script>
+        // Define a data atual no rodapé
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('pt-BR');
+
         function addImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -214,7 +229,7 @@
                     wrap.className = 'img-wrap';
                     wrap.innerHTML = `
                         <img src="${e.target.result}">
-                        <button class="remove-btn" style="position:absolute; top:0; right:0; background:red; color:white; border:none; cursor:pointer;" onclick="this.parentElement.remove()">X</button>
+                        <button class="remove-btn" style="position:absolute; top:-10px; right:-10px; background:#ff4d4d; color:white; border:none; border-radius:50%; width:25px; height:25px; cursor:pointer; font-weight:bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2);" onclick="this.parentElement.remove()">×</button>
                     `;
                     container.appendChild(wrap);
                 };
