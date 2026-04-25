@@ -1,211 +1,380 @@
+ajuste esse html
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLTs - Vendors</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    
-    <style>
-        :root {
-            --huawei-color: #ff0000;
-            --zte-color: #005eb8;
-            --nokia-color: #124191;
-            --fiberhome-color: #009b44;
-            --datacom-color: #f37021;
-        }
+<meta charset="UTF-8">
+<title>OLTs - Vendors</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/js/script.js"></script>
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
+<style>
+.tabs {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-        .tab-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 2px solid transparent;
-            cursor: pointer;
-            background: #2d2d2d;
-            color: #fff;
-            font-weight: bold;
-            transition: 0.3s;
-        }
+.tab-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: var(--card-dark);
+  color: inherit;
+}
 
-        /* Cores Dinâmicas por Botão */
-        .tab-btn[onclick*="huawei"].active { border-color: var(--huawei-color); color: var(--huawei-color); }
-        .tab-btn[onclick*="zte"].active { border-color: var(--zte-color); color: var(--zte-color); }
-        .tab-btn[onclick*="nokia"].active { border-color: var(--nokia-color); color: var(--nokia-color); }
-        .tab-btn[onclick*="fiberhome"].active { border-color: var(--fiberhome-color); color: var(--fiberhome-color); }
-        .tab-btn[onclick*="datacom"].active { border-color: var(--datacom-color); color: var(--datacom-color); }
+body.light .tab-btn {
+  background: var(--card-light);
+}
 
-        .tab-content { display: none; border-top: 1px solid #444; padding-top: 20px; }
-        .tab-content.active { display: block; }
+/* 🔥 DARK MODE (DEFAULT) */
+.tab-btn.active {
+  background: #ffffff;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #ffffff;
+}
 
-        /* Estilo Accordion Melhorado */
-        .vendor-section h2 {
-            padding-left: 10px;
-            border-left: 5px solid #ccc;
-            margin-bottom: 20px;
-        }
+/* 🔥 LIGHT MODE */
+body.light .tab-btn.active {
+  background: var(--primary);
+  color: #000;
+  border: 2px solid #000;
+}
 
-        .huawei-h { border-color: var(--huawei-color) !important; }
-        .zte-h { border-color: var(--zte-color) !important; }
-        .nokia-h { border-color: var(--nokia-color) !important; }
-        .fiber-h { border-color: var(--fiberhome-color) !important; }
-        .data-h { border-color: var(--datacom-color) !important; }
+.tab-content {
+  display: none;
+}
 
-        .accordion {
-            background: #1e1e1e;
-            color: #ddd;
-            cursor: pointer;
-            padding: 15px;
-            width: 100%;
-            border: none;
-            text-align: left;
-            outline: none;
-            font-size: 15px;
-            transition: 0.4s;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.tab-content.active {
+  display: block;
+}
 
-        .accordion:hover { background: #333; }
-        .accordion:after { content: '\002B'; font-weight: bold; margin-left: 5px; }
-        .accordion.active:after { content: "\2212"; }
+.accordion {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+}
 
-        .panel {
-            padding: 0 18px;
-            background-color: #262626;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.2s ease-out;
-            border-radius: 0 0 5px 5px;
-            margin-bottom: 10px;
-        }
+.panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
 
-        pre {
-            color: #00ff41; /* Estilo Matrix/Terminal */
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
+pre {
+  background: var(--card-dark);
+  padding: 10px;
+  border-radius: 8px;
+}
 
-        /* Tags de Severidade */
-        .critical { border-right: 4px solid #ff4d4d; }
-        .major { border-right: 4px solid #ffa500; }
-        .info { border-right: 4px solid #00aaff; }
-
-    </style>
+body.light pre {
+  background: var(--card-light);
+}
+</style>
 </head>
 
 <body>
 
+<button class="theme-btn" onclick="toggleTheme()">🌙</button>
+
 <nav>
-    <a href="index.html">Home</a>
-    <a href="infra.html">Infraestrutura</a>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
+<a href="contato.html">Contato</a>
 </nav>
 
 <section>
-    <h1>📡 Gerenciamento de OLTs</h1>
-    <p>Selecione o fabricante para visualizar os comandos de troubleshooting.</p>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'huawei')">Huawei</button>
-        <button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
-        <button class="tab-btn" onclick="openTab(event,'nokia')">Nokia</button>
-        <button class="tab-btn" onclick="openTab(event,'fiberhome')">FiberHome</button>
-        <button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
-    </div>
+<h1>📡 OLTs</h1>
+<a href="infra.html" class="back-btn">← Voltar</a>
 
-    <div id="huawei" class="tab-content active">
-        <div class="vendor-section">
-            <h2 class="huawei-h">Huawei</h2>
-            <div class="accordion info">Informações Básicas</div>
-            <div class="panel"><pre>display ont info 0 1 1 1</pre></div>
-        </div>
-    </div>
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab(event,'huawei')">Huawei</button>
+<button class="tab-btn" onclick="openTab(event,'zte')">ZTE</button>
+<button class="tab-btn" onclick="openTab(event,'nokia')">Nokia</button>
+<button class="tab-btn" onclick="openTab(event,'fiberhome')">FiberHome</button>
+<button class="tab-btn" onclick="openTab(event,'datacom')">Datacom</button>
+</div>
 
-    <div id="zte" class="tab-content">
-        <div class="vendor-section">
-            <h2 class="zte-h">ZTE</h2>
-            <div class="accordion info">Ver ONUs</div>
-            <div class="panel"><pre>show gpon onu state</pre></div>
-        </div>
-    </div>
+<div id="huawei" class="tab-content active">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>display ont info</pre></div>
+</div>
 
-    <div id="nokia" class="tab-content">
-        <div class="vendor-section">
-            <h2 class="nokia-h">Nokia (ISAM)</h2>
-            <div class="accordion critical">Uplink Down</div>
-            <div class="panel"><pre>show alarm query ihub-link all</pre></div>
-            
-            <div class="accordion major">Potência Óptica</div>
-            <div class="panel"><pre>show pon optics 1/1/3/1</pre></div>
-        </div>
-    </div>
+<div id="zte" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show gpon onu state</pre></div>
+</div>
 
-    <div id="fiberhome" class="tab-content">
-        <div class="vendor-section">
-            <h2 class="fiber-h">FiberHome</h2>
-            <div class="accordion info">Ver ONUs</div>
-            <div class="panel"><pre>show onu info</pre></div>
-        </div>
-    </div>
+<div id="nokia" class="tab-content">
 
-    <div id="datacom" class="tab-content">
-        <div class="vendor-section">
-            <h2 class="data-h">Datacom</h2>
-            <div class="accordion info">Provisionamento</div>
-            <div class="panel"><pre>show gpon onu unconfigured</pre></div>
-            
-            <div class="accordion major">Configurar VLAN</div>
-            <div class="panel"><pre>vlan 2001 name PPPOE</pre></div>
-        </div>
-    </div>
+<div class="card accordion critical">Uplink Down</div>
+<div class="panel"><pre>
+show alarm query ihub-link all            # Verifica status do uplink (link-down = crítico)
+</pre></div>
+
+<div class="card accordion major">Potência Óptica Fora</div>
+<div class="panel"><pre>
+show alarm query sfprssi all              # Diagnóstico de potência fora do padrão
+show pon optics                          # Verifica níveis ópticos gerais
+show pon optics 1/1/3/1                  # Verifica porta específica
+</pre></div>
+
+<div class="card accordion major">Falha na PON</div>
+<div class="panel"><pre>
+show alarm query olt-gen all              # Diagnóstico da porta PON
+show alarm query name olt-gen-pon-loss-sig # Perda de sinal (LoS)
+</pre></div>
+
+<div class="card accordion info">Ver ONTs</div>
+<div class="panel"><pre>
+show equipment ont                       # Lista ONTs
+show pon unprovision-onu                 # ONTs não provisionadas
+</pre></div>
+
+<div class="card accordion info">Diagnóstico ONT</div>
+<div class="panel"><pre>
+show equipment ont status pon ont 1/1/1/1/1    # Status da ONT
+show equipment ont optics 1/1/1/1/1             # Potência RX/TX
+show equipment ont interface 1/1/1/1/1 detail   # Detalhamento completo
+show equipment ont index sn:                    # Coloque o serial para encontrar  
+</pre></div>
+
+<div class="card accordion major">Queda de Cliente</div>
+<div class="panel"><pre>
+show alarm query ont-ploam all           # Diagnóstico GPON
+show alarm query name ont-ploam-dying-gasp # Falta de energia
+show alarm query name ont-ploam-sig-degrade # Sinal degradado
+</pre></div>
+
+<div class="card accordion info">Hardware e Temperatura</div>
+<div class="panel"><pre>
+show equipment temperature               # Verifica temperatura geral
+show equipment temperature nt-a          # Controladora
+show equipment slot                     # Status das placas
+</pre></div>
+
+<div class="card accordion critical">Risco de Reboot</div>
+<div class="panel"><pre>
+show equipment temperature               # Diagnóstico de superaquecimento
+show equipment slot                     # Verifica falhas físicas
+show software-mngt version etsi          # Verifica versão/bugs
+</pre></div>
+
+<div class="card accordion info">CPU / Memória</div>
+<div class="panel"><pre>
+show system cpu-load                    # Uso de CPU
+show system memory-usage                # Uso de memória
+show core1-uptime                      # Tempo ativo
+</pre></div>
+
+<div class="card accordion info">Portas e Uplink</div>
+<div class="panel"><pre>
+show port                              # Status geral
+show port nt-a:xfp:1                   # Porta uplink
+show equipment diagnostics sfp nt-a:xfp:1 detail # Diagnóstico SFP
+</pre></div>
+
+<div class="card accordion info">Alarmes Gerais</div>
+<div class="panel"><pre>
+show alarm query alarm-table all severity all servaff all # Todos alarmes
+show alarm current table                                 # Resumo
+show alarm query name all                                # Busca por erro
+admin alarm clr-logging                                  # Limpa buffer
+</pre></div>
+
+<div class="card accordion info">Logs e Auditoria</div>
+<div class="panel"><pre>
+show alarm log mgmt-sec-access        # Log de acesso
+show alarm log ont-gen               # Histórico de ONTs
+show log log-id 99                  # Log geral
+show log log-id 100                 # Log segurança
+</pre></div>
+
+<div class="card accordion info">Ações Administrativas</div>
+<div class="panel"><pre>
+admin equipment reboot-isam hot-restart        # Reinicia OLT
+admin equipment slot lt:1/1/1 reboot with-selftest # Reinicia placa
+admin equipment ont interface 1/1/1/1/1 reboot # Reinicia ONT
+configure equipment slot lt:1/1/1 planned-type fglt-b unlock  
+</pre></div>
+
+</div>
+<div id="fiberhome" class="tab-content">
+<div class="card accordion">Ver ONUs</div>
+<div class="panel"><pre>show onu info</pre></div>
+</div>
+
+<div id="datacom" class="tab-content">
+
+<div class="card accordion">Troubleshooting</div>
+<div class="panel"><pre>
+# ONUs descobertas
+show gpon onu unconfigured              # Lista ONUs não provisionadas
+
+# Buscar ONU por serial
+show gpon onu | include ZTEGC4B0BCE2    # Filtra ONU pelo serial
+
+# Status geral da PON
+show gpon interface 1/1/6               # Status da porta GPON
+
+# Status das ONUs
+show gpon onu state                     # Estado das ONUs (online/offline)
+show gpon onu detail 1/1/6 1            # Detalhes de uma ONU
+
+# Potência óptica
+show gpon onu optical-info 1/1/6 1      # RX/TX da ONU
+show gpon interface optics 1/1/6        # Potência da porta PON
+
+# Interfaces
+show interface status                   # Status geral interfaces
+show interface utilization              # Uso das interfaces
+
+# Transceivers
+show interface transceiver              # Status dos SFPs
+show interface transceiver detail       # Diagnóstico detalhado
+
+# Sistema
+show system                             # Informações gerais
+show system uptime                      # Tempo ativo
+show system reboot-history              # Histórico de reboot
+
+# Hardware
+show environment                        # Temperatura / fans / fonte
+show inventory                          # Inventário do equipamento
+
+# VLAN
+show vlan                               # Lista VLANs
+show vlan port                          # VLAN por porta
+
+# Configuração GPON
+show running-config gpon                # Configuração GPON
+</pre></div>
+
+<div class="card accordion">Reboot ONU</div>
+<div class="panel"><pre>
+# Reiniciar ONU
+gpon onu reset 1/1/1 1                  # Reset ONU na porta/posição
+</pre></div>
+
+<div class="card accordion">Configuração VLAN</div>
+<div class="panel"><pre>
+# Criar VLAN
+vlan 4094 name GERENCIA                # VLAN de gerência
+vlan 2001 name PPPOE                   # VLAN de clientes
+
+# Associar VLAN à porta uplink
+interface ethernet 1/1/12
+switchport mode trunk
+switchport trunk allowed vlan add 2001,4094
+</pre></div>
+
+<div class="card accordion">Serviço</div>
+<div class="panel"><pre>
+# Criar serviço (bridge)
+service 1 vlan 2001                    # Serviço para clientes
+service 2 vlan 4094                    # Serviço de gerência
+</pre></div>
+
+<div class="card accordion">Interface L3</div>
+<div class="panel"><pre>
+# Interface de gerência
+interface vlan 4094
+ip address 10.0.0.1/24                # IP da OLT
+no shutdown
+</pre></div>
+
+<div class="card accordion">Bandwidth Profile</div>
+<div class="panel"><pre>
+# Criar perfil de banda
+gpon profile bandwidth 1G
+max 1000000                           # Banda máxima (aprox 1Gb)
+</pre></div>
+
+<div class="card accordion">Line Profile</div>
+<div class="panel"><pre>
+# Criar line profile
+gpon profile line CLIENTE_PADRAO
+tcont 1 bandwidth 1G
+gem 1
+mapping vlan 2001                     # Mapeamento VLAN
+</pre></div>
+
+<div class="card accordion">Adicionar ONU</div>
+<div class="panel"><pre>
+# Adicionar ONU untagged
+gpon onu add 1/1/1 1 serial DACM0000115C
+name ONU1-A
+line-profile CLIENTE_PADRAO
+
+# VLAN untagged
+gpon onu vlan 1/1/1 1 ethernet 1 untagged 2001
+</pre></div>
+
+<div class="card accordion">Adicionar ONU Tagged</div>
+<div class="panel"><pre>
+# ONU em modo bridge/tagged
+gpon onu add 1/1/1 2 serial DACM0000115C
+name ONU1-B
+line-profile CLIENTE_PADRAO
+</pre></div>
+
+<div class="card accordion">Service Port</div>
+<div class="panel"><pre>
+# Associar ONU ao serviço
+gpon service-port 1 interface 1/1/1 onu 1 gem 1 vlan 2001
+</pre></div>
+
+<div class="card accordion">Liberar IP</div>
+<div class="panel"><pre>
+# Liberação de tráfego IP
+ip anti-spoofing disable              # Desativa bloqueio (ou ajustar conforme política)
+</pre></div>
+
+<div class="card accordion">Isolamento ONU</div>
+<div class="panel"><pre>
+# Isolar ONU (anti-rogue)
+gpon onu isolate 1/1/X Y              # Isola ONU
+
+# Remover isolamento
+no gpon onu isolate 1/1/X Y           # Remove isolamento
+</pre></div>
+
+</div>
 
 </section>
 
 <footer>
-    <p>© 2026 - Marcos Renan | Suporte Redes</p>
+<p>© 2026 - Marcos Renan</p>
 </footer>
 
+<script src="js/script.js"></script>
+
 <script>
-    // Função para trocar abas
-    function openTab(evt, tabName) {
-        let contents = document.getElementsByClassName("tab-content");
-        for (let i = 0; i < contents.length; i++) {
-            contents[i].style.display = "none";
-            contents[i].classList.remove("active");
-        }
+function openTab(evt, tabName) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-        let buttons = document.getElementsByClassName("tab-btn");
-        for (let i = 0; i < buttons.length; i++) {
-            buttons[i].classList.remove("active");
-        }
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
+}
 
-        document.getElementById(tabName).style.display = "block";
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    // Lógica do Accordion (usando delegação de evento para funcionar em qualquer aba)
-    document.addEventListener("click", function(e) {
-        if (e.target.classList.contains("accordion")) {
-            e.target.classList.toggle("active");
-            let panel = e.target.nextElementSibling;
-            if (panel.style.maxHeight) {
-                panel.style.maxHeight = null;
-            } else {
-                panel.style.maxHeight = panel.scrollHeight + "px";
-            }
-        }
-    });
+document.querySelectorAll(".accordion").forEach(btn => {
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    let panel = btn.nextElementSibling;
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+  };
+});
 </script>
 
 </body>
 </html>
+
+coloque pastas separadas por vendor de OLT, Datacom, Nokia, Fiberhome, 
