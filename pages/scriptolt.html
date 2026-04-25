@@ -3,58 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Automação OLT</title>
+    <title>Central de Automação NOC</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 50px; }
-        .container { max-width: 900px; margin: auto; background: #1e293b; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        h1 { color: #38bdf8; margin-bottom: 10px; }
-        p { color: #94a3b8; margin-bottom: 30px; }
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --nokia-color: #124191;
+            --datacom-color: #f37021;
+            --fiberhome-color: #009b44;
+            --huawei-color: #ff0000;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-dark); color: #f8fafc; text-align: center; padding: 50px; margin: 0; }
+        .container { max-width: 1000px; margin: auto; background: var(--card-bg); padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
         
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+        h1 { color: var(--primary); margin-bottom: 5px; }
+        .subtitle { color: #94a3b8; margin-bottom: 30px; }
+
+        /* Categorias por Vendor */
+        .vendor-section { margin-top: 40px; text-align: left; }
+        .vendor-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            margin-bottom: 15px; 
+            padding-bottom: 5px; 
+            border-bottom: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 40px; }
+
+        /* Cards Customizados */
+        .card { 
+            padding: 20px; 
+            border-radius: 12px; 
+            transition: 0.3s; 
+            cursor: pointer; 
+            text-decoration: none; 
+            color: white; 
+            display: flex; 
+            flex-direction: column;
+            position: relative;
+            background: #334155;
+            border: 1px solid #475569;
+        }
         
-        /* Destaque para o arquivo Python */
-        .card-main { background: #0369a1; border: 2px solid #38bdf8; }
+        .card:hover { transform: translateY(-3px); background: #3f4e63; border-color: var(--primary); }
         
-        .card { padding: 25px; border-radius: 15px; transition: 0.3s; cursor: pointer; text-decoration: none; color: white; display: block; position: relative; }
-        .card:not(.card-main) { background: #334155; border: 1px solid transparent; }
-        .card:hover { transform: translateY(-5px); filter: brightness(1.1); }
+        /* Cores das Bordas Laterais por Fabricante */
+        .nokia-card { border-left: 5px solid var(--nokia-color); }
+        .datacom-card { border-left: 5px solid var(--datacom-color); }
+        .fiberhome-card { border-left: 5px solid var(--fiberhome-color); }
+        .huawei-card { border-left: 5px solid var(--huawei-color); }
+
+        .card span { font-weight: bold; font-size: 16px; }
+        .card small { color: #cbd5e1; margin-top: 4px; font-size: 12px; font-family: monospace; }
         
-        .card span { font-weight: bold; font-size: 20px; display: block; }
-        .card small { display: block; color: #e2e8f0; margin-top: 5px; opacity: 0.8; }
+        .setup-box { background: #020617; padding: 20px; border-radius: 10px; margin-bottom: 30px; text-align: left; border-left: 4px solid var(--primary); }
+        .setup-box code { color: var(--primary); font-family: monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; }
         
-        .setup-box { background: #020617; padding: 20px; border-radius: 10px; margin: 30px 0; text-align: left; border-left: 4px solid #38bdf8; }
-        .setup-box code { color: #38bdf8; font-family: monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; }
-        
-        .footer-note { margin-top: 40px; font-size: 13px; color: #64748b; border-top: 1px solid #334155; padding-top: 20px; }
-        .tag { position: absolute; top: -10px; right: 10px; background: #38bdf8; color: #0f172a; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        .tag { position: absolute; top: 10px; right: 10px; background: #1e293b; color: var(--primary); border: 1px solid var(--primary); padding: 1px 8px; border-radius: 10px; font-size: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Central de Automação NOC</h1>
-    <p>Baixe a ferramenta de limpeza de ONUs para a OLT Nokia.</p>
+    <p class="subtitle">Scripts e ferramentas otimizadas para provisionamento e manutenção.</p>
 
     <div class="setup-box">
-        <strong>⚙️ Preparação necessária:</strong>
-        <p style="font-size: 14px; margin: 10px 0 0 0;">
-            1. Certifique-se de ter o <b>Python</b> instalado.<br>
-            2. Antes de rodar o script pela primeira vez, instale a biblioteca necessária via terminal: <br>
-            <code>pip install netmiko</code>
+        <strong>⚙️ Requisito Global:</strong>
+        <p style="font-size: 14px; margin: 8px 0 0 0;">
+            Certifique-se de ter o Python 3.x e a biblioteca Netmiko: <code>pip install netmiko</code>
         </p>
     </div>
 
-    <div class="grid">
-        <a href="limpeza_olt.py" download class="card card-main">
-            <div class="tag">V1.0</div>
-            <span>Script Python</span>
-            <small>limpeza_olt.py</small>
-        </a>
+    <div class="vendor-section">
+        <div class="vendor-title" style="color: var(--nokia-color);">🟦 Nokia</div>
+        <div class="grid">
+            <a href="nokia/limpeza_onus.py" download class="card nokia-card">
+                <div class="tag">Python</div>
+                <span>Limpeza de ONUs Desconectadas</span>
+                <small>nokia_limpeza_olt.py</small>
+            </a>
+            <a href="nokia/backup_config.py" download class="card nokia-card">
+                <div class="tag">Script</div>
+                <span>Backup Automático de Config</span>
+                <small>nokia_backup.py</small>
+            </a>
+        </div>
     </div>
 
-    <div class="footer-note">
-        <b>Fluxo de Trabalho:</b> Execute o script, insira as credenciais da OLT e aguarde. <br>
-        O arquivo <u>remover_onus.txt</u> será gerado na mesma pasta com os comandos de remoção.
+    <div class="vendor-section">
+        <div class="vendor-title" style="color: var(--datacom-color);">🟧 Datacom</div>
+        <div class="grid">
+            <a href="datacom/provisionar_onu.py" download class="card datacom-card">
+                <div class="tag">Python</div>
+                <span>Provisionamento em Massa</span>
+                <small>datacom_provision.py</small>
+            </a>
+        </div>
+    </div>
+
+    <div class="vendor-section">
+        <div class="vendor-title" style="color: var(--fiberhome-color);">🟩 FiberHome</div>
+        <div class="grid">
+            <a href="fiberhome/get_onus_offline.py" download class="card fiberhome-card">
+                <div class="tag">Python</div>
+                <span>Relatório de ONUs Offline</span>
+                <small>fh_report_offline.py</small>
+            </a>
+        </div>
+    </div>
+
+    <div class="vendor-section">
+        <div class="vendor-title" style="color: var(--huawei-color);">🟥 Huawei</div>
+        <div class="grid">
+            <a href="huawei/check_alarms.py" download class="card huawei-card">
+                <div class="tag">Python</div>
+                <span>Verificador de Alarmes Críticos</span>
+                <small>huawei_alarms.py</small>
+            </a>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; font-size: 12px; color: #64748b; border-top: 1px solid #334155; padding-top: 20px;">
+        Mantenha seus scripts atualizados. Para suporte, contate a equipe de Engenharia de Rede.
     </div>
 </div>
 
