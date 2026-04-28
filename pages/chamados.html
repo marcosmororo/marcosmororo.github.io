@@ -144,6 +144,7 @@
                 <div class="form-group span-2-desktop">
                     <label>Escopo / Tipo</label>
                     <select id="tipo">
+                        <option value="noc">NOC</option>
                         <option value="externa_ne">Externa (NE)</option>
                         <option value="externa_no">Externa (NO)</option>
                         <option value="interna_ne">Interna (NE)</option>
@@ -154,6 +155,7 @@
             <button class="btn-add" onclick="add()">ABRIR NOVO CHAMADO</button>
 
             <div class="stats-bar">
+                <div class="stat-item"><div>NOC</div><span id="count-noc">0</span></div>
                 <div class="stat-item"><div>Ext. NE</div><span id="count-externa_ne">0</span></div>
                 <div class="stat-item"><div>Ext. NO</div><span id="count-externa_no">0</span></div>
                 <div class="stat-item"><div>Int. NE</div><span id="count-interna_ne">0</span></div>
@@ -190,6 +192,13 @@
 <script>
     // --- CONFIGURAÇÃO E DADOS INICIAIS ---
     const CONFIG_ESCALATION = {
+          noc: [
+            {h: 0, nome: "NOC", tel: "8836953095"},
+            {h: 4, nome: "Augusto Lopes", tel: "5588996430008"},
+            {h: 4, nome: "Luiz Fernando", tel: "5591981459871"},
+            {h: 6, nome: "Gleison Silva", tel: "5588992195154"},
+            {h: 10, nome: "Fernando Gerhardt", tel: "5588994401255"}
+        ],
         externa_ne: [
             {h: 0, nome: "Michel Taylon", tel: "5588997357308"},
             {h: 0, nome: "Bruno", tel: "5588998286655"},
