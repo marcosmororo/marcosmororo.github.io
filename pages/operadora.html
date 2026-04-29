@@ -71,14 +71,21 @@
             border-radius: 2px;
         }
 
+        /* AJUSTE NA GRID PARA CAMPOS LONGOS */
         .info-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr; /* Duas colunas padrão */
             gap: 12px;
             margin-bottom: 10px;
         }
 
         .field { border-bottom: 1px solid var(--border-color); padding: 5px 0; }
+        
+        /* Classe para fazer o campo ocupar a linha toda */
+        .full-width {
+            grid-column: span 2;
+        }
+
         .field label {
             display: block;
             font-size: 9px;
@@ -90,15 +97,12 @@
         input, select {
             border: none;
             width: 100%;
-            font-size: 14px;
+            font-size: 15px;
             outline: none;
             background: transparent;
             font-weight: bold;
             color: #333;
-            appearance: none; /* Remove seta padrão em alguns browsers */
         }
-
-        select { cursor: pointer; }
 
         .content-box {
             border: 1px dashed #ccc;
@@ -110,7 +114,6 @@
             color: #333;
         }
 
-        /* AJUSTE PARA FOTOS MAIORES */
         .image-container {
             display: flex;
             flex-direction: column;
@@ -124,11 +127,10 @@
             text-align: center; 
             background: #fdfdfd;
             border-radius: 4px;
-            overflow: hidden;
         }
 
         .image-wrapper img { 
-            width: 100%; /* Ocupa a largura total para ser "grande" */
+            width: 100%; 
             max-height: 450px; 
             object-fit: contain;
             display: block;
@@ -144,17 +146,15 @@
             width: 100%; padding: 12px; margin-bottom: 10px;
             font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
             color: white;
-            transition: 0.3s;
         }
         .btn-print { background: #28a745; }
         .btn-img { background: #007bff; }
-        .btn:hover { opacity: 0.8; }
 
         .remove-btn { 
             position: absolute; top: 10px; right: 10px; 
             background: rgba(217, 83, 79, 0.9); color: white; 
             border: none; cursor: pointer; padding: 5px 12px; 
-            border-radius: 4px; font-weight: bold;
+            border-radius: 4px;
         }
 
         footer {
@@ -171,8 +171,6 @@
             body { background: none; }
             .toolbar, .remove-btn { display: none !important; }
             .report-page { box-shadow: none; margin: 0; border: none; width: 100%; }
-            .content-box { border: 1px solid #eee; }
-            select { appearance: none; -moz-appearance: none; -webkit-appearance: none; }
         }
     </style>
 </head>
@@ -196,17 +194,12 @@
 
         <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
-            <div class="field">
-                <label>Operadora</label>
-                <input type="text" placeholder="Ex: Vivo / Brisanet">
-            </div>
-            <div class="field">
-                <label>ID do Circuito (Designação)</label>
-                <input type="text" placeholder="Ex: 1122/AA/099">
-            </div>
-            <div class="field">
-                <label>Protocolo Interno</label>
-                <input type="text" placeholder="INC-000000">
+            <div class="field"><label>Operadora</label><input type="text" placeholder="Ex: Vivo / Brisanet"></div>
+            <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-000000"></div>
+            
+            <div class="field full-width">
+                <label>ID do Circuito / Designação Completa</label>
+                <input type="text" placeholder="Digite a identificação completa do link aqui...">
             </div>
         </div>
 
@@ -226,10 +219,8 @@
                     <option>Degradação de Banda</option>
                 </select>
             </div>
-            <div class="field">
-                <label>Responsável NOC</label>
-                <input type="text" placeholder="Nome do Técnico">
-            </div>
+            <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Site"></div>
+            <div class="field"><label>Responsável NOC</label><input type="text" placeholder="Nome do Técnico"></div>
         </div>
 
         <div class="section-title">Diagnóstico e Testes Realizados</div>
@@ -257,7 +248,6 @@
     </div>
 
     <script>
-        // Define a data atual no rodapé
         document.getElementById('currentDate').innerText = new Date().toLocaleDateString('pt-BR');
 
         function handleImage(input) {
