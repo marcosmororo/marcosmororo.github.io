@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Telecom</title>
+    <title>Abertura de Chamado | Online Telecom</title>
     <style>
         :root {
             --primary-color: #004085;
@@ -94,27 +94,45 @@
             outline: none;
             background: transparent;
             font-weight: bold;
+            color: #333;
+            appearance: none; /* Remove seta padrão em alguns browsers */
         }
+
+        select { cursor: pointer; }
 
         .content-box {
             border: 1px dashed #ccc;
             padding: 15px;
-            min-height: 120px;
+            min-height: 100px;
             font-size: 14px;
             line-height: 1.6;
             background: #fff;
             color: #333;
         }
 
+        /* AJUSTE PARA FOTOS MAIORES */
         .image-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             margin-top: 10px;
         }
 
-        .image-wrapper { position: relative; border: 1px solid #ddd; text-align: center; background: #eee; }
-        .image-wrapper img { max-width: 100%; max-height: 280px; display: block; margin: 0 auto; }
+        .image-wrapper { 
+            position: relative; 
+            border: 1px solid #ddd; 
+            text-align: center; 
+            background: #fdfdfd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .image-wrapper img { 
+            width: 100%; /* Ocupa a largura total para ser "grande" */
+            max-height: 450px; 
+            object-fit: contain;
+            display: block;
+        }
         
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
@@ -123,13 +141,21 @@
         }
 
         .btn {
-            width: 100%; padding: 10px; margin-bottom: 10px;
+            width: 100%; padding: 12px; margin-bottom: 10px;
             font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
             color: white;
+            transition: 0.3s;
         }
         .btn-print { background: #28a745; }
         .btn-img { background: #007bff; }
-        .remove-btn { position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; padding: 2px 6px; }
+        .btn:hover { opacity: 0.8; }
+
+        .remove-btn { 
+            position: absolute; top: 10px; right: 10px; 
+            background: rgba(217, 83, 79, 0.9); color: white; 
+            border: none; cursor: pointer; padding: 5px 12px; 
+            border-radius: 4px; font-weight: bold;
+        }
 
         footer {
             margin-top: auto;
@@ -144,8 +170,9 @@
         @media print {
             body { background: none; }
             .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; margin: 0; border: none; }
+            .report-page { box-shadow: none; margin: 0; border: none; width: 100%; }
             .content-box { border: 1px solid #eee; }
+            select { appearance: none; -moz-appearance: none; -webkit-appearance: none; }
         }
     </style>
 </head>
@@ -169,25 +196,52 @@
 
         <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
-            <div class="field"><label>Operadora</label><input type="text" placeholder=""></div>
-            <div class="field"><label>ID do Circuito (Designação)</label><input type="text" placeholder="Ex: 1122/AA/099"></div>
-            <div class="field"><label>Protocolo Interno</label><input type="text" id="protocolo" placeholder="INC-000000"></div>
+            <div class="field">
+                <label>Operadora</label>
+                <input type="text" placeholder="Ex: Vivo / Brisanet">
+            </div>
+            <div class="field">
+                <label>ID do Circuito (Designação)</label>
+                <input type="text" placeholder="Ex: 1122/AA/099">
+            </div>
+            <div class="field">
+                <label>Protocolo Interno</label>
+                <input type="text" placeholder="INC-000000">
+            </div>
         </div>
 
         <div class="info-grid">
-            <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
-            <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Bairro"></div>
-            <div class="field"><label>Responsável Abertura</label><input type="text" placeholder="Técnico NOC"></div>
+            <div class="field">
+                <label>Início da Falha</label>
+                <input type="datetime-local">
+            </div>
+            <div class="field">
+                <label>Tipo de Incidente</label>
+                <select>
+                    <option value="" disabled selected>Selecione a falha...</option>
+                    <option>Indisponível (Link Down)</option>
+                    <option>Latência Alta (Lag)</option>
+                    <option>Perda de Pacotes</option>
+                    <option>Instabilidade Intermitente</option>
+                    <option>Degradação de Banda</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Responsável NOC</label>
+                <input type="text" placeholder="Nome do Técnico">
+            </div>
         </div>
 
         <div class="section-title">Diagnóstico e Testes Realizados</div>
         <div class="content-box" contenteditable="true">
+            • Equipamentos energizados no local, sem falha elétrica no POP.<br>
+            • Reset não foi realizado devido ao equipamento ser um Core Switch (Ativo Crítico).<br>
             • Verificado que não há alarmes de infraestrutura interna ou falhas de hardware no chassi.<br>
             • Realizado teste de ping para o Gateway da Operadora (IP: ) resultando em [X]% de perda.<br>
             • Interface física apresenta status: [UP / DOWN / ERR-DISABLE].
         </div>
 
-        <div class="section-title">Evidências Técnicas (Prints de Monitoramento / Ping)</div>
+        <div class="section-title">Evidências Técnicas (Prints de Monitoramento / Ping / MTR)</div>
         <div id="imageContainer" class="image-container"></div>
 
         <footer>
@@ -196,12 +250,16 @@
                 NOC: noc@online.net.br | 0800 088 1111
             </div>
             <div style="text-align: right;">
-                Documento de Apoio à Abertura de Ticket Externo
+                Documento de Apoio à Abertura de Ticket Externo<br>
+                Gerado em: <span id="currentDate"></span>
             </div>
         </footer>
     </div>
 
     <script>
+        // Define a data atual no rodapé
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('pt-BR');
+
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -211,7 +269,7 @@
                     wrapper.className = 'image-wrapper';
                     wrapper.innerHTML = `
                         <img src="${e.target.result}">
-                        <button class="remove-btn" onclick="this.parentElement.remove()">X</button>
+                        <button class="remove-btn" onclick="this.parentElement.remove()">REMOVER</button>
                     `;
                     container.appendChild(wrapper);
                 };
