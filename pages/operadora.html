@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abertura de Chamado | Online Telecom</title>
+    <title>Online Telecom</title>
     <style>
         :root {
             --primary-color: #004085;
-            --accent-color: #e67e22; /* Laranja para diferenciar de RFO */
+            --accent-color: #e67e22;
             --border-color: #dee2e6;
             --bg-gray: #f8f9fa;
         }
@@ -15,7 +15,7 @@
         @page { size: A4; margin: 0; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Arial', sans-serif;
             background-color: #525659;
             margin: 0;
             padding: 0;
@@ -57,7 +57,7 @@
             background: var(--accent-color);
             color: white;
             padding: 5px 15px;
-            border-radius: 20px;
+            border-radius: 4px;
             font-weight: bold;
             font-size: 12px;
         }
@@ -68,9 +68,7 @@
             background: var(--primary-color);
             padding: 8px 12px;
             margin: 15px 0 10px 0;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
+            border-radius: 2px;
         }
 
         .info-grid {
@@ -84,7 +82,7 @@
         .field label {
             display: block;
             font-size: 9px;
-            color: #666;
+            color: var(--primary-color);
             font-weight: bold;
             text-transform: uppercase;
         }
@@ -95,25 +93,17 @@
             font-size: 14px;
             outline: none;
             background: transparent;
-            font-weight: 500;
+            font-weight: bold;
         }
 
         .content-box {
-            border: 1px solid #eee;
-            padding: 10px;
-            min-height: 80px;
-            font-size: 13px;
+            border: 1px dashed #ccc;
+            padding: 15px;
+            min-height: 120px;
+            font-size: 14px;
             line-height: 1.6;
             background: #fff;
-        }
-
-        .status-check {
-            display: flex;
-            gap: 15px;
-            font-size: 12px;
-            padding: 10px;
-            background: var(--bg-gray);
-            border-radius: 5px;
+            color: #333;
         }
 
         .image-container {
@@ -123,8 +113,8 @@
             margin-top: 10px;
         }
 
-        .image-wrapper { position: relative; border: 1px solid #ddd; }
-        .image-wrapper img { width: 100%; height: 180px; object-fit: contain; }
+        .image-wrapper { position: relative; border: 1px solid #ddd; text-align: center; background: #eee; }
+        .image-wrapper img { max-width: 100%; max-height: 280px; display: block; margin: 0 auto; }
         
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
@@ -139,14 +129,14 @@
         }
         .btn-print { background: #28a745; }
         .btn-img { background: #007bff; }
-        .remove-btn { position: absolute; top: 5px; right: 5px; background: rgba(255,0,0,0.7); color: white; border: none; cursor: pointer; border-radius: 50%; width: 20px; height: 20px; }
+        .remove-btn { position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; padding: 2px 6px; }
 
         footer {
             margin-top: auto;
             border-top: 1px solid var(--border-color);
             padding-top: 10px;
             font-size: 10px;
-            color: #777;
+            color: #666;
             display: flex;
             justify-content: space-between;
         }
@@ -154,16 +144,17 @@
         @media print {
             body { background: none; }
             .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; margin: 0; }
+            .report-page { box-shadow: none; margin: 0; border: none; }
+            .content-box { border: 1px solid #eee; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h3 style="margin:0 0 10px 0; font-size: 14px;">Abertura de Ticket</h3>
-        <button class="btn btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR TESTE (IMG)</button>
-        <button class="btn btn-print" onclick="window.print()">IMPRIMIR / PDF</button>
+        <h3 style="margin:0 0 10px 0; font-size: 14px;">Abertura de Chamado</h3>
+        <button class="btn btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR EVIDÊNCIA</button>
+        <button class="btn btn-print" onclick="window.print()">GERAR PDF / IMPRIMIR</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
     </div>
 
@@ -171,64 +162,41 @@
         <header>
             <div class="brand">
                 <h1>Solicitação de Reparo Técnico</h1>
-                <div style="font-size: 12px; color: #666;">Online Telecom - NOC Center</div>
+                <div style="font-size: 12px; color: #666;">Online Telecom | NOC - Network Operations Center</div>
             </div>
-            <div class="ticket-type">TROUBLE TICKET</div>
+            <div class="ticket-type">LINK EXTERNO / OPERADORA</div>
         </header>
 
-        <div class="section-title">Informações do Circuito</div>
+        <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
-            <div class="field"><label>Operadora Destino</label><input type="text" placeholder="Ex: Vivo, Brisanet, Telia"></div>
-            <div class="field"><label>ID do Circuito / Designação</label><input type="text" placeholder="Ex: SP-99882211"></div>
-            <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2024-001"></div>
+            <div class="field"><label>Operadora</label><input type="text" placeholder=""></div>
+            <div class="field"><label>ID do Circuito (Designação)</label><input type="text" placeholder="Ex: 1122/AA/099"></div>
+            <div class="field"><label>Protocolo Interno</label><input type="text" id="protocolo" placeholder="INC-000000"></div>
         </div>
 
-        <div class="section-title">Cronologia e Impacto</div>
         <div class="info-grid">
             <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
-            <div class="field"><label>Tipo de Evento</label>
-                <select>
-                    <option>Total Down (Link Fora)</option>
-                    <option>Degradação / Perda de Pacotes</option>
-                    <option>Instabilidade Intermitente</option>
-                    <option>Latência Alta</option>
-                </select>
-            </div>
-            <div class="field"><label>Responsável NOC</label><input type="text" placeholder="Nome do Técnico"></div>
+            <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Bairro"></div>
+            <div class="field"><label>Responsável Abertura</label><input type="text" placeholder="Técnico NOC"></div>
         </div>
 
-        <div class="section-title">Testes Realizados (Camada Física e Lógica)</div>
-        <div class="status-check">
-            <span><strong>Status Porta:</strong> <input type="text" style="width:60px" placeholder="UP/DWN"></span>
-            <span><strong>Energia no Site:</strong> <input type="text" style="width:60px" placeholder="OK"></span>
-            <span><strong>Equipamento:</strong> <input type="text" style="width:80px" placeholder="Reiniciado"></span>
-        </div>
-
-        <div class="content-box" contenteditable="true" style="margin-top:10px">
+        <div class="section-title">Diagnóstico e Testes Realizados</div>
+        <div class="content-box" contenteditable="true">
+            • Verificado que não há alarmes de infraestrutura interna ou falhas de hardware no chassi.<br>
             • Realizado teste de ping para o Gateway da Operadora (IP: ) resultando em [X]% de perda.<br>
-            • Verificado que não há alarmes de infraestrutura interna.<br>
-            • Teste de TraceRoute estancando no salto da operadora.<br>
-            • [Descreva aqui outros testes como troca de GBIC ou medição de potência de fibra se houver].
+            • Interface física apresenta status: [UP / DOWN / ERR-DISABLE].
         </div>
 
-        <div class="section-title">Evidências (Ping, MTR, Fotos do DIO/ONU)</div>
+        <div class="section-title">Evidências Técnicas (Prints de Monitoramento / Ping)</div>
         <div id="imageContainer" class="image-container"></div>
-
-        <div class="section-title">Dados de Contato para Campo</div>
-        <div class="info-grid">
-            <div class="field"><label>Nome p/ Visita</label><input type="text" placeholder="Responsável no local"></div>
-            <div class="field"><label>Telefone</label><input type="text" placeholder="(XX) XXXXX-XXXX"></div>
-            <div class="field"><label>Horário de Acesso</label><input type="text" placeholder="Ex: Comercial / 24h"></div>
-        </div>
 
         <footer>
             <div>
-                <strong>Online Telecom</strong> | NOC 24/7<br>
-                Email: noc@online.net.br | Tel: 0800 088 1111
+                <strong>Online Telecom</strong><br>
+                NOC: noc@online.net.br | 0800 088 1111
             </div>
             <div style="text-align: right;">
-                Este documento serve como registro formal de abertura<br>
-                de incidente junto à operadora terceira.
+                Documento de Apoio à Abertura de Ticket Externo
             </div>
         </footer>
     </div>
