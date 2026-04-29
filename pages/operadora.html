@@ -9,13 +9,14 @@
             --accent: #f39c12;
             --bg-body: #4a4e51;
             --text-main: #333;
-            --border: #e0e0e0;
+            --border: #ced4da;
+            --highlight: #fff9f2;
         }
 
-        @page { size: A4; margin: 10mm; }
+        @page { size: A4; margin: 0; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Segoe UI, Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-body);
             margin: 0;
             padding: 20px;
@@ -27,123 +28,130 @@
             background: #fff;
             width: 210mm;
             min-height: 297mm;
-            padding: 40px;
+            padding: 25px 35px;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         /* LOGO E TÍTULO */
         .header-main {
-            text-align: center;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .header-main img {
-            max-height: 80px;
-            margin-bottom: 10px;
+            max-height: 70px;
+            display: block;
+        }
+
+        .header-main .title-area {
+            text-align: right;
         }
 
         .header-main h1 {
             margin: 0;
             color: var(--primary);
-            font-size: 24px;
+            font-size: 22px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+        }
+
+        .header-main span {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 1px;
         }
 
         /* GRID DE INFORMAÇÕES */
-        .data-section {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .box {
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 4px;
-        }
-
-        .box.span-2 { grid-column: span 2; }
-        .box.span-4 { grid-column: span 4; }
-
-        .box label {
-            display: block;
-            font-size: 10px;
-            color: #7f8c8d;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-        }
-
-        .box input, .box select {
-            width: 100%;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--primary);
-            outline: none;
-            background: transparent;
-        }
-
-        /* STATUS HIGHLIGHT */
-        .status-bar {
-            background: #f8f9fa;
-            border-left: 5px solid var(--accent);
-            padding: 15px;
-            margin-bottom: 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* ÁREA DE TEXTO TÉCNICO */
-        .technical-report {
-            margin-bottom: 30px;
-        }
-
-        .technical-report h3 {
+        .section-title {
             background: var(--primary);
             color: #fff;
-            padding: 8px 15px;
-            font-size: 14px;
-            margin: 0;
-            border-radius: 4px 4px 0 0;
+            font-size: 12px;
+            padding: 6px 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            margin: 15px 0 10px 0;
         }
 
-        .report-content {
-            border: 1px solid var(--primary);
-            padding: 15px;
-            min-height: 150px;
-            font-family: 'Courier New', Courier, monospace;
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .field {
+            border-bottom: 1px solid var(--border);
+            padding: 5px 0;
+        }
+
+        .full-width { grid-column: span 3; }
+        .highlight { background-color: var(--highlight); border-bottom: 1px solid var(--accent); }
+
+        .field label {
+            display: block;
+            font-size: 9px;
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        input, select {
+            border: none;
+            width: 100%;
             font-size: 13px;
-            line-height: 1.6;
-            color: #2c3e50;
-            white-space: pre-wrap;
+            font-weight: 600;
+            outline: none;
+            background: transparent;
+            color: #000;
+        }
+
+        /* CAIXAS DE TESTES (NOVA ESTRUTURA) */
+        .test-box-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 4px;
+            background: #fcfcfc;
+        }
+
+        .test-item {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .test-item label {
+            font-size: 10px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 3px;
         }
 
         /* EVIDÊNCIAS */
-        .evidence-title {
-            border-bottom: 2px solid #eee;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
         .evidence-grid {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            margin-top: 10px;
         }
 
         .img-card {
             border: 1px solid #ddd;
             padding: 5px;
             position: relative;
-            background: #fdfdfd;
+            background: #fff;
         }
 
         .img-card img {
@@ -151,134 +159,150 @@
             display: block;
         }
 
-        /* BOTÕES FLUTUANTES */
-        .menu-fixo {
+        /* MENU LATERAL */
+        .toolbar {
             position: fixed;
             left: 30px;
             top: 30px;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            z-index: 999;
         }
 
         .btn-acao {
-            padding: 12px 20px;
+            padding: 12px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             color: white;
             font-weight: bold;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            font-size: 11px;
+            text-align: left;
         }
 
-        .btn-anexo { background: #3498db; }
-        .btn-print { background: #27ae60; }
+        .btn-anexo { background: #007bff; }
+        .btn-print { background: #28a745; }
 
         .btn-remove {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(192, 57, 43, 0.9);
+            background: rgba(220, 53, 69, 0.9);
             color: white;
             border: none;
             padding: 5px 10px;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 4px;
+        }
+
+        footer {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 10px;
+            color: #777;
+            text-align: center;
         }
 
         @media print {
             body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; padding: 0; }
-            .menu-fixo, .btn-remove { display: none; }
+            .container { box-shadow: none; width: 100%; padding: 0; margin: 0; }
+            .toolbar, .btn-remove { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="menu-fixo">
-        <button class="btn-acao btn-anexo" onclick="document.getElementById('fileIn').click()">+ ADICIONAR EVIDÊNCIA</button>
-        <button class="btn-acao btn-print" onclick="window.print()">🖨️ IMPRIMIR / PDF</button>
-        <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="addImg(this)">
+    <div class="toolbar">
+        <button class="btn-acao btn-anexo" onclick="document.getElementById('fileInput').click()">📷 ANEXAR PRINT</button>
+        <button class="btn-acao btn-print" onclick="window.print()">📄 GERAR PDF / IMPRIMIR</button>
+        <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="addImg(this)">
     </div>
 
     <div class="container">
-        <div class="header-main">
-            <img src="online.png" alt="Online Telecom">
-            <h1>Relatório de Incidente de Rede</h1>
-        </div>
+        <header class="header-main">
+            <img src="online.png" alt="Online Telecom" onerror="this.src='https://via.placeholder.com/200x80?text=Online+Telecom'">
+            <div class="title-area">
+                <h1>Abertura de Chamado</h1>
+                <span>SUPORTE N2 - BACKBONE</span>
+            </div>
+        </header>
 
-        <div class="data-section">
-            <div class="box span-2">
-                <label>Operadora Destino</label>
-                <input type="text" placeholder="Ex: Vivo / Brisanet / Algar">
-            </div>
-            <div class="box">
-                <label>Protocolo Interno</label>
-                <input type="text" placeholder="INC-2026-000">
-            </div>
-            <div class="box">
-                <label>Início da Falha</label>
-                <input type="datetime-local">
-            </div>
-
-            <div class="box span-4" style="background: #fff8e1; border-color: #ffe082;">
-                <label style="color: #f57c00;">ID DO CIRCUITO / DESIGNANTE (ID OPERADORA)</label>
-                <input type="text" placeholder="INSIRA A IDENTIFICAÇÃO COMPLETA DO LINK">
-            </div>
-
-            <div class="box span-2">
-                <label>Localização (POP/Site)</label>
-                <input type="text" placeholder="Cidade - Estado">
-            </div>
-            <div class="box span-2">
-                <label>Técnico Responsável (NOC)</label>
-                <input type="text" placeholder="Nome do Analista">
+        <div class="section-title">Identificação do Link</div>
+        <div class="info-grid">
+            <div class="field"><label>Operadora</label><input type="text" placeholder="Vivo, Brisanet, Oi..."></div>
+            <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2026-000"></div>
+            <div class="field"><label>Técnico Responsável</label><input type="text" placeholder="Nome do Analista"></div>
+            
+            <div class="field full-width highlight">
+                <label>ID do Circuito / Designação (ID OPERADORA)</label>
+                <input type="text" placeholder="Insira a identificação completa do link">
             </div>
         </div>
 
-        <div class="status-bar">
-            <div style="width: 60%;">
-                <label style="font-size: 10px; font-weight: bold; color: #7f8c8d; text-transform: uppercase;">Natureza Técnica da Ocorrência</label>
-                <select style="border: none; font-size: 16px; font-weight: bold; color: #c0392b; width: 100%; cursor: pointer;">
-                    <option>INDISPONIBILIDADE TOTAL (Link Down)</option>
-                    <option>LATÊNCIA ALTA / INSTABILIDADE (High Latency)</option>
-                    <option>PERDA DE PACOTES (Packet Loss)</option>
-                    <option>QUEDAS INTERMITENTES (Flapping)</option>
-                    <option>ERROS DE CRC / INTERFACE (Physical Issue)</option>
+        <div class="section-title">Triagem e Classificação</div>
+        <div class="info-grid">
+            <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
+            <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Site"></div>
+            <div class="field">
+                <label>Natureza do Problema</label>
+                <select style="color: #d9534f;">
+                    <option>Indisponibilidade Total (Down)</option>
+                    <option>Latência Alta (High Latency)</option>
+                    <option>Perda de Pacotes (Packet Loss)</option>
+                    <option>Quedas Intermitentes (Flapping)</option>
+                    <option>Lentidão / Degradação (Slowly)</option>
                 </select>
             </div>
-            <div style="text-align: right;">
-                <span id="dataAtual" style="font-size: 12px; font-weight: bold; color: var(--primary);"></span>
+        </div>
+
+        <div class="section-title">Diagnóstico Técnico (Preenchimento Obrigatório)</div>
+        <div class="test-box-container">
+            <div class="test-item">
+                <label>1. Infraestrutura POP</label>
+                <input type="text" value="Energizado, climatizado e estável.">
+            </div>
+            <div class="test-item">
+                <label>2. Status Hardware Local</label>
+                <input type="text" value="Core Switch operando sem alarmes.">
+            </div>
+            <div class="test-item">
+                <label>3. Potência Óptica (Rx)</label>
+                <input type="text" placeholder="Ex: -19.5 dBm (dentro do range)">
+            </div>
+            <div class="test-item">
+                <label>4. Interface Física (Porta)</label>
+                <input type="text" placeholder="Ex: UP / Sem erros de CRC">
+            </div>
+            <div class="test-item">
+                <label>5. Perda de Pacotes (Ping GW)</label>
+                <input type="text" placeholder="Ex: 15% de perda para o Gateway">
+            </div>
+            <div class="test-item">
+                <label>6. Latência Média (Ping GW)</label>
+                <input type="text" placeholder="Ex: 120ms (Acima do SLA)">
+            </div>
+            <div class="test-item" style="grid-column: span 2; border: none;">
+                <label>7. Observações Técnicas Adicionais</label>
+                <input type="text" value="Reset físico não realizado: Equipamento Core / Ativo Crítico.">
             </div>
         </div>
 
-        <div class="technical-report">
-            <h3>SUMÁRIO DE TESTES E DIAGNÓSTICO</h3>
-            <div class="report-content" contenteditable="true">
-1. INFRAESTRUTURA LOCAL: Verificada estabilidade elétrica; POP operando normalmente.
-2. CAMADA FÍSICA: Interface óptica validada. Potência Rx em [X] dBm.
-3. PROTOCOLO DE RESET: Não executado por se tratar de Core Switch (Ativo Crítico).
-4. ANÁLISE TÉCNICA (MTR/PING):
-   - Destino: Gateway Operadora
-   - Perda: [X]% | Latência: [X]ms | Jitter: [X]ms
-5. STATUS DA PORTA: [UP/DOWN] - Sem erros de CRC.
-6. CONCLUSÃO: Falha originada no backbone/transporte da operadora.
-            </div>
-        </div>
-
-        <div class="evidence-title">EVIDÊNCIAS DO MONITORAMENTO (PRINTS)</div>
+        <div class="section-title">Evidências de Monitoramento</div>
         <div id="printArea" class="evidence-grid">
             </div>
 
-        <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 10px; font-size: 11px; color: #999; text-align: center;">
-            <strong>Online Telecom</strong> | NOC - Network Operations Center<br>
-            Contato: 0800 088 1111 | noc@online.net.br
-        </div>
+        <footer>
+            <strong>Online Telecom</strong> | Network Operations Center<br>
+            Avenida Central, 123 - NOC | 0800 088 1111 | noc@online.net.br<br>
+            <span id="dataGeracao"></span>
+        </footer>
     </div>
 
     <script>
-        // Data no topo
-        document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('dataGeracao').innerText = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR');
 
         function addImg(input) {
             if (input.files && input.files[0]) {
