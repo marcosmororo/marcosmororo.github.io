@@ -3,251 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Padronização v3.0</title>
+    <title>NOC Command Center - Live Preview</title>
     <style>
         :root {
-            --bg: #0a0f1e;
-            --surface: #161e2d;
-            --primary: #00d4ff;
-            --danger: #ff4b5c;
-            --warning: #ffb400;
-            --success: #00e676;
-            --text: #e2e8f0;
-            --border: #2d3748;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --primary: #38bdf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            --text: #f1f5f9;
+            --border: #334155;
+            --preview-bg: #020617;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
             padding: 20px;
         }
 
-        .container { max-width: 1200px; margin: auto; }
+        .container { max-width: 1400px; margin: auto; }
 
-        .header-main {
-            background: linear-gradient(135deg, #1a202c 0%, #0a0f1e 100%);
-            padding: 20px;
-            border-radius: 10px;
-            border-bottom: 3px solid var(--primary);
+        header {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
 
-        .grid-layout {
+        .main-layout {
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 20px;
+            grid-template-columns: 450px 1fr;
+            gap: 25px;
         }
 
         .panel {
             background: var(--surface);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            height: fit-content;
         }
 
         .field { margin-bottom: 15px; }
-        .field label { display: block; font-size: 11px; font-weight: bold; color: var(--primary); margin-bottom: 5px; text-transform: uppercase; }
+        .field label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         
         input, select, textarea {
             width: 100%;
-            background: #0d1117;
+            background: #0f172a;
             border: 1px solid var(--border);
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            box-sizing: border-box;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
             font-size: 13px;
+            transition: 0.2s;
         }
 
-        .btn-generate {
+        input:focus, select:focus { border-color: var(--primary); outline: none; }
+
+        /* Preview Dinâmico */
+        .preview-container {
+            position: sticky;
+            top: 20px;
+        }
+
+        .preview-card {
+            background: var(--preview-bg);
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            padding: 25px;
+            min-height: 400px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #live-text {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #94a3b8;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .btn-copy-big {
             width: 100%;
             background: var(--primary);
-            color: #000;
+            color: #0f172a;
             border: none;
-            padding: 15px;
-            font-weight: bold;
-            border-radius: 5px;
+            padding: 18px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 20px;
             text-transform: uppercase;
             transition: 0.3s;
         }
 
-        .btn-generate:hover { background: #00b8e6; transform: scale(1.02); }
+        .btn-copy-big:hover { background: #7dd3fc; transform: translateY(-2px); }
 
-        /* Estilo dos Carimbos Gerados */
-        .output-area { display: flex; flex-direction: column; gap: 15px; }
-        
-        .card-report {
-            background: #1a202c;
-            border-radius: 8px;
-            border-left: 5px solid var(--primary);
-            padding: 15px;
-            position: relative;
-            animation: fadeIn 0.4s ease;
+        .btn-copy-big.success { background: var(--success); color: white; }
+
+        .tag {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: bold;
+            background: var(--primary);
+            color: #0f172a;
         }
-
-        .card-report.rompimento { border-left-color: var(--danger); }
-        .card-report.energia { border-left-color: #f6e05e; }
-        .card-report.performance { border-left-color: var(--warning); }
-
-        .code-box {
-            background: #000;
-            color: #adbac7;
-            padding: 12px;
-            font-family: 'Consolas', monospace;
-            font-size: 12px;
-            border-radius: 4px;
-            margin: 10px 0;
-            white-space: pre-wrap;
-            border: 1px solid #30363d;
-        }
-
-        .actions { display: flex; gap: 10px; }
-        .btn-copy { background: #2d3748; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-copy:hover { background: var(--primary); color: #000; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-main">
+    <header>
         <div>
-            <h1 style="margin:0; font-size: 22px; letter-spacing: 1px;">NOC COMMAND CENTER</h1>
-            <span style="font-size: 12px; color: var(--primary)">PADRONIZAÇÃO DE CARIMBOS TÉCNICOS</span>
+            <h1 style="margin:0; font-size: 20px;">📡 NOC DASHBOARD | LIVE PREVIEW</h1>
+            <p style="margin:0; font-size: 12px; opacity: 0.6;">Preencha e visualize o carimbo em tempo real</p>
         </div>
-        <div id="clock" style="font-family: monospace; font-size: 20px;">00:00:00</div>
-    </div>
+        <div id="clock" style="font-family: monospace; font-size: 22px; color: var(--primary);">00:00:00</div>
+    </header>
 
-    <div class="grid-layout">
+    <div class="main-layout">
         <div class="panel">
-            <form id="stampForm">
-                <div class="field">
-                    <label>Tipo de Ocorrência</label>
-                    <select id="tipo_falha">
-                        <option value="ROMPIMENTO">✂️ ROMPIMENTO DE FIBRA</option>
-                        <option value="SWAP">🔄 SWAP DE EQUIPAMENTO</option>
-                        <option value="ENERGIA">⚡ FALHA DE ENERGIA / AC</option>
-                        <option value="TEMPERATURA">🔥 ALTA TEMPERATURA</option>
-                        <option value="LATENCIA">🛰️ ALTA LATÊNCIA (PING)</option>
-                        <option value="PERDA">📦 PERDA DE PACOTES</option>
-                        <option value="INDISPONIVEL">🚫 INDISPONIBILIDADE GERAL</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>ID Chamado / Protocolo</label>
-                    <input type="text" id="id_chamado" placeholder="Ex: INC009823">
-                </div>
-                <div class="field">
-                    <label>Trecho / Site Afetado</label>
-                    <input type="text" id="local" placeholder="Ex: POP-CENTRO p/ POP-SUL">
-                </div>
-                <div class="field">
-                    <label>Equipamento / Interface</label>
-                    <input type="text" id="equip" placeholder="Ex: OLT-01 (Slot 5)">
-                </div>
-                <div class="field">
-                    <label>Técnico em Campo</label>
-                    <input type="text" id="tec_campo" placeholder="Ex: Nome do Técnico ou Vazio">
-                </div>
-                <div class="field">
-                    <label>Observações Adicionais</label>
-                    <textarea id="obs" rows="3" placeholder="Detalhes técnicos rápidos..."></textarea>
-                </div>
-                <button type="submit" class="btn-generate">Gerar Carimbo Padronizado</button>
-            </form>
+            <div class="field">
+                <label>Tipo de Ocorrência</label>
+                <select id="tipo_falha" oninput="updatePreview()">
+                    <option value="ROMPIMENTO">✂️ ROMPIMENTO DE FIBRA</option>
+                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO</option>
+                    <option value="ENERGIA">⚡ FALHA DE ENERGIA / AC</option>
+                    <option value="TEMPERATURA">🔥 ALTA TEMPERATURA</option>
+                    <option value="LATENCIA">🛰️ ALTA LATÊNCIA (PING)</option>
+                    <option value="PERDA">📦 PERDA DE PACOTES</option>
+                    <option value="INDISPONIVEL">🚫 INDISPONIBILIDADE GERAL</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>ID / Protocolo / Chamado</label>
+                <input type="text" id="protocolo" placeholder="Ex: 2026.04.1234" oninput="updatePreview()">
+            </div>
+
+            <div class="field">
+                <label>Trecho ou Localidade</label>
+                <input type="text" id="local" placeholder="Ex: SP > RJ (Backbone)" oninput="updatePreview()">
+            </div>
+
+            <div class="field">
+                <label>Equipamento / Interface</label>
+                <input type="text" id="equip" placeholder="Ex: OLT Nokia - Slot 01" oninput="updatePreview()">
+            </div>
+
+            <div class="field">
+                <label>Técnico / Responsável</label>
+                <input type="text" id="tecnico" placeholder="Seu nome ou técnico de campo" oninput="updatePreview()">
+            </div>
+
+            <div class="field">
+                <label>Observações Detalhadas</label>
+                <textarea id="obs" rows="4" placeholder="Descreva a ação técnica..." oninput="updatePreview()"></textarea>
+            </div>
+            
+            <p style="font-size: 11px; color: var(--warning); border-top: 1px solid var(--border); padding-top: 10px;">
+                * O carimbo é atualizado automaticamente ao digitar.
+            </p>
         </div>
 
-        <div class="output-area" id="outputList">
+        <div class="preview-container">
+            <div class="preview-card" id="card-status">
+                <div class="preview-header">
+                    <span class="tag" id="tag-tipo">ROMPIMENTO</span>
+                    <span style="font-size: 12px; color: var(--primary)" id="live-clock">--:--:--</span>
+                </div>
+                
+                <div id="live-text">Carregando carimbo...</div>
+
+                <button class="btn-copy-big" id="copyBtn" onclick="copyToClipboard()">
+                    COPIAR PARA O CLIPBOARD
+                </button>
             </div>
+        </div>
     </div>
 </div>
 
 <script>
     // Relógio
     setInterval(() => {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('pt-BR');
+        document.getElementById('clock').innerText = timeStr;
+        document.getElementById('live-clock').innerText = timeStr;
     }, 1000);
 
-    const form = document.getElementById('stampForm');
-    const outputList = document.getElementById('outputList');
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
+    function updatePreview() {
         const tipo = document.getElementById('tipo_falha').value;
-        const d = {
-            id: document.getElementById('id_chamado').value || "NÃO INFORMADO",
-            local: document.getElementById('local').value || "NÃO INFORMADO",
-            equip: document.getElementById('equip').value || "N/A",
-            tec: document.getElementById('tec_campo').value || "NOC_CENTRAL",
-            obs: document.getElementById('obs').value || "Sem observações adicionais.",
-            hora: new Date().toLocaleString('pt-BR')
-        };
+        const protocolo = document.getElementById('protocolo').value || "AGUARDANDO ID";
+        const local = document.getElementById('local').value || "NÃO DEFINIDO";
+        const equip = document.getElementById('equip').value || "N/A";
+        const tecnico = document.getElementById('tecnico').value || "NOC_AUTO";
+        const obs = document.getElementById('obs').value || "Sem observações no momento.";
+        const data = new Date().toLocaleString('pt-BR');
+        
+        const tag = document.getElementById('tag-tipo');
+        const card = document.getElementById('card-status');
+        tag.innerText = tipo;
 
-        let carimboTexto = "";
+        // Estilos Visuais do Card
+        if(tipo === 'ROMPIMENTO' || tipo === 'INDISPONIVEL') card.style.borderColor = "var(--danger)";
+        else if(tipo === 'ENERGIA' || tipo === 'TEMPERATURA') card.style.borderColor = "var(--warning)";
+        else card.style.borderColor = "var(--primary)";
 
-        // LÓGICA DE PADRONIZAÇÃO POR TIPO
+        let template = "";
+
+        // Lógica de Construção do Texto Padronizado
         switch(tipo) {
             case 'ROMPIMENTO':
-                carimboTexto = `✂️ [CARIMBO DE ROMPIMENTO]\n----------------------------------\nSTATUS: TOTALMENTE INTERROMPIDO\nID: ${d.id}\nLOCAL: ${d.local}\nDETECÇÃO: ${d.hora}\nEQUIPAMENTO: ${d.equip}\nTÉCNICO EM CAMPO: ${d.tec}\nOBS: Suspeita de rompimento de fibra óptica. Aguardando OTDR.\n----------------------------------`;
+                template = `✂️ **[NOTIFICAÇÃO DE ROMPIMENTO]**
+-----------------------------------------
+📍 LOCAL: ${local}
+🎫 ID: ${protocolo}
+⏰ DETECÇÃO: ${data}
+⚠️ STATUS: TOTALMENTE INTERROMPIDO
+🧬 EQUIP: ${equip}
+👤 RESP: ${tecnico}
+📝 OBS: Suspeita de rompimento de fibra óptica. 
+Aguardando técnico em campo para testes de OTDR.
+-----------------------------------------`;
                 break;
             case 'SWAP':
-                carimboTexto = `🔄 [CARIMBO DE SWAP / TROCA]\n----------------------------------\nMOTIVO: FALHA DE HARDWARE\nID: ${d.id}\nLOCAL: ${d.local}\nEQUIP. SAI: ${d.equip}\nEQUIP. ENTRA: [AGUARDANDO]\nTÉCNICO: ${d.tec}\nOBS: ${d.obs}\n----------------------------------`;
+                template = `🔄 **[CARIMBO DE SWAP TÉCNICO]**
+-----------------------------------------
+📍 LOCAL: ${local}
+🎫 ID: ${protocolo}
+⏰ INÍCIO: ${data}
+🛠️ EQUIP. SAI: ${equip}
+🛠️ EQUIP. ENTRA: [AGUARDANDO]
+👤 TÉCNICO: ${tecnico}
+📝 MOTIVO: ${obs}
+-----------------------------------------`;
                 break;
             case 'ENERGIA':
-                carimboTexto = `⚡ [CARIMBO DE FALHA DE ENERGIA]\n----------------------------------\nSTATUS: EQUIPAMENTO OFFLINE\nID: ${d.id}\nLOCAL: ${d.local}\nHORA DA QUEDA: ${d.hora}\nTÉCNICO: ${d.tec}\nDETALHES: Equipamento sem resposta (Perca de gerência). Provável falta de AC ou falha de retificadora.\n----------------------------------`;
+                template = `⚡ **[FALHA DE ALIMENTAÇÃO / AC]**
+-----------------------------------------
+📍 SITE: ${local}
+🎫 ID: ${protocolo}
+⏰ QUEDA: ${data}
+🔋 EQUIP: ${equip}
+👤 RESP: ${tecnico}
+📝 STATUS: Equipamento deslogado da gerência. 
+Provável falta de energia elétrica ou falha no banco de baterias.
+-----------------------------------------`;
                 break;
             case 'TEMPERATURA':
-                carimboTexto = `🔥 [CARIMBO DE ALTA TEMPERATURA]\n----------------------------------\nSTATUS: ALERTA CRÍTICO\nID: ${d.id}\nLOCAL: ${d.local}\nEQUIPAMENTO: ${d.equip}\nTEMPERATURA ATUAL: [INSERIR] °C\nOBS: ${d.obs}\n----------------------------------`;
+                template = `🔥 **[ALERTA DE ALTA TEMPERATURA]**
+-----------------------------------------
+📍 LOCAL: ${local}
+🎫 ID: ${protocolo}
+🌡️ TEMP: [DIGITE AQUI] °C
+🧬 EQUIP: ${equip}
+👤 RESP: ${tecnico}
+📝 OBS: ${obs}
+-----------------------------------------`;
                 break;
             case 'LATENCIA':
-                carimboTexto = `🛰️ [CARIMBO DE ALTA LATÊNCIA]\n----------------------------------\nSTATUS: DEGRADADO\nID: ${d.id}\nTRECHO: ${d.local}\nLATÊNCIA MÉDIA: [INSERIR] ms\nTESTE REALIZADO: MTR / PING\nOBS: ${d.obs}\n----------------------------------`;
+                template = `🛰️ **[DEGRADAÇÃO: ALTA LATÊNCIA]**
+-----------------------------------------
+📍 TRECHO: ${local}
+🎫 ID: ${protocolo}
+📊 MÉTRICA: [DIGITE AQUI] ms
+🧬 EQUIP: ${equip}
+👤 RESP: ${tecnico}
+📝 TESTES: ${obs}
+-----------------------------------------`;
                 break;
             case 'PERDA':
-                carimboTexto = `📦 [CARIMBO DE PERDA DE PACOTES]\n----------------------------------\nSTATUS: DEGRADADO\nID: ${d.id}\nALVO: ${d.local}\nPORCENTAGEM: [INSERIR]%\nEQUIPAMENTO: ${d.equip}\nOBS: Verificado erro de CRC na interface ou saturação de link.\n----------------------------------`;
+                template = `📦 **[DEGRADAÇÃO: PERDA DE PACOTES]**
+-----------------------------------------
+📍 ALVO: ${local}
+🎫 ID: ${protocolo}
+📊 PERDA: [DIGITE AQUI]%
+🧬 EQUIP: ${equip}
+👤 RESP: ${tecnico}
+📝 OBS: Verificado aumento de CRC na interface. ${obs}
+-----------------------------------------`;
                 break;
             case 'INDISPONIVEL':
-                carimboTexto = `🚫 [CARIMBO DE INDISPONIBILIDADE]\n----------------------------------\nSTATUS: FORA DE OPERAÇÃO\nID: ${d.id}\nAFETADO: ${d.local}\nPREVISÃO: [INSERIR]\nTÉCNICO: ${d.tec}\nOBS: ${d.obs}\n----------------------------------`;
+                template = `🚫 **[CARIMBO DE INDISPONIBILIDADE]**
+-----------------------------------------
+📍 LOCAL: ${local}
+🎫 ID: ${protocolo}
+⏰ DESDE: ${data}
+⚠️ IMPACTO: TOTAL
+👤 RESP: ${tecnico}
+📝 OBS: ${obs}
+-----------------------------------------`;
                 break;
         }
 
-        renderCard(tipo.toLowerCase(), carimboTexto, d.local);
-        form.reset();
-    });
-
-    function renderCard(classe, texto, local) {
-        const card = document.createElement('div');
-        card.className = `card-report ${classe}`;
-        
-        card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <strong style="font-size:12px; color:var(--primary)">${local}</strong>
-                <small style="opacity:0.5">${new Date().toLocaleTimeString()}</small>
-            </div>
-            <div class="code-box">${texto}</div>
-            <div class="actions">
-                <button class="btn-copy" onclick="copyText(this)">Copiar Carimbo</button>
-                <button class="btn-copy" style="background:#4a1212" onclick="this.parentElement.parentElement.remove()">Excluir</button>
-            </div>
-        `;
-        outputList.prepend(card);
+        document.getElementById('live-text').innerText = template;
     }
 
-    function copyText(btn) {
-        const text = btn.parentElement.parentElement.querySelector('.code-box').innerText;
+    function copyToClipboard() {
+        const text = document.getElementById('live-text').innerText;
+        const btn = document.getElementById('copyBtn');
+        
         navigator.clipboard.writeText(text).then(() => {
-            const originalText = btn.innerText;
-            btn.innerText = "✅ Copiado!";
-            setTimeout(() => btn.innerText = originalText, 2000);
+            btn.innerText = "✅ CARIMBO COPIADO!";
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.innerText = "COPIAR PARA O CLIPBOARD";
+                btn.classList.remove('success');
+            }, 2000);
         });
     }
+
+    // Inicializa o preview
+    updatePreview();
 </script>
 
 </body>
