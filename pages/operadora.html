@@ -16,7 +16,7 @@
         @page { size: A4; margin: 0; }
 
         body {
-            font-family: 'Segoe UI', Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Helvetica, Arial, sans-serif;
             background-color: var(--bg-body);
             margin: 0;
             padding: 20px;
@@ -38,20 +38,17 @@
         /* LOGO E TÍTULO */
         .header-main {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
             border-bottom: 3px solid var(--primary);
             padding-bottom: 15px;
             margin-bottom: 20px;
         }
 
         .header-main img {
-            max-height: 70px;
+            max-height: 90px;
+            margin-bottom: 10px;
             display: block;
-        }
-
-        .header-main .title-area {
-            text-align: right;
         }
 
         .header-main h1 {
@@ -59,13 +56,7 @@
             color: var(--primary);
             font-size: 22px;
             text-transform: uppercase;
-        }
-
-        .header-main span {
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--accent);
-            letter-spacing: 1px;
+            text-align: center;
         }
 
         /* GRID DE INFORMAÇÕES */
@@ -114,7 +105,7 @@
             color: #000;
         }
 
-        /* CAIXAS DE TESTES (NOVA ESTRUTURA) */
+        /* CAIXAS DE TESTES */
         .test-box-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -159,31 +150,36 @@
             display: block;
         }
 
-        /* MENU LATERAL */
+        /* MENU LATERAL FIXO */
         .toolbar {
             position: fixed;
-            left: 30px;
-            top: 30px;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            z-index: 999;
+            gap: 15px;
+            z-index: 1000;
         }
 
         .btn-acao {
-            padding: 12px 15px;
+            padding: 15px;
             border: none;
-            border-radius: 6px;
+            border-radius: 50px;
             color: white;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            font-size: 11px;
-            text-align: left;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            font-size: 12px;
+            transition: 0.3s;
+            width: 160px;
+            text-align: center;
         }
 
         .btn-anexo { background: #007bff; }
+        .btn-anexo:hover { background: #0056b3; }
         .btn-print { background: #28a745; }
+        .btn-print:hover { background: #1e7e34; }
 
         .btn-remove {
             position: absolute;
@@ -209,7 +205,7 @@
         @media print {
             body { background: white; padding: 0; }
             .container { box-shadow: none; width: 100%; padding: 0; margin: 0; }
-            .toolbar, .btn-remove { display: none; }
+            .toolbar, .btn-remove { display: none !important; }
         }
     </style>
 </head>
@@ -217,20 +213,17 @@
 
     <div class="toolbar">
         <button class="btn-acao btn-anexo" onclick="document.getElementById('fileInput').click()">📷 ANEXAR PRINT</button>
-        <button class="btn-acao btn-print" onclick="window.print()">📄 GERAR PDF / IMPRIMIR</button>
+        <button class="btn-acao btn-print" onclick="window.print()">📄 GERAR PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="addImg(this)">
     </div>
 
     <div class="container">
         <header class="header-main">
-            <img src="online.png" alt="Online Telecom" onerror="this.src='https://via.placeholder.com/200x80?text=Online+Telecom'">
-            <div class="title-area">
-                <h1>Abertura de Chamado</h1>
-                <span>SUPORTE N2 - BACKBONE</span>
-            </div>
+            <img src="online.png" alt="Online Telecom">
+            <h1>Relatório de Diagnóstico Técnico</h1>
         </header>
 
-        <div class="section-title">Identificação do Link</div>
+        <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
             <div class="field"><label>Operadora</label><input type="text" placeholder="Vivo, Brisanet, Oi..."></div>
             <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2026-000"></div>
@@ -238,27 +231,26 @@
             
             <div class="field full-width highlight">
                 <label>ID do Circuito / Designação (ID OPERADORA)</label>
-                <input type="text" placeholder="Insira a identificação completa do link">
+                <input type="text" placeholder="INSIRA A IDENTIFICAÇÃO COMPLETA DO LINK">
             </div>
         </div>
 
-        <div class="section-title">Triagem e Classificação</div>
+        <div class="section-title">Triagem de Incidente</div>
         <div class="info-grid">
             <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
             <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Site"></div>
             <div class="field">
-                <label>Natureza do Problema</label>
-                <select style="color: #d9534f;">
+                <label>Tipo de Falha</label>
+                <select style="color: #d9534f; font-weight: bold;">
                     <option>Indisponibilidade Total (Down)</option>
                     <option>Latência Alta (High Latency)</option>
                     <option>Perda de Pacotes (Packet Loss)</option>
                     <option>Quedas Intermitentes (Flapping)</option>
-                    <option>Lentidão / Degradação (Slowly)</option>
                 </select>
             </div>
         </div>
 
-        <div class="section-title">Diagnóstico Técnico (Preenchimento Obrigatório)</div>
+        <div class="section-title">Checklist de Testes Efetuados</div>
         <div class="test-box-container">
             <div class="test-item">
                 <label>1. Infraestrutura POP</label>
@@ -270,7 +262,7 @@
             </div>
             <div class="test-item">
                 <label>3. Potência Óptica (Rx)</label>
-                <input type="text" placeholder="Ex: -19.5 dBm (dentro do range)">
+                <input type="text" placeholder="Ex: -19.5 dBm">
             </div>
             <div class="test-item">
                 <label>4. Interface Física (Porta)</label>
@@ -278,19 +270,19 @@
             </div>
             <div class="test-item">
                 <label>5. Perda de Pacotes (Ping GW)</label>
-                <input type="text" placeholder="Ex: 15% de perda para o Gateway">
+                <input type="text" placeholder="Ex: 10% de perda">
             </div>
             <div class="test-item">
                 <label>6. Latência Média (Ping GW)</label>
-                <input type="text" placeholder="Ex: 120ms (Acima do SLA)">
+                <input type="text" placeholder="Ex: 150ms">
             </div>
             <div class="test-item" style="grid-column: span 2; border: none;">
-                <label>7. Observações Técnicas Adicionais</label>
+                <label>7. Observações Técnicas</label>
                 <input type="text" value="Reset físico não realizado: Equipamento Core / Ativo Crítico.">
             </div>
         </div>
 
-        <div class="section-title">Evidências de Monitoramento</div>
+        <div class="section-title">Evidências (MTR / Ping / Grafana)</div>
         <div id="printArea" class="evidence-grid">
             </div>
 
@@ -302,8 +294,10 @@
     </div>
 
     <script>
-        document.getElementById('dataGeracao').innerText = 'Documento gerado em: ' + new Date().toLocaleString('pt-BR');
+        // Data automática no rodapé
+        document.getElementById('dataGeracao').innerText = 'Data de Emissão: ' + new Date().toLocaleString('pt-BR');
 
+        // Função para anexar imagens
         function addImg(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
