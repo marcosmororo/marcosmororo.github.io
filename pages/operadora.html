@@ -2,312 +2,296 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ticket Operadora | Online Telecom</title>
+    <title>Ticket Técnico | Online Telecom</title>
     <style>
         :root {
-            --primary-color: #004085;
-            --accent-color: #e67e22;
-            --border-color: #dee2e6;
-            --bg-dark: #343a40;
-            --text-dark: #212529;
-            --alert-red: #d32f2f;
+            --primary: #002d5b;
+            --accent: #f39c12;
+            --bg-body: #4a4e51;
+            --text-main: #333;
+            --border: #e0e0e0;
         }
 
-        @page { size: A4; margin: 0; }
+        @page { size: A4; margin: 10mm; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #525659;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
         }
 
-        .report-page {
-            background: white;
+        .container {
+            background: #fff;
             width: 210mm;
             min-height: 297mm;
-            padding: 20mm;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            padding: 40px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
             box-sizing: border-box;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            margin: 10mm 0;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 3px solid var(--primary-color);
-            padding-bottom: 15px;
+        /* LOGO E TÍTULO */
+        .header-main {
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header-main img {
+            max-height: 80px;
+            margin-bottom: 10px;
+        }
+
+        .header-main h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* GRID DE INFORMAÇÕES */
+        .data-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
             margin-bottom: 25px;
         }
 
-        .logo-area img { max-height: 60px; width: auto; }
-
-        .header-title { text-align: right; }
-        .header-title h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 22px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .box {
+            border: 1px solid var(--border);
+            padding: 10px;
+            border-radius: 4px;
         }
 
-        .header-title .ticket-type {
-            background: var(--accent-color);
-            color: white;
-            padding: 3px 10px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 5px;
-        }
+        .box.span-2 { grid-column: span 2; }
+        .box.span-4 { grid-column: span 4; }
 
-        .section-title {
-            font-size: 13px;
-            font-weight: bold;
-            color: white;
-            background: var(--primary-color);
-            padding: 8px 15px;
-            margin: 20px 0 10px 0;
-            border-radius: 4px 4px 0 0;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 5px;
-        }
-
-        .field { 
-            border-bottom: 2px solid #eee; 
-            padding: 5px 0;
-        }
-
-        .full-width { grid-column: span 3; }
-        .double-width { grid-column: span 2; }
-
-        .field label {
+        .box label {
             display: block;
             font-size: 10px;
-            color: #6c757d;
-            font-weight: 700;
+            color: #7f8c8d;
+            font-weight: bold;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
         }
 
-        input, select {
-            border: none;
+        .box input, .box select {
             width: 100%;
+            border: none;
             font-size: 14px;
+            font-weight: 600;
+            color: var(--primary);
             outline: none;
             background: transparent;
-            font-weight: 700;
-            color: var(--text-dark);
         }
 
-        /* Destaque para Natureza da Falha */
-        select.fault-type {
-            color: var(--alert-red);
-            text-transform: uppercase;
-        }
-
-        .content-box {
-            border: 1px solid #dee2e6;
-            border-top: none;
+        /* STATUS HIGHLIGHT */
+        .status-bar {
+            background: #f8f9fa;
+            border-left: 5px solid var(--accent);
             padding: 15px;
-            min-height: 120px;
-            font-size: 14px;
-            line-height: 1.7;
-            background: #fff;
-            color: #333;
-            outline: none;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .image-container {
+        /* ÁREA DE TEXTO TÉCNICO */
+        .technical-report {
+            margin-bottom: 30px;
+        }
+
+        .technical-report h3 {
+            background: var(--primary);
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 14px;
+            margin: 0;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .report-content {
+            border: 1px solid var(--primary);
+            padding: 15px;
+            min-height: 150px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #2c3e50;
+            white-space: pre-wrap;
+        }
+
+        /* EVIDÊNCIAS */
+        .evidence-title {
+            border-bottom: 2px solid #eee;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .evidence-grid {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-top: 10px;
+            gap: 20px;
         }
 
-        .image-wrapper { 
-            position: relative; 
-            border: 2px solid #f1f1f1; 
-            background: #fafafa;
-            border-radius: 6px;
-            overflow: hidden;
+        .img-card {
+            border: 1px solid #ddd;
+            padding: 5px;
+            position: relative;
+            background: #fdfdfd;
         }
 
-        .image-wrapper img { 
-            width: 100%; 
-            max-height: 550px; 
-            object-fit: contain;
+        .img-card img {
+            width: 100%;
             display: block;
         }
 
-        .image-label {
-            background: #f1f1f1;
-            padding: 5px;
-            font-size: 11px;
-            color: #666;
-            font-weight: bold;
-        }
-        
-        .toolbar {
-            position: fixed; top: 20px; right: 20px; background: white;
-            padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            width: 220px; z-index: 999;
-        }
-
-        .btn {
-            width: 100%; padding: 12px; margin-bottom: 10px;
-            font-weight: bold; cursor: pointer; border: none; border-radius: 6px;
-            color: white; transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .btn-print { background: #28a745; }
-        .btn-img { background: #007bff; }
-        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
-
-        .remove-btn { 
-            position: absolute; top: 10px; right: 10px; 
-            background: #dc3545; color: white; 
-            border: none; cursor: pointer; padding: 6px 12px; 
-            border-radius: 4px; font-size: 11px;
-        }
-
-        footer {
-            margin-top: auto;
-            border-top: 2px solid var(--primary-color);
-            padding-top: 15px;
-            font-size: 11px;
-            color: #495057;
+        /* BOTÕES FLUTUANTES */
+        .menu-fixo {
+            position: fixed;
+            left: 30px;
+            top: 30px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-acao {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-anexo { background: #3498db; }
+        .btn-print { background: #27ae60; }
+
+        .btn-remove {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(192, 57, 43, 0.9);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
         }
 
         @media print {
-            body { background: none; }
-            .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; margin: 0; border: none; width: 100%; padding: 10mm; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; width: 100%; padding: 0; }
+            .menu-fixo, .btn-remove { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <div class="toolbar">
-        <div style="text-align:center; margin-bottom:15px">
-            <strong style="font-size:14px; color:var(--primary-color)">FERRAMENTAS NOC</strong>
-        </div>
-        <button class="btn btn-img" onclick="document.getElementById('fileInput').click()">
-            <span>📷</span> ANEXAR EVIDÊNCIA
-        </button>
-        <button class="btn btn-print" onclick="window.print()">
-            <span>📄</span> IMPRIMIR / PDF
-        </button>
-        <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
+    <div class="menu-fixo">
+        <button class="btn-acao btn-anexo" onclick="document.getElementById('fileIn').click()">+ ADICIONAR EVIDÊNCIA</button>
+        <button class="btn-acao btn-print" onclick="window.print()">🖨️ IMPRIMIR / PDF</button>
+        <input type="file" id="fileIn" style="display:none" accept="image/*" onchange="addImg(this)">
     </div>
 
-    <div class="report-page">
-        <header>
-            <div class="logo-area">
-                <img src="online.png" alt="Online Telecom" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                <h2 style="display:none; color:var(--primary-color); margin:0">Online Telecom</h2>
-            </div>
-            <div class="header-title">
-                <h1>Abertura de Chamado</h1>
-                <span class="ticket-type">SUPORTE N2 - BACKBONE</span>
-            </div>
-        </header>
+    <div class="container">
+        <div class="header-main">
+            <img src="online.png" alt="Online Telecom">
+            <h1>Relatório de Incidente de Rede</h1>
+        </div>
 
-        <div class="section-title">Dados do Circuito</div>
-        <div class="info-grid">
-            <div class="field"><label>Operadora</label><input type="text" placeholder="Vivo, Brisanet, Oi, etc."></div>
-            <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2026-XXXX"></div>
-            <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
-            
-            <div class="field full-width" style="background: #fff9f2; border-bottom: 2px solid var(--accent-color);">
-                <label style="color: var(--accent-color);">ID do Circuito / Designação (Obrigatório)</label>
-                <input type="text" placeholder="Ex: CID-123456 / SP-1020-ON">
+        <div class="data-section">
+            <div class="box span-2">
+                <label>Operadora Destino</label>
+                <input type="text" placeholder="Ex: Vivo / Brisanet / Algar">
+            </div>
+            <div class="box">
+                <label>Protocolo Interno</label>
+                <input type="text" placeholder="INC-2026-000">
+            </div>
+            <div class="box">
+                <label>Início da Falha</label>
+                <input type="datetime-local">
+            </div>
+
+            <div class="box span-4" style="background: #fff8e1; border-color: #ffe082;">
+                <label style="color: #f57c00;">ID DO CIRCUITO / DESIGNANTE (ID OPERADORA)</label>
+                <input type="text" placeholder="INSIRA A IDENTIFICAÇÃO COMPLETA DO LINK">
+            </div>
+
+            <div class="box span-2">
+                <label>Localização (POP/Site)</label>
+                <input type="text" placeholder="Cidade - Estado">
+            </div>
+            <div class="box span-2">
+                <label>Técnico Responsável (NOC)</label>
+                <input type="text" placeholder="Nome do Analista">
             </div>
         </div>
 
-        <div class="section-title">Classificação Técnica da Falha</div>
-        <div class="info-grid">
-            <div class="field double-width">
-                <label>Natureza do Incidente (Padrão Operadora)</label>
-                <select class="fault-type">
-                    <option value="" disabled selected>Selecione a categoria técnica...</option>
-                    <option>Total Outage (Link Down / Sem Portadora)</option>
-                    <option>Packet Loss (Perda de Pacotes Excessiva)</option>
-                    <option>High Latency (Latência acima do SLA)</option>
-                    <option>Intermittent Connection (Quedas constantes)</option>
-                    <option>Optical Power Degraded (Degradação de sinal óptico)</option>
-                    <option>Bandwidth Saturation / Bottleneck (Lentidão em horários de pico)</option>
-                    <option>Routing / BGP Issue (Falha de roteamento/anúncio)</option>
+        <div class="status-bar">
+            <div style="width: 60%;">
+                <label style="font-size: 10px; font-weight: bold; color: #7f8c8d; text-transform: uppercase;">Natureza Técnica da Ocorrência</label>
+                <select style="border: none; font-size: 16px; font-weight: bold; color: #c0392b; width: 100%; cursor: pointer;">
+                    <option>INDISPONIBILIDADE TOTAL (Link Down)</option>
+                    <option>LATÊNCIA ALTA / INSTABILIDADE (High Latency)</option>
+                    <option>PERDA DE PACOTES (Packet Loss)</option>
+                    <option>QUEDAS INTERMITENTES (Flapping)</option>
+                    <option>ERROS DE CRC / INTERFACE (Physical Issue)</option>
                 </select>
             </div>
-            <div class="field">
-                <label>Técnico Responsável</label>
-                <input type="text" placeholder="Nome no NOC">
-            </div>
-        </div>
-
-        <div class="section-title">
-            <span>Diagnóstico Detalhado</span>
-            <span style="font-size: 9px; opacity: 0.8;">Editável</span>
-        </div>
-        <div class="content-box" contenteditable="true">
-• <b>Status Local:</b> POP energizado e infraestrutura interna operando normalmente.<br>
-• <b>Equipamento:</b> Core Switch ativo. Reset físico não recomendado (Equipamento de Borda).<br>
-• <b>Camada Física:</b> [Descreva se a porta está UP ou DOWN no seu lado].<br>
-• <b>Testes realizados:</b> Ping efetuado do Core para o Gateway da Operadora (IP: ) com perda de [X]%.<br>
-• <b>Observação:</b> Falha isolada no link da operadora supracitada.
-        </div>
-
-        <div class="section-title">Evidências Técnicas (Anexos)</div>
-        <div id="imageContainer" class="image-container"></div>
-
-        <footer>
-            <div>
-                <strong>Online Telecom</strong><br>
-                NOC: noc@online.net.br | 0800 088 1111
-            </div>
             <div style="text-align: right;">
-                Relatório de Incidência Técnica<br>
-                <span id="displayDate"></span>
+                <span id="dataAtual" style="font-size: 12px; font-weight: bold; color: var(--primary);"></span>
             </div>
-        </footer>
+        </div>
+
+        <div class="technical-report">
+            <h3>SUMÁRIO DE TESTES E DIAGNÓSTICO</h3>
+            <div class="report-content" contenteditable="true">
+1. INFRAESTRUTURA LOCAL: Verificada estabilidade elétrica; POP operando normalmente.
+2. CAMADA FÍSICA: Interface óptica validada. Potência Rx em [X] dBm.
+3. PROTOCOLO DE RESET: Não executado por se tratar de Core Switch (Ativo Crítico).
+4. ANÁLISE TÉCNICA (MTR/PING):
+   - Destino: Gateway Operadora
+   - Perda: [X]% | Latência: [X]ms | Jitter: [X]ms
+5. STATUS DA PORTA: [UP/DOWN] - Sem erros de CRC.
+6. CONCLUSÃO: Falha originada no backbone/transporte da operadora.
+            </div>
+        </div>
+
+        <div class="evidence-title">EVIDÊNCIAS DO MONITORAMENTO (PRINTS)</div>
+        <div id="printArea" class="evidence-grid">
+            </div>
+
+        <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 10px; font-size: 11px; color: #999; text-align: center;">
+            <strong>Online Telecom</strong> | NOC - Network Operations Center<br>
+            Contato: 0800 088 1111 | noc@online.net.br
+        </div>
     </div>
 
     <script>
-        document.getElementById('displayDate').innerText = 'Data: ' + new Date().toLocaleDateString('pt-BR');
+        // Data no topo
+        document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR');
 
-        function handleImage(input) {
+        function addImg(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const container = document.getElementById('imageContainer');
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'image-wrapper';
-                    wrapper.innerHTML = `
-                        <div class="image-label">Evidência: ${input.files[0].name}</div>
+                    const area = document.getElementById('printArea');
+                    const card = document.createElement('div');
+                    card.className = 'img-card';
+                    card.innerHTML = `
                         <img src="${e.target.result}">
-                        <button class="remove-btn" onclick="this.parentElement.remove()">REMOVER X</button>
+                        <button class="btn-remove" onclick="this.parentElement.remove()">REMOVER</button>
                     `;
-                    container.appendChild(wrapper);
+                    area.appendChild(card);
                 };
                 reader.readAsDataURL(input.files[0]);
             }
