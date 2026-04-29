@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Incident Report</title>
+    <title>NOC Command Center v2.0</title>
     <style>
         :root {
             --bg: #020617;
@@ -11,6 +11,7 @@
             --primary: #38bdf8;
             --danger: #f43f5e;
             --warning: #fbbf24;
+            --success: #10b981;
             --text: #f8fafc;
             --border: #334155;
         }
@@ -24,121 +25,138 @@
             line-height: 1.5;
         }
 
-        .container { max-width: 1200px; margin: auto; }
+        .container { max-width: 1400px; margin: auto; }
 
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            background: var(--surface);
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
             border-radius: 12px;
             margin-bottom: 25px;
             border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .status-badge {
-            background: #0ea5e9;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        /* Formulário de Alta Performance */
-        .grid-form {
+        .main-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1fr 350px;
             gap: 20px;
+        }
+
+        /* Formulário */
+        .card-panel {
             background: var(--surface);
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             border: 1px solid var(--border);
         }
 
-        .field { display: flex; flex-direction: column; gap: 8px; }
-        .field label { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .grid-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label { font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; }
         
         input, select, textarea {
             background: #0f172a;
             border: 1px solid var(--border);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
-            transition: all 0.2s;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
         }
-
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
 
         .full-width { grid-column: 1 / -1; }
 
-        button.main-btn {
-            grid-column: 1 / -1;
-            background: var(--primary);
-            color: #020617;
-            font-weight: 800;
-            padding: 18px;
-            border: none;
-            border-radius: 8px;
+        /* Botões */
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        
+        button {
             cursor: pointer;
-            font-size: 16px;
-            text-transform: uppercase;
-            transition: 0.3s;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        button.main-btn:hover { background: #7dd3fc; transform: translateY(-2px); }
+        .btn-primary { background: var(--primary); color: #020617; padding: 12px 20px; flex: 2; }
+        .btn-secondary { background: var(--border); color: white; padding: 10px; flex: 1; }
+        button:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Lista de Incidentes Gerados */
+        /* Quick Templates (Barra Lateral) */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
+        
+        .template-box {
+            background: #0f172a;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .template-box h4 { margin: 0 0 10px 0; font-size: 12px; color: var(--primary); }
+        
+        /* Relatórios Gerados */
         .output-section {
-            margin-top: 40px;
+            margin-top: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 20px;
         }
 
         .report-card {
             background: var(--surface);
-            border-radius: 12px;
-            padding: 20px;
-            border-top: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--border);
             position: relative;
         }
 
-        .report-card.interrompido { border-top-color: var(--danger); }
-        .report-card.degradado { border-top-color: var(--warning); }
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+        }
 
         .report-content {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 13px;
-            background: #020617;
-            padding: 15px;
-            border-radius: 6px;
-            white-space: pre-wrap;
-            margin: 15px 0;
-            color: #cbd5e1;
-        }
-
-        .copy-btn {
-            background: #334155;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
+            font-family: 'Fira Code', 'Consolas', monospace;
             font-size: 12px;
-        }
-
-        .copy-btn:hover { background: var(--primary); color: #020617; }
-
-        .tag {
-            font-size: 10px;
-            padding: 2px 8px;
+            background: #020617;
+            padding: 12px;
             border-radius: 4px;
-            background: #334155;
-            margin-right: 5px;
+            white-space: pre-wrap;
+            color: #7dd3fc;
+            border: 1px solid #334155;
         }
+
+        .copy-btn-mini {
+            background: var(--success);
+            color: white;
+            padding: 6px 12px;
+            font-size: 11px;
+            margin-top: 10px;
+        }
+
+        .tag-status {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--primary);
+            color: #020617;
+            font-weight: bold;
+        }
+
+        #clock { font-family: monospace; color: var(--primary); font-size: 20px; }
     </style>
 </head>
 <body>
@@ -146,182 +164,176 @@
 <div class="container">
     <header>
         <div>
-            <h1 style="margin: 0; font-size: 24px;">📡 NOC Incident Manager</h1>
-            <p style="margin: 0; font-size: 14px; opacity: 0.6;">Registro e Padronização de Falhas</p>
+            <h1 style="margin: 0; font-size: 20px;">⚡ NOC COMMAND CENTER v2.0</h1>
+            <p style="margin: 0; font-size: 12px; opacity: 0.6;">SISTEMA DE PADRONIZAÇÃO DE INCIDENTES E SWAP</p>
         </div>
-        <div id="clock" style="font-family: monospace; font-size: 22px; font-weight: bold;">00:00:00</div>
+        <div id="clock">00:00:00</div>
     </header>
 
-    <form class="grid-form" id="nocForm">
-        <div class="field">
-            <label>👤 Reclamante (Nome)</label>
-            <input type="text" id="nome_reclamante" required placeholder="Ex: João Silva">
-        </div>
-        <div class="field">
-            <label>🏢 Operadora Reclamante</label>
-            <input type="text" id="operadora" required placeholder="Ex: Vivo / Claro">
-        </div>
-        <div class="field">
-            <label>📍 Trecho (Ponta A – Ponta B)</label>
-            <input type="text" id="trecho" required placeholder="Ex: SP - RJ">
+    <div class="main-grid">
+        <div class="card-panel">
+            <form id="nocForm" class="grid-form">
+                <div class="field">
+                    <label>ID / Protocolo Interno</label>
+                    <input type="text" id="protocolo" placeholder="20260429-001">
+                </div>
+                <div class="field">
+                    <label>Operadora / Cliente</label>
+                    <input type="text" id="operadora" placeholder="Ex: WIN Telecom">
+                </div>
+                <div class="field">
+                    <label>📍 Trecho Principal</label>
+                    <input type="text" id="trecho" placeholder="Ex: RJ - SP">
+                </div>
+                
+                <div class="field full-width">
+                    <label>📝 Descrição Detalhada da Falha</label>
+                    <input type="text" id="desc_falha" placeholder="Ex: Queda de potência no slot 04 - Alarme de LOS">
+                </div>
+
+                <div class="field">
+                    <label>Equipamento (Marca/Modelo)</label>
+                    <input type="text" id="equip" placeholder="Ex: Nokia 7360 / Juniper MX">
+                </div>
+                <div class="field">
+                    <label>Interface / Slot</label>
+                    <input type="text" id="interface" placeholder="Ex: PON 0/1/2">
+                </div>
+                <div class="field">
+                    <label>⚠️ Gravidade</label>
+                    <select id="falha">
+                        <option value="CRÍTICO (INTERRUPÇÃO)">🔴 CRÍTICO</option>
+                        <option value="DEGRADADO (LENTIDÃO)">🟡 DEGRADADO</option>
+                        <option value="SWAP TÉCNICO">🔵 SWAP TÉCNICO</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Técnico Responsável</label>
+                    <input type="text" id="tecnico" placeholder="Seu Nome">
+                </div>
+
+                <div class="btn-group full-width">
+                    <button type="submit" class="btn-primary">GERAR CARIMBO COMPLETO</button>
+                    <button type="button" class="btn-secondary" onclick="generateSwap()">GERAR CARIMBO SWAP</button>
+                </div>
+            </form>
         </div>
 
-        <div class="field full-width">
-            <label>🏠 Endereço Completo Ponta A</label>
-            <input type="text" id="end_a" required>
+        <div class="sidebar">
+            <div class="template-box">
+                <h4>📌 AVISO DE MANUTENÇÃO</h4>
+                <button class="btn-secondary" style="width:100%; font-size:11px;" onclick="copyTemplate('manutencao')">Copiar Template</button>
+            </div>
+            <div class="template-box" style="border-left-color: var(--warning);">
+                <h4>📢 NOTIFICAÇÃO CLIENTE</h4>
+                <button class="btn-secondary" style="width:100%; font-size:11px;" onclick="copyTemplate('cliente')">Copiar Template</button>
+            </div>
+            <div class="template-box" style="border-left-color: var(--success);">
+                <h4>✅ ENCERRAMENTO/RFO</h4>
+                <button class="btn-secondary" style="width:100%; font-size:11px;" onclick="copyTemplate('rfo')">Copiar Template</button>
+            </div>
         </div>
-        <div class="field full-width">
-            <label>🏠 Endereço Completo Ponta B</label>
-            <input type="text" id="end_b" required>
-        </div>
+    </div>
 
-        <div class="field">
-            <label>📅 Data/Hora Extração</label>
-            <input type="datetime-local" id="data_extracao" required>
-        </div>
-        <div class="field">
-            <label>↔️ Sentido da Extração</label>
-            <select id="sentido" required>
-                <option value="A > B">A > B</option>
-                <option value="B > A">B > A</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>⚠️ Tipo de Falha</label>
-            <select id="falha" required>
-                <option value="INTERROMPIDO">🔴 INTERROMPIDO</option>
-                <option value="DEGRADADO">🟡 DEGRADADO</option>
-            </select>
-        </div>
-
-        <div class="field">
-            <label>⚡ Atuação</label>
-            <select id="atuacao" required>
-                <option value="IMEDIATO">IMEDIATO</option>
-                <option value="PROGRAMADO">PROGRAMADO</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>📞 Telefone Testes Operadora</label>
-            <input type="text" id="tel_op" required>
-        </div>
-        <div class="field">
-            <label>🎫 Nº Chamado Interno Op.</label>
-            <input type="text" id="chamado_op" required>
-        </div>
-
-        <div class="field">
-            <label>⏰ Horário Alarme Equipamento</label>
-            <input type="time" id="hora_alarme" required>
-        </div>
-        <div class="field">
-            <label>🧬 Tipo de Fibra</label>
-            <select id="tipo_fibra" required>
-                <option value="Iluminada">Iluminada</option>
-                <option value="Apagada">Apagada</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>📡 Possui RAMAN?</label>
-            <select id="raman" required>
-                <option value="Sim">Sim</option>
-                <option value="Não">Não</option>
-            </select>
-        </div>
-        <div class="field">
-            <label>🔌 RAMAN Desligado?</label>
-            <select id="raman_off" required>
-                <option value="Não">Não</option>
-                <option value="Sim">Sim</option>
-            </select>
-        </div>
-
-        <button type="submit" class="main-btn">Gerar Relatório de Incidente</button>
-    </form>
-
-    <div class="output-section" id="reportsList">
-        </div>
+    <div class="output-section" id="reportsList"></div>
 </div>
 
 <script>
-    // Atualização do Relógio
+    // Relógio Real-time
     setInterval(() => {
         document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
     }, 1000);
 
-    const form = document.getElementById('nocForm');
     const list = document.getElementById('reportsList');
 
-    form.addEventListener('submit', (e) => {
+    // Funções de Template
+    const templates = {
+        manutencao: "⚠️ NOTIFICAÇÃO DE MANUTENÇÃO EMERGENCIAL\n----------------------------------\nPrezados,\nInformamos que realizaremos uma intervenção técnica no trecho [TRECHO].\nInício: [HORA]\nPrevisão: 02 Horas\nImpacto: Interrupção temporária dos serviços.",
+        cliente: "📢 STATUS DE INCIDENTE\n----------------------------------\nInformamos que detectamos uma instabilidade no trecho [TRECHO].\nNossas equipes técnicas já foram acionadas e estão em fase de diagnóstico.\nProtocolo: [PROT]",
+        rfo: "✅ INCIDENTE FINALIZADO (RFO)\n----------------------------------\nCausa: [CAUSA]\nAção: [REPARO]\nNormalização: [HORA]\nStatus: Estabilizado e em monitoramento."
+    };
+
+    function copyTemplate(tipo) {
+        navigator.clipboard.writeText(templates[tipo]);
+        alert("Template copiado! Cole e edite as informações entre colchetes [ ].");
+    }
+
+    // Gerar Carimbo de Incidente
+    document.getElementById('nocForm').addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // Coleta de dados
-        const d = {
-            nome: document.getElementById('nome_reclamante').value,
-            op: document.getElementById('operadora').value,
-            trecho: document.getElementById('trecho').value,
-            endA: document.getElementById('end_a').value,
-            endB: document.getElementById('end_b').value,
-            dataExt: new Date(document.getElementById('data_extracao').value).toLocaleString('pt-BR'),
-            sentido: document.getElementById('sentido').value,
-            falha: document.getElementById('falha').value,
-            atuacao: document.getElementById('atuacao').value,
-            tel: document.getElementById('tel_op').value,
-            ticket: document.getElementById('chamado_op').value,
-            alarme: document.getElementById('hora_alarme').value,
-            fibra: document.getElementById('tipo_fibra').value,
-            raman: document.getElementById('raman').value,
-            ramanOff: document.getElementById('raman_off').value
-        };
-
-        // Formatação do Texto para Cópia
-        const reportText = `📝 **RELATÓRIO DE INCIDENTE NOC**
----------------------------------------
-👤 **Reclamante:** ${d.nome}
-🏢 **Operadora:** ${d.op}
-📍 **Trecho:** ${d.trecho}
-🏠 **End. Ponta A:** ${d.endA}
-🏠 **End. Ponta B:** ${d.endB}
-📅 **Extração:** ${d.dataExt}
-↔️ **Sentido:** ${d.sentido}
-⚠️ **Falha:** ${d.falha}
-⚡ **Atuação:** ${d.atuacao}
-📞 **Tel. Testes:** ${d.tel}
-🎫 **Chamado Op:** ${d.ticket}
-⏰ **Alarme Equip:** ${d.alarme}
-🧬 **Tipo Fibra:** ${d.fibra}
-📡 **RAMAN:** ${d.raman} | **Desligado:** ${d.ramanOff}`;
-
-        // Criação do Card Visual
-        const card = document.createElement('div');
-        card.className = `report-card ${d.falha.includes('INTERROMPIDO') ? 'interrompido' : 'degradado'}`;
-        
-        card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <h3 style="margin:0">${d.trecho}</h3>
-                <span class="tag">${d.atuacao}</span>
-            </div>
-            <div class="report-content" id="text-${Date.now()}">${reportText}</div>
-            <button class="copy-btn" onclick="copyText(this)">Copiar Relatório</button>
-            <button class="copy-btn" style="background:#450a0a" onclick="this.parentElement.remove()">Remover</button>
-        `;
-
-        list.prepend(card);
-        form.reset();
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        createCard("INCIDENTE", getFormData());
     });
 
-    function copyText(btn) {
-        const text = btn.parentElement.querySelector('.report-content').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            const originalText = btn.innerText;
-            btn.innerText = "✅ Copiado!";
-            btn.style.background = "#10b981";
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = "#334155";
-            }, 2000);
-        });
+    // Gerar Carimbo de SWAP
+    function generateSwap() {
+        const data = getFormData();
+        createCard("SWAP TÉCNICO", data, true);
+    }
+
+    function getFormData() {
+        return {
+            protocolo: document.getElementById('protocolo').value || "N/A",
+            op: document.getElementById('operadora').value || "N/A",
+            trecho: document.getElementById('trecho').value || "N/A",
+            desc: document.getElementById('desc_falha').value || "N/A",
+            equip: document.getElementById('equip').value || "N/A",
+            inter: document.getElementById('interface').value || "N/A",
+            status: document.getElementById('falha').value,
+            tec: document.getElementById('tecnico').value || "NOC_AUTO",
+            hora: new Date().toLocaleString('pt-BR')
+        };
+    }
+
+    function createCard(tipo, d, isSwap = false) {
+        let content = "";
+        
+        if(isSwap) {
+            content = `🔄 **CARIMBO DE SWAP / TROCA DE EQUIPAMENTO**
+-------------------------------------------
+ID PROT: ${d.protocolo}
+DATA/HORA: ${d.hora}
+EQUIP. ATUAL: ${d.equip}
+INTERFACE: ${d.inter}
+TRECHO AFETADO: ${d.trecho}
+MOTIVO: ${d.desc}
+TÉCNICO RESP: ${d.tec}
+STATUS: AGUARDANDO SUBSTITUIÇÃO
+-------------------------------------------`;
+        } else {
+            content = `🚨 **CARIMBO DE INCIDENTE NOC**
+-------------------------------------------
+ID: ${d.protocolo} | STATUS: ${d.status}
+DATA: ${d.hora}
+CLIENTE/OP: ${d.op}
+LOCAL/TRECHO: ${d.trecho}
+FALHA: ${d.desc}
+HARDWARE: ${d.equip} (${d.inter})
+RESPONSÁVEL: ${d.tec}
+-------------------------------------------`;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'report-card';
+        card.innerHTML = `
+            <div class="report-header">
+                <span class="tag-status">${tipo}</span>
+                <span style="font-size:10px; opacity:0.7">${d.hora}</span>
+            </div>
+            <div class="report-content">${content}</div>
+            <div style="display:flex; gap:10px;">
+                <button class="copy-btn-mini" onclick="copyCard(this)">COPIAR CARIMBO</button>
+                <button class="copy-btn-mini" style="background:var(--danger)" onclick="this.parentElement.parentElement.remove()">REMOVER</button>
+            </div>
+        `;
+        list.prepend(card);
+    }
+
+    function copyCard(btn) {
+        const text = btn.parentElement.parentElement.querySelector('.report-content').innerText;
+        navigator.clipboard.writeText(text);
+        const originalText = btn.innerText;
+        btn.innerText = "✅ COPIADO!";
+        setTimeout(() => btn.innerText = originalText, 2000);
     }
 </script>
 
