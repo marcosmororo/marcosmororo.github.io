@@ -11,6 +11,7 @@
             --border-color: #dee2e6;
             --bg-dark: #343a40;
             --text-dark: #212529;
+            --alert-red: #d32f2f;
         }
 
         @page { size: A4; margin: 0; }
@@ -25,7 +26,6 @@
             align-items: center;
         }
 
-        /* --- Container Principal --- */
         .report-page {
             background: white;
             width: 210mm;
@@ -39,7 +39,6 @@
             margin: 10mm 0;
         }
 
-        /* --- Cabeçalho --- */
         header {
             display: flex;
             justify-content: space-between;
@@ -49,15 +48,9 @@
             margin-bottom: 25px;
         }
 
-        .logo-area img {
-            max-height: 60px;
-            width: auto;
-        }
+        .logo-area img { max-height: 60px; width: auto; }
 
-        .header-title {
-            text-align: right;
-        }
-
+        .header-title { text-align: right; }
         .header-title h1 {
             color: var(--primary-color);
             margin: 0;
@@ -77,7 +70,6 @@
             margin-top: 5px;
         }
 
-        /* --- Seções --- */
         .section-title {
             font-size: 13px;
             font-weight: bold;
@@ -91,7 +83,6 @@
             justify-content: space-between;
         }
 
-        /* --- Grid de Infos --- */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -102,10 +93,7 @@
         .field { 
             border-bottom: 2px solid #eee; 
             padding: 5px 0;
-            transition: 0.3s;
         }
-
-        .field:focus-within { border-color: var(--accent-color); }
 
         .full-width { grid-column: span 3; }
         .double-width { grid-column: span 2; }
@@ -122,14 +110,19 @@
         input, select {
             border: none;
             width: 100%;
-            font-size: 15px;
+            font-size: 14px;
             outline: none;
             background: transparent;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--text-dark);
         }
 
-        /* --- Caixa de Diagnóstico --- */
+        /* Destaque para Natureza da Falha */
+        select.fault-type {
+            color: var(--alert-red);
+            text-transform: uppercase;
+        }
+
         .content-box {
             border: 1px solid #dee2e6;
             border-top: none;
@@ -142,7 +135,6 @@
             outline: none;
         }
 
-        /* --- Imagens (Evidências) --- */
         .image-container {
             display: flex;
             flex-direction: column;
@@ -160,7 +152,7 @@
 
         .image-wrapper img { 
             width: 100%; 
-            max-height: 500px; 
+            max-height: 550px; 
             object-fit: contain;
             display: block;
         }
@@ -173,7 +165,6 @@
             font-weight: bold;
         }
         
-        /* --- Controles/Toolbar --- */
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
             padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
@@ -194,10 +185,9 @@
             position: absolute; top: 10px; right: 10px; 
             background: #dc3545; color: white; 
             border: none; cursor: pointer; padding: 6px 12px; 
-            border-radius: 4px; font-size: 11px; font-weight: bold;
+            border-radius: 4px; font-size: 11px;
         }
 
-        /* --- Rodapé --- */
         footer {
             margin-top: auto;
             border-top: 2px solid var(--primary-color);
@@ -211,8 +201,7 @@
         @media print {
             body { background: none; }
             .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; margin: 0; border: none; width: 100%; padding: 15mm; }
-            .content-box { border: 1px solid #dee2e6; }
+            .report-page { box-shadow: none; margin: 0; border: none; width: 100%; padding: 10mm; }
         }
     </style>
 </head>
@@ -220,108 +209,92 @@
 
     <div class="toolbar">
         <div style="text-align:center; margin-bottom:15px">
-            <strong style="font-size:14px; color:var(--primary-color)">MENU NOC</strong>
+            <strong style="font-size:14px; color:var(--primary-color)">FERRAMENTAS NOC</strong>
         </div>
         <button class="btn btn-img" onclick="document.getElementById('fileInput').click()">
-            <span>📷</span> ANEXAR PRINT
+            <span>📷</span> ANEXAR EVIDÊNCIA
         </button>
-        <button class="btn btn-print" onclick="prepareAndPrint()">
-            <span>📄</span> GERAR PDF
+        <button class="btn btn-print" onclick="window.print()">
+            <span>📄</span> IMPRIMIR / PDF
         </button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
-        <small style="display:block; text-align:center; color:#888; font-size:10px; margin-top:10px">
-            Dica: Prints de MTR e Ping são essenciais.
-        </small>
     </div>
 
-    <div class="report-page" id="printableArea">
+    <div class="report-page">
         <header>
             <div class="logo-area">
-                <img src="../assets/img/online.png" alt="Online Telecom" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <img src="online.png" alt="Online Telecom" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
                 <h2 style="display:none; color:var(--primary-color); margin:0">Online Telecom</h2>
             </div>
             <div class="header-title">
-                <h1>Solicitação de Reparo</h1>
-                <span class="ticket-type">DIAGNÓSTICO DE LINK EXTERNO</span>
+                <h1>Abertura de Chamado</h1>
+                <span class="ticket-type">SUPORTE N2 - BACKBONE</span>
             </div>
         </header>
 
-        <div class="section-title">Dados do Circuito e Operadora</div>
+        <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
-            <div class="field double-width">
-                <label>Operadora / Parceiro</label>
-                <input type="text" placeholder="Ex: Vivo, Brisanet, Algar...">
-            </div>
-            <div class="field">
-                <label>Protocolo Interno</label>
-                <input type="text" placeholder="INC-2024-XXXX">
-            </div>
-            <div class="field full-width">
-                <label>ID do Circuito (Designação Completa)</label>
-                <input type="text" placeholder="Digite o código identificador do link na operadora">
+            <div class="field"><label>Operadora</label><input type="text" placeholder="Vivo, Brisanet, Oi, etc."></div>
+            <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2026-XXXX"></div>
+            <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
+            
+            <div class="field full-width" style="background: #fff9f2; border-bottom: 2px solid var(--accent-color);">
+                <label style="color: var(--accent-color);">ID do Circuito / Designação (Obrigatório)</label>
+                <input type="text" placeholder="Ex: CID-123456 / SP-1020-ON">
             </div>
         </div>
 
-        <div class="section-title">Informações do Incidente</div>
+        <div class="section-title">Classificação Técnica da Falha</div>
         <div class="info-grid">
-            <div class="field">
-                <label>Início do Evento</label>
-                <input type="datetime-local">
-            </div>
-            <div class="field">
-                <label>Natureza da Falha</label>
-                <select>
-                    <option value="" disabled selected>Escolha uma opção...</option>
-                    <option>🔴 Indisponibilidade Total (Down)</option>
-                    <option>🟡 Latência Alta (Lag)</option>
-                    <option>🟠 Perda de Pacotes</option>
-                    <option>🔵 Instabilidade Intermitente</option>
-                    <option>⚪ Degradação de Banda</option>
+            <div class="field double-width">
+                <label>Natureza do Incidente (Padrão Operadora)</label>
+                <select class="fault-type">
+                    <option value="" disabled selected>Selecione a categoria técnica...</option>
+                    <option>Total Outage (Link Down / Sem Portadora)</option>
+                    <option>Packet Loss (Perda de Pacotes Excessiva)</option>
+                    <option>High Latency (Latência acima do SLA)</option>
+                    <option>Intermittent Connection (Quedas constantes)</option>
+                    <option>Optical Power Degraded (Degradação de sinal óptico)</option>
+                    <option>Bandwidth Saturation / Bottleneck (Lentidão em horários de pico)</option>
+                    <option>Routing / BGP Issue (Falha de roteamento/anúncio)</option>
                 </select>
             </div>
             <div class="field">
-                <label>Responsável NOC</label>
-                <input type="text" placeholder="Nome do Técnico">
-            </div>
-            <div class="field full-width">
-                <label>Localização / Site Afetado</label>
-                <input type="text" placeholder="Cidade / Nome do POP ou Site">
+                <label>Técnico Responsável</label>
+                <input type="text" placeholder="Nome no NOC">
             </div>
         </div>
 
         <div class="section-title">
-            <span>Diagnóstico e Testes Realizados</span>
-            <span style="font-size: 9px; opacity: 0.8;">Campo editável</span>
+            <span>Diagnóstico Detalhado</span>
+            <span style="font-size: 9px; opacity: 0.8;">Editável</span>
         </div>
         <div class="content-box" contenteditable="true">
-• <b>Energia:</b> Equipamentos energizados no local, sem falha elétrica no POP.<br>
-• <b>Reset:</b> Não realizado devido ao equipamento ser um Core Switch (Ativo Crítico).<br>
-• <b>Infra Interna:</b> Sem alarmes de hardware ou falhas no chassi local.<br>
-• <b>Teste de Ping:</b> Realizado para o Gateway da Operadora (IP: ) resultando em [X]% de perda.<br>
-• <b>Status Físico:</b> Interface apresenta status [UP / DOWN].
+• <b>Status Local:</b> POP energizado e infraestrutura interna operando normalmente.<br>
+• <b>Equipamento:</b> Core Switch ativo. Reset físico não recomendado (Equipamento de Borda).<br>
+• <b>Camada Física:</b> [Descreva se a porta está UP ou DOWN no seu lado].<br>
+• <b>Testes realizados:</b> Ping efetuado do Core para o Gateway da Operadora (IP: ) com perda de [X]%.<br>
+• <b>Observação:</b> Falha isolada no link da operadora supracitada.
         </div>
 
-        <div class="section-title">Evidências Técnicas (MTR, Ping, Monitoramento)</div>
-        <div id="imageContainer" class="image-container">
-            </div>
+        <div class="section-title">Evidências Técnicas (Anexos)</div>
+        <div id="imageContainer" class="image-container"></div>
 
         <footer>
             <div>
-                <strong>Online Telecom - Suporte de Backbone</strong><br>
-                Email: noc@online.net.br | Tel: 0800 088 1111
+                <strong>Online Telecom</strong><br>
+                NOC: noc@online.net.br | 0800 088 1111
             </div>
             <div style="text-align: right;">
-                Documento Gerado Eletronicamente pelo NOC<br>
+                Relatório de Incidência Técnica<br>
                 <span id="displayDate"></span>
             </div>
         </footer>
     </div>
 
     <script>
-        // Data atualizada
         document.getElementById('displayDate').innerText = 'Data: ' + new Date().toLocaleDateString('pt-BR');
 
-        // Função para lidar com imagens
         function handleImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -329,12 +302,8 @@
                     const container = document.getElementById('imageContainer');
                     const wrapper = document.createElement('div');
                     wrapper.className = 'image-wrapper';
-                    
-                    // Pega o nome do arquivo para usar como label
-                    const fileName = input.files[0].name;
-
                     wrapper.innerHTML = `
-                        <div class="image-label">Evidência: ${fileName}</div>
+                        <div class="image-label">Evidência: ${input.files[0].name}</div>
                         <img src="${e.target.result}">
                         <button class="remove-btn" onclick="this.parentElement.remove()">REMOVER X</button>
                     `;
@@ -342,12 +311,6 @@
                 };
                 reader.readAsDataURL(input.files[0]);
             }
-        }
-
-        // Função de impressão
-        function prepareAndPrint() {
-            // Pequeno ajuste para garantir que o conteúdo editável seja renderizado corretamente no PDF
-            window.print();
         }
     </script>
 </body>
