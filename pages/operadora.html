@@ -13,7 +13,11 @@
             --highlight: #fff9f2;
         }
 
-        @page { size: A4; margin: 0; }
+        /* CONFIGURAÇÃO DE PÁGINA PARA O NAVEGADOR */
+        @page { 
+            size: A4; 
+            margin: 10mm; 
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Helvetica, Arial, sans-serif;
@@ -33,9 +37,10 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
-        /* LOGO E TÍTULO */
+        /* CABEÇALHO */
         .header-main {
             display: flex;
             flex-direction: column;
@@ -59,7 +64,7 @@
             text-align: center;
         }
 
-        /* GRID DE INFORMAÇÕES */
+        /* SEÇÕES E GRIDS */
         .section-title {
             background: var(--primary);
             color: #fff;
@@ -69,6 +74,7 @@
             text-transform: uppercase;
             border-radius: 4px;
             margin: 15px 0 10px 0;
+            page-break-after: avoid; /* Evita que o título fique sozinho no fim da página */
         }
 
         .info-grid {
@@ -114,6 +120,7 @@
             padding: 15px;
             border-radius: 4px;
             background: #fcfcfc;
+            page-break-inside: avoid; /* Não corta a caixa ao meio */
         }
 
         .test-item {
@@ -143,14 +150,18 @@
             padding: 5px;
             position: relative;
             background: #fff;
+            page-break-inside: avoid; /* Faz a foto pular de página se não couber */
+            margin-bottom: 10px;
         }
 
         .img-card img {
             width: 100%;
             display: block;
+            max-height: 400px; /* Limite para não estourar a página */
+            object-fit: contain;
         }
 
-        /* MENU LATERAL FIXO */
+        /* TOOLBAR LATERAL */
         .toolbar {
             position: fixed;
             left: 20px;
@@ -171,21 +182,18 @@
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             font-size: 12px;
-            transition: 0.3s;
             width: 160px;
             text-align: center;
         }
 
         .btn-anexo { background: #007bff; }
-        .btn-anexo:hover { background: #0056b3; }
         .btn-print { background: #28a745; }
-        .btn-print:hover { background: #1e7e34; }
 
         .btn-remove {
             position: absolute;
             top: 10px;
             right: 10px;
-            background: rgba(220, 53, 69, 0.9);
+            background: #d9534f;
             color: white;
             border: none;
             padding: 5px 10px;
@@ -202,10 +210,24 @@
             text-align: center;
         }
 
+        /* AJUSTES DEFINITIVOS DE IMPRESSÃO */
         @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; padding: 0; margin: 0; }
+            body { background: white !important; margin: 0 !important; padding: 0 !important; }
+            .container { 
+                box-shadow: none !important; 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 10mm !important; 
+                min-height: auto !important;
+            }
             .toolbar, .btn-remove { display: none !important; }
+            
+            /* Garante que cores de fundo apareçam no PDF */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            
+            .test-box-container, .img-card {
+                page-break-inside: avoid !important;
+            }
         }
     </style>
 </head>
@@ -219,29 +241,29 @@
 
     <div class="container">
         <header class="header-main">
-            <img src="online.png" alt="Online Telecom">
+            <img src="online.png" alt="Online Telecom" onerror="this.style.border='1px solid red'; this.style.padding='10px';">
             <h1>Relatório de Diagnóstico Técnico</h1>
         </header>
 
         <div class="section-title">Dados do Circuito</div>
         <div class="info-grid">
-            <div class="field"><label>Operadora</label><input type="text" placeholder="Vivo, Brisanet, Oi..."></div>
+            <div class="field"><label>Operadora</label><input type="text" placeholder="Ex: Vivo / Brisanet"></div>
             <div class="field"><label>Protocolo Interno</label><input type="text" placeholder="INC-2026-000"></div>
-            <div class="field"><label>Técnico Responsável</label><input type="text" placeholder="Nome do Analista"></div>
+            <div class="field"><label>Técnico Responsável</label><input type="text" placeholder="Nome"></div>
             
             <div class="field full-width highlight">
                 <label>ID do Circuito / Designação (ID OPERADORA)</label>
-                <input type="text" placeholder="INSIRA A IDENTIFICAÇÃO COMPLETA DO LINK">
+                <input type="text" placeholder="DIGITE O ID DO LINK">
             </div>
         </div>
 
-        <div class="section-title">Triagem de Incidente</div>
+        <div class="section-title">Triagem</div>
         <div class="info-grid">
             <div class="field"><label>Início da Falha</label><input type="datetime-local"></div>
-            <div class="field"><label>Localização (POP)</label><input type="text" placeholder="Cidade / Site"></div>
+            <div class="field"><label>Localização</label><input type="text" placeholder="POP / Site"></div>
             <div class="field">
                 <label>Tipo de Falha</label>
-                <select style="color: #d9534f; font-weight: bold;">
+                <select>
                     <option>Indisponibilidade Total (Down)</option>
                     <option>Latência Alta (High Latency)</option>
                     <option>Perda de Pacotes (Packet Loss)</option>
@@ -250,54 +272,33 @@
             </div>
         </div>
 
-        <div class="section-title">Checklist de Testes Efetuados</div>
+        <div class="section-title">Checklist de Testes</div>
         <div class="test-box-container">
-            <div class="test-item">
-                <label>1. Infraestrutura POP</label>
-                <input type="text" value="Energizado, climatizado e estável.">
-            </div>
-            <div class="test-item">
-                <label>2. Status Hardware Local</label>
-                <input type="text" value="Core Switch operando sem alarmes.">
-            </div>
-            <div class="test-item">
-                <label>3. Potência Óptica (Rx)</label>
-                <input type="text" placeholder="Ex: -19.5 dBm">
-            </div>
-            <div class="test-item">
-                <label>4. Interface Física (Porta)</label>
-                <input type="text" placeholder="Ex: UP / Sem erros de CRC">
-            </div>
-            <div class="test-item">
-                <label>5. Perda de Pacotes (Ping GW)</label>
-                <input type="text" placeholder="Ex: 10% de perda">
-            </div>
-            <div class="test-item">
-                <label>6. Latência Média (Ping GW)</label>
-                <input type="text" placeholder="Ex: 150ms">
-            </div>
+            <div class="test-item"><label>1. Infraestrutura POP</label><input type="text" value="Energizado e Estável"></div>
+            <div class="test-item"><label>2. Hardware Local</label><input type="text" value="Sem alarmes no Core"></div>
+            <div class="test-item"><label>3. Potência Óptica</label><input type="text" placeholder="Ex: -19 dBm"></div>
+            <div class="test-item"><label>4. Interface Física</label><input type="text" placeholder="Ex: UP / No Errors"></div>
+            <div class="test-item"><label>5. Perda de Pacotes</label><input type="text" placeholder="Ex: 0%"></div>
+            <div class="test-item"><label>6. Latência Média</label><input type="text" placeholder="Ex: 20ms"></div>
             <div class="test-item" style="grid-column: span 2; border: none;">
-                <label>7. Observações Técnicas</label>
-                <input type="text" value="Reset físico não realizado: Equipamento Core / Ativo Crítico.">
+                <label>7. Observações</label>
+                <input type="text" value="Equipamento Crítico: Reset não realizado.">
             </div>
         </div>
 
-        <div class="section-title">Evidências (MTR / Ping / Grafana)</div>
-        <div id="printArea" class="evidence-grid">
-            </div>
+        <div class="section-title">Evidências Técnicas</div>
+        <div id="printArea" class="evidence-grid"></div>
 
         <footer>
-            <strong>Online Telecom</strong> | Network Operations Center<br>
-            Avenida Central, 123 - NOC | 0800 088 1111 | noc@online.net.br<br>
+            <strong>Online Telecom</strong> | NOC - Network Operations Center<br>
+            Suporte: 0800 088 1111 | noc@online.net.br<br>
             <span id="dataGeracao"></span>
         </footer>
     </div>
 
     <script>
-        // Data automática no rodapé
-        document.getElementById('dataGeracao').innerText = 'Data de Emissão: ' + new Date().toLocaleString('pt-BR');
+        document.getElementById('dataGeracao').innerText = 'Gerado em: ' + new Date().toLocaleString('pt-BR');
 
-        // Função para anexar imagens
         function addImg(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
