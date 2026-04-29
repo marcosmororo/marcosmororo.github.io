@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Live Preview</title>
+    <title>NOC Command Center - Smart Form</title>
     <style>
         :root {
-            --bg: #0f172a;
+            --bg: #020617;
             --surface: #1e293b;
             --primary: #38bdf8;
-            --danger: #ef4444;
-            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --warning: #fbbf24;
             --success: #10b981;
-            --text: #f1f5f9;
+            --text: #f8fafc;
             --border: #334155;
-            --preview-bg: #020617;
+            --preview-bg: #000000;
         }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -40,20 +40,20 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 450px 1fr;
+            grid-template-columns: 480px 1fr;
             gap: 25px;
         }
 
         .panel {
             background: var(--surface);
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            height: fit-content;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .field { margin-bottom: 15px; }
-        .field label { display: block; font-size: 11px; font-weight: 800; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .field { margin-bottom: 15px; animation: slideIn 0.3s ease-out; }
+        .field label { display: block; font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
         
         input, select, textarea {
             width: 100%;
@@ -63,70 +63,55 @@
             padding: 12px;
             border-radius: 8px;
             font-size: 13px;
-            transition: 0.2s;
         }
 
-        input:focus, select:focus { border-color: var(--primary); outline: none; }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        /* Preview Dinâmico */
-        .preview-container {
-            position: sticky;
-            top: 20px;
-        }
-
+        /* Preview Area */
+        .preview-container { position: sticky; top: 20px; }
         .preview-card {
             background: var(--preview-bg);
             border-radius: 12px;
             border: 2px solid var(--primary);
-            padding: 25px;
-            min-height: 400px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-        }
-
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
+            padding: 30px;
+            min-height: 450px;
         }
 
         #live-text {
-            font-family: 'Fira Code', 'Consolas', monospace;
+            font-family: 'Fira Code', monospace;
             font-size: 14px;
-            line-height: 1.6;
-            color: #94a3b8;
+            line-height: 1.7;
+            color: #bae6fd;
             white-space: pre-wrap;
-            word-break: break-all;
         }
 
-        .btn-copy-big {
+        .btn-copy {
             width: 100%;
             background: var(--primary);
-            color: #0f172a;
+            color: #020617;
             border: none;
-            padding: 18px;
+            padding: 20px;
             border-radius: 8px;
-            font-weight: 800;
+            font-weight: 900;
             font-size: 16px;
             cursor: pointer;
             margin-top: 20px;
-            text-transform: uppercase;
             transition: 0.3s;
         }
 
-        .btn-copy-big:hover { background: #7dd3fc; transform: translateY(-2px); }
+        .btn-copy.success { background: var(--success); color: white; }
 
-        .btn-copy-big.success { background: var(--success); color: white; }
-
-        .tag {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            background: var(--primary);
-            color: #0f172a;
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .section-title { 
+            font-size: 12px; 
+            color: #94a3b8; 
+            margin-bottom: 20px; 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
     </style>
 </head>
@@ -135,8 +120,8 @@
 <div class="container">
     <header>
         <div>
-            <h1 style="margin:0; font-size: 20px;">📡 NOC DASHBOARD | LIVE PREVIEW</h1>
-            <p style="margin:0; font-size: 12px; opacity: 0.6;">Preencha e visualize o carimbo em tempo real</p>
+            <h1 style="margin:0; font-size: 20px;">⚡ NOC DYNAMIC COMMAND</h1>
+            <span style="font-size: 11px; opacity: 0.7;">Gerador de Carimbos com Campos Variáveis</span>
         </div>
         <div id="clock" style="font-family: monospace; font-size: 22px; color: var(--primary);">00:00:00</div>
     </header>
@@ -144,177 +129,166 @@
     <div class="main-layout">
         <div class="panel">
             <div class="field">
-                <label>Tipo de Ocorrência</label>
-                <select id="tipo_falha" oninput="updatePreview()">
-                    <option value="ROMPIMENTO">✂️ ROMPIMENTO DE FIBRA</option>
-                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO</option>
-                    <option value="ENERGIA">⚡ FALHA DE ENERGIA / AC</option>
-                    <option value="TEMPERATURA">🔥 ALTA TEMPERATURA</option>
-                    <option value="LATENCIA">🛰️ ALTA LATÊNCIA (PING)</option>
-                    <option value="PERDA">📦 PERDA DE PACOTES</option>
-                    <option value="INDISPONIVEL">🚫 INDISPONIBILIDADE GERAL</option>
+                <label>Selecione o Tipo de Evento</label>
+                <select id="tipo_falha" onchange="adjustFields()">
+                    <option value="ROMPIMENTO">✂️ Rompimento de Fibra</option>
+                    <option value="SWAP">🔄 Swap de Equipamento</option>
+                    <option value="ENERGIA">⚡ Falha de Energia / AC</option>
+                    <option value="TEMPERATURA">🔥 Alta Temperatura</option>
+                    <option value="LATENCIA">🛰️ Alta Latência / Perda</option>
+                    <option value="INDISPONIVEL">🚫 Indisponibilidade Geral</option>
                 </select>
             </div>
 
-            <div class="field">
-                <label>ID / Protocolo / Chamado</label>
-                <input type="text" id="protocolo" placeholder="Ex: 2026.04.1234" oninput="updatePreview()">
-            </div>
+            <div class="section-title">📝 Dados da Ocorrência</div>
+
+            <div id="dynamic-fields">
+                </div>
 
             <div class="field">
-                <label>Trecho ou Localidade</label>
-                <input type="text" id="local" placeholder="Ex: SP > RJ (Backbone)" oninput="updatePreview()">
+                <label>Responsável / Técnico</label>
+                <input type="text" id="tecnico" placeholder="Seu nome" oninput="updatePreview()">
             </div>
-
-            <div class="field">
-                <label>Equipamento / Interface</label>
-                <input type="text" id="equip" placeholder="Ex: OLT Nokia - Slot 01" oninput="updatePreview()">
-            </div>
-
-            <div class="field">
-                <label>Técnico / Responsável</label>
-                <input type="text" id="tecnico" placeholder="Seu nome ou técnico de campo" oninput="updatePreview()">
-            </div>
-
-            <div class="field">
-                <label>Observações Detalhadas</label>
-                <textarea id="obs" rows="4" placeholder="Descreva a ação técnica..." oninput="updatePreview()"></textarea>
-            </div>
-            
-            <p style="font-size: 11px; color: var(--warning); border-top: 1px solid var(--border); padding-top: 10px;">
-                * O carimbo é atualizado automaticamente ao digitar.
-            </p>
         </div>
 
         <div class="preview-container">
-            <div class="preview-card" id="card-status">
-                <div class="preview-header">
-                    <span class="tag" id="tag-tipo">ROMPIMENTO</span>
-                    <span style="font-size: 12px; color: var(--primary)" id="live-clock">--:--:--</span>
-                </div>
-                
-                <div id="live-text">Carregando carimbo...</div>
-
-                <button class="btn-copy-big" id="copyBtn" onclick="copyToClipboard()">
-                    COPIAR PARA O CLIPBOARD
-                </button>
+            <div class="preview-card" id="preview-card">
+                <div id="live-text">Aguardando preenchimento...</div>
+                <button class="btn-copy" id="copyBtn" onclick="copyToClipboard()">COPIAR CARIMBO PADRÃO</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Relógio
-    setInterval(() => {
-        const now = new Date();
-        const timeStr = now.toLocaleTimeString('pt-BR');
-        document.getElementById('clock').innerText = timeStr;
-        document.getElementById('live-clock').innerText = timeStr;
-    }, 1000);
+    // Configuração dos campos por tipo
+    const fieldConfig = {
+        ROMPIMENTO: [
+            { id: 'protocolo', label: 'Protocolo/Chamado', type: 'text', placeholder: 'Ex: 20260401-01' },
+            { id: 'lado_a', label: 'Localidade Lado A', type: 'text', placeholder: 'Ex: POP Centro' },
+            { id: 'lado_b', label: 'Localidade Lado B', type: 'text', placeholder: 'Ex: POP Bairro' },
+            { id: 'distancia', label: 'Distância do Rompimento (Km)', type: 'text', placeholder: 'Ex: 12.5km' },
+            { id: 'obs', label: 'Observações OTDR', type: 'textarea', placeholder: 'Ex: Rompimento identificado após caixa de emenda...' }
+        ],
+        SWAP: [
+            { id: 'protocolo', label: 'Protocolo/Chamado', type: 'text' },
+            { id: 'equip_sai', label: 'Equipamento (SAI)', type: 'text', placeholder: 'Ex: OLT Nokia SN: 123' },
+            { id: 'equip_entra', label: 'Equipamento (ENTRA)', type: 'text', placeholder: 'Ex: OLT Nokia SN: 456' },
+            { id: 'motivo', label: 'Motivo da Troca', type: 'textarea' }
+        ],
+        ENERGIA: [
+            { id: 'site', label: 'Nome do Site/POP', type: 'text' },
+            { id: 'uptime', label: 'Tempo em Bateria (Estimado)', type: 'text', placeholder: 'Ex: 2 horas' },
+            { id: 'status_ac', label: 'Status da Rede AC', type: 'text', placeholder: 'Ex: Sem energia no disjuntor geral' }
+        ],
+        TEMPERATURA: [
+            { id: 'cidade_pop', label: 'Cidade / POP', type: 'text' },
+            { id: 'temp_atual', label: 'Temperatura Atual (°C)', type: 'text', placeholder: 'Ex: 58°C' },
+            { id: 'temp_padrao', label: 'Temperatura Padrão (°C)', type: 'text', placeholder: 'Ex: 35°C' },
+            { id: 'ar_condicionado', label: 'Status do Ar Condicionado', type: 'text', placeholder: 'Ex: Inoperante / Alarme de Alta' }
+        ],
+        LATENCIA: [
+            { id: 'trecho', label: 'Trecho Afetado', type: 'text' },
+            { id: 'ping_normal', label: 'Latência Padrão (ms)', type: 'text' },
+            { id: 'ping_atual', label: 'Latência Atual (ms)', type: 'text' },
+            { id: 'perda', label: 'Perda de Pacotes (%)', type: 'text', placeholder: 'Ex: 15%' }
+        ],
+        INDISPONIVEL: [
+            { id: 'servico', label: 'Serviço/Equipamento Afetado', type: 'text' },
+            { id: 'local', label: 'Localidade', type: 'text' },
+            { id: 'impacto', label: 'Impacto Estimado', type: 'text', placeholder: 'Ex: 500 clientes offline' },
+            { id: 'obs', label: 'Ações Iniciais', type: 'textarea' }
+        ]
+    };
+
+    function adjustFields() {
+        const tipo = document.getElementById('tipo_falha').value;
+        const container = document.getElementById('dynamic-fields');
+        container.innerHTML = ''; // Limpa campos atuais
+
+        fieldConfig[tipo].forEach(field => {
+            const div = document.createElement('div');
+            div.className = 'field';
+            
+            const label = document.createElement('label');
+            label.innerText = field.label;
+            
+            let input;
+            if (field.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.rows = 3;
+            } else {
+                input = document.createElement('input');
+                input.type = field.type;
+            }
+            
+            input.id = field.id;
+            input.placeholder = field.placeholder || '';
+            input.oninput = updatePreview;
+            
+            div.appendChild(label);
+            div.appendChild(input);
+            container.appendChild(div);
+        });
+        updatePreview();
+    }
 
     function updatePreview() {
         const tipo = document.getElementById('tipo_falha').value;
-        const protocolo = document.getElementById('protocolo').value || "AGUARDANDO ID";
-        const local = document.getElementById('local').value || "NÃO DEFINIDO";
-        const equip = document.getElementById('equip').value || "N/A";
-        const tecnico = document.getElementById('tecnico').value || "NOC_AUTO";
-        const obs = document.getElementById('obs').value || "Sem observações no momento.";
+        const tecnico = document.getElementById('tecnico').value || 'NOC_OPERATOR';
         const data = new Date().toLocaleString('pt-BR');
+        const card = document.getElementById('preview-card');
         
-        const tag = document.getElementById('tag-tipo');
-        const card = document.getElementById('card-status');
-        tag.innerText = tipo;
-
-        // Estilos Visuais do Card
-        if(tipo === 'ROMPIMENTO' || tipo === 'INDISPONIVEL') card.style.borderColor = "var(--danger)";
-        else if(tipo === 'ENERGIA' || tipo === 'TEMPERATURA') card.style.borderColor = "var(--warning)";
-        else card.style.borderColor = "var(--primary)";
-
         let template = "";
 
-        // Lógica de Construção do Texto Padronizado
-        switch(tipo) {
-            case 'ROMPIMENTO':
-                template = `✂️ **[NOTIFICAÇÃO DE ROMPIMENTO]**
------------------------------------------
-📍 LOCAL: ${local}
-🎫 ID: ${protocolo}
-⏰ DETECÇÃO: ${data}
-⚠️ STATUS: TOTALMENTE INTERROMPIDO
-🧬 EQUIP: ${equip}
-👤 RESP: ${tecnico}
-📝 OBS: Suspeita de rompimento de fibra óptica. 
-Aguardando técnico em campo para testes de OTDR.
------------------------------------------`;
-                break;
-            case 'SWAP':
-                template = `🔄 **[CARIMBO DE SWAP TÉCNICO]**
------------------------------------------
-📍 LOCAL: ${local}
-🎫 ID: ${protocolo}
-⏰ INÍCIO: ${data}
-🛠️ EQUIP. SAI: ${equip}
-🛠️ EQUIP. ENTRA: [AGUARDANDO]
-👤 TÉCNICO: ${tecnico}
-📝 MOTIVO: ${obs}
------------------------------------------`;
-                break;
-            case 'ENERGIA':
-                template = `⚡ **[FALHA DE ALIMENTAÇÃO / AC]**
------------------------------------------
-📍 SITE: ${local}
-🎫 ID: ${protocolo}
-⏰ QUEDA: ${data}
-🔋 EQUIP: ${equip}
-👤 RESP: ${tecnico}
-📝 STATUS: Equipamento deslogado da gerência. 
-Provável falta de energia elétrica ou falha no banco de baterias.
------------------------------------------`;
-                break;
-            case 'TEMPERATURA':
-                template = `🔥 **[ALERTA DE ALTA TEMPERATURA]**
------------------------------------------
-📍 LOCAL: ${local}
-🎫 ID: ${protocolo}
-🌡️ TEMP: [DIGITE AQUI] °C
-🧬 EQUIP: ${equip}
-👤 RESP: ${tecnico}
-📝 OBS: ${obs}
------------------------------------------`;
-                break;
-            case 'LATENCIA':
-                template = `🛰️ **[DEGRADAÇÃO: ALTA LATÊNCIA]**
------------------------------------------
-📍 TRECHO: ${local}
-🎫 ID: ${protocolo}
-📊 MÉTRICA: [DIGITE AQUI] ms
-🧬 EQUIP: ${equip}
-👤 RESP: ${tecnico}
-📝 TESTES: ${obs}
------------------------------------------`;
-                break;
-            case 'PERDA':
-                template = `📦 **[DEGRADAÇÃO: PERDA DE PACOTES]**
------------------------------------------
-📍 ALVO: ${local}
-🎫 ID: ${protocolo}
-📊 PERDA: [DIGITE AQUI]%
-🧬 EQUIP: ${equip}
-👤 RESP: ${tecnico}
-📝 OBS: Verificado aumento de CRC na interface. ${obs}
------------------------------------------`;
-                break;
-            case 'INDISPONIVEL':
-                template = `🚫 **[CARIMBO DE INDISPONIBILIDADE]**
------------------------------------------
-📍 LOCAL: ${local}
-🎫 ID: ${protocolo}
-⏰ DESDE: ${data}
-⚠️ IMPACTO: TOTAL
-👤 RESP: ${tecnico}
-📝 OBS: ${obs}
------------------------------------------`;
-                break;
+        // Lógica de Geração do Texto baseada no tipo
+        if (tipo === 'ROMPIMENTO') {
+            const p = document.getElementById('protocolo')?.value || '---';
+            const a = document.getElementById('lado_a')?.value || '---';
+            const b = document.getElementById('lado_b')?.value || '---';
+            const d = document.getElementById('distancia')?.value || '---';
+            const o = document.getElementById('obs')?.value || 'Sem detalhes.';
+            card.style.borderColor = "var(--danger)";
+            template = `✂️ [INCIDENTE: ROMPIMENTO DE FIBRA]\n------------------------------------------\nPROT: ${p}\nTRECHO: ${a} <> ${b}\nDATA: ${data}\nDISTÂNCIA: ${d}\nSTATUS: FIBRA INTERROMPIDA\nTÉCNICO RESP: ${tecnico}\nOBS: ${o}\n------------------------------------------`;
+        } 
+        else if (tipo === 'TEMPERATURA') {
+            const c = document.getElementById('cidade_pop')?.value || '---';
+            const tA = document.getElementById('temp_atual')?.value || '---';
+            const tP = document.getElementById('temp_padrao')?.value || '---';
+            const ar = document.getElementById('ar_condicionado')?.value || '---';
+            card.style.borderColor = "var(--warning)";
+            template = `🔥 [ALERTA: CRÍTICO DE TEMPERATURA]\n------------------------------------------\nLOCAL: ${c}\nDATA: ${data}\nTEMP. ATUAL: ${tA}\nTEMP. NOMINAL: ${tP}\nAR CONDICIONADO: ${ar}\nRESPONSÁVEL: ${tecnico}\nSTATUS: RISCO DE DESLIGAMENTO TÉRMICO\n------------------------------------------`;
+        }
+        else if (tipo === 'ENERGIA') {
+            const s = document.getElementById('site')?.value || '---';
+            const u = document.getElementById('uptime')?.value || '---';
+            const ac = document.getElementById('status_ac')?.value || '---';
+            card.style.borderColor = "#eab308";
+            template = `⚡ [FALHA DE ENERGIA / AC]\n------------------------------------------\nSITE/POP: ${s}\nHORA DA QUEDA: ${data}\nAUTONOMIA ESTIMADA: ${u}\nSTATUS AC: ${ac}\nTÉCNICO: ${tecnico}\nOBS: Equipamento operando via banco de baterias.\n------------------------------------------`;
+        }
+        else if (tipo === 'SWAP') {
+            const p = document.getElementById('protocolo')?.value || '---';
+            const s = document.getElementById('equip_sai')?.value || '---';
+            const e = document.getElementById('equip_entra')?.value || '---';
+            const m = document.getElementById('motivo')?.value || '---';
+            card.style.borderColor = "var(--primary)";
+            template = `🔄 [CARIMBO DE SWAP TÉCNICO]\n------------------------------------------\nPROT: ${p}\nHORA: ${data}\nEQUIP. SAI: ${s}\nEQUIP. ENTRA: ${e}\nMOTIVO: ${m}\nTÉCNICO: ${tecnico}\n------------------------------------------`;
+        }
+        else if (tipo === 'LATENCIA') {
+            const t = document.getElementById('trecho')?.value || '---';
+            const pN = document.getElementById('ping_normal')?.value || '---';
+            const pA = document.getElementById('ping_atual')?.value || '---';
+            const pr = document.getElementById('perda')?.value || '0%';
+            card.style.borderColor = "var(--warning)";
+            template = `🛰️ [DEGRADAÇÃO DE PERFORMANCE]\n------------------------------------------\nTRECHO: ${t}\nDATA: ${data}\nLATÊNCIA PADRÃO: ${pN}\nLATÊNCIA ATUAL: ${pA}\nPERDA DE PACOTES: ${pr}\nRESPONSÁVEL: ${tecnico}\n------------------------------------------`;
+        }
+        else if (tipo === 'INDISPONIVEL') {
+            const s = document.getElementById('servico')?.value || '---';
+            const l = document.getElementById('local')?.value || '---';
+            const i = document.getElementById('impacto')?.value || '---';
+            const o = document.getElementById('obs')?.value || '---';
+            card.style.borderColor = "var(--danger)";
+            template = `🚫 [INDISPONIBILIDADE DE SERVIÇO]\n------------------------------------------\nALVO: ${s}\nLOCALIDADE: ${l}\nINÍCIO: ${data}\nIMPACTO: ${i}\nTÉCNICO: ${tecnico}\nAÇÕES: ${o}\n------------------------------------------`;
         }
 
         document.getElementById('live-text').innerText = template;
@@ -323,19 +297,23 @@ Provável falta de energia elétrica ou falha no banco de baterias.
     function copyToClipboard() {
         const text = document.getElementById('live-text').innerText;
         const btn = document.getElementById('copyBtn');
-        
         navigator.clipboard.writeText(text).then(() => {
-            btn.innerText = "✅ CARIMBO COPIADO!";
+            btn.innerText = "✅ COPIADO COM SUCESSO!";
             btn.classList.add('success');
             setTimeout(() => {
-                btn.innerText = "COPIAR PARA O CLIPBOARD";
+                btn.innerText = "COPIAR CARIMBO PADRÃO";
                 btn.classList.remove('success');
             }, 2000);
         });
     }
 
-    // Inicializa o preview
-    updatePreview();
+    // Relógio
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
+    }, 1000);
+
+    // Início padrão
+    adjustFields();
 </script>
 
 </body>
