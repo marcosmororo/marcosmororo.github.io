@@ -153,8 +153,8 @@
         ROMPIMENTO: [
             { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
             { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
-            { id: 'trecho', label: 'Trecho Principal (Ponta A - Ponta B)', type: 'text' },
-            { id: 'trecho_menor', label: 'Trecho Específico / Span (Se DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
+            { id: 'trecho', label: 'Trecho (Ponta A - Ponta B)', type: 'text' },
+            { id: 'trecho_menor', label: 'Trecho Menor (Se for DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
             { id: 'obs', label: 'Observações Adicionais', type: 'textarea' }
         ],
         SWAP: [
@@ -266,7 +266,7 @@ RESPONSÁVEL NOC: ${tecNoc}`;
         else if (tipo === 'ROMPIMENTO') {
             card.style.borderColor = "var(--danger)";
             const tipoRede = getVal('tipo_rede');
-            template = `✂️ [INCIDENTE: ROMPIMENTO DE FIBRA]
+            template = `[INCIDENTE: ROMPIMENTO DE FIBRA]
 ------------------------------------------
 TIPO DE REDE: ${tipoRede}
 TRECHO AFETADO: ${getVal('trecho')}`;
@@ -300,7 +300,7 @@ Técnico Responsável: ${tecNoc}`;
         } 
         else if (tipo === 'TEMPERATURA') {
             card.style.borderColor = "var(--warning)";
-            template = `🔥 [ALERTA DE TEMPERATURA]\nData/Hora: ${getVal('data_alerta')}\nPOP/Cidade: ${getVal('pop_cidade')}\nTemperatura Atual: ${getVal('temp_atual')}°C\nTemperatura Padrão: ${getVal('temp_padrao')}°C\nStatus: Acima do limite operacional.\nResponsável: ${tecNoc}`;
+            template = `[ALERTA DE TEMPERATURA]\nData/Hora: ${getVal('data_alerta')}\nPOP/Cidade: ${getVal('pop_cidade')}\nTemperatura Atual: ${getVal('temp_atual')}°C\nTemperatura Padrão: ${getVal('temp_padrao')}°C\nStatus: Acima do limite operacional.\nResponsável: ${tecNoc}`;
         }
         else if (tipo === 'ENERGIA') {
             card.style.borderColor = "#eab308";
@@ -308,11 +308,11 @@ Técnico Responsável: ${tecNoc}`;
         }
         else if (tipo === 'PERFORMANCE') {
             card.style.borderColor = "var(--warning)";
-            template = `📊 [DEGRADAÇÃO DE PERFORMANCE]\nData/Hora: ${getVal('data_teste')}\nTrecho: ${getVal('alvo')}\nLatência: ${getVal('latencia')} ms\nPerda de Pacotes: ${getVal('perda')} %\nResponsável: ${tecNoc}`;
+            template = `[DEGRADAÇÃO DE PERFORMANCE]\nData/Hora: ${getVal('data_teste')}\nTrecho: ${getVal('alvo')}\nLatência: ${getVal('latencia')} ms\nPerda de Pacotes: ${getVal('perda')} %\nResponsável: ${tecNoc}`;
         }
         else if (tipo === 'INDISPONIVEL') {
             card.style.borderColor = "var(--danger)";
-            template = `🚫 [INDISPONIBILIDADE GERAL]\nInício: ${getVal('data_inicio')}\nEquipamento/Serviço: ${getVal('equip')}\nLocalidade: ${getVal('local')}\nResponsável: ${tecNoc}`;
+            template = `[INDISPONIBILIDADE GERAL]\nInício: ${getVal('data_inicio')}\nEquipamento/Serviço: ${getVal('equip')}\nLocalidade: ${getVal('local')}\nResponsável: ${tecNoc}`;
         }
 
         document.getElementById('live-text').innerText = template;
