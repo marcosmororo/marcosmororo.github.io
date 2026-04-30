@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Nokia - Documentação</title>
+    <link rel="stylesheet" href="../../../assets/css/style.css">
+</head>
+<body>
+    <section>
+        <h1>📄 Documentação e Ações - Nokia</h1>
+        <a href="oltnokia.html" class="back-btn">← Voltar para Comandos</a>
+
+        <div class="card">
+            <h3>🚀 Ações Administrativas (Cuidado)</h3>
+            <pre>
+# Reiniciar OLT Inteira
+admin equipment reboot-isam hot-restart
+
+# Reiniciar Placa Específica (LT)
+admin equipment slot lt:1/1/1 reboot with-selftest
+
+# Reiniciar ONT de Cliente
+admin equipment ont interface 1/1/1/1/1 reboot
+            </pre>
+        </div>
+
+        <div class="card">
+            <h3>🛠️ Comandos de Configuração</h3>
+            <pre>
+# Desbloquear uma placa nova
+configure equipment slot lt:1/1/1 planned-type fglt-b unlock
+
+# Limpar logs de alarmes
+admin alarm clr-logging
+            </pre>
+        </div>
+    </section>
+</body>
+</html>
