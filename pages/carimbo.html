@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Custom Stamp</title>
+    <title>NOC Command Center - Fiber Expert</title>
     <style>
         :root {
             --bg: #020617;
@@ -102,7 +102,7 @@
     <header>
         <div>
             <h1 style="margin:0; font-size: 18px;">⚡ NOC STAMP GENERATOR</h1>
-            <span style="font-size: 11px; opacity: 0.7;">Preenchimento Técnico Padronizado</span>
+            <span style="font-size: 11px; opacity: 0.7;">Rompimento, Energia e Swap Padronizados</span>
         </div>
         <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);">00:00:00</div>
     </header>
@@ -112,8 +112,8 @@
             <div class="field">
                 <label>Tipo de Ocorrência</label>
                 <select id="tipo_falha" onchange="adjustFields()">
-                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO (PADRÃO)</option>
                     <option value="ROMPIMENTO">✂️ Rompimento de Fibra</option>
+                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO (PADRÃO)</option>
                     <option value="ENERGIA">⚡ Falha de Energia</option>
                     <option value="TEMPERATURA">🔥 Alta Temperatura</option>
                     <option value="PERFORMANCE">📊 Latência / Perda de Pacotes</option>
@@ -142,6 +142,13 @@
 
 <script>
     const fieldConfig = {
+        ROMPIMENTO: [
+            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
+            { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
+            { id: 'trecho', label: 'Trecho Principal (Ponta A - Ponta B)', type: 'text' },
+            { id: 'trecho_menor', label: 'Trecho Específico / Span (Se DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
+            { id: 'obs', label: 'Observações Adicionais', type: 'textarea' }
+        ],
         SWAP: [
             { id: 'nome_reclamante', label: 'Nome Reclamante', type: 'text' },
             { id: 'operadora', label: 'Operadora Reclamante', type: 'text' },
@@ -158,12 +165,6 @@
             { id: 'tipo_fibra', label: 'Tipo de Fibra', type: 'select', options: ['Iluminada', 'Apagada'] },
             { id: 'raman', label: 'Trecho possui RAMAN?', type: 'select', options: ['Não', 'Sim'] },
             { id: 'raman_off', label: 'RAMAN Desligado?', type: 'select', options: ['Não', 'Sim'] }
-        ],
-        ROMPIMENTO: [
-            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
-            { id: 'trecho', label: 'Trecho Afetado', type: 'text' },
-            { id: 'distancia', label: 'Distância OTDR (Km)', type: 'text' },
-            { id: 'obs', label: 'Observações de Campo', type: 'textarea' }
         ],
         ENERGIA: [
             { id: 'data_queda', label: 'Horário da Queda', type: 'datetime-local' },
@@ -217,6 +218,7 @@
             }
             
             input.id = f.id;
+            input.placeholder = f.placeholder || '';
             input.oninput = updatePreview;
             div.appendChild(label);
             div.appendChild(input);
@@ -228,6 +230,7 @@
     function updatePreview() {
         const tipo = document.getElementById('tipo_falha').value;
         const tecNoc = document.getElementById('tecnico').value || '...';
+        const card = document.getElementById('preview-card');
         let template = "";
 
         const getVal = (id) => {
@@ -239,7 +242,26 @@
             return el.value || "...";
         };
 
-        if (tipo === 'SWAP') {
+        if (tipo === 'ROMPIMENTO') {
+            card.style.borderColor = "var(--danger)";
+            const tipoRede = getVal('tipo_rede');
+            template = `[INCIDENTE: ROMPIMENTO DE FIBRA]
+------------------------------------------
+TIPO DE REDE: ${tipoRede}
+TRECHO AFETADO: ${getVal('trecho')}`;
+
+            if(tipoRede === 'DWDM') {
+                template += `\nSPAN AFETADO (TRECHO MENOR): ${getVal('trecho_menor')}`;
+            }
+
+            template += `\nDATA/HORA EVENTO: ${getVal('data_ocorrencia')}
+STATUS: INTERROMPIDO
+OBSERVAÇÕES: ${getVal('obs')}
+------------------------------------------
+RESPONSÁVEL NOC: ${tecNoc}`;
+        }
+        else if (tipo === 'SWAP') {
+            card.style.borderColor = "var(--primary)";
             template = `Nome Reclamante: ${getVal('nome_reclamante')}
 Operadora Reclamante: ${getVal('operadora')}
 
@@ -264,7 +286,8 @@ RAMAN Desligado: ${getVal('raman_off')}
 Técnico Responsável: ${tecNoc}`;
         } 
         else if (tipo === 'TEMPERATURA') {
-            template = `🔥 [ALERTA DE TEMPERATURA]
+            card.style.borderColor = "var(--warning)";
+            template = `[ALERTA DE TEMPERATURA]
 Data/Hora: ${getVal('data_alerta')}
 POP/Cidade: ${getVal('pop_cidade')}
 Temperatura Atual: ${getVal('temp_atual')}°C
@@ -272,23 +295,17 @@ Temperatura Padrão: ${getVal('temp_padrao')}°C
 Status: Acima do limite operacional.
 Responsável: ${tecNoc}`;
         }
-        else if (tipo === 'ROMPIMENTO') {
-            template = `✂️ [INCIDENTE DE ROMPIMENTO]
-Data/Hora: ${getVal('data_ocorrencia')}
-Trecho: ${getVal('trecho')}
-Distância OTDR: ${getVal('distancia')} Km
-Observações: ${getVal('obs')}
-Responsável: ${tecNoc}`;
-        }
         else if (tipo === 'ENERGIA') {
-            template = `⚡ [FALHA DE ENERGIA]
+            card.style.borderColor = "#eab308";
+            template = `[FALHA DE ENERGIA]
 Horário da Queda: ${getVal('data_queda')}
 Site/POP: ${getVal('site')}
 Autonomia Baterias: ${getVal('autonomia')}
 Responsável: ${tecNoc}`;
         }
         else if (tipo === 'PERFORMANCE') {
-            template = `📊 [DEGRADAÇÃO DE PERFORMANCE]
+            card.style.borderColor = "var(--warning)";
+            template = `[DEGRADAÇÃO DE PERFORMANCE]
 Data/Hora: ${getVal('data_teste')}
 Trecho: ${getVal('alvo')}
 Latência: ${getVal('latencia')} ms
@@ -296,7 +313,8 @@ Perda de Pacotes: ${getVal('perda')} %
 Responsável: ${tecNoc}`;
         }
         else if (tipo === 'INDISPONIVEL') {
-            template = `🚫 [INDISPONIBILIDADE GERAL]
+            card.style.borderColor = "var(--danger)";
+            template = `[INDISPONIBILIDADE GERAL]
 Início: ${getVal('data_inicio')}
 Equipamento/Serviço: ${getVal('equip')}
 Localidade: ${getVal('local')}
