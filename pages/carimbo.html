@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Fiber Expert</title>
+    <title>NOC Command Center - v4.0</title>
     <style>
         :root {
             --bg: #020617;
@@ -102,7 +102,7 @@
     <header>
         <div>
             <h1 style="margin:0; font-size: 18px;">⚡ NOC STAMP GENERATOR</h1>
-            <span style="font-size: 11px; opacity: 0.7;">Rompimento, Energia e Swap Padronizados</span>
+            <span style="font-size: 11px; opacity: 0.7;">Gestão de Incidentes e Hardware</span>
         </div>
         <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);">00:00:00</div>
     </header>
@@ -114,7 +114,8 @@
                 <select id="tipo_falha" onchange="adjustFields()">
                     <option value="ROMPIMENTO">✂️ Rompimento de Fibra</option>
                     <option value="SWAP">🔄 SWAP DE EQUIPAMENTO (PADRÃO)</option>
-                    <option value="ENERGIA">⚡ Falha de Energia da Concessionária</option>
+                    <option value="DEVICE">🛠️ Falha de Dispositivo (Hardware)</option>
+                    <option value="ENERGIA">⚡ Falha de Energia</option>
                     <option value="TEMPERATURA">🔥 Alta Temperatura</option>
                     <option value="PERFORMANCE">📊 Latência / Perda de Pacotes</option>
                     <option value="INDISPONIVEL">🚫 Indisponibilidade</option>
@@ -142,11 +143,18 @@
 
 <script>
     const fieldConfig = {
+        DEVICE: [
+            { id: 'data_falha', label: 'Data/Hora do Alarme', type: 'datetime-local' },
+            { id: 'equipamento', label: 'Equipamento (Hostname/IP)', type: 'text' },
+            { id: 'componente', label: 'Componente Afetado', type: 'select', options: ['Fonte (PSU)', 'Fan/Ventoinha', 'Linecard/Placa', 'Módulo SFP', 'CPU/Memória', 'Chassis'] },
+            { id: 'alarme_log', label: 'Log/Alarme Apresentado', type: 'text', placeholder: 'Ex: Minor alarm: PSU 1 Failure' },
+            { id: 'obs', label: 'Ações tomadas/Observação', type: 'textarea' }
+        ],
         ROMPIMENTO: [
             { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
             { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
             { id: 'trecho', label: 'Trecho Principal (Ponta A - Ponta B)', type: 'text' },
-            { id: 'trecho_menor', label: 'Trecho Menor / se for DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
+            { id: 'trecho_menor', label: 'Trecho Específico / Span (Se DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
             { id: 'obs', label: 'Observações Adicionais', type: 'textarea' }
         ],
         SWAP: [
@@ -242,23 +250,28 @@
             return el.value || "...";
         };
 
-        if (tipo === 'ROMPIMENTO') {
+        if (tipo === 'DEVICE') {
+            card.style.borderColor = "#a855f7"; // Roxo para hardware
+            template = `🛠️ [FALHA DE DISPOSITIVO / HARDWARE]
+------------------------------------------
+EQUIPAMENTO: ${getVal('equipamento')}
+COMPONENTE: ${getVal('componente')}
+DATA/HORA: ${getVal('data_falha')}
+ALARME: ${getVal('alarme_log')}
+STATUS: NECESSITA ATUAÇÃO / TROCA
+OBSERVAÇÃO: ${getVal('obs')}
+------------------------------------------
+RESPONSÁVEL NOC: ${tecNoc}`;
+        }
+        else if (tipo === 'ROMPIMENTO') {
             card.style.borderColor = "var(--danger)";
             const tipoRede = getVal('tipo_rede');
-            template = `[INCIDENTE: ROMPIMENTO DE FIBRA]
+            template = `✂️ [INCIDENTE: ROMPIMENTO DE FIBRA]
 ------------------------------------------
 TIPO DE REDE: ${tipoRede}
 TRECHO AFETADO: ${getVal('trecho')}`;
-
-            if(tipoRede === 'DWDM') {
-                template += `\nSPAN AFETADO (TRECHO MENOR): ${getVal('trecho_menor')}`;
-            }
-
-            template += `\nDATA/HORA EVENTO: ${getVal('data_ocorrencia')}
-STATUS: INTERROMPIDO
-OBSERVAÇÕES: ${getVal('obs')}
-------------------------------------------
-RESPONSÁVEL NOC: ${tecNoc}`;
+            if(tipoRede === 'DWDM') template += `\nSPAN AFETADO: ${getVal('trecho_menor')}`;
+            template += `\nDATA/HORA EVENTO: ${getVal('data_ocorrencia')}\nSTATUS: INTERROMPIDO\nOBSERVAÇÕES: ${getVal('obs')}\n------------------------------------------\nRESPONSÁVEL NOC: ${tecNoc}`;
         }
         else if (tipo === 'SWAP') {
             card.style.borderColor = "var(--primary)";
@@ -287,38 +300,19 @@ Técnico Responsável: ${tecNoc}`;
         } 
         else if (tipo === 'TEMPERATURA') {
             card.style.borderColor = "var(--warning)";
-            template = `[ALERTA DE TEMPERATURA]
-Data/Hora: ${getVal('data_alerta')}
-POP/Cidade: ${getVal('pop_cidade')}
-Temperatura Atual: ${getVal('temp_atual')}°C
-Temperatura Padrão: ${getVal('temp_padrao')}°C
-Status: Acima do limite operacional.
-Responsável: ${tecNoc}`;
+            template = `🔥 [ALERTA DE TEMPERATURA]\nData/Hora: ${getVal('data_alerta')}\nPOP/Cidade: ${getVal('pop_cidade')}\nTemperatura Atual: ${getVal('temp_atual')}°C\nTemperatura Padrão: ${getVal('temp_padrao')}°C\nStatus: Acima do limite operacional.\nResponsável: ${tecNoc}`;
         }
         else if (tipo === 'ENERGIA') {
             card.style.borderColor = "#eab308";
-            template = `[FALHA DE ENERGIA]
-Horário da Queda: ${getVal('data_queda')}
-Site/POP: ${getVal('site')}
-Autonomia Baterias: ${getVal('autonomia')}
-Responsável: ${tecNoc}`;
+            template = `⚡ [FALHA DE ENERGIA]\nHorário da Queda: ${getVal('data_queda')}\nSite/POP: ${getVal('site')}\nAutonomia Baterias: ${getVal('autonomia')}\nResponsável: ${tecNoc}`;
         }
         else if (tipo === 'PERFORMANCE') {
             card.style.borderColor = "var(--warning)";
-            template = `[DEGRADAÇÃO DE PERFORMANCE]
-Data/Hora: ${getVal('data_teste')}
-Trecho: ${getVal('alvo')}
-Latência: ${getVal('latencia')} ms
-Perda de Pacotes: ${getVal('perda')} %
-Responsável: ${tecNoc}`;
+            template = `📊 [DEGRADAÇÃO DE PERFORMANCE]\nData/Hora: ${getVal('data_teste')}\nTrecho: ${getVal('alvo')}\nLatência: ${getVal('latencia')} ms\nPerda de Pacotes: ${getVal('perda')} %\nResponsável: ${tecNoc}`;
         }
         else if (tipo === 'INDISPONIVEL') {
             card.style.borderColor = "var(--danger)";
-            template = `[INDISPONIBILIDADE GERAL]
-Início: ${getVal('data_inicio')}
-Equipamento/Serviço: ${getVal('equip')}
-Localidade: ${getVal('local')}
-Responsável: ${tecNoc}`;
+            template = `🚫 [INDISPONIBILIDADE GERAL]\nInício: ${getVal('data_inicio')}\nEquipamento/Serviço: ${getVal('equip')}\nLocalidade: ${getVal('local')}\nResponsável: ${tecNoc}`;
         }
 
         document.getElementById('live-text').innerText = template;
