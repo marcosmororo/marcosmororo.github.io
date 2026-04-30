@@ -2,60 +2,72 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Nokia - Comandos</title>
-    <link rel="stylesheet" href="../../assets/css/style.css">
+    <title>Nokia - Comandos OLT</title>
+    <!-- Ajustado para 3 níveis de retrocesso (../../../) -->
+    <link rel="stylesheet" href="../../../assets/css/style.css">
     <style>
-        .accordion { cursor: pointer; padding: 15px; background: var(--card-dark); margin-bottom: 5px; border-radius: 8px; font-weight: bold; display: flex; justify-content: space-between; }
-        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.2); }
-        pre { padding: 15px; margin: 0; color: #aaffaa; font-family: 'Courier New', monospace; }
+        .accordion { cursor: pointer; padding: 15px; background: var(--card-dark); margin-bottom: 5px; border-radius: 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(0,0,0,0.1); margin-bottom: 10px; border-radius: 0 0 8px 8px; }
+        pre { padding: 15px; margin: 0; color: #aaffaa; font-family: 'Consolas', monospace; font-size: 0.9rem; }
         .critical { border-left: 5px solid #ff4444; }
         .major { border-left: 5px solid #ffa500; }
         .info { border-left: 5px solid #44aaff; }
+        .btn-group { margin-bottom: 20px; display: flex; gap: 10px; }
     </style>
 </head>
 <body>
+
     <section>
-        <h1>🍎 Nokia 7360 ISAM</h1>
-        <div style="margin-bottom: 20px;">
-            <a href="../vendors.html" class="back-btn">← Voltar</a>
-            <a href="nokia-doc.html" class="back-btn" style="background: var(--primary); color: #000;">📄 Documentação</a>
+        <h1>🍎 Nokia 7360 ISAM - Comandos</h1>
+        
+        <div class="btn-group">
+            <a href="../../vendors.html" class="back-btn">← Voltar Vendors</a>
+            <!-- Link para a página de documentação no mesmo nível -->
+            <a href="docnokia.html" class="back-btn" style="background: #e67e22; color: white;">📄 Documentação</a>
         </div>
 
         <div class="card accordion critical">Uplink Down</div>
         <div class="panel"><pre>show alarm query ihub-link all</pre></div>
 
-        <div class="card accordion major">Potência Óptica e PON</div>
+        <div class="card accordion major">Potência Óptica (PON/SFP)</div>
         <div class="panel"><pre>
 show alarm query sfprssi all
 show pon optics
-show alarm query olt-gen all
-show alarm query name olt-gen-pon-loss-sig</pre></div>
+show pon optics 1/1/3/1
+show alarm query olt-gen all</pre></div>
 
-        <div class="card accordion info">Ver e Diagnosticar ONTs</div>
+        <div class="card accordion info">Visualizar e Localizar ONTs</div>
         <div class="panel"><pre>
 show equipment ont
 show pon unprovision-onu
+show equipment ont index sn: [SERIAL_AQUI]
+show equipment ont status pon | match exact: [DESCRICAO]</pre></div>
+
+        <div class="card accordion info">Diagnóstico Detalhado ONT</div>
+        <div class="panel"><pre>
 show equipment ont status pon ont 1/1/1/1/1
 show equipment ont optics 1/1/1/1/1
-show equipment ont index sn: [SERIAL]</pre></div>
+show equipment ont interface 1/1/1/1/1 detail</pre></div>
 
-        <div class="card accordion major">Queda de Cliente (Dying Gasp)</div>
+        <div class="card accordion major">Troubleshoot de Quedas</div>
         <div class="panel"><pre>
 show alarm query ont-ploam all
 show alarm query name ont-ploam-dying-gasp
 show alarm query name ont-ploam-sig-degrade</pre></div>
 
-        <div class="card accordion info">Hardware e Logs</div>
+        <div class="card accordion info">Sistema e Hardware</div>
         <div class="panel"><pre>
 show equipment temperature
 show system cpu-load
-show log log-id 99
-show alarm current table</pre></div>
+show system memory-usage
+show core1-uptime</pre></div>
+
     </section>
 
     <script>
         document.querySelectorAll(".accordion").forEach(btn => {
             btn.onclick = () => {
+                btn.classList.toggle("active");
                 let panel = btn.nextElementSibling;
                 panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
             };
