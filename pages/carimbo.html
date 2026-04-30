@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Command Center - Smart Form</title>
+    <title>NOC Command Center - Custom Stamp</title>
     <style>
         :root {
             --bg: #020617;
@@ -14,11 +14,10 @@
             --success: #10b981;
             --text: #f8fafc;
             --border: #334155;
-            --preview-bg: #000000;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -40,7 +39,7 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 480px 1fr;
+            grid-template-columns: 500px 1fr;
             gap: 25px;
         }
 
@@ -49,39 +48,35 @@
             padding: 25px;
             border-radius: 12px;
             border: 1px solid var(--border);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .field { margin-bottom: 15px; animation: slideIn 0.3s ease-out; }
-        .field label { display: block; font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+        .field { margin-bottom: 12px; }
+        .field label { display: block; font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 4px; text-transform: uppercase; }
         
         input, select, textarea {
             width: 100%;
             background: #0f172a;
             border: 1px solid var(--border);
             color: white;
-            padding: 12px;
-            border-radius: 8px;
+            padding: 10px;
+            border-radius: 6px;
             font-size: 13px;
         }
 
-        input:focus { border-color: var(--primary); outline: none; }
-
-        /* Preview Area */
-        .preview-container { position: sticky; top: 20px; }
         .preview-card {
-            background: var(--preview-bg);
+            background: #000;
             border-radius: 12px;
             border: 2px solid var(--primary);
-            padding: 30px;
-            min-height: 450px;
+            padding: 25px;
+            position: sticky;
+            top: 20px;
         }
 
         #live-text {
-            font-family: 'Fira Code', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 14px;
-            line-height: 1.7;
-            color: #bae6fd;
+            line-height: 1.5;
+            color: #f8fafc;
             white-space: pre-wrap;
         }
 
@@ -90,29 +85,15 @@
             background: var(--primary);
             color: #020617;
             border: none;
-            padding: 20px;
+            padding: 18px;
             border-radius: 8px;
             font-weight: 900;
             font-size: 16px;
             cursor: pointer;
-            margin-top: 20px;
-            transition: 0.3s;
+            margin-top: 15px;
         }
 
         .btn-copy.success { background: var(--success); color: white; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        
-        .section-title { 
-            font-size: 12px; 
-            color: #94a3b8; 
-            margin-bottom: 20px; 
-            padding-bottom: 10px; 
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
     </style>
 </head>
 <body>
@@ -120,112 +101,123 @@
 <div class="container">
     <header>
         <div>
-            <h1 style="margin:0; font-size: 20px;">⚡ NOC DYNAMIC COMMAND</h1>
-            <span style="font-size: 11px; opacity: 0.7;">Gerador de Carimbos com Campos Variáveis</span>
+            <h1 style="margin:0; font-size: 18px;">⚡ NOC STAMP GENERATOR</h1>
+            <span style="font-size: 11px; opacity: 0.7;">Preenchimento Técnico Padronizado</span>
         </div>
-        <div id="clock" style="font-family: monospace; font-size: 22px; color: var(--primary);">00:00:00</div>
+        <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);">00:00:00</div>
     </header>
 
     <div class="main-layout">
         <div class="panel">
             <div class="field">
-                <label>Selecione o Tipo de Evento</label>
+                <label>Tipo de Ocorrência</label>
                 <select id="tipo_falha" onchange="adjustFields()">
+                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO (PADRÃO)</option>
                     <option value="ROMPIMENTO">✂️ Rompimento de Fibra</option>
-                    <option value="SWAP">🔄 Swap de Equipamento</option>
-                    <option value="ENERGIA">⚡ Falha de Energia / AC</option>
+                    <option value="ENERGIA">⚡ Falha de Energia</option>
                     <option value="TEMPERATURA">🔥 Alta Temperatura</option>
-                    <option value="LATENCIA">🛰️ Alta Latência / Perda</option>
-                    <option value="INDISPONIVEL">🚫 Indisponibilidade Geral</option>
+                    <option value="PERFORMANCE">📊 Latência / Perda de Pacotes</option>
+                    <option value="INDISPONIVEL">🚫 Indisponibilidade</option>
                 </select>
             </div>
 
-            <div class="section-title">📝 Dados da Ocorrência</div>
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
 
-            <div id="dynamic-fields">
-                </div>
+            <div id="dynamic-fields"></div>
 
             <div class="field">
-                <label>Responsável / Técnico</label>
+                <label>Técnico NOC Responsável</label>
                 <input type="text" id="tecnico" placeholder="Seu nome" oninput="updatePreview()">
             </div>
         </div>
 
         <div class="preview-container">
             <div class="preview-card" id="preview-card">
-                <div id="live-text">Aguardando preenchimento...</div>
-                <button class="btn-copy" id="copyBtn" onclick="copyToClipboard()">COPIAR CARIMBO PADRÃO</button>
+                <div id="live-text">Aguardando dados...</div>
+                <button class="btn-copy" id="copyBtn" onclick="copyToClipboard()">COPIAR CARIMBO PARA ABERTURA</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Configuração dos campos por tipo
     const fieldConfig = {
-        ROMPIMENTO: [
-            { id: 'protocolo', label: 'Protocolo/Chamado', type: 'text', placeholder: 'Ex: 20260401-01' },
-            { id: 'lado_a', label: 'Localidade Lado A', type: 'text', placeholder: 'Ex: POP Centro' },
-            { id: 'lado_b', label: 'Localidade Lado B', type: 'text', placeholder: 'Ex: POP Bairro' },
-            { id: 'distancia', label: 'Distância do Rompimento (Km)', type: 'text', placeholder: 'Ex: 12.5km' },
-            { id: 'obs', label: 'Observações OTDR', type: 'textarea', placeholder: 'Ex: Rompimento identificado após caixa de emenda...' }
-        ],
         SWAP: [
-            { id: 'protocolo', label: 'Protocolo/Chamado', type: 'text' },
-            { id: 'equip_sai', label: 'Equipamento (SAI)', type: 'text', placeholder: 'Ex: OLT Nokia SN: 123' },
-            { id: 'equip_entra', label: 'Equipamento (ENTRA)', type: 'text', placeholder: 'Ex: OLT Nokia SN: 456' },
-            { id: 'motivo', label: 'Motivo da Troca', type: 'textarea' }
+            { id: 'nome_reclamante', label: 'Nome Reclamante', type: 'text' },
+            { id: 'operadora', label: 'Operadora Reclamante', type: 'text' },
+            { id: 'trecho', label: 'Trecho (Ponta A – Ponta B)', type: 'text' },
+            { id: 'end_a', label: 'Endereço Ponta A', type: 'text' },
+            { id: 'end_b', label: 'Endereço Ponta B', type: 'text' },
+            { id: 'data_hora_ext', label: 'Data/Hora Extração', type: 'datetime-local' },
+            { id: 'sentido', label: 'Sentido da Extração', type: 'select', options: ['A > B', 'B > A'] },
+            { id: 'falha', label: 'Falha', type: 'select', options: ['INTERROMPIDO', 'DEGRADADO'] },
+            { id: 'atuacao', label: 'Atuação', type: 'select', options: ['IMEDIATO', 'PROGRAMADO'] },
+            { id: 'tel_op', label: 'Telefone para Testes Operadora', type: 'text' },
+            { id: 'chamado_op', label: 'Nº Chamado Interno Operadora', type: 'text' },
+            { id: 'hora_alarme', label: 'Horário Alarme Equipamento', type: 'time' },
+            { id: 'tipo_fibra', label: 'Tipo de Fibra', type: 'select', options: ['Iluminada', 'Apagada'] },
+            { id: 'raman', label: 'Trecho possui RAMAN?', type: 'select', options: ['Não', 'Sim'] },
+            { id: 'raman_off', label: 'RAMAN Desligado?', type: 'select', options: ['Não', 'Sim'] }
+        ],
+        ROMPIMENTO: [
+            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
+            { id: 'trecho', label: 'Trecho Afetado', type: 'text' },
+            { id: 'distancia', label: 'Distância OTDR (Km)', type: 'text' },
+            { id: 'obs', label: 'Observações de Campo', type: 'textarea' }
         ],
         ENERGIA: [
-            { id: 'site', label: 'Nome do Site/POP', type: 'text' },
-            { id: 'uptime', label: 'Tempo em Bateria (Estimado)', type: 'text', placeholder: 'Ex: 2 horas' },
-            { id: 'status_ac', label: 'Status da Rede AC', type: 'text', placeholder: 'Ex: Sem energia no disjuntor geral' }
+            { id: 'data_queda', label: 'Horário da Queda', type: 'datetime-local' },
+            { id: 'site', label: 'Site / POP', type: 'text' },
+            { id: 'autonomia', label: 'Autonomia Baterias', type: 'text' }
         ],
         TEMPERATURA: [
-            { id: 'cidade_pop', label: 'Cidade / POP', type: 'text' },
-            { id: 'temp_atual', label: 'Temperatura Atual (°C)', type: 'text', placeholder: 'Ex: 58°C' },
-            { id: 'temp_padrao', label: 'Temperatura Padrão (°C)', type: 'text', placeholder: 'Ex: 35°C' },
-            { id: 'ar_condicionado', label: 'Status do Ar Condicionado', type: 'text', placeholder: 'Ex: Inoperante / Alarme de Alta' }
+            { id: 'data_alerta', label: 'Data/Hora Alerta', type: 'datetime-local' },
+            { id: 'pop_cidade', label: 'POP / Cidade', type: 'text' },
+            { id: 'temp_atual', label: 'Temperatura Atual (°C)', type: 'text' },
+            { id: 'temp_padrao', label: 'Temperatura Padrão (°C)', type: 'text' }
         ],
-        LATENCIA: [
-            { id: 'trecho', label: 'Trecho Afetado', type: 'text' },
-            { id: 'ping_normal', label: 'Latência Padrão (ms)', type: 'text' },
-            { id: 'ping_atual', label: 'Latência Atual (ms)', type: 'text' },
-            { id: 'perda', label: 'Perda de Pacotes (%)', type: 'text', placeholder: 'Ex: 15%' }
+        PERFORMANCE: [
+            { id: 'data_teste', label: 'Data/Hora do Teste', type: 'datetime-local' },
+            { id: 'alvo', label: 'Alvo / Trecho', type: 'text' },
+            { id: 'latencia', label: 'Latência (ms)', type: 'text' },
+            { id: 'perda', label: 'Perda de Pacotes (%)', type: 'text' }
         ],
         INDISPONIVEL: [
-            { id: 'servico', label: 'Serviço/Equipamento Afetado', type: 'text' },
-            { id: 'local', label: 'Localidade', type: 'text' },
-            { id: 'impacto', label: 'Impacto Estimado', type: 'text', placeholder: 'Ex: 500 clientes offline' },
-            { id: 'obs', label: 'Ações Iniciais', type: 'textarea' }
+            { id: 'data_inicio', label: 'Início da Indisponibilidade', type: 'datetime-local' },
+            { id: 'equip', label: 'Equipamento / Serviço', type: 'text' },
+            { id: 'local', label: 'Localidade', type: 'text' }
         ]
     };
 
     function adjustFields() {
         const tipo = document.getElementById('tipo_falha').value;
         const container = document.getElementById('dynamic-fields');
-        container.innerHTML = ''; // Limpa campos atuais
+        container.innerHTML = '';
 
-        fieldConfig[tipo].forEach(field => {
+        fieldConfig[tipo].forEach(f => {
             const div = document.createElement('div');
             div.className = 'field';
-            
             const label = document.createElement('label');
-            label.innerText = field.label;
+            label.innerText = f.label;
             
             let input;
-            if (field.type === 'textarea') {
+            if (f.type === 'select') {
+                input = document.createElement('select');
+                f.options.forEach(opt => {
+                    const o = document.createElement('option');
+                    o.value = opt; o.innerText = opt;
+                    input.appendChild(o);
+                });
+            } else if (f.type === 'textarea') {
                 input = document.createElement('textarea');
                 input.rows = 3;
             } else {
                 input = document.createElement('input');
-                input.type = field.type;
+                input.type = f.type;
             }
             
-            input.id = field.id;
-            input.placeholder = field.placeholder || '';
+            input.id = f.id;
             input.oninput = updatePreview;
-            
             div.appendChild(label);
             div.appendChild(input);
             container.appendChild(div);
@@ -235,60 +227,80 @@
 
     function updatePreview() {
         const tipo = document.getElementById('tipo_falha').value;
-        const tecnico = document.getElementById('tecnico').value || 'NOC_OPERATOR';
-        const data = new Date().toLocaleString('pt-BR');
-        const card = document.getElementById('preview-card');
-        
+        const tecNoc = document.getElementById('tecnico').value || '...';
         let template = "";
 
-        // Lógica de Geração do Texto baseada no tipo
-        if (tipo === 'ROMPIMENTO') {
-            const p = document.getElementById('protocolo')?.value || '---';
-            const a = document.getElementById('lado_a')?.value || '---';
-            const b = document.getElementById('lado_b')?.value || '---';
-            const d = document.getElementById('distancia')?.value || '---';
-            const o = document.getElementById('obs')?.value || 'Sem detalhes.';
-            card.style.borderColor = "var(--danger)";
-            template = `✂️ [INCIDENTE: ROMPIMENTO DE FIBRA]\n------------------------------------------\nPROT: ${p}\nTRECHO: ${a} <> ${b}\nDATA: ${data}\nDISTÂNCIA: ${d}\nSTATUS: FIBRA INTERROMPIDA\nTÉCNICO RESP: ${tecnico}\nOBS: ${o}\n------------------------------------------`;
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return "";
+            if (el.type === 'datetime-local' || el.type === 'time') {
+                return el.value ? el.value.replace('T', ' ') : "...";
+            }
+            return el.value || "...";
+        };
+
+        if (tipo === 'SWAP') {
+            template = `Nome Reclamante: ${getVal('nome_reclamante')}
+Operadora Reclamante: ${getVal('operadora')}
+
+Trecho (Ponta A – Ponta B): ${getVal('trecho')}
+Endereço Ponta A: ${getVal('end_a')}
+Endereço Ponta B: ${getVal('end_b')}
+
+Data/Hora Extração: ${getVal('data_hora_ext')}
+Sentido da Extração: ${getVal('sentido')}
+
+Falha: ${getVal('falha')}
+Atuação: ${getVal('atuacao')}
+
+Telefone para Testes da Operadora: ${getVal('tel_op')}
+Nº do Chamado Interno da Operadora: ${getVal('chamado_op')}
+
+Horário do Alarme do Equipamento da Operadora: ${getVal('hora_alarme')}
+Tipo de Fibra: ${getVal('tipo_fibra')}
+Trecho possui RAMAN: ${getVal('raman')}
+RAMAN Desligado: ${getVal('raman_off')}
+
+Técnico Responsável: ${tecNoc}`;
         } 
         else if (tipo === 'TEMPERATURA') {
-            const c = document.getElementById('cidade_pop')?.value || '---';
-            const tA = document.getElementById('temp_atual')?.value || '---';
-            const tP = document.getElementById('temp_padrao')?.value || '---';
-            const ar = document.getElementById('ar_condicionado')?.value || '---';
-            card.style.borderColor = "var(--warning)";
-            template = `🔥 [ALERTA: CRÍTICO DE TEMPERATURA]\n------------------------------------------\nLOCAL: ${c}\nDATA: ${data}\nTEMP. ATUAL: ${tA}\nTEMP. NOMINAL: ${tP}\nAR CONDICIONADO: ${ar}\nRESPONSÁVEL: ${tecnico}\nSTATUS: RISCO DE DESLIGAMENTO TÉRMICO\n------------------------------------------`;
+            template = `🔥 [ALERTA DE TEMPERATURA]
+Data/Hora: ${getVal('data_alerta')}
+POP/Cidade: ${getVal('pop_cidade')}
+Temperatura Atual: ${getVal('temp_atual')}°C
+Temperatura Padrão: ${getVal('temp_padrao')}°C
+Status: Acima do limite operacional.
+Responsável: ${tecNoc}`;
+        }
+        else if (tipo === 'ROMPIMENTO') {
+            template = `✂️ [INCIDENTE DE ROMPIMENTO]
+Data/Hora: ${getVal('data_ocorrencia')}
+Trecho: ${getVal('trecho')}
+Distância OTDR: ${getVal('distancia')} Km
+Observações: ${getVal('obs')}
+Responsável: ${tecNoc}`;
         }
         else if (tipo === 'ENERGIA') {
-            const s = document.getElementById('site')?.value || '---';
-            const u = document.getElementById('uptime')?.value || '---';
-            const ac = document.getElementById('status_ac')?.value || '---';
-            card.style.borderColor = "#eab308";
-            template = `⚡ [FALHA DE ENERGIA / AC]\n------------------------------------------\nSITE/POP: ${s}\nHORA DA QUEDA: ${data}\nAUTONOMIA ESTIMADA: ${u}\nSTATUS AC: ${ac}\nTÉCNICO: ${tecnico}\nOBS: Equipamento operando via banco de baterias.\n------------------------------------------`;
+            template = `⚡ [FALHA DE ENERGIA]
+Horário da Queda: ${getVal('data_queda')}
+Site/POP: ${getVal('site')}
+Autonomia Baterias: ${getVal('autonomia')}
+Responsável: ${tecNoc}`;
         }
-        else if (tipo === 'SWAP') {
-            const p = document.getElementById('protocolo')?.value || '---';
-            const s = document.getElementById('equip_sai')?.value || '---';
-            const e = document.getElementById('equip_entra')?.value || '---';
-            const m = document.getElementById('motivo')?.value || '---';
-            card.style.borderColor = "var(--primary)";
-            template = `🔄 [CARIMBO DE SWAP TÉCNICO]\n------------------------------------------\nPROT: ${p}\nHORA: ${data}\nEQUIP. SAI: ${s}\nEQUIP. ENTRA: ${e}\nMOTIVO: ${m}\nTÉCNICO: ${tecnico}\n------------------------------------------`;
-        }
-        else if (tipo === 'LATENCIA') {
-            const t = document.getElementById('trecho')?.value || '---';
-            const pN = document.getElementById('ping_normal')?.value || '---';
-            const pA = document.getElementById('ping_atual')?.value || '---';
-            const pr = document.getElementById('perda')?.value || '0%';
-            card.style.borderColor = "var(--warning)";
-            template = `🛰️ [DEGRADAÇÃO DE PERFORMANCE]\n------------------------------------------\nTRECHO: ${t}\nDATA: ${data}\nLATÊNCIA PADRÃO: ${pN}\nLATÊNCIA ATUAL: ${pA}\nPERDA DE PACOTES: ${pr}\nRESPONSÁVEL: ${tecnico}\n------------------------------------------`;
+        else if (tipo === 'PERFORMANCE') {
+            template = `📊 [DEGRADAÇÃO DE PERFORMANCE]
+Data/Hora: ${getVal('data_teste')}
+Trecho: ${getVal('alvo')}
+Latência: ${getVal('latencia')} ms
+Perda de Pacotes: ${getVal('perda')} %
+Responsável: ${tecNoc}`;
         }
         else if (tipo === 'INDISPONIVEL') {
-            const s = document.getElementById('servico')?.value || '---';
-            const l = document.getElementById('local')?.value || '---';
-            const i = document.getElementById('impacto')?.value || '---';
-            const o = document.getElementById('obs')?.value || '---';
-            card.style.borderColor = "var(--danger)";
-            template = `🚫 [INDISPONIBILIDADE DE SERVIÇO]\n------------------------------------------\nALVO: ${s}\nLOCALIDADE: ${l}\nINÍCIO: ${data}\nIMPACTO: ${i}\nTÉCNICO: ${tecnico}\nAÇÕES: ${o}\n------------------------------------------`;
+            template = `🚫 [INDISPONIBILIDADE GERAL]
+Início: ${getVal('data_inicio')}
+Equipamento/Serviço: ${getVal('equip')}
+Localidade: ${getVal('local')}
+Responsável: ${tecNoc}`;
         }
 
         document.getElementById('live-text').innerText = template;
@@ -298,21 +310,19 @@
         const text = document.getElementById('live-text').innerText;
         const btn = document.getElementById('copyBtn');
         navigator.clipboard.writeText(text).then(() => {
-            btn.innerText = "✅ COPIADO COM SUCESSO!";
+            btn.innerText = "✅ COPIADO!";
             btn.classList.add('success');
             setTimeout(() => {
-                btn.innerText = "COPIAR CARIMBO PADRÃO";
+                btn.innerText = "COPIAR CARIMBO PARA ABERTURA";
                 btn.classList.remove('success');
             }, 2000);
         });
     }
 
-    // Relógio
     setInterval(() => {
         document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
     }, 1000);
 
-    // Início padrão
     adjustFields();
 </script>
 
