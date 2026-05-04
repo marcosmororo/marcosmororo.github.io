@@ -3,177 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDN - Capacity Planning ICG</title>
+    <title>CDN Capacity - Excel Import</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg: #020617;
             --card: #0f172a;
             --accent: #3b82f6;
-            --up: #ef4444;
-            --down: #10b981;
+            --success: #10b981;
             --text: #f1f5f9;
             --border: #1e293b;
         }
 
         body { 
-            font-family: 'Inter', system-ui, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0;
-            padding: 20px;
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); color: var(--text); 
+            margin: 0; padding: 20px; 
         }
 
         .container { max-width: 1400px; margin: 0 auto; }
 
-        .header-nav { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 25px; 
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 450px; gap: 20px; }
+
+        .card { 
+            background: var(--card); padding: 20px; 
+            border-radius: 12px; border: 1px solid var(--border); 
         }
+
+        /* Tabela Otimizada */
+        .table-wrapper { max-height: 400px; overflow-y: auto; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #1e293b; padding: 10px; position: sticky; top: 0; z-index: 5; }
+        td { padding: 8px; border-bottom: 1px solid var(--border); text-align: center; }
         
-        button {
-            padding: 10px 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background: var(--accent);
-            color: #fff;
-            font-weight: 600;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-        }
-
-        .card {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-        }
-
-        .table-wrapper { 
-            max-height: 500px; 
-            overflow-y: auto; 
-            border-radius: 12px; 
-        }
+        .cdn-info { text-align: left; border-left: 3px solid var(--accent); padding-left: 10px; }
         
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        
-        th { 
-            background: #1e293b; 
-            padding: 12px; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        td { 
-            padding: 10px; 
-            border-bottom: 1px solid var(--border); 
-            text-align: center;
-            font-size: 13px;
-        }
-
-        .cdn-name { text-align: left; font-weight: 600; border-left: 4px solid var(--accent); padding-left: 15px; }
-        .cdn-name small { font-weight: normal; color: #64748b; display: block; }
-
         input[type="number"] {
-            width: 80px;
-            padding: 6px;
-            background: #020617;
-            border: 1px solid #334155;
-            color: #38bdf8;
-            border-radius: 4px;
-            text-align: center;
+            width: 70px; padding: 5px; background: #020617;
+            border: 1px solid #334155; color: #fff; border-radius: 4px;
         }
 
-        .bg-past { background: rgba(255, 255, 255, 0.02); }
-        .bg-current { background: rgba(59, 130, 246, 0.04); }
-
-        .diff-badge {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 11px;
+        /* Área de Colagem do Excel */
+        .import-area {
+            display: flex; gap: 10px; align-items: center;
+            background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px;
+            border: 1px dashed var(--accent);
         }
 
-        /* Ajuste do gráfico para não esmagar */
-        .chart-section {
-            height: 600px; 
-            margin-top: 20px;
+        textarea {
+            flex-grow: 1; height: 40px; background: #020617;
+            border: 1px solid #334155; color: var(--success);
+            padding: 8px; border-radius: 4px; font-size: 12px;
         }
 
-        .stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
+        select { padding: 8px; background: #1e293b; color: #fff; border-radius: 4px; border: none; }
+
+        .btn {
+            padding: 10px 15px; cursor: pointer; border: none;
+            border-radius: 6px; background: var(--accent); color: #fff; font-weight: bold;
         }
 
-        .stat-card {
-            background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            text-align: center;
-        }
+        .chart-container { height: 550px; position: relative; }
 
-        .stat-card h2 { margin: 8px 0 0; color: var(--accent); }
+        .diff-pos { color: #ef4444; font-weight: bold; }
+        .diff-neg { color: #10b981; font-weight: bold; }
 
-        @media print { .header-nav, button { display: none; } }
+        @media (max-width: 1100px) { .dashboard-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-nav">
-        <button onclick="window.history.back()" style="background: #334155;">⬅ Voltar</button>
-        <h1>Análise de Capacidade CDN</h1>
-        <button onclick="window.print()">🖨 Gerar Relatório</button>
-    </div>
-
-    <div class="stats-overview">
-        <div class="stat-card"><span>Δ Crescimento Pico</span><h2 id="total-growth">0%</h2></div>
-        <div class="stat-card"><span>Total Pico Vigente</span><h2 id="total-gbps">0.00 Gbps</h2></div>
-        <div class="stat-card"><span>Média P95 Atual</span><h2 id="avg-p95">0.00 Gbps</h2></div>
+    <div class="header">
+        <h1>CDN Capacity Dashboard</h1>
+        <button class="btn" onclick="window.print()">Exportar PDF</button>
     </div>
 
     <div class="dashboard-grid">
-        <div class="card">
-            <h3>Entrada de Dados por Interface</h3>
-            <div class="table-wrapper">
-                <table>
-                    <thead>
-                        <tr>
-                            <th rowspan="2">CDN / Interface</th>
-                            <th colspan="2" class="bg-past">Mês Anterior</th>
-                            <th colspan="2" class="bg-current">Mês Vigente</th>
-                            <th rowspan="2">Δ Pico</th>
-                        </tr>
-                        <tr>
-                            <th class="bg-past">Pico (Gbps)</th>
-                            <th class="bg-past">P95 (Gbps)</th>
-                            <th class="bg-current">Pico (Gbps)</th>
-                            <th class="bg-current">P95 (Gbps)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- JS irá popular aqui -->
-                    </tbody>
-                </table>
+        <div class="left-col">
+            <!-- Tabela -->
+            <div class="card">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>CDN / Interface</th>
+                                <th>Pico Ant.</th>
+                                <th>P95 Ant.</th>
+                                <th>Pico Vig.</th>
+                                <th>P95 Vig.</th>
+                                <th>Δ %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- Importador Excel -->
+                <div class="import-area">
+                    <div style="font-size: 11px; color: var(--accent); width: 120px;">
+                        <strong>IMPORTAR EXCEL:</strong><br>Cole a coluna aqui
+                    </div>
+                    <textarea id="bulk-input" placeholder="Cole os valores do Excel aqui..."></textarea>
+                    <select id="target-col">
+                        <option value="p-ant">Pico Anterior</option>
+                        <option value="p95-ant">P95 Anterior</option>
+                        <option value="p-vig">Pico Vigente</option>
+                        <option value="p95-vig">P95 Vigente</option>
+                    </select>
+                    <button class="btn" onclick="importFromExcel()" style="background: var(--success);">Processar</button>
+                </div>
             </div>
         </div>
 
+        <!-- Gráfico -->
         <div class="card">
-            <h3>Comparativo Visual: Capacidade por Interface</h3>
-            <div class="chart-section">
+            <h3>Comparativo de Pico (Gbps)</h3>
+            <div class="chart-container">
                 <canvas id="mainChart"></canvas>
             </div>
         </div>
@@ -181,76 +129,73 @@
 </div>
 
 <script>
-const dataSet = [
-    { cdn: "GOOGLE", iface: "irb.428" },
-    { cdn: "GOOGLE", iface: "irb.400" },
-    { cdn: "GOOGLE", iface: "et-0/0/54" },
-    { cdn: "FACEBOOK", iface: "ae6" },
-    { cdn: "FACEBOOK", iface: "ae8" },
-    { cdn: "NETFLIX", iface: "ae0" },
-    { cdn: "NETFLIX", iface: "ae3" },
-    { cdn: "NETFLIX", iface: "ae4" },
-    { cdn: "NETFLIX", iface: "ae5" },
-    { cdn: "CLOUDFLARE", iface: "ae7" },
-    { cdn: "MICROSOFT CACHE", iface: "xe-0/0/30" },
-    { cdn: "GLOBO", iface: "ae1" },
-    { cdn: "GLOBO", iface: "eth-trunk1" },
-    { cdn: "GLOBO", iface: "eth-trunk3" }
+const interfaces = [
+    { cdn: "GOOGLE", iface: "irb.428" }, { cdn: "GOOGLE", iface: "irb.400" }, { cdn: "GOOGLE", iface: "et-0/0/54" },
+    { cdn: "FACEBOOK", iface: "ae6" }, { cdn: "FACEBOOK", iface: "ae8" },
+    { cdn: "NETFLIX", iface: "ae0" }, { cdn: "NETFLIX", iface: "ae3" }, { cdn: "NETFLIX", iface: "ae4" }, { cdn: "NETFLIX", iface: "ae5" },
+    { cdn: "CLOUDFLARE", iface: "ae7" }, { cdn: "MICROSOFT", iface: "xe-0/0/30" },
+    { cdn: "GLOBO", iface: "ae1" }, { cdn: "GLOBO", iface: "eth-trunk1" }, { cdn: "GLOBO", iface: "eth-trunk3" }
 ];
 
 let chart;
 
-function initTable() {
+function init() {
     const body = document.getElementById('table-body');
-    dataSet.forEach((item, index) => {
+    interfaces.forEach((it, i) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="cdn-name">${item.cdn}<small>${item.iface}</small></td>
-            <td class="bg-past"><input type="number" class="p-ant" oninput="update()" value="0" step="0.01"></td>
-            <td class="bg-past"><input type="number" class="p95-ant" oninput="update()" value="0" step="0.01"></td>
-            <td class="bg-current"><input type="number" class="p-vig" oninput="update()" value="0" step="0.01"></td>
-            <td class="bg-current"><input type="number" class="p95-vig" oninput="update()" value="0" step="0.01"></td>
-            <td><span class="diff-badge" id="diff-${index}">0%</span></td>
+            <td class="cdn-info"><strong>${it.cdn}</strong><br><small>${it.iface}</small></td>
+            <td><input type="number" class="p-ant" oninput="updateChart()" value="0"></td>
+            <td><input type="number" class="p95-ant" oninput="updateChart()" value="0"></td>
+            <td><input type="number" class="p-vig" oninput="updateChart()" value="0"></td>
+            <td><input type="number" class="p95-vig" oninput="updateChart()" value="0"></td>
+            <td id="diff-${i}">0%</td>
         `;
         body.appendChild(tr);
     });
+    updateChart();
 }
 
-function update() {
-    const rows = document.querySelectorAll("#table-body tr");
-    let labels = [], antData = [], vigData = [];
-    let sumAnt = 0, sumVig = 0, sumP95Vig = 0;
-
-    rows.forEach((row, i) => {
-        const pAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
-        const pVig = parseFloat(row.querySelector('.p-vig').value) || 0;
-        const p95Vig = parseFloat(row.querySelector('.p95-vig').value) || 0;
-        
-        let diff = pAnt > 0 ? ((pVig - pAnt) / pAnt) * 100 : 0;
-        const badge = document.getElementById(`diff-${i}`);
-        badge.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
-        badge.style.color = diff > 0 ? '#ef4444' : '#10b981';
-        badge.style.background = diff > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)';
-
-        sumAnt += pAnt;
-        sumVig += pVig;
-        sumP95Vig += p95Vig;
-        
-        labels.push(`${dataSet[i].cdn} (${dataSet[i].iface})`);
-        antData.push(pAnt);
-        vigData.push(pVig);
+function importFromExcel() {
+    const rawData = document.getElementById('bulk-input').value;
+    const targetClass = document.getElementById('target-col').value;
+    // Separa por quebra de linha ou espaço
+    const values = rawData.split(/[\n\r\t ]+/).filter(v => v !== "").map(v => v.replace(',', '.'));
+    
+    const inputs = document.querySelectorAll(`.${targetClass}`);
+    values.forEach((val, i) => {
+        if (inputs[i]) inputs[i].value = parseFloat(val) || 0;
     });
 
-    const growth = sumAnt > 0 ? ((sumVig - sumAnt) / sumAnt) * 100 : 0;
-    document.getElementById('total-growth').innerText = growth.toFixed(1) + '%';
-    document.getElementById('total-growth').style.color = growth > 0 ? '#ef4444' : '#10b981';
-    document.getElementById('total-gbps').innerText = sumVig.toFixed(2) + " Gbps";
-    document.getElementById('avg-p95').innerText = sumP95Vig.toFixed(2) + " Gbps";
-
-    renderChart(labels, antData, vigData);
+    document.getElementById('bulk-input').value = ""; // limpa
+    updateChart();
 }
 
-function renderChart(labels, past, current) {
+function updateChart() {
+    const rows = document.querySelectorAll("#table-body tr");
+    const labels = [], dataAnt = [], dataVig = [];
+
+    rows.forEach((row, i) => {
+        const vAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
+        const vVig = parseFloat(row.querySelector('.p-vig').value) || 0;
+        
+        // Variação
+        const diffCell = document.getElementById(`diff-${i}`);
+        if (vAnt > 0) {
+            const d = ((vVig - vAnt) / vAnt) * 100;
+            diffCell.innerText = d.toFixed(1) + "%";
+            diffCell.className = d >= 0 ? "diff-pos" : "diff-neg";
+        }
+
+        labels.push(`${interfaces[i].cdn} (${interfaces[i].iface})`);
+        dataAnt.push(vAnt);
+        dataVig.push(vVig);
+    });
+
+    renderChart(labels, dataAnt, dataVig);
+}
+
+function renderChart(labels, ant, vig) {
     const ctx = document.getElementById('mainChart').getContext('2d');
     if (chart) chart.destroy();
 
@@ -259,17 +204,15 @@ function renderChart(labels, past, current) {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Pico Mês Anterior', data: past, backgroundColor: '#475569' },
-                { label: 'Pico Mês Vigente', data: current, backgroundColor: '#3b82f6' }
+                { label: 'Mês Anterior', data: ant, backgroundColor: '#475569', borderRadius: 4 },
+                { label: 'Mês Vigente', data: vig, backgroundColor: '#3b82f6', borderRadius: 4 }
             ]
         },
         options: {
-            indexAxis: 'y', // Barras horizontais para melhor leitura das interfaces
+            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#94a3b8' } }
-            },
+            plugins: { legend: { labels: { color: '#94a3b8' } } },
             scales: {
                 x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
                 y: { ticks: { color: '#94a3b8', font: { size: 10 } } }
@@ -278,11 +221,7 @@ function renderChart(labels, past, current) {
     });
 }
 
-window.onload = () => {
-    initTable();
-    update();
-};
+window.onload = init;
 </script>
-
 </body>
 </html>
