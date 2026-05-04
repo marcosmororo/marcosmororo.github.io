@@ -2,14 +2,13 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Relatório de Performance de Interface | Online Telecom</title>
+    <title>Relatório de Performance NOC | Online Telecom</title>
     <style>
         :root {
             --primary: #002d5b;
             --secondary: #6c757d;
             --danger: #d32f2f;
             --success: #2e7d32;
-            --warning: #f9a825;
             --bg-page: #f4f7f9;
             --border: #e0e0e0;
         }
@@ -17,7 +16,7 @@
         @page { size: A4; margin: 10mm; }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-page);
             margin: 0;
             padding: 20px;
@@ -29,201 +28,121 @@
         .container {
             background: #fff;
             width: 210mm;
-            padding: 40px;
+            padding: 35px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
             box-sizing: border-box;
             border-top: 8px solid var(--primary);
         }
 
-        /* CABEÇALHO PROFISSIONAL */
         header {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
         }
 
-        .brand h1 { margin: 0; color: var(--primary); font-size: 24px; letter-spacing: -0.5px; }
-        .brand p { margin: 5px 0 0; font-size: 12px; color: var(--secondary); font-weight: 600; text-transform: uppercase; }
-
-        .report-info { text-align: right; font-size: 11px; line-height: 1.6; }
-        .report-info b { color: var(--primary); }
+        .brand h1 { margin: 0; color: var(--primary); font-size: 22px; }
+        .report-info { text-align: right; font-size: 11px; }
 
         .section-title {
             font-size: 12px;
             font-weight: 800;
             color: var(--primary);
             text-transform: uppercase;
-            margin: 25px 0 12px;
+            margin: 20px 0 10px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
-
         .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+        /* GRID DE EQUIPAMENTO */
+        .equip-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 10px; font-weight: bold; color: var(--secondary); margin-bottom: 5px; text-transform: uppercase; }
+        .field input, .field select { 
+            padding: 8px; 
+            border: 1px solid var(--border); 
+            border-radius: 4px; 
+            font-size: 13px;
+            outline: none;
+        }
 
         /* TABELA DE INTERFACES */
         .interface-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
             font-size: 13px;
         }
+        .interface-table th { background: #eee; padding: 10px; border: 1px solid var(--border); font-size: 11px; text-align: left; }
+        .interface-table td { border: 1px solid var(--border); padding: 5px; }
+        .interface-table input { width: 100%; border: none; padding: 8px; box-sizing: border-box; }
 
-        .interface-table th {
-            background: #f8f9fa;
-            color: var(--primary);
-            text-align: left;
-            padding: 12px;
-            border: 1px solid var(--border);
-            font-size: 11px;
-        }
+        /* SINAIS */
+        .signal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .signal-card { border: 1px solid var(--border); border-radius: 8px; padding: 15px; }
+        .inicial { border-left: 5px solid var(--danger); }
+        .final { border-left: 5px solid var(--success); }
 
-        .interface-table td {
-            padding: 10px;
-            border: 1px solid var(--border);
-        }
-
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .status-err { background: #ffebee; color: var(--danger); }
-        .status-ok { background: #e8f5e9; color: var(--success); }
-
-        /* CARDS DE SINAL */
-        .signal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
-        .signal-card {
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            background: #fff;
-        }
-
-        .signal-card.inicial { border-left: 5px solid var(--danger); }
-        .signal-card.final { border-left: 5px solid var(--success); }
-
-        .signal-card h3 { margin: 0 0 15px; font-size: 14px; display: flex; justify-content: space-between; }
-
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 10px; font-weight: 700; color: var(--secondary); margin-bottom: 5px; text-transform: uppercase; }
-        .input-group input { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid var(--border); 
-            border-radius: 4px; 
-            box-sizing: border-box;
-            font-family: 'Consolas', monospace;
-            font-weight: bold;
-        }
-
-        /* CLI LOGS */
-        .cli-container {
-            background: #263238;
-            border-radius: 6px;
-            padding: 15px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
-        }
-
+        /* CLI */
+        .cli-container { background: #1e1e1e; border-radius: 6px; padding: 12px; }
         .cli-input {
             width: 100%;
-            min-height: 120px;
+            min-height: 100px;
             background: transparent;
             border: none;
-            color: #eceff1;
-            font-family: 'Consolas', 'Courier New', monospace;
+            color: #00ff00;
+            font-family: 'Consolas', monospace;
             font-size: 12px;
             resize: vertical;
-            outline: none;
-            line-height: 1.6;
         }
 
-        /* EVIDÊNCIAS VERTICAIS */
-        .evidence-box {
-            margin-top: 20px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            overflow: hidden;
-        }
+        /* EVIDÊNCIAS */
+        .evidence-box { border: 1px solid var(--border); border-radius: 6px; margin-top: 15px; overflow: hidden; }
+        .evidence-header { background: #f8f9fa; padding: 8px; font-size: 11px; font-weight: bold; text-align: center; border-bottom: 1px solid var(--border); }
+        .evidence-img { width: 100%; min-height: 150px; display: flex; justify-content: center; padding: 10px; }
+        .evidence-img img { max-width: 100%; height: auto; }
 
-        .evidence-header {
-            background: #f8f9fa;
-            padding: 10px 15px;
-            font-size: 11px;
-            font-weight: bold;
-            border-bottom: 1px solid var(--border);
-            color: var(--secondary);
-        }
-
-        .evidence-img {
-            width: 100%;
-            min-height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fff;
-            padding: 15px;
-            box-sizing: border-box;
-        }
-
-        .evidence-img img { max-width: 100%; height: auto; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-
-        /* BOTÕES FLUTUANTES */
+        /* TOOLBAR */
         .toolbar {
             position: fixed;
-            left: 30px;
-            top: 30px;
+            left: 20px;
+            top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            z-index: 999;
+            gap: 10px;
         }
-
-        .btn {
-            padding: 14px 20px;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            width: 190px;
-            font-size: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            transition: transform 0.2s;
-            text-align: left;
-        }
-        .btn:hover { transform: translateY(-2px); }
+        .btn { padding: 12px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; width: 180px; font-size: 11px; }
         .btn-blue { background: var(--primary); }
         .btn-green { background: var(--success); }
 
         @media print {
             .toolbar, .btn-remove { display: none !important; }
             body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; padding: 0; border: none; }
+            .container { box-shadow: none; width: 100%; border: none; }
             .cli-input { color: #000 !important; }
-            .cli-container { background: #f9f9f9; border: 1px solid #ccc; box-shadow: none; }
-            .section-title { page-break-after: avoid; }
-            .evidence-box { page-break-inside: avoid; }
+            .cli-container { background: #fff; border: 1px solid #ccc; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <button class="btn btn-blue" onclick="addRow()">➕ ADD INTERFACE</button>
-        <button class="btn btn-blue" onclick="document.getElementById('fileAntes').click()">📷 ANEXAR ANTES</button>
-        <button class="btn btn-blue" onclick="document.getElementById('fileDepois').click()">📷 ANEXAR DEPOIS</button>
-        <button class="btn btn-green" onclick="window.print()">📄 FINALIZAR E SALVAR PDF</button>
+        <button class="btn btn-blue" onclick="addRow()">➕ ADD OUTRA INTERFACE</button>
+        <button class="btn btn-blue" onclick="document.getElementById('fileAntes').click()">📷 FOTO DO PROBLEMA</button>
+        <button class="btn btn-blue" onclick="document.getElementById('fileDepois').click()">📷 FOTO DA SOLUÇÃO</button>
+        <button class="btn btn-green" onclick="window.print()">📄 FINALIZAR E SALVAR</button>
 
         <input type="file" id="fileAntes" style="display:none" onchange="previewImg(this, 'imgAntes')">
         <input type="file" id="fileDepois" style="display:none" onchange="previewImg(this, 'imgDepois')">
@@ -232,111 +151,126 @@
     <div class="container">
         <header>
             <div class="brand">
-                <h1>Relatório Técnico de Infraestrutura</h1>
-                <p>Monitoramento e Correção de Camada Física</p>
+                <h1>Relatório de Erros de Equipamento</h1>
+                <p>NOC - Online Telecom</p>
             </div>
             <div class="report-info">
-                <b>ID DO CHAMADO:</b> <input type="text" placeholder="00000" style="border:none; width:60px; font-weight:bold;"><br>
                 <b>DATA:</b> <span id="dataAtual"></span><br>
-                <b>ANALISTA:</b> <input type="text" placeholder="Seu Nome" style="border:none; width:100px;">
+                <b>ANALISTA:</b> <input type="text" placeholder="Nome do Analista" style="border:none; border-bottom:1px solid #eee; font-size:11px;">
             </div>
         </header>
 
-        <div class="section-title">Interfaces Analisadas / Portas com Erro</div>
+        <div class="section-title">Origem do Problema (Equipamento)</div>
+        <div class="equip-grid">
+            <div class="field">
+                <label>Hostname / Nome do Equipamento</label>
+                <input type="text" placeholder="Ex: OLT-SITE-01 ou CORE-INTERNET-02">
+            </div>
+            <div class="field">
+                <label>Tipo de Ativo</label>
+                <select>
+                    <option value="">Selecione...</option>
+                    <option value="olt">OLT (Concentrador Óptico)</option>
+                    <option value="switch">Switch Core / Distribuição</option>
+                    <option value="router">Roteador de Borda / BGP</option>
+                    <option value="radio">Rádio / Enlace PTP</option>
+                    <option value="conversor">Conversor de Mídia</option>
+                    <option value="srv">Servidor / Firewall</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Fabricante</label>
+                <select>
+                    <option value="">Selecione...</option>
+                    <option value="huawei">Huawei</option>
+                    <option value="nokia">Nokia</option>
+                    <option value="cisco">Cisco</option>
+                    <option value="mikrotik">Mikrotik</option>
+                    <option value="datacom">Datacom</option>
+                    <option value="juniper">Juniper</option>
+                    <option value="outro">Outro</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="section-title">Interfaces Taxando Erro</div>
         <table class="interface-table" id="interfaceTable">
             <thead>
                 <tr>
-                    <th width="30%">Interface / Porta</th>
-                    <th width="40%">Descrição do Problema (CRC, Input, Down)</th>
-                    <th width="20%">Status Final</th>
-                    <th width="10%">Ação</th>
+                    <th width="25%">Porta / Slot</th>
+                    <th width="50%">Contadores de Erro (CRC, Input, Giants)</th>
+                    <th width="25%">Status Final</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" placeholder="ex: GigabitEthernet 1/0/1" style="width:95%; border:none;"></td>
-                    <td><input type="text" placeholder="ex: Taxando CRC alto" style="width:95%; border:none;"></td>
+                    <td><input type="text" placeholder="Ex: XGE 0/1/2"></td>
+                    <td><input type="text" placeholder="Ex: 5403 CRC Errors / Incrementando"></td>
                     <td>
-                        <select style="border:none; font-weight:bold;">
-                            <option value="erro" class="status-err">❌ ERRO</option>
-                            <option value="ok" class="status-ok">✅ OK</option>
+                        <select style="width:100%; border:none; padding:8px;">
+                            <option value="fix">✅ CORRIGIDO</option>
+                            <option value="fail">❌ EM ANÁLISE</option>
+                            <option value="monitor">🕒 MONITORAMENTO</option>
                         </select>
                     </td>
-                    <td><button class="btn-remove" onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;">Remover</button></td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="section-title">Comparativo de Potência Óptica (Atenuação)</div>
+        <div class="section-title">Níveis de Sinal (Power Meter / DOM)</div>
         <div class="signal-grid">
             <div class="signal-card inicial">
-                <h3>Cenário Inicial <span class="status-badge status-err">Crítico</span></h3>
-                <div class="input-group">
-                    <label>Potência Rx (dBm)</label>
-                    <input type="text" placeholder="-31.40">
-                </div>
-                <div class="input-group">
-                    <label>Potência Tx (dBm)</label>
-                    <input type="text" placeholder="2.10">
+                <label style="font-size:10px; font-weight:bold; color:var(--danger)">SINAL ANTES</label>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" placeholder="Rx: -28.4" style="width:50%; padding:8px;">
+                    <input type="text" placeholder="Tx: 2.1" style="width:50%; padding:8px;">
                 </div>
             </div>
-
             <div class="signal-card final">
-                <h3>Cenário Pós-Intervenção <span class="status-badge status-ok">Normalizado</span></h3>
-                <div class="input-group">
-                    <label>Potência Rx (dBm)</label>
-                    <input type="text" placeholder="-19.20">
-                </div>
-                <div class="input-group">
-                    <label>Potência Tx (dBm)</label>
-                    <input type="text" placeholder="2.05">
+                <label style="font-size:10px; font-weight:bold; color:var(--success)">SINAL ATUAL</label>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" placeholder="Rx: -19.5" style="width:50%; padding:8px;">
+                    <input type="text" placeholder="Tx: 2.0" style="width:50%; padding:8px;">
                 </div>
             </div>
         </div>
 
-        <div class="section-title">Logs do Terminal (CLI Outputs)</div>
+        <div class="section-title">Logs de Diagnóstico (Command Line)</div>
         <div class="cli-container">
-            <textarea class="cli-input" placeholder="Cole aqui as saídas do console (show interface, show optic, etc...)"></textarea>
+            <textarea class="cli-input" placeholder="Cole aqui o output do console... Ex: display interface..."></textarea>
         </div>
 
-        <div class="section-title">Evidências Visuais Completas</div>
-        
+        <div class="section-title">Evidências Fotográficas</div>
         <div class="evidence-box">
-            <div class="evidence-header">EVIDÊNCIA 01 - REGISTRO DO PROBLEMA (ANTES)</div>
-            <div class="evidence-img" id="imgAntes">
-                <span style="color:#bbb; font-size:12px;">Nenhuma imagem carregada</span>
-            </div>
+            <div class="evidence-header">ANTERIOR (IDENTIFICAÇÃO DA FALHA)</div>
+            <div class="evidence-img" id="imgAntes"><span style="color:#ccc">Imagem não carregada</span></div>
         </div>
-
         <div class="evidence-box">
-            <div class="evidence-header">EVIDÊNCIA 02 - REGISTRO DA SOLUÇÃO (ATUAL)</div>
-            <div class="evidence-img" id="imgDepois">
-                <span style="color:#bbb; font-size:12px;">Nenhuma imagem carregada</span>
-            </div>
+            <div class="evidence-header">ATUAL (PÓS TRATATIVO TÉCNICO)</div>
+            <div class="evidence-img" id="imgDepois"><span style="color:#ccc">Imagem não carregada</span></div>
         </div>
 
-        <footer style="margin-top:40px; text-align:center; font-size:10px; color:#aaa; border-top:1px solid #eee; padding-top:20px;">
-            <b>ONLINE TELECOM - NETWORK OPERATIONS CENTER</b><br>
-            Este documento é confidencial e para uso exclusivo de engenharia de rede.
+        <footer style="margin-top:30px; text-align:center; font-size:10px; color:#aaa;">
+            <b>ONLINE TELECOM</b> - Documento Gerado Via NOC Dashboard
         </footer>
     </div>
 
     <script>
-        document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('dataAtual').innerText = new Date().toLocaleString('pt-BR');
 
         function addRow() {
             const table = document.getElementById('interfaceTable').getElementsByTagName('tbody')[0];
             const newRow = table.insertRow();
             newRow.innerHTML = `
-                <td><input type="text" placeholder="ex: GigabitEthernet 1/0/2" style="width:95%; border:none;"></td>
-                <td><input type="text" placeholder="Problema detectado" style="width:95%; border:none;"></td>
+                <td><input type="text" placeholder="Ex: Port 01"></td>
+                <td><input type="text" placeholder="Descrição do erro"></td>
                 <td>
-                    <select style="border:none; font-weight:bold;">
-                        <option value="erro">❌ ERRO</option>
-                        <option value="ok">✅ OK</option>
+                    <select style="width:100%; border:none; padding:8px;">
+                        <option value="fix">✅ CORRIGIDO</option>
+                        <option value="fail">❌ EM ANÁLISE</option>
+                        <option value="monitor">🕒 MONITORAMENTO</option>
                     </select>
                 </td>
-                <td><button onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;">Remover</button></td>
             `;
         }
 
@@ -344,8 +278,7 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const target = document.getElementById(targetId);
-                    target.innerHTML = `<img src="${e.target.result}">`;
+                    document.getElementById(targetId).innerHTML = `<img src="${e.target.result}">`;
                 };
                 reader.readAsDataURL(input.files[0]);
             }
