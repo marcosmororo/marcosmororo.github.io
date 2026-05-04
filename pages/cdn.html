@@ -13,204 +13,258 @@
             --up: #ef4444;
             --down: #10b981;
             --text: #f1f5f9;
+            --border: #1e293b;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', system-ui, sans-serif; 
             background: var(--bg); 
             color: var(--text); 
+            margin: 0;
             padding: 20px;
         }
 
-        .header-nav { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        .header-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 25px; 
+        }
         
         button {
-            padding: 10px 15px;
+            padding: 10px 16px;
             cursor: pointer;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             background: var(--accent);
             color: #fff;
             font-weight: 600;
+            transition: 0.2s;
         }
 
+        button:hover { filter: brightness(1.1); }
+
+        /* Grid Layout */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
+            grid-template-columns: 1fr;
+            gap: 25px;
         }
 
         .card {
             background: var(--card);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #1e293b;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .table-container { overflow-x: auto; }
+        /* Estilização da Tabela */
+        .table-wrapper { overflow-x: auto; border-radius: 12px; }
         
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #1e293b; padding: 12px; text-align: left; position: sticky; top: 0; }
-        td { padding: 10px; border-bottom: 1px solid #1e293b; }
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        th { 
+            background: #1e293b; 
+            padding: 14px; 
+            text-align: center; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+        }
+        td { 
+            padding: 12px; 
+            border-bottom: 1px solid var(--border); 
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .cdn-name { text-align: left; font-weight: 600; }
+        .cdn-name small { font-weight: normal; color: #64748b; }
 
         input[type="number"] {
-            width: 80px;
-            padding: 5px;
+            width: 85px;
+            padding: 8px;
             background: #020617;
             border: 1px solid #334155;
-            color: #fff;
-            border-radius: 4px;
+            color: #38bdf8;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
         }
 
-        /* Destaque para as colunas do mês atual */
-        .col-atual { background: rgba(59, 130, 246, 0.05); }
+        /* Cores das colunas */
+        .bg-past { background: rgba(255, 255, 255, 0.02); }
+        .bg-current { background: rgba(59, 130, 246, 0.04); }
 
-        .diff { font-weight: bold; font-size: 12px; }
-        .diff-up { color: var(--up); }
-        .diff-down { color: var(--down); }
+        .diff-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 12px;
+        }
 
-        .metrics-summary {
+        /* Gráfico */
+        .chart-section {
+            height: 450px; /* Aumentado para não ficar esmagado */
+            margin-top: 20px;
+        }
+
+        .stats-overview {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        .mini-card {
-            background: #1e293b;
-            padding: 15px;
-            border-radius: 8px;
+        .stat-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
             text-align: center;
         }
 
-        .mini-card small { color: #94a3b8; display: block; margin-bottom: 5px; }
-
-        #graficoComparativo { height: 300px !important; }
+        .stat-card span { color: #94a3b8; font-size: 13px; }
+        .stat-card h2 { margin: 8px 0 0; font-size: 24px; color: var(--accent); }
 
         @media print { .header-nav, button { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="header-nav">
-    <button onclick="window.history.back()">⬅ Voltar</button>
-    <h2>Relatório Comparativo Mensal - CDN</h2>
-    <button onclick="window.print()">Exportar Relatório</button>
-</div>
+<div class="container">
+    <div class="header-nav">
+        <button onclick="window.history.back()" style="background: #334155;">⬅ Voltar</button>
+        <h1 style="font-size: 1.5rem;">Capacity Planning - CDN</h1>
+        <button onclick="window.print()">🖨 Exportar PDF</button>
+    </div>
 
-<div class="dashboard-grid">
-    <div class="card">
-        <h3>Comparativo de Tráfego (Mês Anterior vs Atual)</h3>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>CDN / Interface</th>
-                        <th>Pico Mês Ant.</th>
-                        <th>P95 Mês Ant.</th>
-                        <th class="col-atual">Pico Atual</th>
-                        <th class="col-atual">P95 Atual</th>
-                        <th>Variação Pico</th>
-                    </tr>
-                </thead>
-                <tbody id="corpo-tabela">
-                    <!-- Gerado via JS para facilitar manutenção -->
-                </tbody>
-            </table>
+    <div class="stats-overview">
+        <div class="stat-card">
+            <span>Crescimento de Pico (Geral)</span>
+            <h2 id="total-growth">0%</h2>
+        </div>
+        <div class="stat-card">
+            <span>Maior Consumo Atual</span>
+            <h2 id="top-cdn">--</h2>
+        </div>
+        <div class="stat-card">
+            <span>Total Gbps (Pico Vigente)</span>
+            <h2 id="total-gbps">0.00</h2>
         </div>
     </div>
 
-    <div class="card">
-        <div class="metrics-summary">
-            <div class="mini-card">
-                <small>Crescimento Total</small>
-                <h3 id="crescimento-geral">0%</h3>
-            </div>
-            <div class="mini-card">
-                <small>Maior Delta</small>
-                <h3 id="maior-delta">--</h3>
+    <div class="dashboard-grid">
+        <!-- Tabela de Dados -->
+        <div class="card">
+            <h3>Dados Operacionais (Gbps)</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">CDN / Interface</th>
+                            <th colspan="2" class="bg-past">Mês Anterior</th>
+                            <th colspan="2" class="bg-current">Mês Vigente</th>
+                            <th rowspan="2">Variação (%)</th>
+                        </tr>
+                        <tr>
+                            <th class="bg-past">Consumo Pico</th>
+                            <th class="bg-past">Percentil 95</th>
+                            <th class="bg-current">Consumo Pico</th>
+                            <th class="bg-current">Percentil 95</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Gerado via JS -->
+                    </tbody>
+                </table>
             </div>
         </div>
-        <canvas id="graficoComparativo"></canvas>
-        <div style="margin-top:20px">
-            <h4>Conclusão Técnica</h4>
-            <textarea id="obs" style="width:100%; height:100px; background:#020617; color:#ccc; border:1px solid #334155; border-radius:8px; padding:10px;" placeholder="Digite aqui a análise do aumento de tráfego..."></textarea>
+
+        <!-- Área do Gráfico -->
+        <div class="card">
+            <h3>Comparativo Visual: Pico Mensal</h3>
+            <div class="chart-section">
+                <canvas id="mainChart"></canvas>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-const interfaces = [
-    { cdn: "GOOGLE", iface: "irb.428 (CORE)" },
-    { cdn: "FACEBOOK", iface: "ae6 (CORE)" },
-    { cdn: "NETFLIX", iface: "ae3 (CORE)" },
-    { cdn: "CLOUDFLARE", iface: "ae7 (CORE)" },
-    { cdn: "MICROSOFT", iface: "xe-0/0/30 (CORE)" },
-    { cdn: "GLOBO", iface: "eth-trunk1 (BKB)" }
+const dataSet = [
+    { name: "GOOGLE", info: "irb.428 (CORE)" },
+    { name: "FACEBOOK", info: "ae6 (CORE)" },
+    { name: "NETFLIX", info: "ae3 (CORE)" },
+    { name: "CLOUDFLARE", info: "ae7 (CORE)" },
+    { name: "MICROSOFT", info: "xe-0/0/30 (CORE)" },
+    { name: "GLOBO", info: "eth-trunk1 (BKB)" }
 ];
 
-function inicializarTabela() {
-    const tbody = document.getElementById('corpo-tabela');
-    interfaces.forEach((item, index) => {
+let chart;
+
+function initTable() {
+    const body = document.getElementById('table-body');
+    dataSet.forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><strong>${item.cdn}</strong><br><small>${item.iface}</small></td>
-            <td><input type="number" class="p-ant" oninput="atualizar()" value="0"></td>
-            <td><input type="number" class="p95-ant" oninput="atualizar()" value="0"></td>
-            <td class="col-atual"><input type="number" class="p-atu" oninput="atualizar()" value="0"></td>
-            <td class="col-atual"><input type="number" class="p95-atu" oninput="atualizar()" value="0"></td>
-            <td class="diff">0%</td>
+            <td class="cdn-name">${item.name}<br><small>${item.info}</small></td>
+            <td class="bg-past"><input type="number" class="p-ant" oninput="update()" value="0"></td>
+            <td class="bg-past"><input type="number" class="p95-ant" oninput="update()" value="0"></td>
+            <td class="bg-current"><input type="number" class="p-vig" oninput="update()" value="0"></td>
+            <td class="bg-current"><input type="number" class="p95-vig" oninput="update()" value="0"></td>
+            <td><span class="diff-badge" id="diff-${index}">0%</span></td>
         `;
-        tbody.appendChild(tr);
+        body.appendChild(tr);
     });
 }
 
-let chart;
-function atualizar() {
-    const linhas = document.querySelectorAll("tbody tr");
-    let labels = [];
-    let dadosAnt = [];
-    let dadosAtu = [];
-    let somaAnt = 0;
-    let somaAtu = 0;
-    let maiorCrescimento = { nome: '', valor: 0 };
+function update() {
+    const rows = document.querySelectorAll("#table-body tr");
+    let labels = [], antData = [], vigData = [];
+    let sumAnt = 0, sumVig = 0;
+    let maxVigVal = 0, maxVigName = "";
 
-    linhas.forEach((l, i) => {
-        const pAnt = parseFloat(l.querySelector('.p-ant').value) || 0;
-        const pAtu = parseFloat(l.querySelector('.p-atu').value) || 0;
+    rows.forEach((row, i) => {
+        const pAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
+        const pVig = parseFloat(row.querySelector('.p-vig').value) || 0;
         
-        // Cálculo de variação
-        let diff = 0;
-        if (pAnt > 0) {
-            diff = ((pAtu - pAnt) / pAnt) * 100;
-        }
-        
-        const diffTd = l.querySelector('.diff');
-        diffTd.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
-        diffTd.className = 'diff ' + (diff > 0 ? 'diff-up' : 'diff-down');
+        // Cálculo Variação
+        let diff = pAnt > 0 ? ((pVig - pAnt) / pAnt) * 100 : 0;
+        const badge = document.getElementById(`diff-${i}`);
+        badge.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
+        badge.style.color = diff > 0 ? '#ef4444' : '#10b981';
+        badge.style.background = diff > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)';
 
-        // Dados para métricas globais
-        labels.push(interfaces[i].cdn);
-        dadosAnt.push(pAnt);
-        dadosAtu.push(pAtu);
-        somaAnt += pAnt;
-        somaAtu += pAtu;
+        // Somatórios
+        sumAnt += pAnt;
+        sumVig += pVig;
+        labels.push(dataSet[i].name);
+        antData.push(pAnt);
+        vigData.push(pVig);
 
-        if(diff > maiorCrescimento.valor) {
-            maiorCrescimento = { nome: interfaces[i].cdn, valor: diff };
+        if(pVig > maxVigVal) {
+            maxVigVal = pVig;
+            maxVigName = dataSet[i].name;
         }
     });
 
-    // Atualiza mini cards
-    const totalDiff = somaAnt > 0 ? ((somaAtu - somaAnt) / somaAnt) * 100 : 0;
-    document.getElementById('crescimento-geral').innerText = totalDiff.toFixed(1) + '%';
-    document.getElementById('maior-delta').innerText = maiorCrescimento.nome || '--';
+    // Widgets
+    const growth = sumAnt > 0 ? ((sumVig - sumAnt) / sumAnt) * 100 : 0;
+    document.getElementById('total-growth').innerText = growth.toFixed(1) + '%';
+    document.getElementById('total-growth').style.color = growth > 0 ? '#ef4444' : '#10b981';
+    document.getElementById('top-cdn').innerText = maxVigName || "--";
+    document.getElementById('total-gbps').innerText = sumVig.toFixed(2);
 
-    gerarGrafico(labels, dadosAnt, dadosAtu);
+    renderChart(labels, antData, vigData);
 }
 
-function gerarGrafico(labels, ant, atu) {
-    const ctx = document.getElementById('graficoComparativo').getContext('2d');
+function renderChart(labels, past, current) {
+    const ctx = document.getElementById('mainChart').getContext('2d');
     if (chart) chart.destroy();
 
     chart = new Chart(ctx, {
@@ -218,28 +272,44 @@ function gerarGrafico(labels, ant, atu) {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Mês Anterior', data: ant, backgroundColor: '#475569' },
-                { label: 'Mês Atual', data: atu, backgroundColor: '#3b82f6' }
+                { 
+                    label: 'Mês Anterior (Pico)', 
+                    data: past, 
+                    backgroundColor: '#475569',
+                    borderRadius: 5
+                },
+                { 
+                    label: 'Mês Vigente (Pico)', 
+                    data: current, 
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 5
+                }
             ]
         },
         options: {
-            indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { labels: { color: '#94a3b8' } }
+                legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 12 } } }
             },
             scales: {
-                x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
-                y: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                x: { 
+                    grid: { display: false },
+                    ticks: { color: '#94a3b8' }
+                },
+                y: { 
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#94a3b8' },
+                    title: { display: true, text: 'Gbps', color: '#64748b' }
+                }
             }
         }
     });
 }
 
 window.onload = () => {
-    inicializarTabela();
-    atualizar();
+    initTable();
+    update();
 };
 </script>
 
