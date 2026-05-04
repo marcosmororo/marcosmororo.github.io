@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDN - Planejamento de Capacidade</title>
+    <title>CDN - Capacity Planning ICG</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -41,12 +41,8 @@
             background: var(--accent);
             color: #fff;
             font-weight: 600;
-            transition: 0.2s;
         }
 
-        button:hover { filter: brightness(1.1); }
-
-        /* Grid Layout */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -58,58 +54,59 @@
             padding: 24px;
             border-radius: 16px;
             border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Estilização da Tabela */
-        .table-wrapper { overflow-x: auto; border-radius: 12px; }
+        .table-wrapper { 
+            max-height: 500px; 
+            overflow-y: auto; 
+            border-radius: 12px; 
+        }
         
-        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        
         th { 
             background: #1e293b; 
-            padding: 14px; 
-            text-align: center; 
+            padding: 12px; 
             font-size: 11px; 
             text-transform: uppercase; 
-            letter-spacing: 0.05em;
-            color: #94a3b8;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
+
         td { 
-            padding: 12px; 
+            padding: 10px; 
             border-bottom: 1px solid var(--border); 
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
         }
 
-        .cdn-name { text-align: left; font-weight: 600; }
-        .cdn-name small { font-weight: normal; color: #64748b; }
+        .cdn-name { text-align: left; font-weight: 600; border-left: 4px solid var(--accent); padding-left: 15px; }
+        .cdn-name small { font-weight: normal; color: #64748b; display: block; }
 
         input[type="number"] {
-            width: 85px;
-            padding: 8px;
+            width: 80px;
+            padding: 6px;
             background: #020617;
             border: 1px solid #334155;
             color: #38bdf8;
-            border-radius: 6px;
+            border-radius: 4px;
             text-align: center;
-            font-weight: bold;
         }
 
-        /* Cores das colunas */
         .bg-past { background: rgba(255, 255, 255, 0.02); }
         .bg-current { background: rgba(59, 130, 246, 0.04); }
 
         .diff-badge {
-            display: inline-block;
             padding: 4px 8px;
             border-radius: 6px;
             font-weight: 800;
-            font-size: 12px;
+            font-size: 11px;
         }
 
-        /* Gráfico */
+        /* Ajuste do gráfico para não esmagar */
         .chart-section {
-            height: 450px; /* Aumentado para não ficar esmagado */
+            height: 600px; 
             margin-top: 20px;
         }
 
@@ -128,8 +125,7 @@
             text-align: center;
         }
 
-        .stat-card span { color: #94a3b8; font-size: 13px; }
-        .stat-card h2 { margin: 8px 0 0; font-size: 24px; color: var(--accent); }
+        .stat-card h2 { margin: 8px 0 0; color: var(--accent); }
 
         @media print { .header-nav, button { display: none; } }
     </style>
@@ -139,29 +135,19 @@
 <div class="container">
     <div class="header-nav">
         <button onclick="window.history.back()" style="background: #334155;">⬅ Voltar</button>
-        <h1 style="font-size: 1.5rem;">Capacity Planning - CDN</h1>
-        <button onclick="window.print()">🖨 Exportar PDF</button>
+        <h1>Análise de Capacidade CDN</h1>
+        <button onclick="window.print()">🖨 Gerar Relatório</button>
     </div>
 
     <div class="stats-overview">
-        <div class="stat-card">
-            <span>Crescimento de Pico (Geral)</span>
-            <h2 id="total-growth">0%</h2>
-        </div>
-        <div class="stat-card">
-            <span>Maior Consumo Atual</span>
-            <h2 id="top-cdn">--</h2>
-        </div>
-        <div class="stat-card">
-            <span>Total Gbps (Pico Vigente)</span>
-            <h2 id="total-gbps">0.00</h2>
-        </div>
+        <div class="stat-card"><span>Δ Crescimento Pico</span><h2 id="total-growth">0%</h2></div>
+        <div class="stat-card"><span>Total Pico Vigente</span><h2 id="total-gbps">0.00 Gbps</h2></div>
+        <div class="stat-card"><span>Média P95 Atual</span><h2 id="avg-p95">0.00 Gbps</h2></div>
     </div>
 
     <div class="dashboard-grid">
-        <!-- Tabela de Dados -->
         <div class="card">
-            <h3>Dados Operacionais (Gbps)</h3>
+            <h3>Entrada de Dados por Interface</h3>
             <div class="table-wrapper">
                 <table>
                     <thead>
@@ -169,25 +155,24 @@
                             <th rowspan="2">CDN / Interface</th>
                             <th colspan="2" class="bg-past">Mês Anterior</th>
                             <th colspan="2" class="bg-current">Mês Vigente</th>
-                            <th rowspan="2">Variação (%)</th>
+                            <th rowspan="2">Δ Pico</th>
                         </tr>
                         <tr>
-                            <th class="bg-past">Consumo Pico</th>
-                            <th class="bg-past">Percentil 95</th>
-                            <th class="bg-current">Consumo Pico</th>
-                            <th class="bg-current">Percentil 95</th>
+                            <th class="bg-past">Pico (Gbps)</th>
+                            <th class="bg-past">P95 (Gbps)</th>
+                            <th class="bg-current">Pico (Gbps)</th>
+                            <th class="bg-current">P95 (Gbps)</th>
                         </tr>
                     </thead>
                     <tbody id="table-body">
-                        <!-- Gerado via JS -->
+                        <!-- JS irá popular aqui -->
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- Área do Gráfico -->
         <div class="card">
-            <h3>Comparativo Visual: Pico Mensal</h3>
+            <h3>Comparativo Visual: Capacidade por Interface</h3>
             <div class="chart-section">
                 <canvas id="mainChart"></canvas>
             </div>
@@ -197,12 +182,20 @@
 
 <script>
 const dataSet = [
-    { name: "GOOGLE", info: "irb.428 (CORE)" },
-    { name: "FACEBOOK", info: "ae6 (CORE)" },
-    { name: "NETFLIX", info: "ae3 (CORE)" },
-    { name: "CLOUDFLARE", info: "ae7 (CORE)" },
-    { name: "MICROSOFT", info: "xe-0/0/30 (CORE)" },
-    { name: "GLOBO", info: "eth-trunk1 (BKB)" }
+    { cdn: "GOOGLE", iface: "irb.428" },
+    { cdn: "GOOGLE", iface: "irb.400" },
+    { cdn: "GOOGLE", iface: "et-0/0/54" },
+    { cdn: "FACEBOOK", iface: "ae6" },
+    { cdn: "FACEBOOK", iface: "ae8" },
+    { cdn: "NETFLIX", iface: "ae0" },
+    { cdn: "NETFLIX", iface: "ae3" },
+    { cdn: "NETFLIX", iface: "ae4" },
+    { cdn: "NETFLIX", iface: "ae5" },
+    { cdn: "CLOUDFLARE", iface: "ae7" },
+    { cdn: "MICROSOFT CACHE", iface: "xe-0/0/30" },
+    { cdn: "GLOBO", iface: "ae1" },
+    { cdn: "GLOBO", iface: "eth-trunk1" },
+    { cdn: "GLOBO", iface: "eth-trunk3" }
 ];
 
 let chart;
@@ -212,11 +205,11 @@ function initTable() {
     dataSet.forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="cdn-name">${item.name}<br><small>${item.info}</small></td>
-            <td class="bg-past"><input type="number" class="p-ant" oninput="update()" value="0"></td>
-            <td class="bg-past"><input type="number" class="p95-ant" oninput="update()" value="0"></td>
-            <td class="bg-current"><input type="number" class="p-vig" oninput="update()" value="0"></td>
-            <td class="bg-current"><input type="number" class="p95-vig" oninput="update()" value="0"></td>
+            <td class="cdn-name">${item.cdn}<small>${item.iface}</small></td>
+            <td class="bg-past"><input type="number" class="p-ant" oninput="update()" value="0" step="0.01"></td>
+            <td class="bg-past"><input type="number" class="p95-ant" oninput="update()" value="0" step="0.01"></td>
+            <td class="bg-current"><input type="number" class="p-vig" oninput="update()" value="0" step="0.01"></td>
+            <td class="bg-current"><input type="number" class="p95-vig" oninput="update()" value="0" step="0.01"></td>
             <td><span class="diff-badge" id="diff-${index}">0%</span></td>
         `;
         body.appendChild(tr);
@@ -226,39 +219,33 @@ function initTable() {
 function update() {
     const rows = document.querySelectorAll("#table-body tr");
     let labels = [], antData = [], vigData = [];
-    let sumAnt = 0, sumVig = 0;
-    let maxVigVal = 0, maxVigName = "";
+    let sumAnt = 0, sumVig = 0, sumP95Vig = 0;
 
     rows.forEach((row, i) => {
         const pAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
         const pVig = parseFloat(row.querySelector('.p-vig').value) || 0;
+        const p95Vig = parseFloat(row.querySelector('.p95-vig').value) || 0;
         
-        // Cálculo Variação
         let diff = pAnt > 0 ? ((pVig - pAnt) / pAnt) * 100 : 0;
         const badge = document.getElementById(`diff-${i}`);
         badge.innerText = (diff > 0 ? '+' : '') + diff.toFixed(1) + '%';
         badge.style.color = diff > 0 ? '#ef4444' : '#10b981';
         badge.style.background = diff > 0 ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)';
 
-        // Somatórios
         sumAnt += pAnt;
         sumVig += pVig;
-        labels.push(dataSet[i].name);
+        sumP95Vig += p95Vig;
+        
+        labels.push(`${dataSet[i].cdn} (${dataSet[i].iface})`);
         antData.push(pAnt);
         vigData.push(pVig);
-
-        if(pVig > maxVigVal) {
-            maxVigVal = pVig;
-            maxVigName = dataSet[i].name;
-        }
     });
 
-    // Widgets
     const growth = sumAnt > 0 ? ((sumVig - sumAnt) / sumAnt) * 100 : 0;
     document.getElementById('total-growth').innerText = growth.toFixed(1) + '%';
     document.getElementById('total-growth').style.color = growth > 0 ? '#ef4444' : '#10b981';
-    document.getElementById('top-cdn').innerText = maxVigName || "--";
-    document.getElementById('total-gbps').innerText = sumVig.toFixed(2);
+    document.getElementById('total-gbps').innerText = sumVig.toFixed(2) + " Gbps";
+    document.getElementById('avg-p95').innerText = sumP95Vig.toFixed(2) + " Gbps";
 
     renderChart(labels, antData, vigData);
 }
@@ -272,36 +259,20 @@ function renderChart(labels, past, current) {
         data: {
             labels: labels,
             datasets: [
-                { 
-                    label: 'Mês Anterior (Pico)', 
-                    data: past, 
-                    backgroundColor: '#475569',
-                    borderRadius: 5
-                },
-                { 
-                    label: 'Mês Vigente (Pico)', 
-                    data: current, 
-                    backgroundColor: '#3b82f6',
-                    borderRadius: 5
-                }
+                { label: 'Pico Mês Anterior', data: past, backgroundColor: '#475569' },
+                { label: 'Pico Mês Vigente', data: current, backgroundColor: '#3b82f6' }
             ]
         },
         options: {
+            indexAxis: 'y', // Barras horizontais para melhor leitura das interfaces
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top', labels: { color: '#94a3b8', font: { size: 12 } } }
+                legend: { position: 'bottom', labels: { color: '#94a3b8' } }
             },
             scales: {
-                x: { 
-                    grid: { display: false },
-                    ticks: { color: '#94a3b8' }
-                },
-                y: { 
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#94a3b8' },
-                    title: { display: true, text: 'Gbps', color: '#64748b' }
-                }
+                x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                y: { ticks: { color: '#94a3b8', font: { size: 10 } } }
             }
         }
     });
