@@ -1,150 +1,196 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>CDN - NOC Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-body { font-family: 'Segoe UI', Arial; background:#020617; color:#e2e8f0; padding:20px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CDN - NOC Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #f1f5f9;
+        }
 
-h2 { margin-bottom:10px; }
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
 
-button {
-    padding:8px 14px;
-    margin:5px;
-    cursor:pointer;
-    border:none;
-    border-radius:6px;
-    background:#2563eb;
-    color:#fff;
-}
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-button:hover { background:#1d4ed8; }
+        button {
+            padding: 10px 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 600;
+            transition: 0.2s;
+        }
 
-.table-container {
-    max-height:320px;
-    overflow-y:auto;
-    border:1px solid #1e293b;
-    border-radius:8px;
-}
+        button:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn-secondary { background: #334155; }
 
-table {
-    width:100%;
-    border-collapse: collapse;
-}
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
 
-th, td {
-    border:1px solid #1e293b;
-    padding:8px;
-    text-align:center;
-    font-size:13px;
-}
+        .card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-th {
-    background:#020617;
-    position:sticky;
-    top:0;
-    z-index:2;
-}
+        .table-container {
+            max-height: 450px;
+            overflow-y: auto;
+            border-radius: 8px;
+            background: #020617;
+        }
 
-input {
-    width:80px;
-    padding:4px;
-    background:#020617;
-    border:1px solid #334155;
-    color:#fff;
-}
+        table { width: 100%; border-collapse: collapse; text-align: left; }
+        th { 
+            background: #111827; 
+            padding: 12px; 
+            font-size: 12px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+        }
+        td { padding: 10px; border-bottom: 1px solid #1e293b; }
 
-.card {
-    background:#020617;
-    border:1px solid #1e293b;
-    padding:15px;
-    border-radius:10px;
-    margin-top:15px;
-}
+        input[type="number"] {
+            width: 70px;
+            padding: 6px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: var(--success);
+            border-radius: 4px;
+            font-weight: bold;
+        }
 
-.grid {
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap:10px;
-}
+        .metrics-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-.metric {
-    background:#020617;
-    border:1px solid #334155;
-    padding:10px;
-    border-radius:8px;
-}
+        .metric-card {
+            background: var(--card);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+        }
 
-.metric span {
-    font-size:12px;
-    color:#94a3b8;
-}
+        .metric-card span { font-size: 12px; color: #94a3b8; display: block; }
+        .metric-card h3 { margin: 5px 0 0; font-size: 1.4rem; }
 
-.metric h3 {
-    margin:5px 0;
-}
+        #chart-container { height: 300px; margin-top: 20px; }
 
-#grafico {
-    max-height:220px !important;
-}
+        textarea {
+            width: 100%;
+            height: 80px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #fff;
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px;
+            resize: none;
+        }
 
-textarea {
-    width:100%;
-    height:70px;
-    background:#020617;
-    border:1px solid #334155;
-    color:#fff;
-}
+        .badge {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            background: #334155;
+        }
 
-.alerta { color:#ef4444; font-weight:bold; }
-</style>
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            .header-nav, button, textarea { display: none; }
+            body { background: white; color: black; }
+            .card { border: 1px solid #ccc; }
+        }
+    </style>
 </head>
 <body>
 
-<button onclick="voltar()">⬅ Voltar</button>
-<h2>CDN - Consumo (Gbps)</h2>
-
-<div class="table-container">
-<table id="tabela">
-<thead>
-<tr>
-<th>CDN</th>
-<th>Interface</th>
-<th>Equipamento</th>
-<th>Atual (Gbps)</th>
-<th>Pico (Gbps)</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>GOOGLE</td><td>irb.428</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>GOOGLE</td><td>irb.400</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>GOOGLE</td><td>et-0/0/54</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>FACEBOOK</td><td>ae6</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>FACEBOOK</td><td>ae8</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>NETFLIX</td><td>ae0</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>NETFLIX</td><td>ae3</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>NETFLIX</td><td>ae4</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>NETFLIX</td><td>ae5</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>CLOUDFLARE</td><td>ae7</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>MICROSOFT</td><td>xe-0/0/30</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>GLOBO</td><td>ae1</td><td>CORE</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk1</td><td>BKB</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-<tr><td>GLOBO</td><td>eth-trunk3</td><td>BKB</td><td><input type="number" step="0.01"></td><td><input type="number" step="0.01"></td></tr>
-</tbody>
-</table>
+<div class="header-nav">
+    <button class="btn-secondary" onclick="voltar()">⬅ Voltar ao Hub</button>
+    <div>
+        <button onclick="window.print()">🖨 Exportar Relatório</button>
+    </div>
 </div>
 
-<button onclick="calcular()">Atualizar Métricas</button>
-<button onclick="window.print()">Exportar PDF</button>
+<div class="metrics-bar" id="metricas">
+    <!-- Gerado via JS -->
+</div>
 
-<div class="grid" id="metricas"></div>
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Entrada de Dados por Interface</h3>
+        <div class="table-container">
+            <table id="tabela-cdn">
+                <thead>
+                    <tr>
+                        <th>CDN</th>
+                        <th>Interface / Equip</th>
+                        <th>Atual (Gbps)</th>
+                        <th>Pico (Gbps)</th>
+                        <th>Carga</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Os dados podem ser carregados de um JSON no futuro -->
+                    <tr data-cdn="GOOGLE"><td>GOOGLE</td><td><small>irb.428 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="GOOGLE"><td>GOOGLE</td><td><small>irb.400 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="FACEBOOK"><td>FACEBOOK</td><td><small>ae6 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="NETFLIX"><td>NETFLIX</td><td><small>ae3 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="NETFLIX"><td>NETFLIX</td><td><small>ae5 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="CLOUDFLARE"><td>CLOUDFLARE</td><td><small>ae7 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="MICROSOFT"><td>MICROSOFT</td><td><small>xe-0/0/30 (CORE)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                    <tr data-cdn="GLOBO"><td>GLOBO</td><td><small>eth-trunk1 (BKB)</small></td><td><input type="number" oninput="calcular()" value="0"></td><td><input type="number" value="0"></td><td><span class="badge">0%</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<canvas id="grafico"></canvas>
-
-<div class="card">
-<h3>Comentários Operacionais</h3>
-<textarea placeholder="Ex: pico alto em Netflix devido a evento..."></textarea>
+    <div class="card">
+        <h3>Consumo por Provedor</h3>
+        <div id="chart-container">
+            <canvas id="grafico"></canvas>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <h3>Notas do Plantão</h3>
+            <textarea placeholder="Relate instabilidades ou manutenções programadas..."></textarea>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -152,69 +198,70 @@ let chart;
 
 function calcular() {
     const linhas = document.querySelectorAll("tbody tr");
-    let atuais = [];
-    let total = 0;
-    let picoMax = 0;
+    let totalGbps = 0;
+    let maxPico = 0;
+    let cdnAgrupado = {};
 
     linhas.forEach(l => {
-        const atual = parseFloat(l.cells[3].children[0].value) || 0;
-        const pico = parseFloat(l.cells[4].children[0].value) || 0;
+        const cdnNome = l.getAttribute('data-cdn');
+        const atual = parseFloat(l.cells[2].children[0].value) || 0;
+        const pico = parseFloat(l.cells[3].children[0].value) || 0;
+        
+        totalGbps += atual;
+        if(pico > maxPico) maxPico = pico;
 
-        atuais.push(atual);
-        total += atual;
+        // Agrupamento para o gráfico
+        cdnAgrupado[cdnNome] = (cdnAgrupado[cdnNome] || 0) + atual;
 
-        if (pico > picoMax) picoMax = pico;
+        // Update percentual simples (ex: base 100G)
+        let percent = ((atual / 100) * 100).toFixed(0);
+        l.cells[4].innerHTML = `<span class="badge" style="color:${percent > 80 ? '#ef4444' : '#10b981'}">${percent}%</span>`;
     });
 
-    let maxAtual = Math.max(...atuais);
-    let idx = atuais.indexOf(maxAtual);
-    let iface = linhas[idx].cells[1].innerText;
-
-    atuais.sort((a,b)=>a-b);
-    let p95 = atuais[Math.floor(atuais.length * 0.95)] || 0;
-
-    document.getElementById("metricas").innerHTML = `
-        <div class="metric"><span>Total</span><h3>${total.toFixed(2)} Gbps</h3></div>
-        <div class="metric"><span>Maior Interface</span><h3>${iface}</h3></div>
-        <div class="metric"><span>Uso Máximo</span><h3>${maxAtual.toFixed(2)} Gbps</h3></div>
-        <div class="metric"><span>Pico Geral</span><h3>${picoMax.toFixed(2)} Gbps</h3></div>
-        <div class="metric"><span>P95</span><h3>${p95.toFixed(2)} Gbps</h3></div>
-    `;
-
-    gerarGrafico(linhas);
+    renderMetrics(totalGbps, maxPico);
+    renderChart(cdnAgrupado);
 }
 
-function gerarGrafico(linhas) {
-    const labels = [];
-    const dados = [];
+function renderMetrics(total, pico) {
+    const container = document.getElementById("metricas");
+    container.innerHTML = `
+        <div class="metric-card"><span>Throughput Total</span><h3>${total.toFixed(2)} Gbps</h3></div>
+        <div class="metric-card" style="border-color:var(--warning)"><span>Pico Registrado</span><h3>${pico.toFixed(2)} Gbps</h3></div>
+        <div class="metric-card" style="border-color:var(--success)"><span>Status Rede</span><h3>Operacional</h3></div>
+    `;
+}
 
-    linhas.forEach(l => {
-        labels.push(l.cells[1].innerText);
-        dados.push(parseFloat(l.cells[3].children[0].value) || 0);
-    });
+function renderChart(dadosAgrupados) {
+    const ctx = document.getElementById("grafico").getContext('2d');
+    const labels = Object.keys(dadosAgrupados);
+    const valores = Object.values(dadosAgrupados);
 
     if (chart) chart.destroy();
 
-    chart = new Chart(document.getElementById("grafico"), {
-        type: 'bar',
+    chart = new Chart(ctx, {
+        type: 'doughnut',
         data: {
             labels: labels,
-            datasets: [{ data: dados }]
+            datasets: [{
+                data: valores,
+                backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4'],
+                borderWidth: 0
+            }]
         },
         options: {
             responsive: true,
-            plugins: { legend: { display:false } },
-            scales: {
-                x: { ticks: { color:'#94a3b8' } },
-                y: { ticks: { color:'#94a3b8' } }
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 10 } } }
             }
         }
     });
 }
 
-function voltar() {
-    window.location.href = "icg.html";
-}
+function voltar() { window.location.href = "icg.html"; }
+
+// Inicialização
+window.onload = calcular;
 </script>
 
 </body>
