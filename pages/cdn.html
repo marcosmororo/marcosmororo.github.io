@@ -3,131 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CDN Capacity - Pico & P95</title>
+    <title>ICG - Intelligence CDN Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg: #020617;
             --card: #0f172a;
             --accent: #3b82f6;
-            --p95-color: #8b5cf6;
+            --p95: #8b5cf6;
+            --danger: #ef4444;
             --success: #10b981;
-            --text: #f1f5f9;
+            --text: #f8fafc;
             --border: #1e293b;
         }
 
         body { 
-            font-family: 'Inter', sans-serif; 
+            font-family: 'Inter', system-ui, sans-serif; 
             background: var(--bg); color: var(--text); 
             margin: 0; padding: 20px; 
         }
 
-        .container { max-width: 1500px; margin: 0 auto; }
+        .container { max-width: 1600px; margin: 0 auto; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 550px; gap: 20px; }
-
-        .card { 
-            background: var(--card); padding: 20px; 
-            border-radius: 12px; border: 1px solid var(--border); 
-        }
-
-        /* Tabela Otimizada */
-        .table-wrapper { max-height: 450px; overflow-y: auto; margin-bottom: 15px; border-radius: 8px;}
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th { background: #1e293b; padding: 12px; position: sticky; top: 0; z-index: 5; text-transform: uppercase;}
-        td { padding: 8px; border-bottom: 1px solid var(--border); text-align: center; }
+        /* Header & Insight Cards */
+        .top-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px; }
         
-        .cdn-info { text-align: left; border-left: 3px solid var(--accent); padding-left: 10px; }
+        .stat-card { 
+            background: var(--card); padding: 20px; border-radius: 12px; 
+            border: 1px solid var(--border); position: relative; overflow: hidden;
+        }
+        .stat-card h3 { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; margin: 0; }
+        .stat-card .value { font-size: 1.8rem; font-weight: 800; margin: 10px 0; }
+        .stat-card .sub-value { font-size: 0.85rem; font-weight: 500; }
+
+        /* Grid Principal */
+        .main-grid { display: grid; grid-template-columns: 1fr 600px; gap: 20px; }
+
+        .card { background: var(--card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); }
+
+        /* Estilo da Tabela */
+        .table-container { max-height: 400px; overflow-y: auto; margin-bottom: 20px; border-radius: 8px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; }
+        th { background: #1e293b; padding: 12px; position: sticky; top: 0; z-index: 10; color: #cbd5e1; }
+        td { padding: 10px; border-bottom: 1px solid var(--border); }
         
-        input[type="number"] {
-            width: 65px; padding: 5px; background: #020617;
-            border: 1px solid #334155; color: #fff; border-radius: 4px;
+        .cdn-cell { text-align: left; font-weight: 600; padding-left: 15px; }
+        .cdn-cell small { color: #64748b; display: block; font-weight: normal; }
+
+        input {
+            width: 65px; padding: 6px; background: #020617; border: 1px solid #334155; 
+            color: #fff; border-radius: 6px; text-align: center; font-weight: 600;
         }
 
-        /* Área de Colagem do Excel */
-        .import-area {
-            display: flex; gap: 10px; align-items: center;
-            background: rgba(59, 130, 246, 0.05); padding: 15px; border-radius: 8px;
-            border: 1px solid var(--border);
+        /* Bulk Import */
+        .import-box { 
+            display: flex; gap: 10px; background: rgba(59, 130, 246, 0.05); 
+            padding: 15px; border-radius: 10px; border: 1px dashed var(--accent);
         }
+        textarea { flex: 1; height: 40px; background: #020617; border: 1px solid #334155; color: var(--success); padding: 10px; border-radius: 6px; resize: none; font-size: 12px; }
+        
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
 
-        textarea {
-            flex-grow: 1; height: 45px; background: #020617;
-            border: 1px solid #334155; color: var(--success);
-            padding: 10px; border-radius: 6px; font-size: 12px; resize: none;
-        }
+        /* Badge de Valor do Aumento */
+        .increase-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
+        .tag-up { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .tag-down { background: rgba(16, 185, 129, 0.1); color: var(--success); }
 
-        select { padding: 10px; background: #1e293b; color: #fff; border-radius: 6px; border: 1px solid #334155; cursor: pointer; }
+        .chart-wrapper { height: 650px; }
 
-        .btn {
-            padding: 10px 20px; cursor: pointer; border: none;
-            border-radius: 6px; background: var(--accent); color: #fff; font-weight: bold;
-            transition: 0.2s;
-        }
-        .btn:hover { filter: brightness(1.2); }
-
-        .chart-container { height: 700px; position: relative; }
-
-        .diff-pos { color: #ef4444; font-weight: bold; font-size: 10px; }
-        .diff-neg { color: #10b981; font-weight: bold; font-size: 10px; }
-
-        @media (max-width: 1200px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 1200px) { .main-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <div>
-            <h1 style="margin:0">Dashboard CDN</h1>
-            <p style="color:#94a3b8; margin:5px 0 0">Comparativo Mensal de Capacidade (Gbps)</p>
+    <div class="top-row">
+        <div class="stat-card">
+            <h3>Δ Aumento Real (Pico)</h3>
+            <div id="total-diff-val" class="value">0.00 Gbps</div>
+            <div id="total-diff-perc" class="sub-value">0% em relação ao mês anterior</div>
         </div>
-        <button class="btn" onclick="window.print()">Gerar Relatório PDF</button>
+        <div class="stat-card">
+            <h3>Throughput Pico Total</h3>
+            <div id="total-vig-val" class="value">0.00 Gbps</div>
+            <div class="sub-value" style="color:var(--accent)">Consumo vigente somado</div>
+        </div>
+        <div class="stat-card">
+            <h3>Eficiência P95/Pico</h3>
+            <div id="p95-efficiency" class="value">0%</div>
+            <div class="sub-value" style="color:var(--p95)">Média de ocupação constante</div>
+        </div>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="left-col">
+    <div class="main-grid">
+        <div class="left">
             <div class="card">
-                <div class="table-wrapper">
+                <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>CDN / Interface</th>
+                                <th>Interface</th>
                                 <th>Pico Ant.</th>
                                 <th>P95 Ant.</th>
                                 <th>Pico Vig.</th>
                                 <th>P95 Vig.</th>
-                                <th>Δ Pico</th>
-                                <th>Δ P95</th>
+                                <th>Aumento Real</th>
                             </tr>
                         </thead>
                         <tbody id="table-body"></tbody>
                     </table>
                 </div>
 
-                <!-- Importador Excel -->
-                <div class="import-area">
-                    <div style="font-size: 11px; color: var(--accent); width: 140px; font-weight: bold;">
-                        📥 COLAR DO EXCEL:
-                    </div>
-                    <textarea id="bulk-input" placeholder="Cole a coluna de valores aqui..."></textarea>
-                    <select id="target-col">
-                        <option value="p-ant">Pico Anterior</option>
-                        <option value="p95-ant">P95 Anterior</option>
-                        <option value="p-vig">Pico Vigente</option>
-                        <option value="p95-vig">P95 Vigente</option>
+                <div class="import-box">
+                    <textarea id="bulk-input" placeholder="Cole a coluna do Excel aqui..."></textarea>
+                    <select id="target-col" style="padding:10px; background:#1e293b; color:#fff; border-radius:8px; border:none;">
+                        <option value="p-ant">Pico Ant.</option>
+                        <option value="p95-ant">P95 Ant.</option>
+                        <option value="p-vig">Pico Vig.</option>
+                        <option value="p95-vig">P95 Vig.</option>
                     </select>
-                    <button class="btn" onclick="importFromExcel()" style="background: var(--success);">Processar Coluna</button>
+                    <button class="btn" onclick="importExcel()">Importar</button>
                 </div>
             </div>
         </div>
 
-        <!-- Gráfico -->
         <div class="card">
-            <h3>Visão Geral: Pico vs Percentil 95</h3>
-            <div class="chart-container">
+            <h3>Distribuição de Tráfego e Capacidade</h3>
+            <div class="chart-wrapper">
                 <canvas id="mainChart"></canvas>
             </div>
         </div>
@@ -136,84 +139,79 @@
 
 <script>
 const interfaces = [
-    { cdn: "GOOGLE", iface: "irb.428" }, { cdn: "GOOGLE", iface: "irb.400" }, { cdn: "GOOGLE", iface: "et-0/0/54" },
-    { cdn: "FACEBOOK", iface: "ae6" }, { cdn: "FACEBOOK", iface: "ae8" },
-    { cdn: "NETFLIX", iface: "ae0" }, { cdn: "NETFLIX", iface: "ae3" }, { cdn: "NETFLIX", iface: "ae4" }, { cdn: "NETFLIX", iface: "ae5" },
-    { cdn: "CLOUDFLARE", iface: "ae7" }, { cdn: "MICROSOFT", iface: "xe-0/0/30" },
-    { cdn: "GLOBO", iface: "ae1" }, { cdn: "GLOBO", iface: "eth-trunk1" }, { cdn: "GLOBO", iface: "eth-trunk3" }
+    { c: "GOOGLE", i: "irb.428" }, { c: "GOOGLE", i: "irb.400" }, { c: "GOOGLE", i: "et-0/0/54" },
+    { c: "FACEBOOK", i: "ae6" }, { c: "FACEBOOK", i: "ae8" },
+    { c: "NETFLIX", i: "ae0" }, { c: "NETFLIX", i: "ae3" }, { c: "NETFLIX", i: "ae4" }, { c: "NETFLIX", i: "ae5" },
+    { c: "CLOUDFLARE", i: "ae7" }, { c: "MICROSOFT", i: "xe-0/0/30" },
+    { c: "GLOBO", i: "ae1" }, { c: "GLOBO", i: "eth-trunk1" }, { c: "GLOBO", i: "eth-trunk3" }
 ];
 
 let chart;
 
 function init() {
     const body = document.getElementById('table-body');
-    interfaces.forEach((it, i) => {
+    interfaces.forEach((it, idx) => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td class="cdn-info"><strong>${it.cdn}</strong><br><small>${it.iface}</small></td>
-            <td><input type="number" class="p-ant" oninput="updateChart()" value="0" step="0.01"></td>
-            <td><input type="number" class="p95-ant" oninput="updateChart()" value="0" step="0.01"></td>
-            <td><input type="number" class="p-vig" oninput="updateChart()" value="0" step="0.01"></td>
-            <td><input type="number" class="p95-vig" oninput="updateChart()" value="0" step="0.01"></td>
-            <td id="diff-pico-${i}" class="diff-pos">0%</td>
-            <td id="diff-p95-${i}" class="diff-pos">0%</td>
+            <td class="cdn-cell">${it.c}<small>${it.i}</small></td>
+            <td><input type="number" class="p-ant" oninput="update()" value="0" step="0.01"></td>
+            <td><input type="number" class="p95-ant" oninput="update()" value="0" step="0.01"></td>
+            <td><input type="number" class="p-vig" oninput="update()" value="0" step="0.01"></td>
+            <td><input type="number" class="p95-vig" oninput="update()" value="0" step="0.01"></td>
+            <td id="row-gain-${idx}">---</td>
         `;
         body.appendChild(tr);
     });
-    updateChart();
+    update();
 }
 
-function importFromExcel() {
-    const rawData = document.getElementById('bulk-input').value;
-    const targetClass = document.getElementById('target-col').value;
-    const values = rawData.split(/[\n\r\t ]+/).filter(v => v !== "").map(v => v.replace(',', '.'));
-    
-    const inputs = document.querySelectorAll(`.${targetClass}`);
-    values.forEach((val, i) => {
-        if (inputs[i]) inputs[i].value = parseFloat(val) || 0;
-    });
-
+function importExcel() {
+    const raw = document.getElementById('bulk-input').value;
+    const target = document.getElementById('target-col').value;
+    const vals = raw.split(/[\n\r\t ]+/).filter(v => v !== "").map(v => v.replace(',', '.'));
+    const inputs = document.querySelectorAll(`.${target}`);
+    vals.forEach((v, i) => { if (inputs[i]) inputs[i].value = parseFloat(v) || 0; });
     document.getElementById('bulk-input').value = "";
-    updateChart();
+    update();
 }
 
-function updateChart() {
+function update() {
     const rows = document.querySelectorAll("#table-body tr");
-    const labels = [], pAnt = [], p95Ant = [], pVig = [], p95Vig = [];
+    let labels = [], dataAnt = [], dataVig = [], dataP95 = [];
+    let sumAnt = 0, sumVig = 0, sumP95 = 0;
 
     rows.forEach((row, i) => {
-        const vPAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
-        const vP95Ant = parseFloat(row.querySelector('.p95-ant').value) || 0;
-        const vPVig = parseFloat(row.querySelector('.p-vig').value) || 0;
-        const vP95Vig = parseFloat(row.querySelector('.p95-vig').value) || 0;
+        const vAnt = parseFloat(row.querySelector('.p-ant').value) || 0;
+        const vVig = parseFloat(row.querySelector('.p-vig').value) || 0;
+        const vP95 = parseFloat(row.querySelector('.p95-vig').value) || 0;
+
+        const gainVal = vVig - vAnt;
+        const gainPerc = vAnt > 0 ? (gainVal / vAnt) * 100 : 0;
         
-        // Cálculo Variação Pico
-        const diffPico = document.getElementById(`diff-pico-${i}`);
-        if (vPAnt > 0) {
-            const d = ((vPVig - vPAnt) / vPAnt) * 100;
-            diffPico.innerText = (d > 0 ? '+' : '') + d.toFixed(1) + "%";
-            diffPico.className = d >= 0 ? "diff-pos" : "diff-neg";
-        }
+        const gainCell = document.getElementById(`row-gain-${i}`);
+        gainCell.innerHTML = `<span style="color:${gainVal >= 0 ? 'var(--danger)' : 'var(--success)'}">
+            ${gainVal >= 0 ? '+' : ''}${gainVal.toFixed(2)}G
+            <span class="increase-tag ${gainVal >= 0 ? 'tag-up' : 'tag-down'}">${gainPerc.toFixed(1)}%</span>
+        </span>`;
 
-        // Cálculo Variação P95
-        const diffP95 = document.getElementById(`diff-p95-${i}`);
-        if (vP95Ant > 0) {
-            const d = ((vP95Vig - vP95Ant) / vP95Ant) * 100;
-            diffP95.innerText = (d > 0 ? '+' : '') + d.toFixed(1) + "%";
-            diffP95.className = d >= 0 ? "diff-pos" : "diff-neg";
-        }
-
-        labels.push(`${interfaces[i].cdn} (${interfaces[i].iface})`);
-        pAnt.push(vPAnt);
-        p95Ant.push(vP95Ant);
-        pVig.push(vPVig);
-        p95Vig.push(vP95Vig);
+        sumAnt += vAnt; sumVig += vVig; sumP95 += vP95;
+        labels.push(`${interfaces[i].c} (${interfaces[i].i})`);
+        dataAnt.push(vAnt); dataVig.push(vVig); dataP95.push(vP95);
     });
 
-    renderChart(labels, pAnt, p95Ant, pVig, p95Vig);
+    // Top Cards
+    const totalGain = sumVig - sumAnt;
+    const totalPerc = sumAnt > 0 ? (totalGain / sumAnt) * 100 : 0;
+    document.getElementById('total-diff-val').innerText = `${totalGain.toFixed(2)} Gbps`;
+    document.getElementById('total-diff-val').style.color = totalGain >= 0 ? 'var(--danger)' : 'var(--success)';
+    document.getElementById('total-diff-perc').innerText = `${totalPerc.toFixed(1)}% de variação na rede`;
+    document.getElementById('total-vig-val').innerText = `${sumVig.toFixed(2)} Gbps`;
+    document.getElementById('p95-efficiency').innerText = `${sumVig > 0 ? ((sumP95 / sumVig) * 100).toFixed(1) : 0}%`;
+
+    renderChart(labels, dataAnt, dataVig, dataP95);
 }
 
-function renderChart(labels, pAnt, p95Ant, pVig, p95Vig) {
+function renderChart(labels, ant, vig, p95) {
     const ctx = document.getElementById('mainChart').getContext('2d');
     if (chart) chart.destroy();
 
@@ -222,32 +220,22 @@ function renderChart(labels, pAnt, p95Ant, pVig, p95Vig) {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Pico Ant.', data: pAnt, backgroundColor: '#475569', borderRadius: 3 },
-                { label: 'P95 Ant.', data: p95Ant, backgroundColor: '#1e293b', borderRadius: 3, hidden: true }, // Inicialmente oculto para não poluir
-                { label: 'Pico Vig.', data: pVig, backgroundColor: '#3b82f6', borderRadius: 3 },
-                { label: 'P95 Vig.', data: p95Vig, backgroundColor: '#8b5cf6', borderRadius: 3 }
+                { label: 'Pico Vigente', data: vig, backgroundColor: 'rgba(59, 130, 246, 0.8)', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4, stack: 'vig' },
+                { label: 'P95 Vigente (Ocupação)', data: p95, backgroundColor: 'rgba(139, 92, 246, 0.5)', borderColor: '#8b5cf6', borderWidth: 1, borderRadius: 4, stack: 'vig' },
+                { label: 'Pico Mês Anterior', data: ant, backgroundColor: 'rgba(71, 85, 105, 0.3)', borderColor: '#475569', borderWidth: 1, borderRadius: 4, stack: 'ant' }
             ]
         },
         options: {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { 
-                legend: { 
-                    position: 'top',
-                    labels: { color: '#94a3b8', font: { size: 11 } } 
-                },
-                tooltip: { mode: 'index', intersect: false }
+            plugins: {
+                legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } },
+                tooltip: { backgroundColor: '#1e293b', titleColor: '#fff', bodyColor: '#cbd5e1', padding: 12, cornerRadius: 8 }
             },
             scales: {
-                x: { 
-                    grid: { color: '#1e293b' }, 
-                    ticks: { color: '#94a3b8' },
-                    title: { display: true, text: 'Gbps', color: '#64748b' }
-                },
-                y: { 
-                    ticks: { color: '#94a3b8', font: { size: 10 } } 
-                }
+                x: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                y: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10 } } }
             }
         }
     });
