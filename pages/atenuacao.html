@@ -2,128 +2,233 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Relatório Técnico Adaptativo | Online Telecom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Técnico | Online Telecom</title>
     <style>
         :root {
-            --primary: #002d5b;
-            --danger: #d32f2f;
-            --success: #2e7d32;
-            --bg-page: #4a4e51;
-            --border: #ced4da;
+            --primary: #003a70;
+            --primary-light: #eef4fa;
+            --accent: #007bff;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+            --text-main: #333;
+            --text-muted: #6c757d;
+            --bg-page: #f4f7f9;
+            --border: #dee2e6;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        @page { size: A4; margin: 10mm; }
+        @page { size: A4; margin: 0; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-page);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
         }
 
+        /* Container Principal */
         .container {
             background: #fff;
             width: 210mm;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            min-height: 297mm;
+            padding: 50px;
+            box-shadow: var(--shadow);
             box-sizing: border-box;
-            border-top: 10px solid var(--primary);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
         }
 
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        /* Header Estilizado */
         header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
+            align-items: flex-start;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
         }
 
-        .section-title {
-            background: var(--primary);
-            color: white;
-            padding: 8px 12px;
-            font-size: 11px;
-            font-weight: bold;
+        .brand h1 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 24px;
+            letter-spacing: -0.5px;
             text-transform: uppercase;
-            margin: 20px 0 10px;
-            border-radius: 4px;
         }
 
+        .brand span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .meta-info {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .meta-info b { color: var(--text-main); }
+
+        /* Títulos de Seção */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 10px 15px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 25px 0 15px;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Grid de Informações */
         .equip-info {
             display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .field { display: flex; flex-direction: column; }
-        .field label { font-size: 10px; font-weight: bold; color: #666; text-transform: uppercase; margin-bottom: 4px; }
-        .field input, .field select { padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; outline: none; }
-
-        /* TABELA DE INTERFACES */
-        .interface-table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .interface-table th { background: #f8f9fa; padding: 8px; border: 1px solid var(--border); font-size: 11px; text-align: left; }
-        .interface-table td { border: 1px solid var(--border); padding: 5px; }
-
-        /* SEÇÃO DINÂMICA DE SINAL */
-        .signal-section {
-            padding: 15px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: #fcfcfc;
-        }
-
-        .single-lane-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr;
             gap: 20px;
         }
 
-        .multi-lane-table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
-            display: none; /* Escondido por padrão */
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+        .field input, .field select { 
+            padding: 10px; 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            font-size: 14px; 
+            transition: border 0.2s;
+        }
+        .field input:focus { border-color: var(--accent); outline: none; }
+
+        /* Tabelas */
+        .interface-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .interface-table th { 
+            background: #f8f9fa; 
+            color: var(--text-muted);
+            padding: 12px; 
+            border-bottom: 2px solid var(--border);
+            font-size: 11px; 
+            text-align: left;
+            text-transform: uppercase;
+        }
+        .interface-table td { border-bottom: 1px solid var(--border); padding: 8px; }
+        .interface-table input { width: 100%; border: none; padding: 5px; font-size: 14px; }
+
+        /* Seção de Sinal */
+        .signal-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafafa;
         }
 
-        .multi-lane-table th { background: #eee; font-size: 10px; border: 1px solid var(--border); padding: 5px; }
-        .multi-lane-table td { border: 1px solid var(--border); }
-        .multi-lane-table input { width: 100%; border: none; padding: 8px; text-align: center; font-family: monospace; }
+        .signal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
 
-        /* CLI E IMAGENS */
-        .cli-container { background: #121212; border-radius: 5px; padding: 15px; margin-top: 10px; }
-        .cli-input { width: 100%; min-height: 100px; background: transparent; color: #00ff00; border: none; font-family: monospace; font-size: 12px; resize: vertical; outline: none; }
+        .signal-box h4 { margin: 0 0 10px 0; font-size: 11px; color: var(--text-muted); }
+        .input-group { display: flex; gap: 10px; }
+        .input-group div { flex: 1; position: relative; }
+        .input-group input { width: 100%; padding: 10px 10px 10px 35px; border-radius: 6px; border: 1px solid var(--border); box-sizing: border-box;}
+        .input-group span { position: absolute; left: 10px; top: 11px; font-size: 10px; font-weight: bold; color: var(--text-muted); }
 
-        .img-block { border: 1px solid var(--border); margin-top: 15px; page-break-inside: avoid; }
-        .img-header { background: #eee; padding: 8px; font-size: 11px; font-weight: bold; text-align: center; }
-        .img-display { width: 100%; min-height: 150px; display: flex; justify-content: center; padding: 10px; }
-        .img-display img { max-width: 100%; height: auto; }
+        /* Terminal CLI */
+        .cli-wrap {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+        .cli-header { display: flex; gap: 6px; margin-bottom: 10px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .cli-input { 
+            width: 100%; 
+            min-height: 120px; 
+            background: transparent; 
+            color: #dcdcdc; 
+            border: none; 
+            font-family: 'Fira Code', monospace; 
+            font-size: 13px; 
+            resize: vertical; 
+            outline: none;
+            line-height: 1.5;
+        }
 
-        /* TOOLBAR */
-        .toolbar { position: fixed; left: 20px; top: 20px; display: flex; flex-direction: column; gap: 10px; }
-        .btn { padding: 12px; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; width: 180px; font-size: 11px; text-align: left; }
+        /* Evidências Visuais */
+        .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .img-block { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: #fff; }
+        .img-header { background: #f8f9fa; padding: 10px; font-size: 11px; font-weight: bold; border-bottom: 1px solid var(--border); text-align: center; color: var(--primary); }
+        .img-display { min-height: 180px; display: flex; align-items: center; justify-content: center; background: #fdfdfd; }
+        .img-display img { max-width: 100%; max-height: 250px; object-fit: contain; }
+
+        /* Toolbar Lateral */
+        .toolbar { position: fixed; left: 30px; top: 40px; display: flex; flex-direction: column; gap: 12px; z-index: 100; }
+        .btn { 
+            padding: 12px 18px; 
+            border: none; 
+            border-radius: 8px; 
+            color: white; 
+            font-weight: 600; 
+            cursor: pointer; 
+            font-size: 12px; 
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
         .btn-blue { background: var(--primary); }
         .btn-green { background: var(--success); }
+        .btn-outline { background: #fff; color: var(--primary); border: 1px solid var(--primary); }
 
         @media print {
-            .toolbar { display: none !important; }
+            .toolbar, .btn-remove { display: none !important; }
             body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; border: none; padding: 0; }
-            .cli-input { color: black !important; }
-            .cli-container { background: #fff; border: 1px solid #ccc; }
+            .container { box-shadow: none; border-radius: 0; width: 100%; padding: 30px; }
+            .cli-wrap { border: 1px solid #333; }
+            .cli-input { color: #000; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <button class="btn btn-blue" onclick="addRow()">➕ ADD INTERFACE</button>
-        <button class="btn btn-blue" onclick="document.getElementById('fileAntes').click()">📷 ANEXAR ANTES</button>
-        <button class="btn btn-blue" onclick="document.getElementById('fileDepois').click()">📷 ANEXAR ATUAL</button>
-        <button class="btn btn-green" onclick="window.print()">📄 GERAR RELATÓRIO PDF</button>
+        <button class="btn btn-blue" onclick="addRow()">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/></svg>
+            ADD INTERFACE
+        </button>
+        <button class="btn btn-outline" onclick="document.getElementById('fileAntes').click()">
+            ANEXAR ANTES
+        </button>
+        <button class="btn btn-outline" onclick="document.getElementById('fileDepois').click()">
+            ANEXAR ATUAL
+        </button>
+        <div style="height: 10px;"></div>
+        <button class="btn btn-green" onclick="window.print()">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/><path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/></svg>
+            GERAR RELATÓRIO
+        </button>
 
         <input type="file" id="fileAntes" style="display:none" onchange="previewImg(this, 'imgAntes')">
         <input type="file" id="fileDepois" style="display:none" onchange="previewImg(this, 'imgDepois')">
@@ -131,80 +236,79 @@
 
     <div class="container">
         <header>
-            <div>
-                <h1 style="margin:0; color:var(--primary); font-size: 22px;">Diagnóstico de Performance de Fibra</h1>
-                <small>NOC - Online Telecom</small>
+            <div class="brand">
+                <h1>Online <span>Telecom</span></h1>
+                <div style="font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 4px;">NOC - Network Operations Center</div>
             </div>
-            <div style="text-align:right; font-size:11px;">
+            <div class="meta-info">
                 <b>DATA:</b> <span id="dataAtual"></span><br>
-                <b>ANALISTA:</b> <input type="text" placeholder="Nome" style="border:none; border-bottom:1px solid #ddd; width:80px;">
+                <b>ANALISTA:</b> <input type="text" placeholder="Nome do Analista" style="border:none; border-bottom:1px solid #ccc; font-weight:bold; width:120px; outline:none;">
             </div>
         </header>
 
         <div class="section-title">Informações do Equipamento</div>
         <div class="equip-info">
             <div class="field">
-                <label>Equipamento (Hostname)</label>
-                <input type="text" placeholder="Ex: OLT-SITE-01 / CORE-SPO">
+                <label>Hostname</label>
+                <input type="text" placeholder="Ex: OLT-SITE-01">
             </div>
             <div class="field">
-                <label>Tipo de Ativo</label>
+                <label>Ativo</label>
                 <select>
-                    <option value="olt">OLT</option>
-                    <option value="switch">Switch Core</option>
-                    <option value="router">Router BGP</option>
-                    <option value="radio">Rádio Enlace</option>
+                    <option>OLT (GPON/XGS)</option>
+                    <option>Switch Core</option>
+                    <option>Router BGP</option>
+                    <option>Rádio Digital</option>
                 </select>
             </div>
             <div class="field">
-                <label>Tecnologia da Porta</label>
+                <label>Porta / Transceiver</label>
                 <select id="laneType" onchange="toggleLanes()">
-                    <option value="single">Single-Lane (1G/10G/25G)</option>
-                    <option value="multi">Multi-Lane (40G/100G)</option>
+                    <option value="single">SFP/SFP+ (Single)</option>
+                    <option value="multi">QSFP/QSFP28 (Multi)</option>
                 </select>
             </div>
         </div>
 
-        <div class="section-title">Interfaces com Erro</div>
+        <div class="section-title">Status das Interfaces</div>
         <table class="interface-table" id="interfaceTable">
             <thead>
                 <tr>
-                    <th>Interface</th>
-                    <th>Tipo de Erro (CRC, Input, etc)</th>
-                    <th>Status Final</th>
+                    <th style="width: 30%;">Interface</th>
+                    <th>Tipo de Erro Detectado</th>
+                    <th style="width: 20%;">Resultado</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" placeholder="Gi0/1" style="width:90%; border:none;"></td>
-                    <td><input type="text" placeholder="Incrementando CRC" style="width:95%; border:none;"></td>
-                    <td><select style="border:none;"><option>✅ OK</option><option>❌ ERRO</option></select></td>
+                    <td><input type="text" placeholder="TenGigE 0/0/0/1"></td>
+                    <td><input type="text" placeholder="CRC / Input Errors"></td>
+                    <td><select style="border:none; background:transparent; font-weight:bold;"><option>✅ ESTÁVEL</option><option>❌ FALHA</option></select></td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="section-title">Leitura de Sinal Óptico (Potência Rx/Tx)</div>
-        <div class="signal-section">
-            <!-- LAYOUT SINGLE LANE -->
-            <div id="singleLaneView" class="single-lane-grid">
-                <div style="border-right: 1px solid #eee; padding-right:10px">
-                    <label style="font-size:9px; font-weight:bold; color:var(--danger)">SINAL ANTES (dBm)</label>
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <input type="text" placeholder="Rx: -28.5" style="width:50%; padding:8px; border:1px solid #ddd;">
-                        <input type="text" placeholder="Tx: 2.1" style="width:50%; padding:8px; border:1px solid #ddd;">
+        <div class="section-title">Análise de Potência Óptica</div>
+        <div class="signal-card">
+            <div id="singleLaneView" class="signal-grid">
+                <div class="signal-box">
+                    <h4 style="color: var(--danger);">LEITURA INICIAL (ALARMADO)</h4>
+                    <div class="input-group">
+                        <div><span>RX</span><input type="text" placeholder="-28.5 dBm"></div>
+                        <div><span>TX</span><input type="text" placeholder="2.1 dBm"></div>
                     </div>
                 </div>
-                <div>
-                    <label style="font-size:9px; font-weight:bold; color:var(--success)">SINAL ATUAL (dBm)</label>
-                    <div style="display:flex; gap:5px; margin-top:5px;">
-                        <input type="text" placeholder="Rx: -19.2" style="width:50%; padding:8px; border:1px solid #ddd;">
-                        <input type="text" placeholder="Tx: 2.0" style="width:50%; padding:8px; border:1px solid #ddd;">
+                <div class="signal-box">
+                    <h4 style="color: var(--success);">LEITURA FINAL (PÓS-AJUSTE)</h4>
+                    <div class="input-group">
+                        <div><span>RX</span><input type="text" placeholder="-19.2 dBm"></div>
+                        <div><span>TX</span><input type="text" placeholder="2.0 dBm"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- LAYOUT MULTI LANE -->
-            <table id="multiLaneView" class="multi-lane-table">
+            <!-- Multi Lane (Oculto por padrão) -->
+            <table id="multiLaneView" class="interface-table" style="display:none; margin-top:0;">
                 <thead>
                     <tr>
                         <th>Lane</th>
@@ -215,61 +319,61 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>L0</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
-                    <tr><td>L1</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
-                    <tr><td>L2</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
-                    <tr><td>L3</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+                    <tr><td>Lane 0</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+                    <tr><td>Lane 1</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="section-title">Saída de Console (CLI Logs)</div>
-        <div class="cli-container">
-            <textarea class="cli-input" placeholder="Cole aqui os logs do terminal..."></textarea>
+        <div class="section-title">Logs de Console</div>
+        <div class="cli-wrap">
+            <div class="cli-header">
+                <div class="dot" style="background:#ff5f56"></div>
+                <div class="dot" style="background:#ffbd2e"></div>
+                <div class="dot" style="background:#27c93f"></div>
+            </div>
+            <textarea class="cli-input" placeholder="show interface hardware...&#10;show controllers optical-performance..."></textarea>
         </div>
 
-        <div class="section-title">Evidências Visuais</div>
-        <div class="img-block">
-            <div class="img-header">EVIDÊNCIA 01: CENÁRIO DE FALHA (ANTES)</div>
-            <div class="img-display" id="imgAntes"><span style="color:#ccc">Nenhuma imagem</span></div>
-        </div>
-        <div class="img-block">
-            <div class="img-header">EVIDÊNCIA 02: CENÁRIO NORMALIZADO (DEPOIS)</div>
-            <div class="img-display" id="imgDepois"><span style="color:#ccc">Nenhuma imagem</span></div>
+        <div class="section-title">Evidências de Campo</div>
+        <div class="evidence-grid">
+            <div class="img-block">
+                <div class="img-header">ANTECEDENTE (FALHA)</div>
+                <div class="img-display" id="imgAntes"><span style="color:#ddd">Sem imagem anexada</span></div>
+            </div>
+            <div class="img-block">
+                <div class="img-header">CONFORMIDADE (OK)</div>
+                <div class="img-display" id="imgDepois"><span style="color:#ddd">Sem imagem anexada</span></div>
+            </div>
         </div>
 
-        <footer style="margin-top:30px; text-align:center; font-size:10px; color:#aaa; border-top:1px solid #eee; padding-top:10px;">
-            <b>ONLINE TELECOM</b> | Relatório Gerado para Auditoria NOC
+        <footer style="margin-top:40px; text-align:center; font-size:10px; color:#999; border-top:1px solid #eee; padding-top:20px; letter-spacing: 1px;">
+            SISTEMA DE AUDITORIA NOC | <b>ONLINE TELECOM S/A</b>
         </footer>
     </div>
 
     <script>
-        document.getElementById('dataAtual').innerText = new Date().toLocaleString('pt-BR');
+        // Data automática
+        document.getElementById('dataAtual').innerText = new Date().toLocaleDateString('pt-BR', {
+            day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
 
         function toggleLanes() {
             const type = document.getElementById('laneType').value;
-            const singleView = document.getElementById('singleLaneView');
-            const multiView = document.getElementById('multiLaneView');
-
-            if (type === 'multi') {
-                singleView.style.display = 'none';
-                multiView.style.display = 'table';
-            } else {
-                singleView.style.display = 'grid';
-                multiView.style.display = 'none';
-            }
+            document.getElementById('singleLaneView').style.display = type === 'multi' ? 'none' : 'grid';
+            document.getElementById('multiLaneView').style.display = type === 'multi' ? 'table' : 'none';
         }
 
         function addRow() {
             const table = document.getElementById('interfaceTable').getElementsByTagName('tbody')[0];
             const row = table.insertRow();
-            row.innerHTML = `<td><input type="text" style="width:90%; border:none;"></td><td><input type="text" style="width:95%; border:none;"></td><td><select style="border:none;"><option>✅ OK</option><option>❌ ERRO</option></select></td>`;
+            row.innerHTML = `<td><input type="text" placeholder="Nova Interface"></td><td><input type="text"></td><td><select style="border:none; background:transparent; font-weight:bold;"><option>✅ ESTÁVEL</option><option>❌ FALHA</option></select></td>`;
         }
 
         function previewImg(input, targetId) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     document.getElementById(targetId).innerHTML = `<img src="${e.target.result}">`;
                 };
                 reader.readAsDataURL(input.files[0]);
