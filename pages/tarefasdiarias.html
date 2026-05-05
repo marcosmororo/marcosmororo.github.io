@@ -2,191 +2,193 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MEU WORKFLOW DIÁRIO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Atividades Diárias</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0e14; --card: #161b22; --header: #21262d;
-            --primary: #58a6ff; --ok: #3fb950; --warn: #d29922; --danger: #f85149;
-            --text-main: #c9d1d9; --text-dim: #8b949e; --input-bg: #0d1117;
+            --bg: #0d1117; --card: #161b22; --border: #30363d;
+            --primary: #58a6ff; --ok: #238636; --text: #c9d1d9; --text-dim: #8b949e;
         }
 
-        body.light-mode {
-            --bg: #f6f8fa; --card: #ffffff; --header: #d0d7de;
-            --primary: #0969da; --ok: #1a7f37; --warn: #9a6700; --danger: #cf222e;
-            --text-main: #24292f; --text-dim: #57606a; --input-bg: #ffffff;
-        }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; }
 
-        * { box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 15px; transition: 0.3s; }
-        .container { max-width: 1200px; margin: auto; }
+        /* Header */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        #clock { font-family: 'JetBrains Mono'; color: var(--primary); font-size: 1.2rem; }
 
-        .page-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background: var(--card); border-radius: 12px;
-            border: 1px solid var(--header); margin-bottom: 20px;
-        }
-
-        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-        .form-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-        @media (min-width: 768px) { .form-grid { grid-template-columns: 2fr 2fr 1fr; } }
-
-        .form-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; }
-        input, select { background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); padding: 12px; border-radius: 8px; outline: none; }
+        /* Form */
+        .form-container { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 12px; margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 0.75rem; font-weight: bold; color: var(--text-dim); text-transform: uppercase; }
+        input { background: #010409; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px; outline: none; }
+        input:focus { border-color: var(--primary); }
 
         .btn-add { 
-            background: var(--primary); color: #fff; border: none; border-radius: 8px; 
-            cursor: pointer; font-weight: 800; padding: 12px; margin-top: 15px; width: 100%; transition: 0.2s;
-        }
-        .btn-add:hover { opacity: 0.8; }
-
-        .grid-cards { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        @media (min-width: 768px) { .grid-cards { grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); } }
-
-        .card { 
-            background: var(--card); border: 1px solid var(--header); border-radius: 14px; 
-            padding: 18px; border-left: 6px solid var(--primary); position: relative;
-            transition: transform 0.2s;
-        }
-        .card:hover { transform: translateY(-3px); }
-        .card.warn { border-left-color: var(--warn); }
-        .card.danger { border-left-color: var(--danger); }
-
-        .timer-box { background: var(--input-bg); border-radius: 8px; padding: 10px; margin: 12px 0; border: 1px solid var(--header); text-align: center; }
-        .timer-val { font-family: 'JetBrains Mono'; font-size: 1.2rem; color: var(--primary); }
-
-        .link-chip {
-            display: inline-flex; align-items: center; gap: 8px; background: rgba(88, 166, 255, 0.1);
-            color: var(--primary); padding: 6px 12px; border-radius: 20px; text-decoration: none;
-            font-size: 0.8rem; font-weight: 600; margin-top: 10px; border: 1px solid var(--primary);
+            grid-column: 1 / -1; background: var(--primary); color: #0d1117; border: none; 
+            padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px;
         }
 
-        .btn-done { background: var(--ok); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        /* Tasks */
+        .section-title { font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .task-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 10px; 
+            padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .task-info h3 { margin: 0 0 5px 0; font-size: 1.1rem; }
+        .task-meta { font-size: 0.8rem; color: var(--text-dim); }
+        .task-meta i { margin-right: 5px; color: var(--primary); }
         
-        .hidden { display: none; }
-        #page-clock { font-family: 'JetBrains Mono'; font-weight: bold; color: var(--primary); }
+        .timer-badge { font-family: 'JetBrains Mono'; background: #010409; padding: 5px 10px; border-radius: 5px; color: var(--primary); margin-left: 10px; }
+
+        .btn-check { background: var(--ok); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
+        .btn-delete { background: transparent; color: #f85149; border: 1px solid #f85149; padding: 8px; border-radius: 8px; cursor: pointer; margin-left: 10px; }
+
+        .link-btn { color: var(--primary); text-decoration: none; font-size: 0.8rem; display: inline-block; margin-top: 8px; }
+        
+        /* Histórico */
+        .history-item { opacity: 0.7; border-left: 4px solid var(--text-dim); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="page-header">
-        <div><h2 style="margin:0"><i class="fa-solid fa-list-check"></i> MEU DIA</h2></div>
-        <div id="page-clock">00:00:00</div>
-        <button onclick="document.body.classList.toggle('light-mode')" style="background:none; border:none; color:var(--text-dim); cursor:pointer"><i class="fa-solid fa-circle-half-stroke"></i></button>
+    <div class="header">
+        <h1>Dashboard Pessoal</h1>
+        <div id="clock">00:00:00</div>
     </div>
 
-    <div class="admin-panel">
+    <!-- Cadastro -->
+    <div class="form-container">
         <div class="form-grid">
-            <div class="form-group">
-                <label>Atividade / Projeto</label>
-                <input id="task-title" placeholder="Ex: Relatório Mensal">
+            <div class="input-group">
+                <label>Atividade</label>
+                <input type="text" id="task-title" placeholder="O que você vai fazer?">
             </div>
-            <div class="form-group">
-                <label>Link Útil (Planilha, Docs, URL)</label>
-                <input id="task-link" placeholder="https://...">
+            <div class="input-group">
+                <label>Link / Referência</label>
+                <input type="text" id="task-link" placeholder="Cole o link da planilha ou site">
             </div>
-            <div class="form-group">
-                <label>Prioridade</label>
-                <select id="task-priority">
-                    <option value="normal">Normal</option>
-                    <option value="urgente">Urgente</option>
-                </select>
-            </div>
+            <button class="btn-add" onclick="createTask()">INICIAR ATIVIDADE</button>
         </div>
-        <button class="btn-add" onclick="addTask()">COMEÇAR TAREFA</button>
     </div>
 
-    <div id="task-list" class="grid-cards"></div>
+    <!-- Ativas -->
+    <div class="section-title">ATIVIDADES EM ANDAMENTO</div>
+    <div id="active-tasks"></div>
+
+    <!-- Concluídas -->
+    <div class="section-title" style="margin-top: 40px;">HISTÓRICO DE HOJE (CONCLUÍDAS)</div>
+    <div id="completed-tasks"></div>
 </div>
 
 <script>
-    let tasks = JSON.parse(localStorage.getItem('my_tasks')) || {};
+    // Banco de dados no LocalStorage
+    let db = JSON.parse(localStorage.getItem('minhas_atividades_v1')) || { ativas: [], concluidas: [] };
 
-    function saveTasks() {
-        localStorage.setItem('my_tasks', JSON.stringify(tasks));
+    function save() {
+        localStorage.setItem('minhas_atividades_v1', JSON.stringify(db));
+        render();
     }
 
-    function addTask() {
+    function createTask() {
         const title = document.getElementById('task-title').value;
         const link = document.getElementById('task-link').value;
-        const priority = document.getElementById('task-priority').value;
+        if(!title) return alert("Digite o nome da atividade");
 
-        if (!title) return alert("Dê um nome à atividade!");
-
-        const id = 'task_' + Date.now();
-        tasks[id] = {
-            title: title,
+        const agora = new Date();
+        const novaTarefa = {
+            id: Date.now(),
+            titulo: title,
             link: link,
-            priority: priority,
-            start: Date.now()
+            inicio: agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}),
+            inicioRaw: agora.getTime(),
+            fim: null
         };
 
-        document.getElementById('task-title').value = "";
-        document.getElementById('task-link').value = "";
-        saveTasks();
-        renderTasks();
+        db.ativas.push(novaTarefa);
+        document.getElementById('task-title').value = '';
+        document.getElementById('task-link').value = '';
+        save();
     }
 
-    function removeTask(id) {
-        delete tasks[id];
-        saveTasks();
-        renderTasks();
+    function finishTask(id) {
+        const index = db.ativas.findIndex(t => t.id === id);
+        const tarefa = db.ativas.splice(index, 1)[0];
+        tarefa.fim = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        db.concluidas.push(tarefa);
+        save();
     }
 
-    function formatTime(ms) {
-        const h = Math.floor(ms/3600000), m = Math.floor((ms%3600000)/60000), s = Math.floor((ms%60000)/1000);
-        return `${h}h ${m}m ${s}s`;
+    function deleteTask(id, lista) {
+        if(confirm("Deseja excluir este registro?")) {
+            db[lista] = db[lista].filter(t => t.id !== id);
+            save();
+        }
     }
 
-    function renderTasks() {
-        const container = document.getElementById('task-list');
-        container.innerHTML = "";
+    function render() {
+        const activeContainer = document.getElementById('active-tasks');
+        const completedContainer = document.getElementById('completed-tasks');
+        
+        activeContainer.innerHTML = '';
+        completedContainer.innerHTML = '';
 
-        Object.keys(tasks).forEach(id => {
-            const task = tasks[id];
-            const div = document.createElement('div');
-            div.className = `card`;
-            div.id = id;
-
-            div.innerHTML = `
-                <div style="font-weight:800; font-size:1.1rem;">${task.title}</div>
-                <div class="timer-box">
-                    <span class="timer-val" id="timer-${id}">0h 0m 0s</span>
+        db.ativas.forEach(t => {
+            activeContainer.innerHTML += `
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>${t.titulo}</h3>
+                        <div class="task-meta">
+                            <span><i class="fa-regular fa-clock"></i> Início: ${t.inicio}</span>
+                            <span class="timer-badge" id="timer-${t.id}">00:00</span>
+                        </div>
+                        ${t.link ? `<a href="${t.link}" target="_blank" class="link-btn"><i class="fa-solid fa-up-right-from-square"></i> Abrir Referência</a>` : ''}
+                    </div>
+                    <div>
+                        <button class="btn-check" onclick="finishTask(${t.id})"><i class="fa-solid fa-check"></i> Finalizar</button>
+                    </div>
                 </div>
-                ${task.link ? `<a href="${task.link}" target="_blank" class="link-chip"><i class="fa-solid fa-link"></i> Abrir Documento</a>` : ''}
-                <button class="btn-done" onclick="removeTask('${id}')">CONCLUÍDO</button>
             `;
-            container.prepend(div);
+        });
+
+        db.concluidas.forEach(t => {
+            completedContainer.innerHTML += `
+                <div class="task-card history-item">
+                    <div class="task-info">
+                        <h3>${t.titulo}</h3>
+                        <div class="task-meta">
+                            <i class="fa-solid fa-calendar-check"></i> ${t.inicio} às ${t.fim}
+                        </div>
+                    </div>
+                    <button class="btn-delete" onclick="deleteTask(${t.id}, 'concluidas')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
         });
     }
 
-    // Atualização em tempo real
+    // Loop de Atualização (Relógio e Timers)
     setInterval(() => {
-        document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR');
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
         
-        const now = Date.now();
-        Object.keys(tasks).forEach(id => {
-            const timerEl = document.getElementById(`timer-${id}`);
-            const cardEl = document.getElementById(id);
-            if (timerEl) {
-                const diff = now - tasks[id].start;
-                timerEl.innerText = formatTime(diff);
-
-                // Lógica de cores baseada no tempo (opcional)
-                const hours = diff / 3600000;
-                if (hours >= 4) cardEl.classList.add('danger');
-                else if (hours >= 2) cardEl.classList.add('warn');
+        db.ativas.forEach(t => {
+            const el = document.getElementById(`timer-${t.id}`);
+            if(el) {
+                const diff = Math.floor((Date.now() - t.inicioRaw) / 1000);
+                const h = Math.floor(diff / 3600).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+                const s = (diff % 60).toString().padStart(2, '0');
+                el.innerText = `${h}:${m}:${s}`;
             }
         });
     }, 1000);
 
-    renderTasks();
+    render();
 </script>
-
 </body>
 </html>
