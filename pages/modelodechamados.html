@@ -3,222 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despacho de Falha | NOC</title>
+    <title>Despacho Técnico NOC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #004085;
-            --externa-color: #d9534f;
-            --interna-color: #02b3e4;
-            --border-color: #dee2e6;
-            --bg-gray: #f8f9fa;
+            --primary: #004085; --externa: #d9534f; --interna: #02b3e4;
+            --border: #dee2e6; --bg-gray: #f8f9fa; --accent: #ffc107;
         }
 
         @page { size: A4; margin: 0; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #525659;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: 'Segoe UI', sans-serif; background-color: #525659;
+            margin: 0; display: flex; flex-direction: column; align-items: center;
         }
 
         .report-page {
-            background: white;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            box-sizing: border-box;
-            position: relative;
-            margin: 10mm 0;
-            display: flex;
-            flex-direction: column;
+            background: white; width: 210mm; min-height: 297mm;
+            padding: 15mm; box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            margin: 10mm 0; position: relative; display: flex; flex-direction: column;
         }
 
-        /* Identificação de Equipe Dinâmica */
         .team-banner {
-            width: 100%;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            border-radius: 4px;
-        }
-        .bg-externa { background: var(--externa-color); }
-        .bg-interna { background: var(--interna-color); }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            width: 100%; padding: 12px; text-align: center; font-weight: 800;
+            color: white; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase;
         }
 
-        .logo-area img { max-height: 50px; }
-        
-        .title-area h1 { margin: 0; font-size: 20px; color: var(--primary-color); }
+        .bg-externa { background: var(--externa); }
+        .bg-interna { background: var(--interna); }
 
-        /* Formulário */
         .info-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 12px; margin-bottom: 15px;
         }
 
-        .field { border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; }
+        .field { border: 1px solid var(--border); padding: 8px; border-radius: 4px; background: #fff; }
         .field label {
-            display: block;
-            font-size: 9px;
-            color: #666;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-bottom: 3px;
+            display: block; font-size: 10px; color: var(--primary);
+            font-weight: bold; text-transform: uppercase; margin-bottom: 4px;
         }
+
         .field input, .field select {
-            border: none; width: 100%; font-size: 13px; outline: none; font-weight: 600;
+            border: none; width: 100%; font-size: 13px; outline: none; font-weight: 600; background: transparent;
         }
 
         h2 {
-            font-size: 13px;
-            background: var(--bg-gray);
-            border-left: 4px solid var(--primary-color);
-            padding: 5px 10px;
-            margin: 15px 0 10px 0;
+            font-size: 13px; background: var(--bg-gray);
+            border-left: 4px solid var(--primary); padding: 6px 12px; margin: 15px 0 10px 0;
         }
 
         .content-box {
-            border: 1px solid #eee;
-            padding: 10px;
-            min-height: 60px;
-            font-size: 13px;
-            line-height: 1.4;
-            outline: none;
-            background: #fff;
+            border: 1px solid #eee; padding: 12px; min-height: 80px;
+            font-size: 13px; line-height: 1.5; outline: none; margin-bottom: 10px;
         }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        /* Campos Específicos de Temperatura (Escondidos por padrão) */
+        #secao-temperatura {
+            display: none; border: 2px solid var(--accent); padding: 15px;
+            border-radius: 8px; margin-top: 10px; background: #fff9e6;
         }
 
-        /* Toolbar Fixa */
+        .temp-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;
+        }
+
+        /* Toolbar */
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
-            padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            width: 180px; z-index: 999;
+            padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 200px; z-index: 1000;
         }
+
         .toolbar button {
-            width: 100%; padding: 8px; margin-bottom: 8px;
+            width: 100%; padding: 10px; margin-bottom: 8px;
             font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
         }
-        .btn-print { background: #28a745; color: white; }
-        .btn-ext { background: var(--externa-color); color: white; }
-        .btn-int { background: var(--interna-color); color: white; }
+
+        .hidden { display: none !important; }
 
         @media print {
+            .toolbar { display: none !important; }
             body { background: none; }
-            .toolbar, .remove-btn { display: none !important; }
-            .report-page { box-shadow: none; margin: 0; width: 100%; }
+            .report-page { margin: 0; box-shadow: none; }
+            #secao-temperatura { border-color: #ccc; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h4 style="margin:0 0 10px 0;">Delegar Para:</h4>
-        <button class="btn-ext" onclick="setTeam('externa')">REDE EXTERNA</button>
-        <button class="btn-int" onclick="setTeam('interna')">REDE INTERNA</button>
+        <h4 style="margin:0 0 10px 0;">Configurações</h4>
+        <button style="background: var(--externa); color:white;" onclick="setTeam('externa')">REDE EXTERNA</button>
+        <button style="background: var(--interna); color:white;" onclick="setTeam('interna')">REDE INTERNA</button>
         <hr>
-        <button class="btn-print" onclick="window.print()">GERAR ORDEM (PDF)</button>
+        <button style="background: #28a745; color:white;" onclick="window.print()">GERAR PDF / IMPRIMIR</button>
     </div>
 
-    <div class="report-page" id="mainPage">
+    <div class="report-page">
         <div id="teamTag" class="team-banner bg-externa">Ordem de Serviço - Rede Externa</div>
 
-        <header>
-            <div class="logo-area">
-                <img src="../assets/img/online.png" alt="Logo">
-            </div>
-            <div class="title-area">
-                <h1>Abertura de Incidente Técnico</h1>
-            </div>
-        </header>
-
         <div class="info-grid">
-            <div class="field"><label>Protocolo</label><input type="text" placeholder="Ex: 20240505-001"></div>
+            <div class="field">
+                <label>ID Protocolo</label>
+                <input type="text" placeholder="INC-2024-XXXX">
+            </div>
             <div class="field">
                 <label>Tipo de Falha</label>
-                <select>
-                    <option>Rompimento de Fibra</option>
-                    <option>Alta Temperatura</option>
-                    <option>Atenuação Crítica</option>
-                    <option>Erros de Interface (CRC)</option>
-                    <option>Indisponibilidade (Down)</option>
-                    <option>Falha de Equipamento</option>
+                <select id="tipoFalha" onchange="toggleSections()">
+                    <option value="rompimento">Rompimento de Fibra</option>
+                    <option value="temperatura">Alta Temperatura (Climatização)</option>
+                    <option value="atenuacao">Atenuação / Sinal Baixo</option>
+                    <option value="erros">Erros de Interface (CRC)</option>
+                    <option value="down">Indisponibilidade (Down)</option>
                 </select>
             </div>
-            <div class="field"><label>Data/Hora</label><input type="datetime-local"></div>
+            <div class="field">
+                <label>Data/Hora Abertura</label>
+                <input type="datetime-local" id="dataAtual">
+            </div>
         </div>
 
-        <h2>Localização e Identificação</h2>
+        <!-- SEÇÃO DINÂMICA: TEMPERATURA -->
+        <div id="secao-temperatura">
+            <h2 style="margin-top:0; background: var(--accent); color: #000; border-left-color: #000;">
+                <i class="fa-solid fa-thermometer-half"></i> Dados de Telemetria Térmica
+            </h2>
+            <div class="temp-grid">
+                <div class="field">
+                    <label>Temperatura Atual</label>
+                    <input type="text" placeholder="Ex: 58°C">
+                </div>
+                <div class="field">
+                    <label>Temperatura Padrão</label>
+                    <input type="text" placeholder="Ex: 35°C a 42°C">
+                </div>
+                <div class="field" style="border-color: var(--externa);">
+                    <label>Status Cooler/Ar</label>
+                    <input type="text" placeholder="Ex: Ventilador em falha">
+                </div>
+            </div>
+            <h2 style="font-size: 11px; margin-top: 15px;">Histórico de Elevação (Comprovação NOC)</h2>
+            <div class="content-box" contenteditable="true" style="min-height: 60px; background: #fff;">
+                - 10:00h: 38°C (Normal)<br>
+                - 11:30h: 45°C (Alerta)<br>
+                - 13:00h: 58°C (Crítico - Incidente aberto)
+            </div>
+        </div>
+
+        <h2>Informações do Ativo</h2>
         <div class="info-grid">
-            <div class="field"><label>Elemento/Host</label><input type="text" placeholder="Ex: OLT-VZ-01"></div>
-            <div class="field"><label>Slot/Porta/PON</label><input type="text" placeholder="Ex: 0/1/12"></div>
-            <div class="field"><label>Cidade/Bairro</label><input type="text" placeholder="Ex: Varjota - Centro"></div>
+            <div class="field"><label>Equipamento / Host</label><input type="text" placeholder="Ex: OLT-CORE-01"></div>
+            <div class="field"><label>Localidade (POP/Site)</label><input type="text" placeholder="Ex: POP Sobral Centro"></div>
+            <div class="field"><label>Slot / Porta</label><input type="text" placeholder="Ex: 0/5/1"></div>
         </div>
 
-        <h2>Diagnóstico NOC (Leituras Atuais)</h2>
-        <div class="stats-grid">
-            <div class="field"><label>Temperatura</label><input type="text" placeholder="-- °C"></div>
-            <div class="field"><label>Sinal (RX/TX)</label><input type="text" placeholder="-00.00 dBm"></div>
-            <div class="field"><label>Distância (OTDR)</label><input type="text" placeholder="0.0 km"></div>
-            <div class="field"><label>Impacto</label><input type="text" placeholder="Nº Clientes"></div>
+        <div id="secao-geral">
+            <h2>Diagnóstico e Evidências</h2>
+            <div class="content-box" contenteditable="true">
+                Clique aqui para descrever os logs, alarmes ou resultados de testes realizados pelo NOC...
+            </div>
         </div>
 
-        <h2>Descrição do Problema</h2>
-        <div class="content-box" contenteditable="true">
-            Descreva aqui os detalhes da falha observada pelo monitoramento...
+        <h2>Ações Solicitadas</h2>
+        <div class="content-box" contenteditable="true" style="border: 2px dashed var(--externa); font-weight: bold;">
+            - Verificar alimentação elétrica<br>
+            - Validar limpeza de filtros / coolers<br>
+            - Reportar se há ruído anormal no rack
         </div>
 
-        <h2>Coordenadas / Referência</h2>
-        <div class="content-box" contenteditable="true">
-            Insira o link do Google Maps ou coordenadas decimais...
-        </div>
-
-        <h2>Ações Recomendadas</h2>
-        <div class="content-box" contenteditable="true" style="color: #d9534f; font-weight: bold;">
-            Ex: Realizar fusão na caixa de emenda CE-04 / Verificar jumper no DIO...
-        </div>
-
-        <footer style="margin-top: auto; border-top: 1px solid #ccc; padding-top: 10px; font-size: 10px; display: flex; justify-content: space-between;">
-            <div><strong>NOC - Online Telecom</strong><br>Gerado em: <span id="currentDate"></span></div>
-            <div style="text-align: right;">Assinatura Técnico NOC</div>
+        <footer style="margin-top: auto; border-top: 1px solid #ccc; padding-top: 10px; font-size: 11px; display: flex; justify-content: space-between;">
+            <div>
+                <strong>Online Telecom - Network Operations Center</strong><br>
+                Relatório gerado automaticamente pelo sistema de despacho.
+            </div>
+            <div style="text-align: right;">
+                Página 1 de 1
+            </div>
         </footer>
     </div>
 
     <script>
+        // Define a data e hora atual no campo de abertura
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        document.getElementById('dataAtual').value = now.toISOString().slice(0,16);
+
         function setTeam(team) {
             const tag = document.getElementById('teamTag');
             if(team === 'externa') {
                 tag.className = 'team-banner bg-externa';
                 tag.innerText = 'Ordem de Serviço - Rede Externa';
-                document.title = "OS_REDE_EXTERNA_" + Date.now();
             } else {
                 tag.className = 'team-banner bg-interna';
                 tag.innerText = 'Ordem de Serviço - Rede Interna';
-                document.title = "OS_REDE_INTERNA_" + Date.now();
             }
         }
 
-        // Data automática no rodapé
-        document.getElementById('currentDate').innerText = new Date().toLocaleString();
+        function toggleSections() {
+            const falha = document.getElementById('tipoFalha').value;
+            const secaoTemp = document.getElementById('secao-temperatura');
+            
+            if(falha === 'temperatura') {
+                secaoTemp.style.display = 'block';
+            } else {
+                secaoTemp.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
