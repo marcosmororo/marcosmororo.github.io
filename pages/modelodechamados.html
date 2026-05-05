@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Despacho Técnico NOC</title>
+    <title>Ordem de Serviço NOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -11,10 +11,10 @@
             --border: #dee2e6; --bg-gray: #f8f9fa; --accent: #ffc107;
         }
 
-        /* Configuração de Impressão */
+        /* Configuração de Página A4 */
         @page { 
             size: A4; 
-            margin: 10mm; /* Margem física da impressora */
+            margin: 0; /* O padding da .report-page cuidará das margens */
         }
 
         body {
@@ -28,79 +28,81 @@
             background: white; 
             width: 210mm; 
             min-height: 297mm;
-            padding: 10mm; 
+            padding: 15mm; /* Margem interna profissional */
             box-shadow: 0 0 15px rgba(0,0,0,0.3);
             margin: 10mm 0; 
-            box-sizing: border-box; /* Essencial para não cortar */
+            box-sizing: border-box; 
             display: flex; flex-direction: column;
         }
 
-        /* Identificação Rápida Superior */
-        .fast-id {
-            display: flex;
-            justify-content: space-between;
-            background: #333;
-            color: white;
-            padding: 8px 15px;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 4px 4px 0 0;
-        }
-
+        /* Banner de Identificação */
         .team-banner {
-            width: 100%; padding: 12px; text-align: center; font-weight: 800;
-            color: white; margin-bottom: 15px; border-radius: 0 0 4px 4px; text-transform: uppercase;
+            width: 100%; padding: 15px; text-align: center; font-weight: 800;
+            color: white; margin-bottom: 20px; border-radius: 4px; 
+            text-transform: uppercase; letter-spacing: 1px;
+            font-size: 18px;
         }
 
         .bg-externa { background: var(--externa); }
         .bg-interna { background: var(--interna); }
 
+        /* Grid de Informações Prioritárias */
         .info-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 10px; margin-bottom: 15px;
+            gap: 12px; margin-bottom: 15px;
         }
 
-        .field { border: 1px solid var(--border); padding: 6px; border-radius: 4px; background: #fff; }
+        .field { border-bottom: 2px solid var(--border); padding: 5px 0; background: #fff; }
         .field label {
-            display: block; font-size: 9px; color: var(--primary);
+            display: block; font-size: 10px; color: var(--primary);
             font-weight: bold; text-transform: uppercase; margin-bottom: 2px;
         }
 
         .field input, .field select {
-            border: none; width: 100%; font-size: 13px; outline: none; font-weight: 600; background: transparent;
+            border: none; width: 100%; font-size: 14px; outline: none; 
+            font-weight: 600; background: transparent; color: #333;
         }
 
         h2 {
             font-size: 13px; background: var(--bg-gray);
-            border-left: 4px solid var(--primary); padding: 5px 10px; margin: 12px 0 8px 0;
+            border-left: 4px solid var(--primary); padding: 6px 12px; margin: 15px 0 10px 0;
+            text-transform: uppercase; color: #333;
         }
 
         .content-box {
-            border: 1px solid #eee; padding: 10px; min-height: 50px;
-            font-size: 13px; line-height: 1.4; outline: none;
+            border: 1px solid #f0f0f0; padding: 12px; min-height: 60px;
+            font-size: 13px; line-height: 1.5; outline: none; color: #444;
         }
 
-        /* Estilo das Evidências */
-        .evidence-container { margin-top: 10px; }
+        /* Área de Evidências */
+        .evidence-container { margin-top: 10px; width: 100%; }
         .image-wrapper { 
-            margin-bottom: 15px; text-align: center; 
-            border: 1px solid #eee; padding: 5px;
-            page-break-inside: avoid; /* Evita que a imagem corte entre páginas */
+            margin-bottom: 20px; text-align: center; 
+            page-break-inside: avoid;
         }
         .image-wrapper img { 
-            max-width: 100%; height: auto; border-radius: 2px; 
-            max-height: 500px;
+            max-width: 100%; height: auto; border: 1px solid #ddd;
+            border-radius: 4px; max-height: 550px;
         }
 
-        /* Seção Temperatura */
-        #secao-temperatura { display: none; border: 2px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 10px; background: #fff9e6; }
+        /* Seção Temperatura Especial */
+        #secao-temperatura { 
+            display: none; border: 1px solid var(--accent); 
+            padding: 15px; border-radius: 6px; margin-bottom: 15px; 
+            background: #fffdf5; 
+        }
         
+        /* Toolbar lateral */
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
             padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             width: 180px; z-index: 1000;
         }
-        .toolbar button { width: 100%; padding: 10px; margin-bottom: 8px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
+        .toolbar button { 
+            width: 100%; padding: 10px; margin-bottom: 8px; cursor: pointer; 
+            border: none; border-radius: 4px; font-weight: bold; transition: 0.2s;
+        }
+        .toolbar button:hover { opacity: 0.8; }
 
         @media print {
             body { background: none; padding: 0; }
@@ -108,89 +110,106 @@
             .report-page { 
                 margin: 0 !important; 
                 box-shadow: none !important; 
-                width: 100% !important;
-                min-height: auto;
+                width: 210mm !important;
+                height: 297mm !important;
+                padding: 15mm !important;
             }
-            .image-wrapper { border: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h4 style="margin:0 0 10px 0;">Menu</h4>
-        <button style="background: var(--externa); color:white;" onclick="setTeam('externa')">EXTERNA</button>
-        <button style="background: var(--interna); color:white;" onclick="setTeam('interna')">INTERNA</button>
-        <hr>
-        <button style="background: #6c757d; color:white;" onclick="document.getElementById('fileInput').click()">ANEXAR FOTO</button>
-        <button style="background: #28a745; color:white;" onclick="window.print()">IMPRIMIR / PDF</button>
+        <h4 style="margin:0 0 10px 0; font-size: 12px; text-align: center;">DELEGAR EQUIPE</h4>
+        <button style="background: var(--externa); color:white;" onclick="setTeam('externa')">REDE EXTERNA</button>
+        <button style="background: var(--interna); color:white;" onclick="setTeam('interna')">REDE INTERNA</button>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+        <button style="background: #6c757d; color:white;" onclick="document.getElementById('fileInput').click()"><i class="fa fa-image"></i> ANEXAR FOTO</button>
+        <button style="background: #28a745; color:white;" onclick="window.print()"><i class="fa fa-print"></i> GERAR PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" multiple onchange="handleImages(this)">
     </div>
 
     <div class="report-page">
-        <!-- Cabeçalho de Identificação Rápida -->
-        <div class="fast-id">
-            <span contenteditable="true">EQUIPAMENTO: NOME_DO_ATIVO</span>
-            <span contenteditable="true">CIDADE: NOME_DA_CIDADE</span>
-        </div>
+        
         <div id="teamTag" class="team-banner bg-externa">Ordem de Serviço - Rede Externa</div>
 
+        <!-- Informações Principais Integradas -->
         <div class="info-grid">
-            <div class="field"><label>Protocolo</label><input type="text" placeholder="INC-0000"></div>
+            <div class="field" style="grid-column: span 2;">
+                <label>Equipamento / Host</label>
+                <input type="text" placeholder="Ex: OLT-SOBRAL-CORE-01">
+            </div>
             <div class="field">
-                <label>Falha Detectada</label>
+                <label>Cidade / UF</label>
+                <input type="text" placeholder="Ex: Sobral - CE">
+            </div>
+        </div>
+
+        <div class="info-grid">
+            <div class="field">
+                <label>ID Protocolo</label>
+                <input type="text" placeholder="INC-2024-0000">
+            </div>
+            <div class="field">
+                <label>Tipo de Incidente</label>
                 <select id="tipoFalha" onchange="toggleSections()">
                     <option value="rompimento">Rompimento de Fibra</option>
                     <option value="temperatura">Alta Temperatura</option>
-                    <option value="atenuacao">Atenuação Crítica</option>
-                    <option value="down">Indisponibilidade</option>
+                    <option value="atenuacao">Atenuação de Sinal</option>
+                    <option value="down">Indisponibilidade / Down</option>
+                    <option value="erros">Erros de CRC / Interface</option>
                 </select>
             </div>
-            <div class="field"><label>Abertura</label><input type="datetime-local" id="dataAtual"></div>
-        </div>
-
-        <div id="secao-temperatura">
-            <h2 style="margin-top:0; background: var(--accent); color: #000; border-left: none;">DADOS TÉRMICOS</h2>
-            <div class="info-grid">
-                <div class="field"><label>Temp. Atual</label><input type="text" placeholder="-- °C"></div>
-                <div class="field"><label>Temp. Nominal</label><input type="text" placeholder="-- °C"></div>
-                <div class="field"><label>Alarme Ativo</label><input type="text" placeholder="Sim/Não"></div>
+            <div class="field">
+                <label>Data/Hora Abertura</label>
+                <input type="datetime-local" id="dataAtual">
             </div>
         </div>
 
-        <h2>Detalhes da Localização</h2>
+        <!-- Seção Dinâmica de Temperatura -->
+        <div id="secao-temperatura">
+            <h2 style="margin-top:0; background: var(--accent); color: #000; border-left: none;">Indicadores Térmicos</h2>
+            <div class="info-grid">
+                <div class="field"><label>Temperatura Atual</label><input type="text" placeholder="Ex: 62°C"></div>
+                <div class="field"><label>Limite Máximo</label><input type="text" placeholder="Ex: 45°C"></div>
+                <div class="field"><label>Status Climatização</label><input type="text" placeholder="Ex: Ar Condicionado em Alerta"></div>
+            </div>
+        </div>
+
+        <h2>Detalhes Técnicos da Localização</h2>
         <div class="info-grid">
-            <div class="field"><label>Site / POP</label><input type="text" placeholder="Nome do Local"></div>
-            <div class="field"><label>Slot / Porta / PON</label><input type="text" placeholder="0/0/0"></div>
-            <div class="field"><label>Coordenadas</label><input type="text" placeholder="Link Maps"></div>
+            <div class="field"><label>Site / POP / Referência</label><input type="text" placeholder="Ex: Próximo ao Posto Central"></div>
+            <div class="field"><label>Porta / Slot / Fibra</label><input type="text" placeholder="Ex: Slot 05 - PON 12"></div>
+            <div class="field"><label>Coordenadas (GPS)</label><input type="text" placeholder="Ex: -3.68, -40.35"></div>
         </div>
 
-        <h2>Diagnóstico NOC</h2>
+        <h2>Diagnóstico e Observações NOC</h2>
         <div class="content-box" contenteditable="true">
-            Insira o diagnóstico técnico aqui...
+            Descreva o comportamento da falha e testes realizados remotamente...
         </div>
 
-        <h2>Evidências Visuais</h2>
+        <h2>Evidências / Prints de Monitoramento</h2>
         <div id="evidenceContainer" class="evidence-container">
-            <!-- Imagens -->
+            <!-- As imagens serão inseridas aqui -->
         </div>
 
-        <h2>Ações Solicitadas</h2>
-        <div class="content-box" contenteditable="true" style="border: 1.5px solid var(--externa); color: #333; font-weight: bold;">
-            - Verificar...
+        <h2 style="margin-top: 20px;">Ações Emergenciais Solicitadas</h2>
+        <div class="content-box" contenteditable="true" style="border: 1px solid var(--externa); font-weight: bold; background: #fffcfc;">
+            - 
         </div>
 
-        <footer style="margin-top: auto; border-top: 1px solid #eee; padding-top: 8px; font-size: 10px; display: flex; justify-content: space-between; color: #777;">
-            <span>Gerado por: NOC Online Telecom</span>
-            <span>Documento de Uso Técnico</span>
+        <footer style="margin-top: auto; border-top: 1px solid #eee; padding-top: 10px; font-size: 10px; color: #888; display: flex; justify-content: space-between;">
+            <div><strong>NOC Online Telecom</strong> - Sistema de Despacho Técnico</div>
+            <div>Impresso em: <span id="printDate"></span></div>
         </footer>
     </div>
 
     <script>
-        // Data Atual automática
+        // Data e Hora Atual
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('dataAtual').value = now.toISOString().slice(0,16);
+        document.getElementById('printDate').innerText = new Date().toLocaleString();
 
         function setTeam(team) {
             const tag = document.getElementById('teamTag');
@@ -213,7 +232,7 @@
                         wrapper.className = 'image-wrapper';
                         wrapper.innerHTML = `
                             <img src="${e.target.result}">
-                            <button class="remove-btn" onclick="this.parentElement.remove()" style="background:red; color:white; border:none; padding:4px; cursor:pointer; font-size:10px; margin-top:5px;">REMOVER</button>
+                            <button class="remove-btn" onclick="this.parentElement.remove()" style="background:#ff4d4d; color:white; border:none; padding:5px 10px; cursor:pointer; font-size:11px; border-radius:3px; margin-top:5px; font-weight:bold;">REMOVER IMAGEM</button>
                         `;
                         container.appendChild(wrapper);
                     };
