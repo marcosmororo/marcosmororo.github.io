@@ -11,21 +11,45 @@
             --border: #dee2e6; --bg-gray: #f8f9fa; --accent: #ffc107;
         }
 
-        @page { size: A4; margin: 0; }
+        /* Configuração de Impressão */
+        @page { 
+            size: A4; 
+            margin: 10mm; /* Margem física da impressora */
+        }
+
         body {
-            font-family: 'Segoe UI', sans-serif; background-color: #525659;
-            margin: 0; display: flex; flex-direction: column; align-items: center;
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            background-color: #525659;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; align-items: center;
         }
 
         .report-page {
-            background: white; width: 210mm; min-height: 297mm;
-            padding: 15mm; box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            margin: 10mm 0; position: relative; display: flex; flex-direction: column;
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm;
+            padding: 10mm; 
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            margin: 10mm 0; 
+            box-sizing: border-box; /* Essencial para não cortar */
+            display: flex; flex-direction: column;
+        }
+
+        /* Identificação Rápida Superior */
+        .fast-id {
+            display: flex;
+            justify-content: space-between;
+            background: #333;
+            color: white;
+            padding: 8px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 4px 4px 0 0;
         }
 
         .team-banner {
             width: 100%; padding: 12px; text-align: center; font-weight: 800;
-            color: white; margin-bottom: 15px; border-radius: 4px; text-transform: uppercase;
+            color: white; margin-bottom: 15px; border-radius: 0 0 4px 4px; text-transform: uppercase;
         }
 
         .bg-externa { background: var(--externa); }
@@ -33,13 +57,13 @@
 
         .info-grid {
             display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 12px; margin-bottom: 15px;
+            gap: 10px; margin-bottom: 15px;
         }
 
-        .field { border: 1px solid var(--border); padding: 8px; border-radius: 4px; background: #fff; }
+        .field { border: 1px solid var(--border); padding: 6px; border-radius: 4px; background: #fff; }
         .field label {
-            display: block; font-size: 10px; color: var(--primary);
-            font-weight: bold; text-transform: uppercase; margin-bottom: 4px;
+            display: block; font-size: 9px; color: var(--primary);
+            font-weight: bold; text-transform: uppercase; margin-bottom: 2px;
         }
 
         .field input, .field select {
@@ -48,140 +72,122 @@
 
         h2 {
             font-size: 13px; background: var(--bg-gray);
-            border-left: 4px solid var(--primary); padding: 6px 12px; margin: 15px 0 10px 0;
-            display: flex; justify-content: space-between; align-items: center;
+            border-left: 4px solid var(--primary); padding: 5px 10px; margin: 12px 0 8px 0;
         }
 
         .content-box {
-            border: 1px solid #eee; padding: 12px; min-height: 60px;
-            font-size: 13px; line-height: 1.5; outline: none; margin-bottom: 10px;
+            border: 1px solid #eee; padding: 10px; min-height: 50px;
+            font-size: 13px; line-height: 1.4; outline: none;
         }
 
-        /* --- Estilização das Imagens (Evidências) --- */
-        .evidence-container {
-            display: flex; flex-direction: column; gap: 20px; margin-top: 10px;
+        /* Estilo das Evidências */
+        .evidence-container { margin-top: 10px; }
+        .image-wrapper { 
+            margin-bottom: 15px; text-align: center; 
+            border: 1px solid #eee; padding: 5px;
+            page-break-inside: avoid; /* Evita que a imagem corte entre páginas */
+        }
+        .image-wrapper img { 
+            max-width: 100%; height: auto; border-radius: 2px; 
+            max-height: 500px;
         }
 
-        .image-wrapper {
-            position: relative; border: 1px solid #ccc; padding: 5px; background: #fff;
-            border-radius: 4px; break-inside: avoid;
-        }
-
-        .image-wrapper img {
-            width: 100%; /* Ocupa toda a largura da página */
-            height: auto; display: block; border-radius: 2px;
-            max-height: 450px; /* Evita que uma única foto mate a página toda */
-            object-fit: contain; background: #f0f0f0;
-        }
-
-        .remove-btn {
-            position: absolute; top: 10px; right: 10px; background: rgba(217, 83, 79, 0.9);
-            color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;
-            font-weight: bold; transition: 0.3s;
-        }
-
-        /* Campos de Temperatura */
-        #secao-temperatura { display: none; border: 2px solid var(--accent); padding: 15px; border-radius: 8px; margin-top: 10px; background: #fff9e6; }
-        .temp-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
-
-        /* Toolbar */
+        /* Seção Temperatura */
+        #secao-temperatura { display: none; border: 2px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 10px; background: #fff9e6; }
+        
         .toolbar {
             position: fixed; top: 20px; right: 20px; background: white;
             padding: 15px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            width: 200px; z-index: 1000;
+            width: 180px; z-index: 1000;
         }
-
-        .toolbar button {
-            width: 100%; padding: 10px; margin-bottom: 8px;
-            font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
-        }
+        .toolbar button { width: 100%; padding: 10px; margin-bottom: 8px; cursor: pointer; border: none; border-radius: 4px; font-weight: bold; }
 
         @media print {
-            .toolbar, .remove-btn, .btn-upload { display: none !important; }
-            body { background: none; }
-            .report-page { margin: 0; box-shadow: none; width: 100%; padding: 10mm; }
-            .image-wrapper { border: 1px solid #eee; }
+            body { background: none; padding: 0; }
+            .toolbar, .remove-btn { display: none !important; }
+            .report-page { 
+                margin: 0 !important; 
+                box-shadow: none !important; 
+                width: 100% !important;
+                min-height: auto;
+            }
+            .image-wrapper { border: none; }
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <h4 style="margin:0 0 10px 0;">Controles</h4>
-        <button style="background: var(--externa); color:white;" onclick="setTeam('externa')">REDE EXTERNA</button>
-        <button style="background: var(--interna); color:white;" onclick="setTeam('interna')">REDE INTERNA</button>
+        <h4 style="margin:0 0 10px 0;">Menu</h4>
+        <button style="background: var(--externa); color:white;" onclick="setTeam('externa')">EXTERNA</button>
+        <button style="background: var(--interna); color:white;" onclick="setTeam('interna')">INTERNA</button>
         <hr>
-        <button style="background: #6c757d; color:white;" onclick="document.getElementById('fileInput').click()">
-            <i class="fa fa-camera"></i> ANEXAR EVIDÊNCIA
-        </button>
-        <button style="background: #28a745; color:white;" onclick="window.print()">
-            <i class="fa fa-file-pdf"></i> GERAR RELATÓRIO
-        </button>
+        <button style="background: #6c757d; color:white;" onclick="document.getElementById('fileInput').click()">ANEXAR FOTO</button>
+        <button style="background: #28a745; color:white;" onclick="window.print()">IMPRIMIR / PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" multiple onchange="handleImages(this)">
     </div>
 
     <div class="report-page">
+        <!-- Cabeçalho de Identificação Rápida -->
+        <div class="fast-id">
+            <span contenteditable="true">EQUIPAMENTO: NOME_DO_ATIVO</span>
+            <span contenteditable="true">CIDADE: NOME_DA_CIDADE</span>
+        </div>
         <div id="teamTag" class="team-banner bg-externa">Ordem de Serviço - Rede Externa</div>
 
         <div class="info-grid">
-            <div class="field"><label>ID Protocolo</label><input type="text" placeholder="INC-2024-XXXX"></div>
+            <div class="field"><label>Protocolo</label><input type="text" placeholder="INC-0000"></div>
             <div class="field">
-                <label>Tipo de Falha</label>
+                <label>Falha Detectada</label>
                 <select id="tipoFalha" onchange="toggleSections()">
                     <option value="rompimento">Rompimento de Fibra</option>
-                    <option value="temperatura">Alta Temperatura (Climatização)</option>
-                    <option value="atenuacao">Atenuação / Sinal Baixo</option>
-                    <option value="erros">Erros de Interface (CRC)</option>
-                    <option value="down">Indisponibilidade (Down)</option>
+                    <option value="temperatura">Alta Temperatura</option>
+                    <option value="atenuacao">Atenuação Crítica</option>
+                    <option value="down">Indisponibilidade</option>
                 </select>
             </div>
-            <div class="field"><label>Data/Hora Abertura</label><input type="datetime-local" id="dataAtual"></div>
+            <div class="field"><label>Abertura</label><input type="datetime-local" id="dataAtual"></div>
         </div>
 
         <div id="secao-temperatura">
-            <h2 style="margin-top:0; background: var(--accent); color: #000; border-left-color: #000;">
-                <i class="fa-solid fa-thermometer-half"></i> Dados de Telemetria Térmica
-            </h2>
-            <div class="temp-grid">
-                <div class="field"><label>Temp. Atual</label><input type="text" placeholder="Ex: 58°C"></div>
-                <div class="field"><label>Temp. Padrão</label><input type="text" placeholder="Ex: 35°C a 42°C"></div>
-                <div class="field"><label>Status</label><input type="text" placeholder="Ex: Temperatura elevada"></div>
-            </div>
-            <h2 style="font-size: 11px; margin-top: 15px;">Histórico de Comprovação</h2>
-            <div class="content-box" contenteditable="true" style="min-height: 50px; background: #fff;">
-                Insira aqui o histórico de logs ou prints de temperatura...
+            <h2 style="margin-top:0; background: var(--accent); color: #000; border-left: none;">DADOS TÉRMICOS</h2>
+            <div class="info-grid">
+                <div class="field"><label>Temp. Atual</label><input type="text" placeholder="-- °C"></div>
+                <div class="field"><label>Temp. Nominal</label><input type="text" placeholder="-- °C"></div>
+                <div class="field"><label>Alarme Ativo</label><input type="text" placeholder="Sim/Não"></div>
             </div>
         </div>
 
-        <h2>Informações do Ativo</h2>
+        <h2>Detalhes da Localização</h2>
         <div class="info-grid">
-            <div class="field"><label>Equipamento / Host</label><input type="text" placeholder="Ex: OLT-CORE-01"></div>
-            <div class="field"><label>Localidade</label><input type="text" placeholder="Ex: POP Sobral"></div>
+            <div class="field"><label>Site / POP</label><input type="text" placeholder="Nome do Local"></div>
+            <div class="field"><label>Slot / Porta / PON</label><input type="text" placeholder="0/0/0"></div>
+            <div class="field"><label>Coordenadas</label><input type="text" placeholder="Link Maps"></div>
         </div>
 
-        <h2>Diagnóstico Técnico</h2>
+        <h2>Diagnóstico NOC</h2>
         <div class="content-box" contenteditable="true">
-            Descreva detalhadamente o que foi identificado...
+            Insira o diagnóstico técnico aqui...
         </div>
 
-        <h2>Evidências Visuais (Prints/Fotos)</h2>
+        <h2>Evidências Visuais</h2>
         <div id="evidenceContainer" class="evidence-container">
-            <!-- Imagens aparecerão aqui -->
+            <!-- Imagens -->
         </div>
 
-        <h2 style="margin-top: 20px;">Ações Solicitadas</h2>
-        <div class="content-box" contenteditable="true" style="border: 2px dashed var(--externa); font-weight: bold; color: #333;">
-            Ex: Realizar inspeção física no rack / Verificar fusão no DIO...
+        <h2>Ações Solicitadas</h2>
+        <div class="content-box" contenteditable="true" style="border: 1.5px solid var(--externa); color: #333; font-weight: bold;">
+            - Verificar...
         </div>
 
-        <footer style="margin-top: auto; border-top: 1px solid #ccc; padding-top: 10px; font-size: 11px; display: flex; justify-content: space-between;">
-            <div><strong>NOC - Online Telecom</strong></div>
-            <div>Documento Interno</div>
+        <footer style="margin-top: auto; border-top: 1px solid #eee; padding-top: 8px; font-size: 10px; display: flex; justify-content: space-between; color: #777;">
+            <span>Gerado por: NOC Online Telecom</span>
+            <span>Documento de Uso Técnico</span>
         </footer>
     </div>
 
     <script>
-        // Data Atual
+        // Data Atual automática
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('dataAtual').value = now.toISOString().slice(0,16);
@@ -193,8 +199,8 @@
         }
 
         function toggleSections() {
-            document.getElementById('secao-temperatura').style.display = 
-                document.getElementById('tipoFalha').value === 'temperatura' ? 'block' : 'none';
+            const isTemp = document.getElementById('tipoFalha').value === 'temperatura';
+            document.getElementById('secao-temperatura').style.display = isTemp ? 'block' : 'none';
         }
 
         function handleImages(input) {
@@ -207,7 +213,7 @@
                         wrapper.className = 'image-wrapper';
                         wrapper.innerHTML = `
                             <img src="${e.target.result}">
-                            <button class="remove-btn" onclick="this.parentElement.remove()">REMOVER</button>
+                            <button class="remove-btn" onclick="this.parentElement.remove()" style="background:red; color:white; border:none; padding:4px; cursor:pointer; font-size:10px; margin-top:5px;">REMOVER</button>
                         `;
                         container.appendChild(wrapper);
                     };
