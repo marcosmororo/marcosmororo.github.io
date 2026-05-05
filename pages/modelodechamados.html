@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despacho de Falha | NOC</title>
+    <style>
+        :root {
+            --primary-color: #004085;
+            --externa-color: #d9534f;
+            --interna-color: #02b3e4;
+            --border-color: #dee2e6;
+            --bg-gray: #f8f9fa;
+        }
+
+        @page { size: A4; margin: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #525659;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .report-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            position: relative;
+            margin: 10mm 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Identificação de Equipe Dinâmica */
+        .team-banner {
+            width: 100%;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            border-radius: 4px;
+        }
+        .bg-externa { background: var(--externa-color); }
+        .bg-interna { background: var(--interna-color); }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo-area img { max-height: 50px; }
+        
+        .title-area h1 { margin: 0; font-size: 20px; color: var(--primary-color); }
+
+        /* Formulário */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .field { border: 1px solid var(--border-color); padding: 8px; border-radius: 4px; }
+        .field label {
+            display: block;
+            font-size: 9px;
+            color: #666;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+        .field input, .field select {
+            border: none; width: 100%; font-size: 13px; outline: none; font-weight: 600;
+        }
+
+        h2 {
+            font-size: 13px;
+            background: var(--bg-gray);
+            border-left: 4px solid var(--primary-color);
+            padding: 5px 10px;
+            margin: 15px 0 10px 0;
+        }
+
+        .content-box {
+            border: 1px solid #eee;
+            padding: 10px;
+            min-height: 60px;
+            font-size: 13px;
+            line-height: 1.4;
+            outline: none;
+            background: #fff;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Toolbar Fixa */
+        .toolbar {
+            position: fixed; top: 20px; right: 20px; background: white;
+            padding: 15px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 180px; z-index: 999;
+        }
+        .toolbar button {
+            width: 100%; padding: 8px; margin-bottom: 8px;
+            font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
+        }
+        .btn-print { background: #28a745; color: white; }
+        .btn-ext { background: var(--externa-color); color: white; }
+        .btn-int { background: var(--interna-color); color: white; }
+
+        @media print {
+            body { background: none; }
+            .toolbar, .remove-btn { display: none !important; }
+            .report-page { box-shadow: none; margin: 0; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h4 style="margin:0 0 10px 0;">Delegar Para:</h4>
+        <button class="btn-ext" onclick="setTeam('externa')">REDE EXTERNA</button>
+        <button class="btn-int" onclick="setTeam('interna')">REDE INTERNA</button>
+        <hr>
+        <button class="btn-print" onclick="window.print()">GERAR ORDEM (PDF)</button>
+    </div>
+
+    <div class="report-page" id="mainPage">
+        <div id="teamTag" class="team-banner bg-externa">Ordem de Serviço - Rede Externa</div>
+
+        <header>
+            <div class="logo-area">
+                <img src="../assets/img/online.png" alt="Logo">
+            </div>
+            <div class="title-area">
+                <h1>Abertura de Incidente Técnico</h1>
+            </div>
+        </header>
+
+        <div class="info-grid">
+            <div class="field"><label>Protocolo</label><input type="text" placeholder="Ex: 20240505-001"></div>
+            <div class="field">
+                <label>Tipo de Falha</label>
+                <select>
+                    <option>Rompimento de Fibra</option>
+                    <option>Alta Temperatura</option>
+                    <option>Atenuação Crítica</option>
+                    <option>Erros de Interface (CRC)</option>
+                    <option>Indisponibilidade (Down)</option>
+                    <option>Falha de Equipamento</option>
+                </select>
+            </div>
+            <div class="field"><label>Data/Hora</label><input type="datetime-local"></div>
+        </div>
+
+        <h2>Localização e Identificação</h2>
+        <div class="info-grid">
+            <div class="field"><label>Elemento/Host</label><input type="text" placeholder="Ex: OLT-VZ-01"></div>
+            <div class="field"><label>Slot/Porta/PON</label><input type="text" placeholder="Ex: 0/1/12"></div>
+            <div class="field"><label>Cidade/Bairro</label><input type="text" placeholder="Ex: Varjota - Centro"></div>
+        </div>
+
+        <h2>Diagnóstico NOC (Leituras Atuais)</h2>
+        <div class="stats-grid">
+            <div class="field"><label>Temperatura</label><input type="text" placeholder="-- °C"></div>
+            <div class="field"><label>Sinal (RX/TX)</label><input type="text" placeholder="-00.00 dBm"></div>
+            <div class="field"><label>Distância (OTDR)</label><input type="text" placeholder="0.0 km"></div>
+            <div class="field"><label>Impacto</label><input type="text" placeholder="Nº Clientes"></div>
+        </div>
+
+        <h2>Descrição do Problema</h2>
+        <div class="content-box" contenteditable="true">
+            Descreva aqui os detalhes da falha observada pelo monitoramento...
+        </div>
+
+        <h2>Coordenadas / Referência</h2>
+        <div class="content-box" contenteditable="true">
+            Insira o link do Google Maps ou coordenadas decimais...
+        </div>
+
+        <h2>Ações Recomendadas</h2>
+        <div class="content-box" contenteditable="true" style="color: #d9534f; font-weight: bold;">
+            Ex: Realizar fusão na caixa de emenda CE-04 / Verificar jumper no DIO...
+        </div>
+
+        <footer style="margin-top: auto; border-top: 1px solid #ccc; padding-top: 10px; font-size: 10px; display: flex; justify-content: space-between;">
+            <div><strong>NOC - Online Telecom</strong><br>Gerado em: <span id="currentDate"></span></div>
+            <div style="text-align: right;">Assinatura Técnico NOC</div>
+        </footer>
+    </div>
+
+    <script>
+        function setTeam(team) {
+            const tag = document.getElementById('teamTag');
+            if(team === 'externa') {
+                tag.className = 'team-banner bg-externa';
+                tag.innerText = 'Ordem de Serviço - Rede Externa';
+                document.title = "OS_REDE_EXTERNA_" + Date.now();
+            } else {
+                tag.className = 'team-banner bg-interna';
+                tag.innerText = 'Ordem de Serviço - Rede Interna';
+                document.title = "OS_REDE_INTERNA_" + Date.now();
+            }
+        }
+
+        // Data automática no rodapé
+        document.getElementById('currentDate').innerText = new Date().toLocaleString();
+    </script>
+</body>
+</html>
