@@ -15,7 +15,25 @@
             --danger: #ef4444;
         }
 
-        @page { size: A4; margin: 0; }
+        /* Configuração de Impressão para evitar cortes */
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .toolbar, .remove-btn { display: none !important; }
+            .report-page { 
+                margin: 0 !important; 
+                box-shadow: none !important; 
+                width: 100% !important;
+                padding: 10mm !important;
+            }
+            .image-card { 
+                page-break-inside: avoid; /* Não corta a imagem no meio da página */
+                break-inside: avoid;
+                margin-bottom: 20px;
+            }
+            .terminal-container { border: 1px solid #ccc !important; }
+            .terminal-body { color: black !important; background: white !important; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
 
         body {
             font-family: 'Inter', system-ui, sans-serif;
@@ -41,126 +59,136 @@
 
         .report-page {
             background: white; width: 210mm; min-height: 297mm;
-            padding: 20mm; margin: 70px auto 30px auto;
+            padding: 15mm; margin: 70px auto 30px auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             box-sizing: border-box;
         }
 
+        /* Cabeçalho com Logo */
         .header {
-            display: flex; justify-content: space-between; align-items: flex-end;
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 4px solid var(--noc-dark);
-            padding-bottom: 10px; margin-bottom: 25px;
+            padding-bottom: 15px; margin-bottom: 20px;
         }
 
-        .header h1 { margin: 0; font-size: 24px; letter-spacing: -0.5px; }
-        .header span { color: var(--noc-accent); font-weight: 800; }
+        .header img { height: 50px; width: auto; }
+        .header-title { text-align: right; }
+        .header-title h1 { margin: 0; font-size: 22px; letter-spacing: -0.5px; }
+        .header-title span { color: var(--noc-accent); font-weight: 800; }
 
-        /* Grid Ajustada */
-        .full-field { border-bottom: 2px solid var(--border-color); padding: 8px 0; margin-bottom: 15px; }
-        
-        .info-grid {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 20px; margin-bottom: 20px;
+        /* Blocos de Informação */
+        .section-box {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 15px; margin-bottom: 15px;
+            background: #f8fafc; padding: 15px; border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
-        .field { border-bottom: 2px solid var(--border-color); padding: 8px 0; }
+        .field { display: flex; flex-direction: column; }
+        .field.full { grid-column: span 3; }
         
         label {
-            display: block; font-size: 10px; color: #64748b;
-            font-weight: 700; text-transform: uppercase; margin-bottom: 5px;
+            font-size: 9px; color: #64748b;
+            font-weight: 800; text-transform: uppercase; margin-bottom: 4px;
         }
 
         input, select {
-            border: none; width: 100%; font-size: 15px; font-weight: 600;
-            background: transparent; outline: none; color: #0f172a;
+            border: none; border-bottom: 1px solid #cbd5e1; width: 100%; 
+            font-size: 14px; font-weight: 600; background: transparent; 
+            outline: none; color: #0f172a; padding: 2px 0;
         }
 
-        /* Terminal */
+        /* Terminal Estilizado */
         .terminal-container {
-            background: var(--terminal-bg); border-radius: 8px;
-            margin-bottom: 25px; overflow: hidden;
-            border-left: 6px solid var(--noc-accent);
+            background: var(--terminal-bg); border-radius: 6px;
+            margin-bottom: 20px; overflow: hidden;
+            border-left: 5px solid var(--noc-accent);
         }
 
         .terminal-header {
-            background: #0f172a; padding: 8px 15px;
-            font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between;
+            background: #0f172a; padding: 6px 12px;
+            font-size: 10px; color: #94a3b8; display: flex; justify-content: space-between;
         }
 
         .terminal-body {
-            padding: 15px; color: var(--terminal-text);
-            font-family: 'Cascadia Code', 'Consolas', monospace;
-            font-size: 13px; min-height: 120px; outline: none;
+            padding: 12px; color: var(--terminal-text);
+            font-family: 'Consolas', monospace;
+            font-size: 12px; min-height: 80px; outline: none;
         }
 
         h2 {
-            font-size: 14px; text-transform: uppercase; color: var(--noc-dark);
-            margin: 25px 0 12px 0; display: flex; align-items: center; gap: 10px;
+            font-size: 13px; text-transform: uppercase; color: var(--noc-dark);
+            margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px;
+            border-left: 3px solid var(--noc-accent); padding-left: 10px;
         }
 
         .content-box {
             border: 1px solid var(--border-color); border-radius: 6px;
-            padding: 15px; font-size: 14px; line-height: 1.6;
-            min-height: 100px; background: #f8fafc;
+            padding: 12px; font-size: 13px; line-height: 1.5;
+            min-height: 60px; background: #fff;
         }
 
-        /* Evidências Reais */
-        .evidence-full { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+        /* Evidências */
+        .evidence-full { display: flex; flex-direction: column; gap: 15px; width: 100%; }
         .image-card {
-            width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;
-            overflow: hidden; position: relative; background: #fff;
+            width: 100%; border: 1px solid #e2e8f0; border-radius: 6px;
+            position: relative; background: #fff;
         }
         .image-card img { width: 100%; height: auto; display: block; }
 
         .remove-btn {
             position: absolute; top: 10px; right: 10px;
             background: var(--danger); color: white; border: none;
-            padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;
+            padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 10px;
         }
 
-        @media print {
-            body { background: white; }
-            .toolbar, .remove-btn { display: none !important; }
-            .report-page { margin: 0; box-shadow: none; width: 210mm; }
-            .terminal-container { border: 1px solid #ccc; }
-            .terminal-body { color: black !important; }
+        footer {
+            margin-top: 30px; border-top: 1px solid #e2e8f0;
+            padding-top: 10px; font-size: 10px; color: #94a3b8;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
     <div class="toolbar">
-        <button onclick="document.getElementById('fileInput').click()"><i class="fa fa-image"></i> ADICIONAR EVIDÊNCIA</button>
-        <button style="background: var(--noc-accent);" onclick="window.print()"><i class="fa fa-print"></i> GERAR RELATÓRIO</button>
+        <button onclick="document.getElementById('fileInput').click()"><i class="fa fa-image"></i> ANEXAR IMAGEM</button>
+        <button style="background: var(--noc-accent);" onclick="window.print()"><i class="fa fa-print"></i> IMPRIMIR / PDF</button>
         <input type="file" id="fileInput" style="display:none" accept="image/*" multiple onchange="handleImages(this)">
     </div>
 
     <div class="report-page">
         
         <div class="header">
-            <h1>INCIDENT <span>REPORT</span></h1>
-            <div style="text-align: right; font-size: 12px; font-weight: bold; color: #64748b;">NOC OPERATIONAL DATA</div>
+            <img src="../assets/img/online.png" alt="Logo NOC" onerror="this.style.display='none'">
+            <div class="header-title">
+                <h1>INCIDENT <span>REPORT</span></h1>
+                <small>NETWORK OPERATIONS CENTER</small>
+            </div>
         </div>
 
-        <!-- Host agora tem largura total para aceitar múltiplos equipamentos -->
-        <div class="full-field">
-            <label>Equipamento(s) / Host(s) Afetado(s)</label>
-            <input type="text" placeholder="Ex: OLT-CORE-01 / SWITCH-DIST-02 (Coloque quantos precisar)">
-        </div>
-
-        <div class="info-grid">
+        <!-- Dados Principais e Analista Reorganizados -->
+        <div class="section-box">
+            <div class="field full">
+                <label>Equipamento(s) / Host(s) Afetado(s)</label>
+                <input type="text" placeholder="Nome do Host ou IP do Equipamento">
+            </div>
             <div class="field">
-                <label>ID do Protocolo</label>
+                <label>Analista Responsável</label>
+                <input type="text" placeholder="Nome do Analista" style="color: var(--noc-accent);">
+            </div>
+            <div class="field">
+                <label>ID Protocolo</label>
                 <input type="text" placeholder="INC-2026-0000">
             </div>
             <div class="field">
-                <label>Data / Hora Detecção</label>
+                <label>Data/Hora Detecção</label>
                 <input type="datetime-local" id="dataAtual">
             </div>
         </div>
 
-        <div class="info-grid">
-            <div class="field">
+        <div class="section-box">
+            <div class="field" style="grid-column: span 2;">
                 <label>Tipo do Evento</label>
                 <select id="tipoEvento">
                     <option value="rompimento">Rompimento de Fibra Óptica</option>
@@ -174,50 +202,45 @@
             <div class="field">
                 <label>Severidade</label>
                 <select>
-                    <option value="p1">CRÍTICO (Indisponibilidade Total)</option>
-                    <option value="p2">ALTO (Parcial / Redundância)</option>
-                    <option value="p3">MÉDIO (Degradação de Serviço)</option>
+                    <option value="p1">P1 - CRÍTICO</option>
+                    <option value="p2">P2 - ALTO</option>
+                    <option value="p3">P3 - MÉDIO</option>
                 </select>
             </div>
         </div>
 
-        <h2><i class="fa fa-terminal"></i> Logs e Comandos (CLI Output)</h2>
+        <h2><i class="fa fa-terminal"></i> Evidência em Linha de Comando (CLI)</h2>
         <div class="terminal-container">
-            <div class="terminal-header">
-                <span>TERMINAL_SESSION@NOC</span>
-                <span>SSH_OUTPUT</span>
-            </div>
-            <div class="terminal-body" contenteditable="true">
-# Cole aqui as saídas do equipamento (show int desc, display interface brief, ping...)
-            </div>
+            <div class="terminal-header"><span>SSH_SESSION</span><span>RAW_LOG</span></div>
+            <div class="terminal-body" contenteditable="true"># Cole o output aqui...</div>
         </div>
 
-        <h2><i class="fa fa-edit"></i> Diagnóstico do Analista</h2>
-        <div class="content-box" contenteditable="true">
-            Descreva aqui o que foi identificado no monitoramento...
-        </div>
+        <h2><i class="fa fa-search"></i> Diagnóstico e Observações</h2>
+        <div class="content-box" contenteditable="true"></div>
 
-        <h2><i class="fa fa-chart-bar"></i> Evidências (Gráficos / Fotos)</h2>
+        <h2><i class="fa fa-image"></i> Evidências Visuais (Prints / Fotos)</h2>
         <div id="evidenceContainer" class="evidence-full">
-            <!-- Imagens em tamanho grande -->
+            <!-- Imagens renderizadas aqui -->
         </div>
 
-        <h2 style="color: var(--danger);"><i class="fa fa-exclamation-circle"></i> Ação Corretiva Solicitada</h2>
+        <h2 style="color: var(--danger); border-left-color: var(--danger);">
+            <i class="fa fa-wrench"></i> Ação Corretiva Solicitada
+        </h2>
         <div class="content-box" style="border-color: var(--danger); background: #fffafb;" contenteditable="true">
-            - 
+            • 
         </div>
 
-        <footer style="margin-top: 40px; border-top: 2px solid var(--border-color); padding-top: 10px; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between;">
-            <span>Analista: <strong contenteditable="true">[NOME]</strong></span>
-            <span id="printDate"></span>
+        <footer>
+            <span id="printDate"></span> | Sistema de Relatórios NOC
         </footer>
     </div>
 
     <script>
+        // Setar data atual
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('dataAtual').value = now.toISOString().slice(0,16);
-        document.getElementById('printDate').innerText = "Impresso em: " + new Date().toLocaleString();
+        document.getElementById('printDate').innerText = "Relatório gerado em: " + new Date().toLocaleString();
 
         function handleImages(input) {
             const container = document.getElementById('evidenceContainer');
