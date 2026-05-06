@@ -24,7 +24,6 @@
             color: #1e293b;
         }
 
-        /* Toolbar Superior */
         .toolbar {
             position: fixed; top: 0; left: 0; right: 0; 
             background: var(--noc-dark); color: white;
@@ -40,7 +39,6 @@
 
         .toolbar button:hover { background: var(--noc-accent); }
 
-        /* Página A4 */
         .report-page {
             background: white; width: 210mm; min-height: 297mm;
             padding: 20mm; margin: 70px auto 30px auto;
@@ -48,7 +46,6 @@
             box-sizing: border-box;
         }
 
-        /* Cabeçalho */
         .header {
             display: flex; justify-content: space-between; align-items: flex-end;
             border-bottom: 4px solid var(--noc-dark);
@@ -58,24 +55,27 @@
         .header h1 { margin: 0; font-size: 24px; letter-spacing: -0.5px; }
         .header span { color: var(--noc-accent); font-weight: 800; }
 
-        /* Grid de Informações */
+        /* Grid Ajustada */
+        .full-field { border-bottom: 2px solid var(--border-color); padding: 8px 0; margin-bottom: 15px; }
+        
         .info-grid {
-            display: grid; grid-template-columns: 2fr 1fr 1.5fr;
-            gap: 15px; margin-bottom: 20px;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 20px; margin-bottom: 20px;
         }
 
         .field { border-bottom: 2px solid var(--border-color); padding: 8px 0; }
-        .field label {
+        
+        label {
             display: block; font-size: 10px; color: #64748b;
             font-weight: 700; text-transform: uppercase; margin-bottom: 5px;
         }
 
-        .field input, .field select {
+        input, select {
             border: none; width: 100%; font-size: 15px; font-weight: 600;
             background: transparent; outline: none; color: #0f172a;
         }
 
-        /* Terminal de Comandos */
+        /* Terminal */
         .terminal-container {
             background: var(--terminal-bg); border-radius: 8px;
             margin-bottom: 25px; overflow: hidden;
@@ -104,16 +104,12 @@
             min-height: 100px; background: #f8fafc;
         }
 
-        /* Evidências Grandes */
-        .evidence-full {
-            display: flex; flex-direction: column; gap: 20px; width: 100%;
-        }
-
+        /* Evidências Reais */
+        .evidence-full { display: flex; flex-direction: column; gap: 20px; width: 100%; }
         .image-card {
-            width: 100%; border: 2px solid #f1f5f9; border-radius: 8px;
+            width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;
             overflow: hidden; position: relative; background: #fff;
         }
-
         .image-card img { width: 100%; height: auto; display: block; }
 
         .remove-btn {
@@ -146,14 +142,16 @@
             <div style="text-align: right; font-size: 12px; font-weight: bold; color: #64748b;">NOC OPERATIONAL DATA</div>
         </div>
 
+        <!-- Host agora tem largura total para aceitar múltiplos equipamentos -->
+        <div class="full-field">
+            <label>Equipamento(s) / Host(s) Afetado(s)</label>
+            <input type="text" placeholder="Ex: OLT-CORE-01 / SWITCH-DIST-02 (Coloque quantos precisar)">
+        </div>
+
         <div class="info-grid">
             <div class="field">
-                <label>Host / Equipamento</label>
-                <input type="text" placeholder="Ex: OLT-CORE-SOBRAL-01">
-            </div>
-            <div class="field">
-                <label>Protocolo</label>
-                <input type="text" placeholder="INC-2026-0001">
+                <label>ID do Protocolo</label>
+                <input type="text" placeholder="INC-2026-0000">
             </div>
             <div class="field">
                 <label>Data / Hora Detecção</label>
@@ -162,64 +160,64 @@
         </div>
 
         <div class="info-grid">
-            <div class="field" style="grid-column: span 2;">
-                <label>Tipo do Evento / Falha</label>
+            <div class="field">
+                <label>Tipo do Evento</label>
                 <select id="tipoEvento">
-                    <option value="fibra">Rompimento de Fibra Óptica</option>
-                    <option value="temperatura">Alerta de Alta Temperatura (High Temp)</option>
-                    <option value="erro">Erros de CRC / Descarte de Pacotes</option>
-                    <option value="down">Equipamento Down / Perda de Gerência</option>
-                    <option value="potencia">Degradação de Sinal / Baixa Potência</option>
+                    <option value="rompimento">Rompimento de Fibra Óptica</option>
+                    <option value="trecho_down">Trecho Down / Backbone Offline</option>
+                    <option value="temperatura">Alta Temperatura (High Temp)</option>
+                    <option value="erro">Erros de CRC / Packet Loss</option>
+                    <option value="down">Perda de Gerência (Host Down)</option>
+                    <option value="potencia">Degradação de Sinal (Baixa Potência)</option>
                 </select>
             </div>
             <div class="field">
-                <label>Nível de Impacto</label>
+                <label>Severidade</label>
                 <select>
-                    <option value="p1">P1 - CRÍTICO (Total)</option>
-                    <option value="p2">P2 - ALTO (Parcial)</option>
-                    <option value="p3">P3 - MÉDIO (Degradação)</option>
+                    <option value="p1">CRÍTICO (Indisponibilidade Total)</option>
+                    <option value="p2">ALTO (Parcial / Redundância)</option>
+                    <option value="p3">MÉDIO (Degradação de Serviço)</option>
                 </select>
             </div>
         </div>
 
-        <h2><i class="fa fa-terminal"></i> Logs e Saída de Comandos</h2>
+        <h2><i class="fa fa-terminal"></i> Logs e Comandos (CLI Output)</h2>
         <div class="terminal-container">
             <div class="terminal-header">
-                <span>CONSOLA@NOC:~#</span>
-                <span>UTF-8 / SSH-v2</span>
+                <span>TERMINAL_SESSION@NOC</span>
+                <span>SSH_OUTPUT</span>
             </div>
             <div class="terminal-body" contenteditable="true">
-# Cole aqui os logs do terminal (show interface, display optical-info, etc...)
+# Cole aqui as saídas do equipamento (show int desc, display interface brief, ping...)
             </div>
         </div>
 
-        <h2><i class="fa fa-file-medical-alt"></i> Diagnóstico Técnico</h2>
+        <h2><i class="fa fa-edit"></i> Diagnóstico do Analista</h2>
         <div class="content-box" contenteditable="true">
-            Descreva o comportamento observado no monitoramento e os testes realizados...
+            Descreva aqui o que foi identificado no monitoramento...
         </div>
 
-        <h2><i class="fa fa-chart-line"></i> Evidências Fotográficas / Gráficos</h2>
+        <h2><i class="fa fa-chart-bar"></i> Evidências (Gráficos / Fotos)</h2>
         <div id="evidenceContainer" class="evidence-full">
-            <!-- As imagens aparecerão aqui em tamanho grande -->
+            <!-- Imagens em tamanho grande -->
         </div>
 
-        <h2 style="color: var(--danger);"><i class="fa fa-tools"></i> Ação Corretiva Solicitada</h2>
+        <h2 style="color: var(--danger);"><i class="fa fa-exclamation-circle"></i> Ação Corretiva Solicitada</h2>
         <div class="content-box" style="border-color: var(--danger); background: #fffafb;" contenteditable="true">
             - 
         </div>
 
         <footer style="margin-top: 40px; border-top: 2px solid var(--border-color); padding-top: 10px; font-size: 11px; color: #94a3b8; display: flex; justify-content: space-between;">
-            <span>Analista Responsável: <strong>[NOME]</strong></span>
+            <span>Analista: <strong contenteditable="true">[NOME]</strong></span>
             <span id="printDate"></span>
         </footer>
     </div>
 
     <script>
-        // Data e Hora Atual
         const now = new Date();
         now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
         document.getElementById('dataAtual').value = now.toISOString().slice(0,16);
-        document.getElementById('printDate').innerText = "Gerado em: " + new Date().toLocaleString();
+        document.getElementById('printDate').innerText = "Impresso em: " + new Date().toLocaleString();
 
         function handleImages(input) {
             const container = document.getElementById('evidenceContainer');
