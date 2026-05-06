@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Produtividade - Marcos Renan</title>
+    <title>ProdFlow Pro - Marcos Renan</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
@@ -21,6 +21,7 @@
         /* Header */
         .header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
         .header h1 { margin: 0; font-weight: 800; letter-spacing: -1px; font-size: 1.8rem; }
+        .header span { color: var(--primary); }
         #clock-container { text-align: right; }
         #clock { font-family: 'JetBrains Mono'; color: var(--primary); font-size: 1.5rem; display: block; }
         #date-display { font-size: 0.85rem; color: var(--text-dim); }
@@ -44,74 +45,82 @@
         .pomo-controls button { background: #010409; border: 1px solid var(--pomodoro); color: var(--pomodoro); padding: 6px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
         .pomo-controls button:hover { background: var(--pomodoro); color: white; }
 
-        /* Main Grid */
+        /* Layout Grid */
         .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
         @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
 
-        /* Forms */
+        /* Form */
         .form-container { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 12px; position: sticky; top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
-        label { font-size: 0.7rem; font-weight: bold; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; }
-        input, select { background: #010409; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px; outline: none; transition: 0.2s; font-size: 0.9rem; }
-        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.1); }
-        .btn-add { width: 100%; background: var(--primary); color: #0d1117; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn-add:hover { filter: brightness(1.1); transform: translateY(-2px); }
-
-        /* Hidden Fields */
-        #meeting-fields { display: none; background: rgba(242, 204, 96, 0.05); padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--reuniao); }
-
-        /* Tasks */
         .section-title { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
         
-        .task-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; transition: 0.2s; }
-        .task-card:hover { border-color: var(--text-dim); }
-        .task-category-tag { position: absolute; left: 0; top: 0; bottom: 0; width: 5px; }
+        .input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        label { font-size: 0.7rem; font-weight: bold; color: var(--text-dim); text-transform: uppercase; }
+        input, select { background: #010409; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 8px; outline: none; transition: 0.2s; font-size: 0.9rem; }
+        input:focus { border-color: var(--primary); }
+        .btn-add { width: 100%; background: var(--primary); color: #0d1117; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-add:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        #meeting-fields { display: none; background: rgba(242, 204, 96, 0.05); padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--reuniao); }
+
+        /* Task Cards */
+        .task-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; transition: 0.3s; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .task-info h3 { margin: 0 0 8px 0; font-size: 1.1rem; }
-        .task-meta { font-size: 0.75rem; color: var(--text-dim); display: flex; gap: 15px; align-items: center; }
-        .tag { font-size: 0.65rem; padding: 3px 10px; border-radius: 20px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; display: inline-block; }
-
-        .meeting-date-badge { color: var(--reuniao); font-weight: bold; border: 1px solid var(--reuniao); padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
-
-        .timer-badge { font-family: 'JetBrains Mono'; background: #010409; padding: 4px 8px; border-radius: 4px; color: var(--primary); border: 1px solid #21262d; }
-        .btn-check { background: var(--ok); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; width: 45px; height: 45px; transition: 0.3s; }
-        .btn-check:hover { background: #2ea043; }
-        .btn-delete { background: transparent; color: var(--danger); border: 1px solid var(--danger); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .task-card:hover { border-color: var(--text-dim); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .task-category-tag { position: absolute; left: 0; top: 0; bottom: 0; width: 6px; border-radius: 12px 0 0 12px; }
+        
+        .task-content { flex: 1; }
+        .task-info h3 { margin: 0 0 10px 0; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+        .task-meta { font-size: 0.8rem; color: var(--text-dim); display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        
+        .tag { font-size: 0.65rem; padding: 3px 10px; border-radius: 20px; font-weight: 800; text-transform: uppercase; }
+        
+        /* Links and Badges */
+        .link-badge { background: var(--primary); color: #0d1117 !important; padding: 5px 12px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 6px; transition: 0.2s; }
+        .link-badge:hover { filter: brightness(1.2); }
+        .meeting-badge { background: rgba(242, 204, 96, 0.1); color: var(--reuniao); border: 1px solid var(--reuniao); padding: 4px 10px; border-radius: 6px; font-weight: bold; }
+        
+        .timer-badge { font-family: 'JetBrains Mono'; background: #010409; padding: 4px 10px; border-radius: 6px; color: var(--primary); border: 1px solid var(--border); }
+        
+        .btn-actions { display: flex; gap: 10px; margin-left: 20px; }
+        .btn-check { background: var(--ok); color: white; border: none; width: 45px; height: 45px; border-radius: 10px; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
+        .btn-check:hover { transform: scale(1.1); background: #2ea043; }
+        
+        .history-item { opacity: 0.75; border-left: 2px solid var(--border); }
+        .btn-delete { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 8px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .btn-delete:hover { background: var(--danger); color: white; }
-        
-        .history-item { opacity: 0.8; border-left: 2px solid var(--border); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>PROD<span style="color: var(--primary);">FLOW</span> <span style="font-weight: 300; font-size: 1rem; color: var(--text-dim);">| Marcos Renan</span></h1>
+        <h1>PROD<span>FLOW</span> <small style="font-weight: 300; font-size: 0.9rem; color: var(--text-dim);">| MARCOS RENAN</small></h1>
         <div id="clock-container">
             <span id="clock">00:00:00</span>
             <span id="date-display">...</span>
         </div>
     </div>
 
-    <!-- Stats & Pomodoro -->
+    <!-- Dashboard -->
     <div class="dashboard-row">
         <div class="stats-card">
             <div class="progress-circle-container">
                 <div class="progress-info">
-                    <span><i class="fa-solid fa-bullseye"></i> Meta Diária</span>
+                    <span><i class="fa-solid fa-chart-line"></i> PERFORMANCE DIÁRIA</span>
                     <span id="progress-percent">0%</span>
                 </div>
                 <div class="progress-bar-bg">
                     <div id="progress-fill"></div>
                 </div>
                 <div class="mini-stats">
-                    <span class="mini-badge" id="stat-pending">Pendentes: 0</span>
+                    <span class="mini-badge" id="stat-pending">Ativas: 0</span>
                     <span class="mini-badge" id="stat-done">Concluídas: 0</span>
                 </div>
             </div>
-            <div style="border-left: 1px solid var(--border); padding-left: 25px; min-width: 150px;">
-                <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Foco Acumulado</div>
+            <div style="border-left: 1px solid var(--border); padding-left: 25px; min-width: 140px;">
+                <div style="font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: bold;">Tempo Focado</div>
                 <div id="total-focus-time" style="font-family: 'JetBrains Mono'; font-size: 1.4rem; color: var(--primary); font-weight: bold;">00:00:00</div>
             </div>
         </div>
@@ -127,35 +136,33 @@
 
     <div class="main-grid">
         <div class="left-col">
-            <div class="section-title">Atividades em Foco</div>
+            <div class="section-title">Em Execução</div>
             <div id="active-tasks"></div>
 
-            <div class="section-title" style="margin-top: 40px;">Logs de Hoje</div>
+            <div class="section-title" style="margin-top: 40px;">Histórico de Hoje</div>
             <div id="completed-tasks"></div>
         </div>
 
-        <!-- Cadastro -->
         <div class="right-col">
             <div class="form-container">
-                <div class="section-title">Cadastrar Tarefa</div>
+                <div class="section-title">Adicionar Tarefa</div>
                 
                 <div class="input-group">
-                    <label>Título da Atividade</label>
-                    <input type="text" id="task-title" placeholder="Ex: Daily Meeting">
+                    <label>O que você vai fazer?</label>
+                    <input type="text" id="task-title" placeholder="Ex: Analisar métricas do Q2">
                 </div>
 
                 <div class="input-group">
                     <label>Categoria</label>
                     <select id="task-category" onchange="toggleMeetingFields()">
                         <option value="Trabalho">Trabalho</option>
-                        <option value="Reuniao">Reunião / Evento</option>
+                        <option value="Reuniao">🎥 Reunião / Call</option>
                         <option value="Estudo">Estudo</option>
                         <option value="Pessoal">Pessoal</option>
                         <option value="Saúde">Saúde</option>
                     </select>
                 </div>
 
-                <!-- Campos específicos para Reunião -->
                 <div id="meeting-fields">
                     <div class="input-group">
                         <label>Data e Hora da Reunião</label>
@@ -164,31 +171,30 @@
                 </div>
 
                 <div class="input-group">
-                    <label>Referência (URL)</label>
-                    <input type="text" id="task-link" placeholder="Link da reunião ou documento">
+                    <label>Link de Acesso (Link da Reunião ou Docs)</label>
+                    <input type="text" id="task-link" placeholder="https://zoom.us/... ou sharepoint...">
                 </div>
 
-                <button class="btn-add" onclick="createTask()">INICIAR AGORA</button>
+                <button class="btn-add" onclick="createTask()">INICIAR ATIVIDADE</button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('proflow_v4')) || { ativas: [], concluidas: [] };
+    let db = JSON.parse(localStorage.getItem('proflow_v5')) || { ativas: [], concluidas: [] };
     let pomoTime = 25 * 60;
     let pomoInterval = null;
     let isPaused = true;
 
     function save() {
-        localStorage.setItem('proflow_v4', JSON.stringify(db));
+        localStorage.setItem('proflow_v5', JSON.stringify(db));
         render();
     }
 
     function toggleMeetingFields() {
         const cat = document.getElementById('task-category').value;
-        const fields = document.getElementById('meeting-fields');
-        fields.style.display = (cat === 'Reuniao') ? 'block' : 'none';
+        document.getElementById('meeting-fields').style.display = (cat === 'Reuniao') ? 'block' : 'none';
     }
 
     function createTask() {
@@ -197,14 +203,14 @@
         const link = document.getElementById('task-link').value;
         const mTime = document.getElementById('meeting-time').value;
         
-        if(!title) return alert("Dê um nome para a tarefa!");
+        if(!title) return alert("Por favor, descreva a tarefa.");
 
         const agora = new Date();
         const novaTarefa = {
             id: Date.now(),
             titulo: title,
             categoria: category,
-            link: link,
+            link: link, // Aqui salvamos o link
             meetingTime: category === 'Reuniao' ? mTime : null,
             inicioRaw: agora.getTime(),
             inicio: agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}),
@@ -235,13 +241,13 @@
     }
 
     function deleteTask(id, lista) {
-        if(confirm("Deseja apagar este registro?")) {
+        if(confirm("Excluir este registro permanentemente?")) {
             db[lista] = db[lista].filter(t => t.id !== id);
             save();
         }
     }
 
-    // Pomodoro Logic
+    // Pomodoro
     function togglePomodoro() {
         const btn = document.getElementById('pomo-btn');
         if(isPaused) {
@@ -253,7 +259,6 @@
                 if(pomoTime <= 0) {
                     clearInterval(pomoInterval);
                     new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play();
-                    alert("Pomodoro Finalizado! Descanse um pouco.");
                     resetPomodoro();
                 }
             }, 1000);
@@ -284,7 +289,7 @@
         
         document.getElementById('progress-percent').innerText = percent + '%';
         document.getElementById('progress-fill').style.width = percent + '%';
-        document.getElementById('stat-pending').innerText = `Pendentes: ${db.ativas.length}`;
+        document.getElementById('stat-pending').innerText = `Ativas: ${db.ativas.length}`;
         document.getElementById('stat-done').innerText = `Concluídas: ${db.concluidas.length}`;
 
         let totalSegundos = db.concluidas.reduce((acc, t) => acc + (t.duracaoSegundos || 0), 0);
@@ -303,21 +308,29 @@
 
         db.ativas.forEach(t => {
             const catColor = `var(--${t.categoria.toLowerCase()})`;
-            let meetingHtml = t.meetingTime ? `<span class="meeting-date-badge"><i class="fa-regular fa-calendar-days"></i> ${t.meetingTime.replace('T', ' ')}</span>` : '';
+            
+            // Lógica do Link: Se houver link, cria o botão clicável
+            let linkBtn = t.link ? `<a href="${t.link.startsWith('http') ? t.link : 'https://' + t.link}" target="_blank" class="link-badge"><i class="fa-solid fa-video"></i> ACESSAR REUNIÃO / LINK</a>` : '';
+            
+            // Lógica da data da reunião
+            let meetingBadge = t.meetingTime ? `<span class="meeting-badge"><i class="fa-regular fa-calendar-check"></i> ${new Date(t.meetingTime).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</span>` : '';
             
             activeContainer.innerHTML += `
                 <div class="task-card">
                     <div class="task-category-tag" style="background: ${catColor}"></div>
-                    <div class="task-info">
-                        <span class="tag" style="background: ${catColor}22; color: ${catColor}">${t.categoria === 'Reuniao' ? 'Reunião' : t.categoria}</span>
+                    <div class="task-content">
+                        <span class="tag" style="background: ${catColor}22; color: ${catColor}">${t.categoria}</span>
                         <h3>${t.titulo}</h3>
                         <div class="task-meta">
-                            ${meetingHtml}
-                            <span><i class="fa-regular fa-clock"></i> ${t.inicio}</span>
+                            ${meetingBadge}
+                            ${linkBtn}
+                            <span><i class="fa-regular fa-clock"></i> Início: ${t.inicio}</span>
                             <span class="timer-badge" id="timer-${t.id}">00:00:00</span>
                         </div>
                     </div>
-                    <button class="btn-check" onclick="finishTask(${t.id})"><i class="fa-solid fa-check"></i></button>
+                    <div class="btn-actions">
+                        <button class="btn-check" onclick="finishTask(${t.id})"><i class="fa-solid fa-check"></i></button>
+                    </div>
                 </div>
             `;
         });
@@ -327,9 +340,9 @@
             completedContainer.innerHTML += `
                 <div class="task-card history-item">
                     <div class="task-category-tag" style="background: ${catColor}; opacity: 0.5"></div>
-                    <div class="task-info">
+                    <div class="task-content">
                         <span class="tag" style="background: #30363d; color: var(--text-dim)">${t.categoria}</span>
-                        <h3 style="font-size: 0.95rem">${t.titulo}</h3>
+                        <h3 style="font-size: 1rem;">${t.titulo}</h3>
                         <div class="task-meta">
                             <span>Início: ${t.inicio} | Fim: ${t.fim}</span>
                         </div>
@@ -341,7 +354,7 @@
         updateDashboard();
     }
 
-    // Loop Clock e Timers
+    // Loops
     setInterval(() => {
         const agora = new Date();
         document.getElementById('clock').innerText = agora.toLocaleTimeString('pt-BR');
