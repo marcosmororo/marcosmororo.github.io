@@ -3,421 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProdFlow Enterprise | Marcos Renan</title>
+    <title>ProdFlow Elite | Workspace</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0d1117;
-            --card: #161b22;
-            --card-hover: #1c2128;
-            --border: #30363d;
-            --primary: #58a6ff;
-            --primary-muted: rgba(88, 166, 255, 0.15);
-            --success: #238636;
-            --danger: #f85149;
-            --warning: #d29922;
-            --text-main: #e6edf3;
-            --text-secondary: #8b949e;
-            --font-mono: 'JetBrains Mono', monospace;
-            
-            /* Cores de Categoria - Padronizadas */
-            --tag-trabalho: #58a6ff;
-            --tag-reuniao: #d29922;
-            --tag-estudo: #a371f7;
-            --tag-pessoal: #3fb950;
+            --bg: #0d1117; --card: #161b22; --card-hover: #1c2128; --border: #30363d;
+            --primary: #58a6ff; --success: #238636; --danger: #f85149; --warning: #d29922;
+            --text-main: #e6edf3; --text-secondary: #8b949e;
+            --p-high: #ff7b72; --p-medium: #d29922; --p-low: #3fb950;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; transition: background 0.2s, border 0.2s; }
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 24px;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-main); 
+            margin: 0; padding: 24px; display: flex; justify-content: center;
         }
 
-        .container { max-width: 1280px; margin: 0 auto; }
+        .container { width: 100%; max-width: 1300px; }
 
-        /* HEADER PROFISSIONAL */
+        /* HEADER */
         .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px;
         }
-
-        .brand h1 { margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; }
+        .brand h1 { margin: 0; font-size: 1.4rem; font-weight: 700; letter-spacing: -1px; }
         .brand span { color: var(--primary); }
-        .user-info { text-align: right; }
-        #digital-clock { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 500; color: var(--primary); }
-        #current-date { display: block; font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
+        .clock-box { text-align: right; }
+        #digital-clock { font-family: 'JetBrains Mono'; font-size: 1.5rem; color: var(--primary); }
+        #current-date { font-size: 0.8rem; color: var(--text-secondary); }
 
-        /* DASHBOARD GRID */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
+        /* DASHBOARD */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 10px; position: relative; overflow: hidden; }
+        .stat-label { font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; display: block; }
+        .stat-value { font-size: 1.6rem; font-weight: 700; font-family: 'JetBrains Mono'; }
+        .progress-mini { height: 4px; background: #010409; margin-top: 15px; border-radius: 2px; }
+        #progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 1s; }
 
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-        }
+        /* MAIN LAYOUT */
+        .main-layout { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
 
-        .progress-section { display: flex; align-items: center; gap: 32px; }
-        .progress-data { flex: 1; }
-        .progress-header { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; font-weight: 600; }
+        /* FORM */
+        .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; position: sticky; top: 20px; }
+        .panel-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 20px; color: var(--text-secondary); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         
-        .progress-track { background: #010409; height: 8px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
-        #progress-bar { background: var(--primary); height: 100%; width: 0%; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* POMODORO MINIMALISTA */
-        .pomo-container { text-align: center; border-left: 4px solid var(--danger); }
-        .pomo-time { font-family: var(--font-mono); font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-        .pomo-actions { display: flex; gap: 8px; justify-content: center; }
-        .btn-pomo { 
-            background: #21262d; border: 1px solid var(--border); color: var(--text-main);
-            padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600;
+        .field { margin-bottom: 16px; }
+        .field label { display: block; font-size: 0.75rem; margin-bottom: 6px; font-weight: 600; color: var(--text-secondary); }
+        input, select { 
+            width: 100%; background: #010409; border: 1px solid var(--border); color: #fff; 
+            padding: 10px; border-radius: 6px; outline: none; 
         }
-        .btn-pomo:hover { background: #30363d; }
-        .btn-pomo.active { border-color: var(--danger); color: var(--danger); }
+        input:focus { border-color: var(--primary); }
 
-        /* MAIN CONTENT */
-        .content-grid { display: grid; grid-template-columns: 1fr 360px; gap: 32px; }
+        .btn-primary { 
+            width: 100%; background: var(--primary); color: #0d1117; border: none; 
+            padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-top: 10px;
+        }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
         /* TASK CARDS */
-        .task-list-header { 
-            font-size: 0.75rem; color: var(--text-secondary); font-weight: 700; 
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; 
-            display: flex; align-items: center; gap: 8px;
+        .task-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 8px; 
+            padding: 16px; margin-bottom: 12px; display: flex; align-items: center; 
+            position: relative; animation: slideIn 0.3s ease-out;
         }
-        .task-list-header::after { content: ""; flex: 1; height: 1px; background: var(--border); }
-
-        .task-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-        .task-card:hover { border-color: var(--text-secondary); background: var(--card-hover); }
-
-        .task-main { display: flex; flex-direction: column; gap: 8px; flex: 1; }
-        .task-title { margin: 0; font-size: 1rem; font-weight: 600; color: var(--text-main); }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
         
-        .task-meta { display: flex; gap: 16px; align-items: center; font-size: 0.8rem; color: var(--text-secondary); }
-        .badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .priority-indicator { width: 4px; height: 40px; border-radius: 4px; margin-right: 16px; }
+        .task-info { flex: 1; }
+        .task-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .task-title { margin: 0; font-size: 1rem; font-weight: 600; }
+        .p-badge { font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: 800; text-transform: uppercase; }
+
+        .task-footer { display: flex; gap: 15px; font-size: 0.75rem; color: var(--text-secondary); align-items: center; }
+        .link-action { 
+            color: var(--primary); text-decoration: none; font-weight: 700; 
+            display: flex; align-items: center; gap: 4px; background: rgba(88,166,255,0.1);
+            padding: 4px 8px; border-radius: 4px;
+        }
+        .link-action:hover { background: var(--primary); color: #0d1117; }
+
+        .btn-check { 
+            background: var(--success); color: white; border: none; width: 36px; height: 36px; 
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
         
-        /* LINK DE REUNIÃO DESTAQUE */
-        .meeting-link-btn {
-            background: var(--primary-muted);
-            color: var(--primary);
-            text-decoration: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
-        .meeting-link-btn:hover { background: var(--primary); color: #0d1117; border-color: var(--primary); }
+        /* ALERTA REUNIAO */
+        .pulse-alert { animation: pulse 2s infinite; border-color: var(--warning) !important; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(210, 153, 34, 0); } 100% { box-shadow: 0 0 0 0 rgba(210, 153, 34, 0); } }
 
-        .time-counter { font-family: var(--font-mono); color: var(--primary); font-weight: 600; background: #010409; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); }
-
-        .btn-complete {
-            background: var(--success); color: white; border: none; width: 40px; height: 40px;
-            border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-            margin-left: 20px; transition: 0.2s;
-        }
-        .btn-complete:hover { filter: brightness(1.2); transform: scale(1.05); }
-
-        /* FORMULÁRIO LATERAL */
-        .sidebar-form { position: sticky; top: 24px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; }
-        
-        input, select {
-            width: 100%; background: #010409; border: 1px solid var(--border);
-            color: white; padding: 10px 12px; border-radius: 6px; font-size: 0.9rem;
-            outline: none; transition: border-color 0.2s;
-        }
-        input:focus, select:focus { border-color: var(--primary); }
-
-        .btn-submit {
-            width: 100%; background: var(--primary); color: #0d1117; border: none;
-            padding: 12px; border-radius: 6px; font-weight: 700; cursor: pointer;
-            margin-top: 8px; transition: 0.2s;
-        }
-        .btn-submit:hover { filter: brightness(1.1); }
-
-        #meeting-details { display: none; padding: 12px; background: rgba(210, 153, 34, 0.05); border: 1px dashed var(--warning); border-radius: 6px; margin-bottom: 16px; }
-
-        .history-card { opacity: 0.6; padding: 12px 20px; }
-        .btn-clear { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; cursor: pointer; }
-        .btn-clear:hover { background: var(--danger); color: white; }
-
-        @media (max-width: 900px) {
-            .stats-grid, .content-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 1000px) { .main-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header class="app-header">
-        <div class="brand">
-            <h1>PROD<span>FLOW</span> ENTERPRISE</h1>
-        </div>
-        <div class="user-info">
+        <div class="brand"><h1>PROD<span>FLOW</span> ELITE</h1></div>
+        <div class="clock-box">
             <div id="digital-clock">00:00:00</div>
-            <div id="current-date">Carregando data...</div>
+            <div id="current-date">...</div>
         </div>
     </header>
 
-    <div class="stats-grid">
-        <div class="card progress-section">
-            <div class="progress-data">
-                <div class="progress-header">
-                    <span>PRODUTIVIDADE DO DIA</span>
-                    <span id="progress-text">0%</span>
-                </div>
-                <div class="progress-track">
-                    <div id="progress-bar"></div>
-                </div>
-                <div style="display: flex; gap: 16px; margin-top: 12px; font-size: 0.75rem; color: var(--text-secondary);">
-                    <span id="count-active">Ativas: 0</span>
-                    <span id="count-done">Concluídas: 0</span>
-                </div>
-            </div>
-            <div style="text-align: right; border-left: 1px solid var(--border); padding-left: 24px;">
-                <div style="font-size: 0.7rem; font-weight: 600; color: var(--text-secondary);">TEMPO TOTAL FOCADO</div>
-                <div id="total-time-display" style="font-family: var(--font-mono); font-size: 1.25rem; color: var(--primary);">00h 00m</div>
-            </div>
+    <div class="dashboard">
+        <div class="stat-card">
+            <span class="stat-label">Conclusão Geral</span>
+            <div class="stat-value" id="stat-percent">0%</div>
+            <div class="progress-mini"><div id="progress-bar"></div></div>
         </div>
-
-        <div class="card pomo-container">
-            <div class="pomo-time" id="pomo-display">25:00</div>
-            <div class="pomo-actions">
-                <button class="btn-pomo" id="pomo-start-btn" onclick="togglePomodoro()">INICIAR</button>
-                <button class="btn-pomo" onclick="resetPomodoro()">RESET</button>
-            </div>
+        <div class="stat-card">
+            <span class="stat-label">Tempo em Foco (Hoje)</span>
+            <div class="stat-value" id="stat-time">00h 00m</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-label">Tarefas Ativas</span>
+            <div class="stat-value" id="stat-active">0</div>
         </div>
     </div>
 
-    <div class="content-grid">
-        <main>
-            <div class="task-list-header">Tarefas em Execução</div>
-            <div id="active-tasks-container"></div>
+    <div class="main-layout">
+        <div class="content">
+            <div class="panel-title">Fila de Trabalho</div>
+            <div id="active-list"></div>
 
-            <div class="task-list-header" style="margin-top: 40px;">Logs de Atividades Concluídas</div>
-            <div id="history-tasks-container"></div>
-        </main>
+            <div class="panel-title" style="margin-top: 40px;">Concluído</div>
+            <div id="history-list" style="opacity: 0.5;"></div>
+        </div>
 
-        <aside class="sidebar-form">
-            <div class="card">
-                <div class="task-list-header">Nova Atividade</div>
-                
-                <div class="form-group">
-                    <label>Título da tarefa</label>
-                    <input type="text" id="input-title" placeholder="Descreva a atividade...">
+        <aside>
+            <div class="panel">
+                <div class="panel-title">Nova Atividade</div>
+                <div class="field">
+                    <label>O que será feito?</label>
+                    <input type="text" id="in-title" placeholder="Ex: Relatório Mensal">
                 </div>
-
-                <div class="form-group">
-                    <label>Categoria</label>
-                    <select id="input-category" onchange="handleCategoryChange()">
-                        <option value="Trabalho">Trabalho</option>
-                        <option value="Reuniao">Reunião / Call</option>
-                        <option value="Estudo">Estudo</option>
-                        <option value="Pessoal">Pessoal</option>
-                    </select>
-                </div>
-
-                <div id="meeting-details">
-                    <div class="form-group">
-                        <label>Agendamento (Data/Hora)</label>
-                        <input type="datetime-local" id="input-datetime">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="field">
+                        <label>Categoria</label>
+                        <select id="in-cat" onchange="toggleMeeting()">
+                            <option value="Trabalho">Trabalho</option>
+                            <option value="Reuniao">Reunião</option>
+                            <option value="Estudo">Estudo</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Prioridade</label>
+                        <select id="in-prior">
+                            <option value="baixa">Baixa</option>
+                            <option value="media">Média</option>
+                            <option value="alta">Alta</option>
+                        </select>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label>Link de referência / Reunião</label>
-                    <input type="text" id="input-link" placeholder="https://exemplo.com">
+                <div id="meeting-box" style="display:none;" class="field">
+                    <label>Horário da Call</label>
+                    <input type="datetime-local" id="in-time">
                 </div>
-
-                <button class="btn-submit" onclick="addTask()">ADICIONAR À LISTA</button>
+                <div class="field">
+                    <label>Link / Referência</label>
+                    <input type="text" id="in-link" placeholder="https://...">
+                </div>
+                <button class="btn-primary" onclick="addTask()">ADICIONAR À LISTA</button>
             </div>
         </aside>
     </div>
 </div>
 
 <script>
-    let state = JSON.parse(localStorage.getItem('prodflow_enterprise_v1')) || { active: [], history: [] };
-    let pomoSeconds = 1500;
-    let pomoRunning = false;
-    let pomoInterval;
+    let db = JSON.parse(localStorage.getItem('proflow_elite_v2')) || { active: [], history: [] };
 
-    // --- Core Functions ---
-    function saveState() {
-        localStorage.setItem('prodflow_enterprise_v1', JSON.stringify(state));
-        render();
+    function save() { 
+        localStorage.setItem('proflow_elite_v2', JSON.stringify(db)); 
+        render(); 
     }
 
-    function handleCategoryChange() {
-        const cat = document.getElementById('input-category').value;
-        document.getElementById('meeting-details').style.display = (cat === 'Reuniao') ? 'block' : 'none';
+    function toggleMeeting() {
+        document.getElementById('meeting-box').style.display = (document.getElementById('in-cat').value === 'Reuniao') ? 'block' : 'none';
     }
 
     function addTask() {
-        const title = document.getElementById('input-title').value;
-        const category = document.getElementById('input-category').value;
-        const link = document.getElementById('input-link').value;
-        const schedule = document.getElementById('input-datetime').value;
+        const title = document.getElementById('in-title').value;
+        if(!title) return;
 
-        if (!title) { alert("O título é obrigatório."); return; }
-
-        const newTask = {
+        const task = {
             id: Date.now(),
             title,
-            category,
-            link: formatLink(link),
-            schedule,
+            cat: document.getElementById('in-cat').value,
+            priority: document.getElementById('in-prior').value,
+            link: formatUrl(document.getElementById('in-link').value),
+            time: document.getElementById('in-time').value,
             startAt: Date.now(),
-            startTimeStr: new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'}),
-            duration: 0
+            timer: "00:00:00"
         };
 
-        state.active.push(newTask);
-        clearForm();
-        saveState();
+        db.active.push(task);
+        resetForm();
+        save();
     }
 
-    function formatLink(url) {
-        if (!url) return '';
+    function formatUrl(url) {
+        if(!url) return '';
         return url.startsWith('http') ? url : `https://${url}`;
     }
 
-    function clearForm() {
-        document.getElementById('input-title').value = '';
-        document.getElementById('input-link').value = '';
-        document.getElementById('input-datetime').value = '';
-        document.getElementById('input-category').value = 'Trabalho';
-        handleCategoryChange();
+    function resetForm() {
+        document.getElementById('in-title').value = '';
+        document.getElementById('in-link').value = '';
+        document.getElementById('in-time').value = '';
+        toggleMeeting();
     }
 
-    function completeTask(id) {
-        const index = state.active.findIndex(t => t.id === id);
-        if (index === -1) return;
-
-        const task = state.active.splice(index, 1)[0];
-        const now = Date.now();
-        task.endAtStr = new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
-        task.duration = Math.floor((now - task.startAt) / 1000);
-        
-        state.history.unshift(task);
-        saveState();
+    function finishTask(id) {
+        const i = db.active.findIndex(t => t.id === id);
+        const task = db.active.splice(i, 1)[0];
+        task.duration = Math.floor((Date.now() - task.startAt) / 1000);
+        db.history.unshift(task);
+        save();
     }
 
     function deleteTask(id) {
-        state.history = state.history.filter(t => t.id !== id);
-        saveState();
+        db.history = db.history.filter(t => t.id !== id);
+        save();
     }
 
-    // --- Pomodoro ---
-    function togglePomodoro() {
-        const btn = document.getElementById('pomo-start-btn');
-        if (!pomoRunning) {
-            pomoRunning = true;
-            btn.innerText = "PAUSAR";
-            btn.classList.add('active');
-            pomoInterval = setInterval(() => {
-                pomoSeconds--;
-                updatePomoUI();
-                if (pomoSeconds <= 0) {
-                    clearInterval(pomoInterval);
-                    alert("Sessão de foco concluída!");
-                    resetPomodoro();
-                }
-            }, 1000);
-        } else {
-            pomoRunning = false;
-            btn.innerText = "RETOMAR";
-            btn.classList.remove('active');
-            clearInterval(pomoInterval);
-        }
-    }
-
-    function resetPomodoro() {
-        clearInterval(pomoInterval);
-        pomoRunning = false;
-        pomoSeconds = 1500;
-        document.getElementById('pomo-start-btn').innerText = "INICIAR";
-        document.getElementById('pomo-start-btn').classList.remove('active');
-        updatePomoUI();
-    }
-
-    function updatePomoUI() {
-        const m = Math.floor(pomoSeconds / 60).toString().padStart(2, '0');
-        const s = (pomoSeconds % 60).toString().padStart(2, '0');
-        document.getElementById('pomo-display').innerText = `${m}:${s}`;
-    }
-
-    // --- UI Rendering ---
     function render() {
-        const activeList = document.getElementById('active-tasks-container');
-        const historyList = document.getElementById('history-tasks-container');
-        
-        activeList.innerHTML = '';
-        historyList.innerHTML = '';
+        const container = document.getElementById('active-list');
+        const historyContainer = document.getElementById('history-list');
+        container.innerHTML = '';
+        historyContainer.innerHTML = '';
 
-        state.active.forEach(task => {
-            const catClass = task.category.toLowerCase();
-            const hasMeeting = task.schedule ? `<span style="color:var(--warning); font-weight:600;"><i class="fa-regular fa-calendar"></i> ${new Date(task.schedule).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</span>` : '';
-            const linkDisplay = task.link ? `<a href="${task.link}" target="_blank" class="meeting-link-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ACESSAR LINK</a>` : '';
-
-            activeList.innerHTML += `
-                <div class="task-card">
-                    <div class="task-main">
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <span class="badge" style="background: var(--primary-muted); color: var(--tag-${catClass})">${task.category}</span>
-                            <h3 class="task-title">${task.title}</h3>
+        db.active.forEach(t => {
+            const pColor = t.priority === 'alta' ? 'var(--p-high)' : t.priority === 'media' ? 'var(--p-medium)' : 'var(--p-low)';
+            const isNear = t.time && (new Date(t.time) - new Date() < 300000 && new Date(t.time) - new Date() > 0);
+            
+            container.innerHTML += `
+                <div class="task-card ${isNear ? 'pulse-alert' : ''}">
+                    <div class="priority-indicator" style="background:${pColor}"></div>
+                    <div class="task-info">
+                        <div class="task-header">
+                            <h3 class="task-title">${t.title}</h3>
+                            <span class="p-badge" style="border: 1px solid ${pColor}; color: ${pColor}">${t.priority}</span>
                         </div>
-                        <div class="task-meta">
-                            ${hasMeeting}
-                            ${linkDisplay}
-                            <span><i class="fa-regular fa-clock"></i> Início: ${task.startTimeStr}</span>
-                            <span class="time-counter" id="counter-${task.id}">00:00:00</span>
+                        <div class="task-footer">
+                            <span><i class="fa-regular fa-folder"></i> ${t.cat}</span>
+                            ${t.time ? `<span style="color:var(--warning)"><i class="fa-regular fa-clock"></i> ${new Date(t.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>` : ''}
+                            <span id="timer-${t.id}" style="font-family: 'JetBrains Mono'; color: var(--primary)">${t.timer}</span>
+                            ${t.link ? `<a href="${t.link}" target="_blank" class="link-action"><i class="fa-solid fa-link"></i> LINK</a>` : ''}
                         </div>
                     </div>
-                    <button class="btn-complete" onclick="completeTask(${task.id})"><i class="fa-solid fa-check"></i></button>
+                    <button class="btn-check" onclick="finishTask(${t.id})"><i class="fa-solid fa-check"></i></button>
                 </div>
             `;
         });
 
-        state.history.forEach(task => {
-            historyList.innerHTML += `
-                <div class="task-card history-card">
-                    <div class="task-main">
-                        <h3 class="task-title" style="font-size: 0.9rem;">${task.title}</h3>
-                        <div class="task-meta">
-                            <span>Fim: ${task.endAtStr}</span>
-                            <span>Duração: ${Math.floor(task.duration/60)} min</span>
-                        </div>
+        db.history.slice(0, 5).forEach(t => {
+            historyContainer.innerHTML += `
+                <div class="task-card" style="padding: 10px 16px;">
+                    <div class="task-info">
+                        <span style="font-size:0.9rem">${t.title}</span>
+                        <div style="font-size:0.7rem; color:var(--text-secondary)">Duração: ${Math.floor(t.duration/60)} min</div>
                     </div>
-                    <button class="btn-clear" onclick="deleteTask(${task.id})"><i class="fa-solid fa-trash"></i></button>
+                    <button onclick="deleteTask(${t.id})" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `;
         });
@@ -426,36 +274,28 @@
     }
 
     function updateStats() {
-        const total = state.active.length + state.history.length;
-        const done = state.history.length;
-        const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-        
-        document.getElementById('progress-bar').style.width = percent + '%';
-        document.getElementById('progress-text').innerText = percent + '%';
-        document.getElementById('count-active').innerText = `Ativas: ${state.active.length}`;
-        document.getElementById('count-done').innerText = `Concluídas: ${state.history.length}`;
+        const total = db.active.length + db.history.length;
+        const perc = total === 0 ? 0 : Math.round((db.history.length / total) * 100);
+        document.getElementById('progress-bar').style.width = perc + '%';
+        document.getElementById('stat-percent').innerText = perc + '%';
+        document.getElementById('stat-active').innerText = db.active.length;
 
-        const totalSec = state.history.reduce((acc, t) => acc + t.duration, 0);
-        const h = Math.floor(totalSec / 3600);
-        const m = Math.floor((totalSec % 3600) / 60);
-        document.getElementById('total-time-display').innerText = `${h}h ${m}m`;
+        const sec = db.history.reduce((a, b) => a + b.duration, 0);
+        document.getElementById('stat-time').innerText = `${Math.floor(sec/3600)}h ${Math.floor((sec%3600)/60)}m`;
     }
 
-    // --- Timers de Sistema ---
     setInterval(() => {
         const now = new Date();
         document.getElementById('digital-clock').innerText = now.toLocaleTimeString('pt-BR');
         document.getElementById('current-date').innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 
-        state.active.forEach(task => {
-            const el = document.getElementById(`counter-${task.id}`);
-            if (el) {
-                const diff = Math.floor((Date.now() - task.startAt) / 1000);
-                const h = Math.floor(diff / 3600).toString().padStart(2, '0');
-                const m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
-                const s = (diff % 60).toString().padStart(2, '0');
-                el.innerText = `${h}:${m}:${s}`;
-            }
+        db.active.forEach(t => {
+            const diff = Math.floor((Date.now() - t.startAt) / 1000);
+            const h = Math.floor(diff/3600).toString().padStart(2, '0');
+            const m = Math.floor((diff%3600)/60).toString().padStart(2, '0');
+            const s = (diff%60).toString().padStart(2, '0');
+            const el = document.getElementById(`timer-${t.id}`);
+            if(el) el.innerText = `${h}:${m}:${s}`;
         });
     }, 1000);
 
