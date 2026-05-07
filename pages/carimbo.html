@@ -151,10 +151,10 @@
             { id: 'obs', label: 'Ações tomadas/Observação', type: 'textarea' }
         ],
         ROMPIMENTO: [
-            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
-            { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
             { id: 'trecho', label: 'Trecho (Ponta A - Ponta B)', type: 'text' },
             { id: 'trecho_menor', label: 'Trecho Menor (Se for DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
+            { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
+            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
             { id: 'obs', label: 'Observações Adicionais', type: 'textarea' }
         ],
         SWAP: [
@@ -266,12 +266,21 @@ RESPONSÁVEL NOC: ${tecNoc}`;
         else if (tipo === 'ROMPIMENTO') {
             card.style.borderColor = "var(--danger)";
             const tipoRede = getVal('tipo_rede');
+            
             template = `[INCIDENTE: ROMPIMENTO DE FIBRA]
 ------------------------------------------
-TIPO DE REDE: ${tipoRede}
 TRECHO AFETADO: ${getVal('trecho')}`;
-            if(tipoRede === 'DWDM') template += `\nSPAN AFETADO: ${getVal('trecho_menor')}`;
-            template += `\nDATA/HORA EVENTO: ${getVal('data_ocorrencia')}\nSTATUS: INTERROMPIDO\nOBSERVAÇÕES: ${getVal('obs')}\n------------------------------------------\nRESPONSÁVEL NOC: ${tecNoc}`;
+
+            if (tipoRede === 'DWDM') {
+                template += `\nSPAN AFETADO: ${getVal('trecho_menor')}`;
+            }
+
+            template += `\nTIPO DE REDE: ${tipoRede}
+DATA/HORA EVENTO: ${getVal('data_ocorrencia')}
+STATUS: INTERROMPIDO
+OBSERVAÇÕES: ${getVal('obs')}
+------------------------------------------
+RESPONSÁVEL NOC: ${tecNoc}`;
         }
         else if (tipo === 'SWAP') {
             card.style.borderColor = "var(--primary)";
