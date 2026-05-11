@@ -3,242 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wiki Zabbix - Documentação de Templates</title>
+    <title>Zabbix Wiki - Gerenciador Dinâmico</title>
     <style>
         :root {
             --bg-color: #0d1117;
             --container-bg: #161b22;
             --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --accent: #f18421; /* Zabbix Orange */
+            --accent: #f18421;
             --border-color: #30363d;
             --tree-line: #444c56;
+            --danger: #f85149;
+            --success: #238636;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-family: -apple-system, system-ui, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 40px;
-            line-height: 1.5;
+            padding: 20px;
         }
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+        .container { max-width: 1000px; margin: 0 auto; }
 
-        .header {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
+        /* Painel de Cadastro */
+        .admin-panel {
+            background: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
             margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
         }
 
-        h1 { font-size: 24px; color: var(--accent); }
-        h2 { font-size: 20px; margin-top: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .admin-panel input {
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 8px;
+            border-radius: 4px;
+        }
 
-        /* Estrutura de Árvore Estilo GitHub/Cli */
+        label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--accent); }
+
+        /* Estilo da Árvore */
         .tree-container {
-            background-color: #010409;
+            background: #010409;
             padding: 20px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-            font-size: 14px;
+            font-family: monospace;
+            margin-bottom: 30px;
         }
 
-        .tree, .tree ul {
-            list-style: none;
-            padding-left: 20px;
-            margin: 0;
-        }
-
-        .tree li {
-            position: relative;
-            padding: 5px 0 5px 25px;
-        }
-
-        /* Linhas Verticais */
-        .tree li::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            border-left: 1px solid var(--tree-line);
-        }
-
-        /* Linhas Horizontais (Conectores) */
-        .tree li::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 15px;
-            width: 20px;
-            height: 1px;
-            border-top: 1px solid var(--tree-line);
-        }
-
-        .tree li:last-child::before {
-            height: 15px; /* Para a linha não passar do último item */
-        }
+        .tree, .tree ul { list-style: none; padding-left: 25px; margin: 0; }
+        .tree li { position: relative; padding: 5px 0 5px 20px; }
+        .tree li::before { content: ""; position: absolute; left: 0; top: 0; width: 1px; height: 100%; border-left: 1px solid var(--tree-line); }
+        .tree li::after { content: ""; position: absolute; left: 0; top: 15px; width: 15px; height: 1px; border-top: 1px solid var(--tree-line); }
+        .tree li:last-child::before { height: 15px; }
 
         .folder { color: #58a6ff; font-weight: bold; }
-        .template { color: #7ee787; }
-        .item-leaf { color: var(--text-muted); }
+        .template-name { color: #7ee787; }
+        .item-leaf { color: #8b949e; }
 
-        /* Tabelas Profissionais */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background-color: var(--container-bg);
-        }
+        /* Tabela */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid var(--border-color); padding: 10px; text-align: left; font-size: 14px; }
+        th { background: #21262d; }
 
-        th, td {
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            text-align: left;
-            font-size: 14px;
-        }
+        .btn { border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; color: white; font-weight: bold; }
+        .btn-add { background: var(--success); }
+        .btn-export { background: #21262d; border: 1px solid var(--border-color); margin-right: 5px; }
+        .btn-del { background: var(--danger); padding: 2px 8px; font-size: 10px; margin-left: 10px; }
 
-        th {
-            background-color: #21262d;
-            color: var(--accent);
-        }
-
-        tr:hover { background-color: #1c2128; }
-
-        /* Botões de Ação */
-        .actions {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            background-color: #21262d;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 5px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-        }
-
-        .btn:hover { background-color: #30363d; }
-
-        @media print {
-            .actions { display: none; }
-            body { background: white; color: black; padding: 0; }
-            .tree-container, table { border: 1px solid #ccc; }
-        }
+        @media print { .admin-panel, .btn-del, .actions { display: none !important; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Zabbix Documentation Wiki</h1>
-        <p style="color: var(--text-muted)">Estrutura hierárquica de templates e métricas monitorizadas.</p>
+    <h1>Zabbix Wiki Builder</h1>
+
+    <div class="admin-panel">
+        <div>
+            <label>Categoria (ex: Rede Core)</label>
+            <input type="text" id="inp-cat" placeholder="Rede Core">
+        </div>
+        <div>
+            <label>Template (ex: TPL_Juniper)</label>
+            <input type="text" id="inp-tpl" placeholder="TPL_Juniper">
+        </div>
+        <div>
+            <label>Item (ex: CPU Usage)</label>
+            <input type="text" id="inp-item" placeholder="Métrica monitorada">
+        </div>
+        <button class="btn btn-add" onclick="addData()">Adicionar</button>
     </div>
 
     <div class="actions">
-        <button class="btn" onclick="window.print()">Exportar PDF</button>
-        <button class="btn" onclick="copyTable()">Copiar para Excel</button>
+        <button class="btn btn-export" onclick="window.print()">Exportar PDF</button>
+        <button class="btn btn-export" onclick="clearAll()">Limpar Tudo</button>
     </div>
 
-    <h2>📂 Hierarquia de Templates (Diretórios)</h2>
-    <div class="tree-container">
-        <ul class="tree">
-            <li>
-                <span class="folder">infraestrutura-zabbix</span>
-                <ul>
-                    <li>
-                        <span class="folder">rede-core</span>
-                        <ul>
-                            <li>
-                                <span class="template">TPL_Juniper_MX</span>
-                                <ul>
-                                    <li><span class="item-leaf">cpu-usage.item</span></li>
-                                    <li><span class="item-leaf">memory-usage.item</span></li>
-                                    <li><span class="item-leaf">bgp-status.item</span></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <span class="folder">servidores-linux</span>
-                        <ul>
-                            <li>
-                                <span class="template">TPL_Debian_Agent</span>
-                                <ul>
-                                    <li><span class="item-leaf">disk-space.item</span></li>
-                                    <li><span class="item-leaf">nginx-service.item</span></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+    <h2>📂 Árvore Hierárquica</h2>
+    <div class="tree-container" id="tree-display">
+        </div>
 
-    <h2>📋 Detalhamento dos Itens</h2>
-    <table id="data-table">
+    <h2>📋 Detalhamento Tabela</h2>
+    <table>
         <thead>
             <tr>
                 <th>Categoria</th>
-                <th>Template Zabbix</th>
-                <th>Métrica Monitorizada</th>
-                <th>Tipo</th>
+                <th>Template</th>
+                <th>Item</th>
+                <th>Ação</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td>Rede Core</td>
-                <td>TPL_Juniper_MX</td>
-                <td>Uso de CPU (System/User)</td>
-                <td>SNMPv2</td>
-            </tr>
-            <tr>
-                <td>Rede Core</td>
-                <td>TPL_Juniper_MX</td>
-                <td>Estado da Sessão BGP</td>
-                <td>SNMPv2</td>
-            </tr>
-            <tr>
-                <td>Servidores</td>
-                <td>TPL_Debian_Agent</td>
-                <td>Espaço livre em /var/log</td>
-                <td>Z. Agent</td>
-            </tr>
-        </tbody>
+        <tbody id="table-body">
+            </tbody>
     </table>
 </div>
 
 <script>
-    function copyTable() {
-        const table = document.getElementById('data-table');
-        let range, selection;
-        if (document.createRange && window.getSelection) {
-            range = document.createRange();
-            selection = window.getSelection();
-            selection.removeAllRanges();
-            try {
-                range.selectNodeContents(table);
-                selection.addRange(range);
-            } catch (e) {
-                range.selectNode(table);
-                selection.addRange(range);
-            }
-            document.execCommand('copy');
-            alert("Tabela copiada! Agora basta colar no Excel.");
+    let db = JSON.parse(localStorage.getItem('zabbix_wiki')) || [];
+
+    function addData() {
+        const cat = document.getElementById('inp-cat').value;
+        const tpl = document.getElementById('inp-tpl').value;
+        const item = document.getElementById('inp-item').value;
+
+        if(!cat || !tpl || !item) return alert("Preencha todos os campos!");
+
+        db.push({ cat, tpl, item });
+        saveAndRefresh();
+        
+        document.getElementById('inp-item').value = ""; // Limpa apenas o item para facilitar múltiplos itens no mesmo template
+    }
+
+    function removeData(index) {
+        db.splice(index, 1);
+        saveAndRefresh();
+    }
+
+    function clearAll() {
+        if(confirm("Deseja apagar TUDO?")) {
+            db = [];
+            saveAndRefresh();
         }
     }
+
+    function saveAndRefresh() {
+        localStorage.setItem('zabbix_wiki', JSON.stringify(db));
+        renderTree();
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('table-body');
+        tbody.innerHTML = db.map((row, i) => `
+            <tr>
+                <td>${row.cat}</td>
+                <td>${row.tpl}</td>
+                <td>${row.item}</td>
+                <td><button class="btn btn-del" onclick="removeData(${i})">X</button></td>
+            </tr>
+        `).join('');
+    }
+
+    function renderTree() {
+        const container = document.getElementById('tree-display');
+        if(db.length === 0) { container.innerHTML = "Nenhum dado cadastrado."; return; }
+
+        // Agrupamento lógico para a árvore
+        let treeHTML = '<ul class="tree"><li><span class="folder">root</span><ul>';
+        
+        const map = {};
+        db.forEach(entry => {
+            if (!map[entry.cat]) map[entry.cat] = {};
+            if (!map[entry.cat][entry.tpl]) map[entry.cat][entry.tpl] = [];
+            map[entry.cat][entry.tpl].push(entry.item);
+        });
+
+        for (let cat in map) {
+            treeHTML += `<li><span class="folder">${cat}</span><ul>`;
+            for (let tpl in map[cat]) {
+                treeHTML += `<li><span class="template-name">${tpl}</span><ul>`;
+                map[cat][tpl].forEach(item => {
+                    treeHTML += `<li><span class="item-leaf">${item}</span></li>`;
+                });
+                treeHTML += `</ul></li>`;
+            }
+            treeHTML += `</ul></li>`;
+        }
+
+        treeHTML += '</ul></li></ul>';
+        container.innerHTML = treeHTML;
+    }
+
+    // Inicializar
+    renderTree();
+    renderTable();
 </script>
 
 </body>
