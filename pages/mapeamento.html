@@ -2,241 +2,173 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wiki de Templates Zabbix</title>
+    <title>Zabbix Template Tree Wiki</title>
     <style>
-        :root {
-            --primary-color: #f18421; /* Zabbix Orange */
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --white: #ffffff;
-            --border-color: #ddd;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
+            font-family: 'Courier New', Courier, monospace; /* Fonte mono para parecer CLI/Diretórios */
+            background-color: #1a1a1a;
+            color: #d1d1d1;
+            padding: 40px;
+        }
+
+        .wiki-container {
+            background-color: #262626;
             padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #444;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        header {
-            border-bottom: 3px solid var(--primary-color);
-            margin-bottom: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        h1 { color: var(--primary-color); margin: 0; }
 
         .controls {
             margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
         }
+
+        /* Estilização da Árvore */
+        .tree {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tree ul {
+            list-style-type: none;
+            margin: 0;
+            padding-left: 20px; /* Recuo da cascata */
+            border-left: 1px solid #555; /* Linha vertical */
+        }
+
+        .tree li {
+            margin: 0;
+            padding: 5px 0 5px 20px;
+            line-height: 20px;
+            position: relative;
+        }
+
+        /* Linhas Horizontais */
+        .tree li::before {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 18px;
+            height: 1px;
+            border-top: 1px solid #555;
+        }
+
+        .tree li:last-child {
+            border-left: none;
+        }
+
+        .tree li:last-child::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 15px;
+            border-left: 1px solid #555;
+        }
+
+        /* Cores e Destaques */
+        .root-node { color: #f18421; font-weight: bold; font-size: 1.2em; }
+        .folder { color: #5dade2; font-weight: bold; }
+        .template { color: #58d68d; }
+        .item { color: #abb2b9; font-style: italic; }
 
         button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+            background: #444;
+            color: #fff;
+            border: 1px solid #666;
+            padding: 8px 15px;
             cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            margin-right: 10px;
         }
 
-        .btn-add { background-color: #2ecc71; color: white; }
-        .btn-export { background-color: #3498db; color: white; }
-        .btn-copy { background-color: #9b59b6; color: white; }
-        button:hover { opacity: 0.8; }
-
-        /* Estrutura em Cascata */
-        .category {
-            margin-bottom: 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            overflow: hidden;
-        }
-
-        .category-header {
-            background: #e9ecef;
-            padding: 10px 15px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .template-list {
-            padding: 10px 20px;
-        }
-
-        .template-item {
-            margin-bottom: 15px;
-            padding-left: 15px;
-            border-left: 3px solid var(--primary-color);
-        }
-
-        .template-name {
-            font-weight: bold;
-            color: #2c3e50;
-            display: block;
-            font-size: 1.1em;
-        }
-
-        .monitoring-items {
-            font-size: 0.95em;
-            margin-top: 5px;
-            color: #555;
-        }
-
-        .tag {
-            display: inline-block;
-            background: #eee;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8em;
-            margin-right: 5px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            display: none; /* Escondido por padrão, usado para exportar */
-        }
-
-        table, th, td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th { background-color: #f8f9fa; }
+        button:hover { background: #555; }
 
         @media print {
-            .controls, .btn-delete { display: none; }
-            body { background: white; }
-            .container { box-shadow: none; width: 100%; }
+            .controls { display: none; }
+            body { background: white; color: black; }
+            .wiki-container { border: none; box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Zabbix Wiki - Templates</h1>
-        <div class="controls">
-            <button class="btn-copy" onclick="copyToClipboard()">Copiar Tudo</button>
-            <button class="btn-export" onclick="window.print()">Exportar PDF</button>
-        </div>
-    </header>
-
-    <div id="wiki-content">
-        <!-- Categoria 1 -->
-        <div class="category">
-            <div class="category-header">1. INFRAESTRUTURA DE REDE</div>
-            <div class="template-list">
-                <div class="template-item">
-                    <span class="template-name">Template Juniper MX SNMP</span>
-                    <div class="monitoring-items">
-                        <span class="tag">SNMP</span>
-                        <ul>
-                            <li><b>Interfaces:</b> Tráfego (In/Out), Erros, Status Administrativo.</li>
-                            <li><b>Chassis:</b> CPU Load, Memória, Temperatura, Status das Fontes.</li>
-                            <li><b>Routing:</b> BGP Session Status, Prefixos recebidos.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="template-item">
-                    <span class="template-name">Template Datacom Switches</span>
-                    <div class="monitoring-items">
-                        <ul>
-                            <li><b>Hardware:</b> Uso de CPU e Flash.</li>
-                            <li><b>Portas:</b> SFP Digital Monitoring (Sinal Óptico).</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Categoria 2 -->
-        <div class="category">
-            <div class="category-header">2. ACESSO E OLTs</div>
-            <div class="template-list">
-                <div class="template-item">
-                    <span class="template-name">Template Nokia OLT Gpon</span>
-                    <div class="monitoring-items">
-                        <ul>
-                            <li><b>ONUs:</b> Total Online vs Offline.</li>
-                            <li><b>Tráfego:</b> Uplink 10G interfaces.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Categoria 3 -->
-        <div class="category">
-            <div class="category-header">3. SERVIDORES E APLICAÇÕES</div>
-            <div class="template-item" style="padding: 10px 20px;">
-                <span class="template-name">Linux by Zabbix Agent</span>
-                <div class="monitoring-items">
-                    <span class="tag">Agent</span>
-                    <ul>
-                        <li><b>OS:</b> Load Average, Disk Space, Log Monitoring.</li>
-                        <li><b>Segurança:</b> Checksum de binários críticos.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="wiki-container">
+    <div class="controls">
+        <button onclick="window.print()">Exportar PDF</button>
+        <button onclick="exportToExcel()">Exportar para Excel (.csv)</button>
     </div>
 
-    <table id="export-table">
-        <thead>
-            <tr>
-                <th>Categoria</th>
-                <th>Template</th>
-                <th>Itens Monitorados</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Rede</td>
-                <td>Juniper MX</td>
-                <td>Tráfego, CPU, BGP, Temperatura</td>
-            </tr>
-            <tr>
-                <td>Servidores</td>
-                <td>Linux Agent</td>
-                <td>CPU, RAM, Disco, Logs</td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="tree-content">
+        <ul class="tree">
+            <li>
+                <span class="root-node">infraestrutura-ti</span>
+                <ul>
+                    <li>
+                        <span class="folder">rede-core</span>
+                        <ul>
+                            <li>
+                                <span class="template">Juniper_MX</span>
+                                <ul>
+                                    <li><span class="item">CPU Load (System/User)</span></li>
+                                    <li><span class="item">Uso de Memória RAM</span></li>
+                                    <li><span class="item">Status Sessão BGP</span></li>
+                                    <li><span class="item">Tráfego Interfaces</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="folder">servidores-linux</span>
+                        <ul>
+                            <li>
+                                <span class="template">TPL_Debian_Standard_Agent</span>
+                                <ul>
+                                    <li><span class="item">Espaço em Disco (/)</span></li>
+                                    <li><span class="item">Status Serviço Nginx</span></li>
+                                    <li><span class="item">Uptime do Sistema</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <span class="folder">banco-de-dados</span>
+                        <ul>
+                            <li>
+                                <span class="template">TPL_MySQL_Performance</span>
+                                <ul>
+                                    <li><span class="item">Queries por Segundo</span></li>
+                                    <li><span class="item">Conexões Ativas</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 </div>
 
 <script>
-    function copyToClipboard() {
-        const text = document.getElementById('wiki-content').innerText;
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Conteúdo copiado para a área de transferência!');
-        });
-    }
+    function exportToExcel() {
+        let csvContent = "data:text/csv;charset=utf-8,Categoria;Template;Item Monitorado\n";
+        
+        // Exemplo simples de mapeamento para CSV
+        // Em um sistema real, você percorreria o DOM para montar as linhas
+        csvContent += "Rede;Juniper MX;CPU Load\n";
+        csvContent += "Rede;Juniper MX;Memoria\n";
+        csvContent += "Linux;Debian Standard;Disco\n";
 
-    // Função para simular adição/remoção se necessário
-    function removeElement(btn) {
-        btn.parentElement.remove();
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "documentacao_zabbix.csv");
+        document.body.appendChild(link);
+        link.click();
     }
 </script>
 
