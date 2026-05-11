@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapeamento de Monitoramento Zabbix</title>
+    <title>NOC - Mapeamento de Monitoramento Zabbix</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #3498db;
-            --bg: #f4f7f6;
+            --success: #27ae60;
+            --bg: #f8f9fa;
             --white: #ffffff;
-            --border: #dcdde1;
+            --border: #dee2e6;
         }
 
+        /* Estilos para o PDF */
         @page {
             size: A4 landscape;
             margin: 10mm;
-            background-color: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg);
             color: var(--primary);
             margin: 0;
@@ -31,66 +32,105 @@
             max-width: 1200px;
             margin: 0 auto;
             background: var(--white);
-            padding: 30px;
+            padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         .header {
-            border-bottom: 2px solid var(--accent);
+            border-bottom: 3px solid var(--accent);
             margin-bottom: 20px;
             padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        h1 { margin: 0; font-size: 20pt; color: var(--primary); }
-        
-        .form-section {
-            background: #f9f9f9;
+        h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .control-panel {
+            background: #f1f3f5;
             padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
+            border-radius: 6px;
+            margin-bottom: 25px;
             border: 1px solid var(--border);
         }
 
-        .grid-inputs {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 10pt; }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
+        .input-group input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border); 
+            border-radius: 4px; 
+            font-size: 16px;
             box-sizing: border-box;
         }
 
-        .btn-group { margin-top: 15px; display: flex; gap: 10px; }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
+        /* Botões do Checklist */
+        .checklist-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .check-item {
+            background: #fff;
+            border: 2px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 20px;
             cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .check-item:hover { border-color: var(--accent); }
+
+        .check-item.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .btn-main {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
             font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
             transition: 0.2s;
         }
 
-        .btn-add { background: var(--accent); color: white; }
-        .btn-csv { background: #27ae60; color: white; }
-        .btn-pdf { background: #e74c3c; color: white; }
-        .btn:hover { opacity: 0.8; }
+        .btn-main:hover { background: #219150; }
 
+        .export-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-export {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-csv { background: #607d8b; }
+        .btn-pdf { background: #e74c3c; }
+
+        /* Tabela de Resultados */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         th {
@@ -98,22 +138,37 @@
             color: white;
             text-align: left;
             padding: 12px;
-            font-size: 10pt;
+            font-size: 13px;
         }
 
         td {
-            padding: 10px;
+            padding: 12px;
             border-bottom: 1px solid var(--border);
-            font-size: 9pt;
-            vertical-align: top;
+            font-size: 13px;
         }
 
-        tr:nth-child(even) { background-color: #fcfcfc; }
+        .badge {
+            display: inline-block;
+            background: #d4edda;
+            color: #155724;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin: 2px;
+            font-size: 11px;
+            border: 1px solid #c3e6cb;
+            font-weight: bold;
+        }
 
+        .btn-del { color: #e74c3c; cursor: pointer; font-weight: bold; border: none; background: none; }
+
+        /* Regras de Impressão */
         @media print {
             .no-print { display: none !important; }
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; width: 100%; max-width: 100%; border: none; }
+            body { padding: 0; background: white; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+            th { background-color: #f2f2f2 !important; color: black; border: 1px solid #ddd; }
+            td { border: 1px solid #ddd; }
+            .badge { border: 1px solid #aaa; background: white; color: black; }
         }
     </style>
 </head>
@@ -121,92 +176,39 @@
 
 <div class="container">
     <div class="header">
-        <div>
-            <h1>Mapeamento de Monitoramento por Vendor</h1>
-            <p style="color: #7f8c8d; margin: 5px 0;">Inventário Técnico de Itens e Tráfego Zabbix</p>
+        <h1>Mapeamento de Monitoramento - Zabbix NOC</h1>
+    </div>
+
+    <div class="control-panel no-print">
+        <div class="input-group">
+            <label>Vendor / Equipamento:</label>
+            <input type="text" id="vendorInput" placeholder="Ex: OLT Nokia 7360, Switch Huawei S5700, XPS Delta...">
+        </div>
+
+        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:14px;">Monitoramento Ativo (Clique para marcar):</label>
+        <div class="checklist-container" id="checklist">
+            <div class="check-item" onclick="toggleItem(this)">Ping</div>
+            <div class="check-item" onclick="toggleItem(this)">Interface (UP/DOWN)</div>
+            <div class="check-item" onclick="toggleItem(this)">Sinal de GBIC (RX/TX)</div>
+            <div class="check-item" onclick="toggleItem(this)">Tráfego Uplink</div>
+            <div class="check-item" onclick="toggleItem(this)">PON (Status)</div>
+            <div class="check-item" onclick="toggleItem(this)">GPON Tráfego</div>
+            <div class="check-item" onclick="toggleItem(this)">CPU / Memória</div>
+            <div class="check-item" onclick="toggleItem(this)">Temperatura</div>
+            <div class="check-item" onclick="toggleItem(this)">ONUs Online</div>
+            <div class="check-item" onclick="toggleItem(this)">Voltagem / Amperagem</div>
+        </div>
+
+        <button class="btn-main" onclick="addEntry()">Registrar Equipamento ✓</button>
+
+        <div class="export-group">
+            <button class="btn-export btn-csv" onclick="exportCSV()">Exportar para Excel (CSV)</button>
+            <button class="btn-export btn-pdf" onclick="window.print()">Gerar PDF</button>
         </div>
     </div>
 
-    <div class="form-section no-print">
-        <div class="grid-inputs">
-            <div>
-                <label>Vendor / Modelo:</label>
-                <input type="text" id="vendor" placeholder="Ex: OLT Nokia, Huawei Switch...">
-            </div>
-            <div>
-                <label>Itens Monitorados:</label>
-                <input type="text" id="items" placeholder="Ex: Ping, Interface, Sinal GBIC, PON, Tráfego...">
-            </div>
-        </div>
-        <label>Observações:</label>
-        <textarea id="obs" rows="2" placeholder="Notas sobre SNMP, templates ou alertas..."></textarea>
-        
-        <div class="btn-group">
-            <button class="btn btn-add" onclick="addRow()">Adicionar Vendor</button>
-            <button class="btn btn-csv" onclick="exportCSV()">Exportar CSV</button>
-            <button class="btn btn-pdf" onclick="window.print()">Gerar PDF</button>
-        </div>
-    </div>
-
-    <table id="mappingTable">
+    <table id="resultTable">
         <thead>
             <tr>
-                <th style="width: 25%;">Vendor</th>
-                <th style="width: 50%;">Itens de Monitoramento</th>
-                <th style="width: 25%;">Observações</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <tr>
-                <td>Huawei Switch</td>
-                <td>Ping, Interface Status, Tráfego (bps), Erros</td>
-                <td>SNMP v2c - Standard</td>
-            </tr>
-            <tr>
-                <td>OLT Nokia / Fiberhome</td>
-                <td>Sinal de GBIC, PON, GPON Tráfego, ONUs Online</td>
-                <td>Templates específicos de fabricante</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-<script>
-    function addRow() {
-        const vendor = document.getElementById('vendor').value;
-        const items = document.getElementById('items').value;
-        const obs = document.getElementById('obs').value;
-
-        if (!vendor || !items) {
-            alert('Preencha os campos obrigatórios.');
-            return;
-        }
-
-        const table = document.getElementById('tableBody');
-        const row = table.insertRow();
-        row.innerHTML = `<td>\${vendor}</td><td>\${items}</td><td>\${obs}</td>`;
-
-        document.getElementById('vendor').value = '';
-        document.getElementById('items').value = '';
-        document.getElementById('obs').value = '';
-    }
-
-    function exportCSV() {
-        let csv = 'Vendor;Itens;Observacoes\n';
-        const rows = document.querySelectorAll('#tableBody tr');
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('td');
-            const rowData = Array.from(cols).map(c => '"' + c.innerText.replace(/"/g, '""') + '"').join(';');
-            csv += rowData + '\n';
-        });
-
-        const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'mapeamento_zabbix.csv');
-        link.click();
-    }
-</script>
-
-</body>
-</html>
+                <th style="width: 25%;">Vendor / Modelo</th>
+                <th style="width: 65
