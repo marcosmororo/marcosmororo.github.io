@@ -2,122 +2,170 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Zabbix Template Tree Wiki</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wiki Zabbix - Documentação de Templates</title>
     <style>
+        :root {
+            --bg-color: #0d1117;
+            --container-bg: #161b22;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --accent: #f18421; /* Zabbix Orange */
+            --border-color: #30363d;
+            --tree-line: #444c56;
+        }
+
         body {
-            font-family: 'Courier New', Courier, monospace; /* Fonte mono para parecer CLI/Diretórios */
-            background-color: #1a1a1a;
-            color: #d1d1d1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
             padding: 40px;
+            line-height: 1.5;
         }
 
-        .wiki-container {
-            background-color: #262626;
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 { font-size: 24px; color: var(--accent); }
+        h2 { font-size: 20px; margin-top: 40px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+
+        /* Estrutura de Árvore Estilo GitHub/Cli */
+        .tree-container {
+            background-color: #010409;
             padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #444;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 14px;
         }
 
-        .controls {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 15px;
-        }
-
-        /* Estilização da Árvore */
-        .tree {
-            list-style-type: none;
+        .tree, .tree ul {
+            list-style: none;
+            padding-left: 20px;
             margin: 0;
-            padding: 0;
-        }
-
-        .tree ul {
-            list-style-type: none;
-            margin: 0;
-            padding-left: 20px; /* Recuo da cascata */
-            border-left: 1px solid #555; /* Linha vertical */
         }
 
         .tree li {
-            margin: 0;
-            padding: 5px 0 5px 20px;
-            line-height: 20px;
             position: relative;
+            padding: 5px 0 5px 25px;
         }
 
-        /* Linhas Horizontais */
+        /* Linhas Verticais */
         .tree li::before {
             content: "";
             position: absolute;
-            top: 15px;
             left: 0;
-            width: 18px;
-            height: 1px;
-            border-top: 1px solid #555;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            border-left: 1px solid var(--tree-line);
         }
 
-        .tree li:last-child {
-            border-left: none;
-        }
-
-        .tree li:last-child::after {
+        /* Linhas Horizontais (Conectores) */
+        .tree li::after {
             content: "";
             position: absolute;
-            top: 0;
             left: 0;
-            width: 1px;
-            height: 15px;
-            border-left: 1px solid #555;
+            top: 15px;
+            width: 20px;
+            height: 1px;
+            border-top: 1px solid var(--tree-line);
         }
 
-        /* Cores e Destaques */
-        .root-node { color: #f18421; font-weight: bold; font-size: 1.2em; }
-        .folder { color: #5dade2; font-weight: bold; }
-        .template { color: #58d68d; }
-        .item { color: #abb2b9; font-style: italic; }
+        .tree li:last-child::before {
+            height: 15px; /* Para a linha não passar do último item */
+        }
 
-        button {
-            background: #444;
-            color: #fff;
-            border: 1px solid #666;
-            padding: 8px 15px;
+        .folder { color: #58a6ff; font-weight: bold; }
+        .template { color: #7ee787; }
+        .item-leaf { color: var(--text-muted); }
+
+        /* Tabelas Profissionais */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: var(--container-bg);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #21262d;
+            color: var(--accent);
+        }
+
+        tr:hover { background-color: #1c2128; }
+
+        /* Botões de Ação */
+        .actions {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: #21262d;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 15px;
+            border-radius: 6px;
             cursor: pointer;
-            margin-right: 10px;
+            font-size: 13px;
+            text-decoration: none;
         }
 
-        button:hover { background: #555; }
+        .btn:hover { background-color: #30363d; }
 
         @media print {
-            .controls { display: none; }
-            body { background: white; color: black; }
-            .wiki-container { border: none; box-shadow: none; }
+            .actions { display: none; }
+            body { background: white; color: black; padding: 0; }
+            .tree-container, table { border: 1px solid #ccc; }
         }
     </style>
 </head>
 <body>
 
-<div class="wiki-container">
-    <div class="controls">
-        <button onclick="window.print()">Exportar PDF</button>
-        <button onclick="exportToExcel()">Exportar para Excel (.csv)</button>
+<div class="container">
+    <div class="header">
+        <h1>Zabbix Documentation Wiki</h1>
+        <p style="color: var(--text-muted)">Estrutura hierárquica de templates e métricas monitorizadas.</p>
     </div>
 
-    <div id="tree-content">
+    <div class="actions">
+        <button class="btn" onclick="window.print()">Exportar PDF</button>
+        <button class="btn" onclick="copyTable()">Copiar para Excel</button>
+    </div>
+
+    <h2>📂 Hierarquia de Templates (Diretórios)</h2>
+    <div class="tree-container">
         <ul class="tree">
             <li>
-                <span class="root-node">infraestrutura-ti</span>
+                <span class="folder">infraestrutura-zabbix</span>
                 <ul>
                     <li>
                         <span class="folder">rede-core</span>
                         <ul>
                             <li>
-                                <span class="template">Juniper_MX</span>
+                                <span class="template">TPL_Juniper_MX</span>
                                 <ul>
-                                    <li><span class="item">CPU Load (System/User)</span></li>
-                                    <li><span class="item">Uso de Memória RAM</span></li>
-                                    <li><span class="item">Status Sessão BGP</span></li>
-                                    <li><span class="item">Tráfego Interfaces</span></li>
+                                    <li><span class="item-leaf">cpu-usage.item</span></li>
+                                    <li><span class="item-leaf">memory-usage.item</span></li>
+                                    <li><span class="item-leaf">bgp-status.item</span></li>
                                 </ul>
                             </li>
                         </ul>
@@ -126,23 +174,10 @@
                         <span class="folder">servidores-linux</span>
                         <ul>
                             <li>
-                                <span class="template">TPL_Debian_Standard_Agent</span>
+                                <span class="template">TPL_Debian_Agent</span>
                                 <ul>
-                                    <li><span class="item">Espaço em Disco (/)</span></li>
-                                    <li><span class="item">Status Serviço Nginx</span></li>
-                                    <li><span class="item">Uptime do Sistema</span></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <span class="folder">banco-de-dados</span>
-                        <ul>
-                            <li>
-                                <span class="template">TPL_MySQL_Performance</span>
-                                <ul>
-                                    <li><span class="item">Queries por Segundo</span></li>
-                                    <li><span class="item">Conexões Ativas</span></li>
+                                    <li><span class="item-leaf">disk-space.item</span></li>
+                                    <li><span class="item-leaf">nginx-service.item</span></li>
                                 </ul>
                             </li>
                         </ul>
@@ -151,24 +186,58 @@
             </li>
         </ul>
     </div>
+
+    <h2>📋 Detalhamento dos Itens</h2>
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Categoria</th>
+                <th>Template Zabbix</th>
+                <th>Métrica Monitorizada</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Rede Core</td>
+                <td>TPL_Juniper_MX</td>
+                <td>Uso de CPU (System/User)</td>
+                <td>SNMPv2</td>
+            </tr>
+            <tr>
+                <td>Rede Core</td>
+                <td>TPL_Juniper_MX</td>
+                <td>Estado da Sessão BGP</td>
+                <td>SNMPv2</td>
+            </tr>
+            <tr>
+                <td>Servidores</td>
+                <td>TPL_Debian_Agent</td>
+                <td>Espaço livre em /var/log</td>
+                <td>Z. Agent</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 <script>
-    function exportToExcel() {
-        let csvContent = "data:text/csv;charset=utf-8,Categoria;Template;Item Monitorado\n";
-        
-        // Exemplo simples de mapeamento para CSV
-        // Em um sistema real, você percorreria o DOM para montar as linhas
-        csvContent += "Rede;Juniper MX;CPU Load\n";
-        csvContent += "Rede;Juniper MX;Memoria\n";
-        csvContent += "Linux;Debian Standard;Disco\n";
-
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "documentacao_zabbix.csv");
-        document.body.appendChild(link);
-        link.click();
+    function copyTable() {
+        const table = document.getElementById('data-table');
+        let range, selection;
+        if (document.createRange && window.getSelection) {
+            range = document.createRange();
+            selection = window.getSelection();
+            selection.removeAllRanges();
+            try {
+                range.selectNodeContents(table);
+                selection.addRange(range);
+            } catch (e) {
+                range.selectNode(table);
+                selection.addRange(range);
+            }
+            document.execCommand('copy');
+            alert("Tabela copiada! Agora basta colar no Excel.");
+        }
     }
 </script>
 
