@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC - Mapeamento Zabbix Pro</title>
+    <title>NOC - Mapeamento Estruturado Zabbix</title>
     <style>
         :root {
             --primary: #2c3e50;
             --accent: #3498db;
             --success: #27ae60;
-            --bg: #f8f9fa;
+            --bg: #f4f7f6;
             --white: #ffffff;
-            --border: #dee2e6;
+            --border: #dcdde1;
         }
 
         @page { size: A4 landscape; margin: 10mm; }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--primary);
             margin: 0;
@@ -25,12 +25,12 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             background: var(--white);
             padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .header {
@@ -43,49 +43,51 @@
         }
 
         .control-panel {
-            background: #f1f3f5;
+            background: #fdfdfd;
             padding: 20px;
             border-radius: 6px;
             margin-bottom: 25px;
             border: 1px solid var(--border);
         }
 
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 14px; }
-        .input-group input { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid var(--border); 
-            border-radius: 4px; 
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        .checklist-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .check-item {
-            background: #fff;
-            border: 2px solid var(--border);
-            padding: 8px 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-
-        .check-item.active { background: var(--accent); color: white; border-color: var(--accent); }
-
-        .custom-item-row {
-            display: flex;
-            gap: 10px;
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
             margin-bottom: 20px;
         }
+
+        .category-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            padding: 12px;
+        }
+
+        .category-title {
+            font-weight: bold;
+            font-size: 13px;
+            color: var(--accent);
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            display: block;
+        }
+
+        .check-list { list-style: none; padding: 0; margin: 0; }
+        .check-list li {
+            font-size: 12px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 3px;
+        }
+        .check-list li:hover { background: #f0f0f0; }
+        .check-list li.active { background: #d4edda; color: #155724; font-weight: bold; }
+        .check-list li::before { content: '☐ '; margin-right: 8px; font-family: monospace; }
+        .check-list li.active::before { content: '☑ '; }
 
         .btn-main {
             background: var(--success);
@@ -97,79 +99,93 @@
             cursor: pointer;
             width: 100%;
             font-size: 16px;
+            transition: 0.3s;
         }
 
-        .export-group { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-export { flex: 1; padding: 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; }
-        .btn-csv { background: #607d8b; }
-        .btn-pdf { background: #e74c3c; }
-        .btn-clear { background: #95a5a6; }
+        .btn-main:hover { background: #219150; transform: translateY(-2px); }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th { background-color: var(--primary); color: white; text-align: left; padding: 12px; font-size: 13px; }
-        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-        .badge {
-            display: inline-block;
-            background: #d4edda;
-            color: #155724;
-            padding: 4px 10px;
-            border-radius: 4px;
-            margin: 2px;
-            font-size: 11px;
-            border: 1px solid #c3e6cb;
-            font-weight: bold;
-        }
+        td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; }
 
-        @media print {
-            .no-print { display: none !important; }
-            body { padding: 0; background: white; }
-            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
+        .group-tag {
+            display: block;
+            margin-bottom: 8px;
         }
+        .group-name { font-weight: bold; color: #34495e; text-decoration: underline; margin-right: 5px; }
+        .item-val { color: #666; font-style: italic; }
+
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>Mapeamento Zabbix - Templates</h1>
-        <button class="btn-export btn-clear no-print" onclick="clearAll()">Limpar Tudo</button>
+        <h1>NOC | Mapeamento Estruturado de Monitoramento via Zabbix</h1>
+        <button class="no-print" onclick="clearAll()" style="padding:8px; cursor:pointer;">Limpar Tudo</button>
     </div>
 
     <div class="control-panel no-print">
-        <div class="input-group">
-            <label>Vendor / Equipamento:</label>
-            <input type="text" id="vendorInput" placeholder="Ex: OLT Fiberhome, Switch Datacom...">
+        <div style="margin-bottom:20px;">
+            <label style="font-weight:bold; display:block; margin-bottom:5px;">Vendor / Modelo:</label>
+            <input type="text" id="vendorInput" placeholder="Ex: OLT Nokia 7360 FX-4" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:4px; font-size:16px;">
         </div>
 
-        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:14px;">Monitoramento Ativo:</label>
-        <div class="checklist-container" id="checklist">
-            <!-- Itens padrão -->
-            <div class="check-item" onclick="toggleItem(this)">Ping</div>
-            <div class="check-item" onclick="toggleItem(this)">Interface (UP/DOWN)</div>
-            <div class="check-item" onclick="toggleItem(this)">Sinal GBIC</div>
-            <div class="check-item" onclick="toggleItem(this)">Tráfego Uplink</div>
-            <div class="check-item" onclick="toggleItem(this)">PON Status</div>
-            <div class="check-item" onclick="toggleItem(this)">Temperatura</div>
+        <div class="category-grid">
+            <!-- Bloco Energia -->
+            <div class="category-box">
+                <span class="category-title">⚡ Energia</span>
+                <ul class="check-list" data-group="Energia">
+                    <li onclick="toggle(this)">Potência de entrada (W)</li>
+                    <li onclick="toggle(this)">Estado Power 1 / Power 2</li>
+                    <li onclick="toggle(this)">Tensão/Voltagem (V)</li>
+                    <li onclick="toggle(this)">Tipo da Fonte (AC/DC)</li>
+                </ul>
+            </div>
+
+            <!-- Bloco Interface -->
+            <div class="category-box">
+                <span class="category-title">🌐 Interfaces / Uplink</span>
+                <ul class="check-list" data-group="Interfaces">
+                    <li onclick="toggle(this)">Status Administrativo (UP/DOWN)</li>
+                    <li onclick="toggle(this)">Tráfego (bps) In/Out</li>
+                    <li onclick="toggle(this)">Sinal Óptico GBIC (RX/TX)</li>
+                    <li onclick="toggle(this)">Erros de CRC / Descartes</li>
+                </ul>
+            </div>
+
+            <!-- Bloco GPON -->
+            <div class="category-box">
+                <span class="category-title">📡 GPON / Acesso</span>
+                <ul class="check-list" data-group="Acesso">
+                    <li onclick="toggle(this)">Status da Porta PON</li>
+                    <li onclick="toggle(this)">ONUs Online / Offline</li>
+                    <li onclick="toggle(this)">Consumo por PON</li>
+                    <li onclick="toggle(this)">Sinal médio dos Clientes</li>
+                </ul>
+            </div>
+
+            <!-- Bloco Hardware -->
+            <div class="category-box">
+                <span class="category-title">🛠️ Hardware / Saúde</span>
+                <ul class="check-list" data-group="Hardware">
+                    <li onclick="toggle(this)">Uso de CPU / Memória</li>
+                    <li onclick="toggle(this)">Temperatura do Chassi</li>
+                    <li onclick="toggle(this)">Status das Ventoinhas (Fans)</li>
+                    <li onclick="toggle(this)">Uptime do Sistema</li>
+                </ul>
+            </div>
         </div>
 
-        <div class="custom-item-row">
-            <input type="text" id="customItemInput" placeholder="Outro item? Digite aqui..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:4px;">
-            <button onclick="addCustomCheckItem()" style="padding:10px 20px; background:var(--accent); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">+ Adicionar Item</button>
-        </div>
-
-        <button class="btn-main" onclick="addEntry()">Registrar Equipamento ✓</button>
-
-        <div class="export-group">
-            <button class="btn-export btn-csv" onclick="exportCSV()">Exportar CSV</button>
-            <button class="btn-export btn-pdf" onclick="window.print()">Gerar PDF</button>
-        </div>
+        <button class="btn-main" onclick="addEntry()">Registrar Mapeamento ✓</button>
     </div>
 
     <table id="resultTable">
         <thead>
             <tr>
-                <th style="width: 25%;">Vendor</th>
-                <th style="width: 65%;">Itens Monitorados</th>
+                <th style="width: 20%;">Vendor</th>
+                <th style="width: 70%;">Itens por Categoria</th>
                 <th class="no-print" style="width: 10%;">Ações</th>
             </tr>
         </thead>
@@ -178,80 +194,57 @@
 </div>
 
 <script>
-    // Carrega dados ao abrir a página
-    window.onload = function() {
-        const saved = localStorage.getItem('zabbix_mapping_data');
-        if (saved) {
-            document.getElementById('tableBody').innerHTML = saved;
-        }
+    window.onload = () => {
+        const data = localStorage.getItem('zabbix_struct_data');
+        if (data) document.getElementById('tableBody').innerHTML = data;
     };
 
-    function saveData() {
-        const html = document.getElementById('tableBody').innerHTML;
-        localStorage.setItem('zabbix_mapping_data', html);
-    }
-
-    function toggleItem(el) { el.classList.toggle('active'); }
-
-    function addCustomCheckItem() {
-        const val = document.getElementById('customItemInput').value;
-        if (!val) return;
-        const container = document.getElementById('checklist');
-        const div = document.createElement('div');
-        div.className = 'check-item active';
-        div.innerText = val;
-        div.onclick = function() { toggleItem(this); };
-        container.appendChild(div);
-        document.getElementById('customItemInput').value = '';
-    }
+    function toggle(el) { el.classList.toggle('active'); }
 
     function addEntry() {
         const vendor = document.getElementById('vendorInput').value;
-        const activeItems = document.querySelectorAll('.check-item.active');
+        const categories = {};
         
-        if (!vendor || activeItems.length === 0) {
+        document.querySelectorAll('.check-list li.active').forEach(li => {
+            const group = li.parentElement.getAttribute('data-group');
+            if (!categories[group]) categories[group] = [];
+            categories[group].push(li.innerText);
+        });
+
+        if (!vendor || Object.keys(categories).length === 0) {
             alert('Preencha o vendor e selecione ao menos um item.');
             return;
         }
 
         const tableBody = document.getElementById('tableBody');
         const row = tableBody.insertRow();
-        let itemsHtml = '';
-        activeItems.forEach(item => {
-            itemsHtml += `<span class="badge">✔ ${item.innerText}</span> `;
-        });
+        
+        let detailsHtml = '';
+        for (const [cat, items] of Object.entries(categories)) {
+            detailsHtml += `<div class="group-tag"><span class="group-name">${cat}:</span><span class="item-val">${items.join(', ')}</span></div>`;
+        }
 
         row.innerHTML = `
-            <td style="font-weight:bold">${vendor}</td>
-            <td>${itemsHtml}</td>
-            <td class="no-print"><button onclick="this.parentElement.parentElement.remove(); saveData();" style="color:red; cursor:pointer; border:none; background:none; font-weight:bold;">Remover</button></td>
+            <td style="font-weight:bold; color:#2c3e50">${vendor}</td>
+            <td>${detailsHtml}</td>
+            <td class="no-print"><button onclick="this.parentElement.parentElement.remove(); save();" style="color:red; border:none; background:none; cursor:pointer;">Remover</button></td>
         `;
 
+        save();
+        // Reset
         document.getElementById('vendorInput').value = '';
-        document.querySelectorAll('.check-item').forEach(i => i.classList.remove('active'));
-        saveData(); // Salva no Local Storage
+        document.querySelectorAll('.check-list li').forEach(li => li.classList.remove('active'));
+    }
+
+    function save() {
+        localStorage.setItem('zabbix_struct_data', document.getElementById('tableBody').innerHTML);
     }
 
     function clearAll() {
-        if (confirm('Deseja apagar todos os registros salvos?')) {
-            localStorage.removeItem('zabbix_mapping_data');
-            document.getElementById('tableBody').innerHTML = '';
+        if(confirm('Limpar tudo?')) {
+            localStorage.removeItem('zabbix_struct_data');
+            location.reload();
         }
-    }
-
-    function exportCSV() {
-        let csv = '\uFEFFVendor;Itens Monitorados\n';
-        const rows = document.querySelectorAll('#tableBody tr');
-        rows.forEach(row => {
-            const vendor = row.cells[0].innerText;
-            const items = Array.from(row.querySelectorAll('.badge')).map(b => b.innerText.replace('✔ ', '')).join(' | ');
-            csv += `"${vendor}";"${items}"\n`;
-        });
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'mapeamento_zabbix.csv';
-        link.click();
     }
 </script>
 </body>
