@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC - Mapeamento de Monitoramento Zabbix</title>
+    <title>NOC - Mapeamento Zabbix Pro</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -14,11 +14,7 @@
             --border: #dee2e6;
         }
 
-        /* Estilos para o PDF */
-        @page {
-            size: A4 landscape;
-            margin: 10mm;
-        }
+        @page { size: A4 landscape; margin: 10mm; }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
@@ -41,9 +37,10 @@
             border-bottom: 3px solid var(--accent);
             margin-bottom: 20px;
             padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
 
         .control-panel {
             background: #f1f3f5;
@@ -64,12 +61,11 @@
             box-sizing: border-box;
         }
 
-        /* Botões do Checklist */
         .checklist-container {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .check-item {
@@ -81,15 +77,14 @@
             font-size: 13px;
             font-weight: 600;
             transition: all 0.2s;
-            user-select: none;
         }
 
-        .check-item:hover { border-color: var(--accent); }
+        .check-item.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .check-item.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        .custom-item-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .btn-main {
@@ -102,51 +97,17 @@
             cursor: pointer;
             width: 100%;
             font-size: 16px;
-            transition: 0.2s;
         }
 
-        .btn-main:hover { background: #219150; }
-
-        .export-group {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .btn-export {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
+        .export-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-export { flex: 1; padding: 12px; border: none; border-radius: 4px; color: white; font-weight: bold; cursor: pointer; }
         .btn-csv { background: #607d8b; }
         .btn-pdf { background: #e74c3c; }
+        .btn-clear { background: #95a5a6; }
 
-        /* Tabela de Resultados */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th {
-            background-color: var(--primary);
-            color: white;
-            text-align: left;
-            padding: 12px;
-            font-size: 13px;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 13px;
-        }
-
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { background-color: var(--primary); color: white; text-align: left; padding: 12px; font-size: 13px; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
         .badge {
             display: inline-block;
             background: #d4edda;
@@ -159,16 +120,10 @@
             font-weight: bold;
         }
 
-        .btn-del { color: #e74c3c; cursor: pointer; font-weight: bold; border: none; background: none; }
-
-        /* Regras de Impressão */
         @media print {
             .no-print { display: none !important; }
             body { padding: 0; background: white; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; }
-            th { background-color: #f2f2f2 !important; color: black; border: 1px solid #ddd; }
-            td { border: 1px solid #ddd; }
-            .badge { border: 1px solid #aaa; background: white; color: black; }
         }
     </style>
 </head>
@@ -176,33 +131,36 @@
 
 <div class="container">
     <div class="header">
-        <h1>Mapeamento de Monitoramento - Zabbix NOC</h1>
+        <h1>Mapeamento Zabbix - Persistente</h1>
+        <button class="btn-export btn-clear no-print" onclick="clearAll()">Limpar Tudo</button>
     </div>
 
     <div class="control-panel no-print">
         <div class="input-group">
             <label>Vendor / Equipamento:</label>
-            <input type="text" id="vendorInput" placeholder="Ex: OLT Nokia 7360, Switch Huawei S5700, XPS Delta...">
+            <input type="text" id="vendorInput" placeholder="Ex: OLT Fiberhome, Switch Datacom...">
         </div>
 
-        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:14px;">Monitoramento Ativo (Clique para marcar):</label>
+        <label style="display:block; font-weight:bold; margin-bottom:10px; font-size:14px;">Monitoramento Ativo:</label>
         <div class="checklist-container" id="checklist">
+            <!-- Itens padrão -->
             <div class="check-item" onclick="toggleItem(this)">Ping</div>
             <div class="check-item" onclick="toggleItem(this)">Interface (UP/DOWN)</div>
-            <div class="check-item" onclick="toggleItem(this)">Sinal de GBIC (RX/TX)</div>
+            <div class="check-item" onclick="toggleItem(this)">Sinal GBIC</div>
             <div class="check-item" onclick="toggleItem(this)">Tráfego Uplink</div>
-            <div class="check-item" onclick="toggleItem(this)">PON (Status)</div>
-            <div class="check-item" onclick="toggleItem(this)">GPON Tráfego</div>
-            <div class="check-item" onclick="toggleItem(this)">CPU / Memória</div>
+            <div class="check-item" onclick="toggleItem(this)">PON Status</div>
             <div class="check-item" onclick="toggleItem(this)">Temperatura</div>
-            <div class="check-item" onclick="toggleItem(this)">ONUs Online</div>
-            <div class="check-item" onclick="toggleItem(this)">Voltagem / Amperagem</div>
+        </div>
+
+        <div class="custom-item-row">
+            <input type="text" id="customItemInput" placeholder="Outro item? Digite aqui..." style="flex:1; padding:10px; border:1px solid #ddd; border-radius:4px;">
+            <button onclick="addCustomCheckItem()" style="padding:10px 20px; background:var(--accent); color:white; border:none; border-radius:4px; cursor:pointer; font-weight:bold;">+ Adicionar Item</button>
         </div>
 
         <button class="btn-main" onclick="addEntry()">Registrar Equipamento ✓</button>
 
         <div class="export-group">
-            <button class="btn-export btn-csv" onclick="exportCSV()">Exportar para Excel (CSV)</button>
+            <button class="btn-export btn-csv" onclick="exportCSV()">Exportar CSV</button>
             <button class="btn-export btn-pdf" onclick="window.print()">Gerar PDF</button>
         </div>
     </div>
@@ -210,5 +168,91 @@
     <table id="resultTable">
         <thead>
             <tr>
-                <th style="width: 25%;">Vendor / Modelo</th>
-                <th style="width: 65
+                <th style="width: 25%;">Vendor</th>
+                <th style="width: 65%;">Itens Monitorados</th>
+                <th class="no-print" style="width: 10%;">Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+</div>
+
+<script>
+    // Carrega dados ao abrir a página
+    window.onload = function() {
+        const saved = localStorage.getItem('zabbix_mapping_data');
+        if (saved) {
+            document.getElementById('tableBody').innerHTML = saved;
+        }
+    };
+
+    function saveData() {
+        const html = document.getElementById('tableBody').innerHTML;
+        localStorage.setItem('zabbix_mapping_data', html);
+    }
+
+    function toggleItem(el) { el.classList.toggle('active'); }
+
+    function addCustomCheckItem() {
+        const val = document.getElementById('customItemInput').value;
+        if (!val) return;
+        const container = document.getElementById('checklist');
+        const div = document.createElement('div');
+        div.className = 'check-item active';
+        div.innerText = val;
+        div.onclick = function() { toggleItem(this); };
+        container.appendChild(div);
+        document.getElementById('customItemInput').value = '';
+    }
+
+    function addEntry() {
+        const vendor = document.getElementById('vendorInput').value;
+        const activeItems = document.querySelectorAll('.check-item.active');
+        
+        if (!vendor || activeItems.length === 0) {
+            alert('Preencha o vendor e selecione ao menos um item.');
+            return;
+        }
+
+        const tableBody = document.getElementById('tableBody');
+        const row = tableBody.insertRow();
+        let itemsHtml = '';
+        activeItems.forEach(item => {
+            itemsHtml += `<span class="badge">✔ ${item.innerText}</span> `;
+        });
+
+        row.innerHTML = `
+            <td style="font-weight:bold">${vendor}</td>
+            <td>${itemsHtml}</td>
+            <td class="no-print"><button onclick="this.parentElement.parentElement.remove(); saveData();" style="color:red; cursor:pointer; border:none; background:none; font-weight:bold;">Remover</button></td>
+        `;
+
+        document.getElementById('vendorInput').value = '';
+        document.querySelectorAll('.check-item').forEach(i => i.classList.remove('active'));
+        saveData(); // Salva no Local Storage
+    }
+
+    function clearAll() {
+        if (confirm('Deseja apagar todos os registros salvos?')) {
+            localStorage.removeItem('zabbix_mapping_data');
+            document.getElementById('tableBody').innerHTML = '';
+        }
+    }
+
+    function exportCSV() {
+        let csv = '\uFEFFVendor;Itens Monitorados\n';
+        const rows = document.querySelectorAll('#tableBody tr');
+        rows.forEach(row => {
+            const vendor = row.cells[0].innerText;
+            const items = Array.from(row.querySelectorAll('.badge')).map(b => b.innerText.replace('✔ ', '')).join(' | ');
+            csv += `"${vendor}";"${items}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'mapeamento_zabbix.csv';
+        link.click();
+    }
+</script>
+</body>
+</html>
