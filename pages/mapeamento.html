@@ -3,249 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC - Mapeamento Estruturado Zabbix</title>
+    <title>Wiki de Templates Zabbix</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
-            --success: #27ae60;
-            --bg: #f4f7f6;
+            --primary-color: #f18421; /* Zabbix Orange */
+            --bg-color: #f4f7f6;
+            --text-color: #333;
             --white: #ffffff;
-            --border: #dcdde1;
+            --border-color: #ddd;
         }
-
-        @page { size: A4 landscape; margin: 10mm; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--primary);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
             margin: 0;
             padding: 20px;
         }
 
         .container {
-            max-width: 1300px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--white);
-            padding: 25px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .header {
-            border-bottom: 3px solid var(--accent);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+        header {
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .control-panel {
-            background: #fdfdfd;
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 25px;
-            border: 1px solid var(--border);
-        }
+        h1 { color: var(--primary-color); margin: 0; }
 
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
+        .controls {
             margin-bottom: 20px;
-        }
-
-        .category-box {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            padding: 12px;
-        }
-
-        .category-title {
-            font-weight: bold;
-            font-size: 13px;
-            color: var(--accent);
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            display: block;
-        }
-
-        .check-list { list-style: none; padding: 0; margin: 0; }
-        .check-list li {
-            font-size: 12px;
-            margin-bottom: 5px;
             display: flex;
-            align-items: center;
-            cursor: pointer;
-            padding: 4px;
-            border-radius: 3px;
+            gap: 10px;
         }
-        .check-list li:hover { background: #f0f0f0; }
-        .check-list li.active { background: #d4edda; color: #155724; font-weight: bold; }
-        .check-list li::before { content: '☐ '; margin-right: 8px; font-family: monospace; }
-        .check-list li.active::before { content: '☑ '; }
 
-        .btn-main {
-            background: var(--success);
-            color: white;
+        button {
+            padding: 10px 15px;
             border: none;
-            padding: 15px;
             border-radius: 4px;
-            font-weight: bold;
             cursor: pointer;
-            width: 100%;
-            font-size: 16px;
+            font-weight: bold;
             transition: 0.3s;
         }
 
-        .btn-main:hover { background: #219150; transform: translateY(-2px); }
+        .btn-add { background-color: #2ecc71; color: white; }
+        .btn-export { background-color: #3498db; color: white; }
+        .btn-copy { background-color: #9b59b6; color: white; }
+        button:hover { opacity: 0.8; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th { background-color: var(--primary); color: white; text-align: left; padding: 12px; font-size: 13px; }
-        td { padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: top; }
-
-        .group-tag {
-            display: block;
-            margin-bottom: 8px;
+        /* Estrutura em Cascata */
+        .category {
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            overflow: hidden;
         }
-        .group-name { font-weight: bold; color: #34495e; text-decoration: underline; margin-right: 5px; }
-        .item-val { color: #666; font-style: italic; }
 
-        @media print { .no-print { display: none !important; } }
+        .category-header {
+            background: #e9ecef;
+            padding: 10px 15px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .template-list {
+            padding: 10px 20px;
+        }
+
+        .template-item {
+            margin-bottom: 15px;
+            padding-left: 15px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .template-name {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .monitoring-items {
+            font-size: 0.95em;
+            margin-top: 5px;
+            color: #555;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none; /* Escondido por padrão, usado para exportar */
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th { background-color: #f8f9fa; }
+
+        @media print {
+            .controls, .btn-delete { display: none; }
+            body { background: white; }
+            .container { box-shadow: none; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Mapeamento Estruturado de Monitoramento</h1>
-        <button class="no-print" onclick="clearAll()" style="padding:8px; cursor:pointer;">Limpar Tudo</button>
-    </div>
-
-    <div class="control-panel no-print">
-        <div style="margin-bottom:20px;">
-            <label style="font-weight:bold; display:block; margin-bottom:5px;">Vendor / Modelo:</label>
-            <input type="text" id="vendorInput" placeholder="Ex: OLT Nokia 7360 FX-4" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:4px; font-size:16px;">
+    <header>
+        <h1>Zabbix Wiki - Templates</h1>
+        <div class="controls">
+            <button class="btn-copy" onclick="copyToClipboard()">Copiar Tudo</button>
+            <button class="btn-export" onclick="window.print()">Exportar PDF</button>
         </div>
+    </header>
 
-        <div class="category-grid">
-            <!-- Bloco Energia -->
-            <div class="category-box">
-                <span class="category-title">⚡ Energia</span>
-                <ul class="check-list" data-group="Energia">
-                    <li onclick="toggle(this)">Potência de entrada (W)</li>
-                    <li onclick="toggle(this)">Estado Power 1 / Power 2</li>
-                    <li onclick="toggle(this)">Tensão/Voltagem (V)</li>
-                    <li onclick="toggle(this)">Tipo da Fonte (AC/DC)</li>
-                </ul>
-            </div>
-
-            <!-- Bloco Interface -->
-            <div class="category-box">
-                <span class="category-title">🌐 Interfaces / Uplink</span>
-                <ul class="check-list" data-group="Interfaces">
-                    <li onclick="toggle(this)">Status Administrativo (UP/DOWN)</li>
-                    <li onclick="toggle(this)">Tráfego (bps) In/Out</li>
-                    <li onclick="toggle(this)">Sinal Óptico GBIC (RX/TX)</li>
-                    <li onclick="toggle(this)">Erros de CRC / Descartes</li>
-                </ul>
-            </div>
-
-            <!-- Bloco GPON -->
-            <div class="category-box">
-                <span class="category-title">📡 GPON / Acesso</span>
-                <ul class="check-list" data-group="Acesso">
-                    <li onclick="toggle(this)">Status da Porta PON</li>
-                    <li onclick="toggle(this)">ONUs Online / Offline</li>
-                    <li onclick="toggle(this)">Consumo por PON</li>
-                    <li onclick="toggle(this)">Sinal médio dos Clientes</li>
-                </ul>
-            </div>
-
-            <!-- Bloco Hardware -->
-            <div class="category-box">
-                <span class="category-title">🛠️ Hardware / Saúde</span>
-                <ul class="check-list" data-group="Hardware">
-                    <li onclick="toggle(this)">Uso de CPU / Memória</li>
-                    <li onclick="toggle(this)">Temperatura do Chassi</li>
-                    <li onclick="toggle(this)">Status das Ventoinhas (Fans)</li>
-                    <li onclick="toggle(this)">Uptime do Sistema</li>
-                </ul>
+    <div id="wiki-content">
+        <!-- Categoria 1 -->
+        <div class="category">
+            <div class="category-header">1. INFRAESTRUTURA DE REDE</div>
+            <div class="template-list">
+                <div class="template-item">
+                    <span class="template-name">Template Juniper MX SNMP</span>
+                    <div class="monitoring-items">
+                        <span class="tag">SNMP</span>
+                        <ul>
+                            <li><b>Interfaces:</b> Tráfego (In/Out), Erros, Status Administrativo.</li>
+                            <li><b>Chassis:</b> CPU Load, Memória, Temperatura, Status das Fontes.</li>
+                            <li><b>Routing:</b> BGP Session Status, Prefixos recebidos.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="template-item">
+                    <span class="template-name">Template Datacom Switches</span>
+                    <div class="monitoring-items">
+                        <ul>
+                            <li><b>Hardware:</b> Uso de CPU e Flash.</li>
+                            <li><b>Portas:</b> SFP Digital Monitoring (Sinal Óptico).</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button class="btn-main" onclick="addEntry()">Registrar Mapeamento ✓</button>
+        <!-- Categoria 2 -->
+        <div class="category">
+            <div class="category-header">2. ACESSO E OLTs</div>
+            <div class="template-list">
+                <div class="template-item">
+                    <span class="template-name">Template Nokia OLT Gpon</span>
+                    <div class="monitoring-items">
+                        <ul>
+                            <li><b>ONUs:</b> Total Online vs Offline.</li>
+                            <li><b>Tráfego:</b> Uplink 10G interfaces.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categoria 3 -->
+        <div class="category">
+            <div class="category-header">3. SERVIDORES E APLICAÇÕES</div>
+            <div class="template-item" style="padding: 10px 20px;">
+                <span class="template-name">Linux by Zabbix Agent</span>
+                <div class="monitoring-items">
+                    <span class="tag">Agent</span>
+                    <ul>
+                        <li><b>OS:</b> Load Average, Disk Space, Log Monitoring.</li>
+                        <li><b>Segurança:</b> Checksum de binários críticos.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <table id="resultTable">
+    <table id="export-table">
         <thead>
             <tr>
-                <th style="width: 20%;">Vendor</th>
-                <th style="width: 70%;">Itens por Categoria</th>
-                <th class="no-print" style="width: 10%;">Ações</th>
+                <th>Categoria</th>
+                <th>Template</th>
+                <th>Itens Monitorados</th>
             </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody>
+            <tr>
+                <td>Rede</td>
+                <td>Juniper MX</td>
+                <td>Tráfego, CPU, BGP, Temperatura</td>
+            </tr>
+            <tr>
+                <td>Servidores</td>
+                <td>Linux Agent</td>
+                <td>CPU, RAM, Disco, Logs</td>
+            </tr>
+        </tbody>
     </table>
 </div>
 
 <script>
-    window.onload = () => {
-        const data = localStorage.getItem('zabbix_struct_data');
-        if (data) document.getElementById('tableBody').innerHTML = data;
-    };
-
-    function toggle(el) { el.classList.toggle('active'); }
-
-    function addEntry() {
-        const vendor = document.getElementById('vendorInput').value;
-        const categories = {};
-        
-        document.querySelectorAll('.check-list li.active').forEach(li => {
-            const group = li.parentElement.getAttribute('data-group');
-            if (!categories[group]) categories[group] = [];
-            categories[group].push(li.innerText);
+    function copyToClipboard() {
+        const text = document.getElementById('wiki-content').innerText;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Conteúdo copiado para a área de transferência!');
         });
-
-        if (!vendor || Object.keys(categories).length === 0) {
-            alert('Preencha o vendor e selecione ao menos um item.');
-            return;
-        }
-
-        const tableBody = document.getElementById('tableBody');
-        const row = tableBody.insertRow();
-        
-        let detailsHtml = '';
-        for (const [cat, items] of Object.entries(categories)) {
-            detailsHtml += `<div class="group-tag"><span class="group-name">${cat}:</span><span class="item-val">${items.join(', ')}</span></div>`;
-        }
-
-        row.innerHTML = `
-            <td style="font-weight:bold; color:#2c3e50">${vendor}</td>
-            <td>${detailsHtml}</td>
-            <td class="no-print"><button onclick="this.parentElement.parentElement.remove(); save();" style="color:red; border:none; background:none; cursor:pointer;">Remover</button></td>
-        `;
-
-        save();
-        // Reset
-        document.getElementById('vendorInput').value = '';
-        document.querySelectorAll('.check-list li').forEach(li => li.classList.remove('active'));
     }
 
-    function save() {
-        localStorage.setItem('zabbix_struct_data', document.getElementById('tableBody').innerHTML);
-    }
-
-    function clearAll() {
-        if(confirm('Limpar tudo?')) {
-            localStorage.removeItem('zabbix_struct_data');
-            location.reload();
-        }
+    // Função para simular adição/remoção se necessário
+    function removeElement(btn) {
+        btn.parentElement.remove();
     }
 </script>
+
 </body>
 </html>
