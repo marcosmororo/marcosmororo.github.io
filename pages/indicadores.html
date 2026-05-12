@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação de Indicadores NOC</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f4f7f9;
+            --card-bg: #ffffff;
+            --text-color: #333;
+            --border-color: #e1e4e8;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            max-width: 250px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .description {
+            background: #eef4fb;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .indicator-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .indicator-card {
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s;
+        }
+
+        .indicator-card:hover {
+            border-color: var(--primary-color);
+            background-color: #fafafa;
+        }
+
+        .indicator-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .tag {
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .summary-area {
+            width: 100%;
+            min-height: 60px;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px dashed #ccc;
+            background: #fff;
+            color: #666;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; max-width: 100%; width: 100%; }
+            .indicator-card { page-break-inside: avoid; }
+            .summary-area { border: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="online.png" alt="Logo NOC" class="logo">
+            <h1>Documentação de Indicadores NOC</h1>
+        </header>
+
+        <div class="description">
+            Esta página documenta os indicadores de performance (KPIs) monitorados pelo N2. Utilize os campos abaixo para descrever a metodologia de cada métrica antes de gerar o relatório final.
+        </div>
+
+        <div class="indicator-grid">
+            <!-- N2.NC01 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2.NC01</span>
+                    <span class="title">TOTAL CDN ONLINE</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2.NC02 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2.NC02</span>
+                    <span class="title">TOTAL LINK IP</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2.NC03 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2.NC03</span>
+                    <span class="title">TOTAL PTT ONLINE</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2.NC08 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2.NC08</span>
+                    <span class="title">SLA DE DISPONIBILIDADE DE SERVIÇO DE INTERNET</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2.NC12 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2.NC12</span>
+                    <span class="title">SLA DE DISPONIBILIDADE DE HOSTS REDES</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2-NC13 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2-NC13</span>
+                    <span class="title">CONSUMO DE BANDA POR CLIENTE - CDN</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2-NC14 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2-NC14</span>
+                    <span class="title">CONSUMO DE BANDA POR CLIENTE - CGNAT</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+
+            <!-- N2-NC15 -->
+            <div class="indicator-card">
+                <div class="indicator-header">
+                    <span class="tag">N2-NC15</span>
+                    <span class="title">CONSUMO DE BANDA POR CLIENTE - TOTAL</span>
+                </div>
+                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
+            </div>
+        </div>
+
+        <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #aaa;">
+            © 2026 NOC Automation Suite - Documentação Técnica
+        </footer>
+    </div>
+
+</body>
+</html>
