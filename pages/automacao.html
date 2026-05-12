@@ -1,97 +1,129 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel NOC - Automação</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #fff;
+        }
 
-<title>Automação NOC</title>
+        /* HEADER */
+        .header {
+            padding: 20px;
+            background: #020617;
+            border-bottom: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-<style>
-body {
-    margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: #0f172a;
-    color: #fff;
-}
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
 
-/* HEADER */
-.header {
-    padding: 20px;
-    background: #020617;
-    border-bottom: 1px solid #1e293b;
-}
+        /* GRID */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
 
-.header h1 {
-    margin: 0;
-    font-size: 20px;
-}
+        /* CARD */
+        .card {
+            background: #111827;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #1f2937;
+            transition: 0.2s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
 
-/* GRID */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
-    padding: 20px;
-}
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #2563eb;
+        }
 
-/* CARD */
-.card {
-    background: #111827;
-    border-radius: 12px;
-    padding: 20px;
-    border: 1px solid #1f2937;
-    transition: 0.2s;
-    position: relative;
-}
+        /* ICON */
+        .icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
 
-.card:hover {
-    transform: translateY(-5px);
-    border-color: #2563eb;
-}
+        /* TITLE */
+        .card h3 {
+            margin: 5px 0;
+            font-size: 16px;
+        }
 
-/* ICON */
-.icon {
-    font-size: 28px;
-    margin-bottom: 10px;
-}
+        /* DESC */
+        .card p {
+            font-size: 13px;
+            color: #9ca3af;
+            flex-grow: 1;
+        }
 
-/* TITLE */
-.card h3 {
-    margin: 5px 0;
-    font-size: 16px;
-}
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
 
-/* DESC */
-.card p {
-    font-size: 13px;
-    color: #9ca3af;
-}
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
 
-/* BUTTON */
-.btn {
-    margin-top: 15px;
-    display: inline-block;
-    padding: 10px 15px;
-    background: #2563eb;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 13px;
-}
+        .btn-secondary {
+            background: #475569;
+        }
 
-/* STATUS BADGE */
-.badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #16a34a;
-    padding: 4px 8px;
-    font-size: 10px;
-    border-radius: 4px;
-}
-</style>
+        .btn-danger {
+            background: #dc2626;
+        }
+
+        /* STATUS BADGE */
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #16a34a;
+            padding: 4px 8px;
+            font-size: 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .badge-warning { background: #ea580c; }
+        .badge-maintenance { background: #6b7280; }
+
+        /* POMODORO SPECIFIC */
+        #pomodoro-timer {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+            font-family: monospace;
+            color: #60a5fa;
+        }
+    </style>
 </head>
-
 <body>
 
 <div class="header">
@@ -99,6 +131,18 @@ body {
 </div>
 
 <div class="grid">
+    <!-- CARD POMODORO (NOVO E MELHORADO) -->
+    <div class="card" id="pomodoro-card">
+        <div class="badge" id="pomodoro-status">FOCO</div>
+        <div class="icon">🍅</div>
+        <h3>Pomodoro NOC</h3>
+        <div id="pomodoro-timer">25:00</div>
+        <p>Timer persistente que não trava ao mudar de aba (Web Worker).</p>
+        <div class="btn-group">
+            <button onclick="togglePomodoro()" class="btn" id="btn-pomodoro">Iniciar</button>
+            <button onclick="resetPomodoro()" class="btn btn-secondary">Resetar</button>
+        </div>
+    </div>
 
     <!-- CARD AVISO NOC -->
     <div class="card">
@@ -109,7 +153,7 @@ body {
         <a href="noc-aviso.html" class="btn">Abrir</a>
     </div>
 
-        <!-- CARD CARIMBO CHAMADOS -->
+    <!-- CARD CARIMBO CHAMADOS -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">🔖</div>
@@ -127,7 +171,7 @@ body {
         <a href="rfo.html" class="btn">Abrir</a>
     </div>
 
-        <!-- CARD OPERADORA CHAMADO -->
+    <!-- CARD OPERADORA CHAMADO -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">👩‍💼</div>
@@ -136,7 +180,7 @@ body {
         <a href="operadora.html" class="btn">Abrir</a>
     </div>
 
-            <!-- CARD MODELO DE CHAMADO -->
+    <!-- CARD MODELO DE CHAMADO -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">🚧</div>
@@ -145,7 +189,7 @@ body {
         <a href="modelodechamados.html" class="btn">Abrir</a>
     </div>
 
-                <!-- CARD TAREFAS DIARIAS -->
+    <!-- CARD TAREFAS DIARIAS -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">🖥</div>
@@ -153,7 +197,6 @@ body {
         <p>Organização de Tarefas do dia a dia!</p>
         <a href="tarefasdiarias.html" class="btn">Abrir</a>
     </div>
-
 
     <!-- CARD RELATORIO DE INCIDENTES -->
     <div class="card">
@@ -164,7 +207,7 @@ body {
         <a href="relatorio.html" class="btn">Abrir</a>
     </div>
 
-    <!-- CARD FUTURO -->
+    <!-- CARD STATUS REDE -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">⏳</div>
@@ -173,7 +216,7 @@ body {
         <a href="testeinternet.html" class="btn">Abrir</a>
     </div>
 
-    <!-- CARD FUTURO -->
+    <!-- CARD ESCALONAMENTO -->
     <div class="card">
         <div class="badge">ATIVO</div>
         <div class="icon">⚡</div>
@@ -182,15 +225,112 @@ body {
         <a href="chamados.html" class="btn">Abrir</a>
     </div>
 
-        <!-- CARD OLT -->
+    <!-- CARD OLT -->
     <div class="card">
-        <div class="badge">EM MANUTENÇÃO</div>
+        <div class="badge badge-maintenance">EM MANUTENÇÃO</div>
         <div class="icon">🌐</div>
         <h3>OLT</h3>
         <p>Script para OLTs</p>
         <a href="scriptolt.html" class="btn">Abrir</a>
     </div>
 </div>
+
+<script>
+    // --- LÓGICA DO WEB WORKER PARA O POMODORO ---
+    // Isso garante que o timer rode em segundo plano mesmo com a aba inativa.
+    const workerCode = `
+        let timer = null;
+        self.onmessage = function(e) {
+            if (e.data.action === 'start') {
+                if (timer) clearInterval(timer);
+                timer = setInterval(() => self.postMessage('tick'), 1000);
+            } else if (e.data.action === 'stop') {
+                clearInterval(timer);
+                timer = null;
+            }
+        };
+    `;
+
+    const blob = new Blob([workerCode], { type: 'application/javascript' });
+    const worker = new Worker(URL.createObjectURL(blob));
+
+    let timeLeft = 25 * 60;
+    let isRunning = false;
+    let currentMode = 'foco'; // 'foco' ou 'pausa'
+
+    const display = document.getElementById('pomodoro-timer');
+    const btnStart = document.getElementById('btn-pomodoro');
+    const statusBadge = document.getElementById('pomodoro-status');
+
+    worker.onmessage = function() {
+        if (timeLeft > 0) {
+            timeLeft--;
+            updateDisplay();
+        } else {
+            handlePhaseComplete();
+        }
+    };
+
+    function updateDisplay() {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        display.innerText = timeStr;
+        document.title = `(${timeStr}) Painel NOC`;
+    }
+
+    function togglePomodoro() {
+        if (isRunning) {
+            worker.postMessage({ action: 'stop' });
+            btnStart.innerText = 'Retomar';
+            btnStart.className = 'btn';
+        } else {
+            worker.postMessage({ action: 'start' });
+            btnStart.innerText = 'Pausar';
+            btnStart.className = 'btn btn-danger';
+        }
+        isRunning = !isRunning;
+    }
+
+    function resetPomodoro() {
+        worker.postMessage({ action: 'stop' });
+        isRunning = false;
+        currentMode = 'foco';
+        timeLeft = 25 * 60;
+        btnStart.innerText = 'Iniciar';
+        btnStart.className = 'btn';
+        statusBadge.innerText = 'FOCO';
+        statusBadge.className = 'badge';
+        updateDisplay();
+    }
+
+    function handlePhaseComplete() {
+        worker.postMessage({ action: 'stop' });
+        isRunning = false;
+        
+        // Notificação sonora
+        const beep = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+        beep.play().catch(() => {}); // Ignora erro se o navegador bloquear áudio sem interação
+
+        if (currentMode === 'foco') {
+            alert('Ciclo de foco terminado! Hora da pausa.');
+            currentMode = 'pausa';
+            timeLeft = 5 * 60;
+            statusBadge.innerText = 'PAUSA';
+            statusBadge.className = 'badge badge-warning';
+        } else {
+            alert('Pausa terminada! De volta ao trabalho.');
+            currentMode = 'foco';
+            timeLeft = 25 * 60;
+            statusBadge.innerText = 'FOCO';
+            statusBadge.className = 'badge';
+        }
+        
+        btnStart.innerText = 'Iniciar';
+        btnStart.className = 'btn';
+        updateDisplay();
+    }
+</script>
 
 </body>
 </html>
