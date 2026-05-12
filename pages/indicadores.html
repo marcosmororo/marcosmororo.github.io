@@ -3,122 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentação de Indicadores NOC</title>
+    <title>NOC: ICG Marcos Renan</title>
     <style>
         :root {
-            --primary-color: #0056b3;
-            --bg-color: #f4f7f9;
-            --card-bg: #ffffff;
-            --text-color: #333;
-            --border-color: #e1e4e8;
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --accent: #0ea5e9;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1000px;
         }
 
         header {
-            text-align: center;
-            border-bottom: 3px solid var(--primary-color);
-            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .logo {
-            max-width: 250px;
-            height: auto;
-            margin-bottom: 15px;
+            height: 45px;
+            filter: brightness(0) invert(1); /* Ajuste para logo branca se necessário */
         }
 
-        h1 {
-            color: var(--primary-color);
-            margin: 0;
-            font-size: 28px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .actions {
+            display: flex;
+            gap: 12px;
         }
 
-        .description {
-            background: #eef4fb;
-            padding: 15px;
-            border-left: 5px solid var(--primary-color);
-            margin-bottom: 30px;
-            font-size: 15px;
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
         }
 
-        .indicator-grid {
+        button:hover {
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-body);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+
+        .doc-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 1.5rem;
         }
 
-        .indicator-card {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 20px;
-            transition: transform 0.2s;
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
         }
 
-        .indicator-card:hover {
-            border-color: var(--primary-color);
-            background-color: #fafafa;
-        }
-
-        .indicator-header {
+        .card-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+            margin-bottom: 16px;
         }
 
-        .tag {
-            background: var(--primary-color);
-            color: white;
-            padding: 2px 8px;
+        .id-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
             border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-right: 10px;
+            font-size: 13px;
         }
 
-        .title {
-            font-weight: bold;
-            font-size: 16px;
-            color: #2c3e50;
+        h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.025em;
         }
 
-        .summary-area {
-            width: 100%;
-            min-height: 60px;
-            margin-top: 10px;
-            padding: 10px;
-            border: 1px dashed #ccc;
-            background: #fff;
-            color: #666;
+        .editor {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            min-height: 80px;
             font-size: 14px;
-            border-radius: 4px;
+            color: var(--text-muted);
+            outline: none;
+        }
+
+        .editor:focus {
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
+        .attachment-zone {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        input[type="file"] {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         @media print {
-            body { background: white; padding: 0; }
-            .container { box-shadow: none; max-width: 100%; width: 100%; }
-            .indicator-card { page-break-inside: avoid; }
-            .summary-area { border: 1px solid #eee; }
+            body { background: white; color: black; padding: 0; }
+            .container { max-width: 100%; }
+            .actions, .attachment-zone, input[type="file"], footer { display: none; }
+            .card { border: 1px solid #ddd; background: white; margin-bottom: 20px; page-break-inside: avoid; }
+            .editor { border: none; background: white; color: black; padding: 0; }
+            .id-badge { border: 1px solid var(--primary); background: none; }
+            h2 { color: black; }
         }
     </style>
 </head>
@@ -126,90 +168,112 @@
 
     <div class="container">
         <header>
-            <img src="../assets/img/online.png" alt="Logo NOC" class="logo">
-            <h1>Documentação de Indicadores NOC</h1>
+            <div class="brand-section">
+                <img src="../assets/img/online.png" alt="NOC Logo" class="logo">
+                <div>
+                    <h1>NOC: ICG - MARCOS RENAN</h1>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">DOCUMENTAÇÃO MENSAL</p>
+                </div>
+            </div>
+            <div class="actions">
+                <button onclick="window.print()" class="btn-primary">EXPORT_AS_PDF</button>
+            </div>
         </header>
 
-        <div class="description">
-            Esta página documenta os indicadores de performance (KPIs) monitorados pelo N2. Utilize os campos abaixo para descrever a metodologia de cada métrica antes de gerar o relatório final.
-        </div>
-
-        <div class="indicator-grid">
-            <!-- N2.NC01 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2.NC01</span>
-                    <span class="title">TOTAL CDN ONLINE</span>
+        <main class="doc-grid">
+            <!-- Template Script for Dynamic generation or Manual -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL CDN ONLINE</h2>
+                    <span class="id-badge">N2.NC01</span>
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
-
-            <!-- N2.NC02 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2.NC02</span>
-                    <span class="title">TOTAL LINK IP</span>
+                <div class="editor" contenteditable="true">Write operational summary...</div>
+                <div class="attachment-zone">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 5px;">ATTACH_EVIDENCE (IMG/PDF)</label>
+                    <input type="file" accept="image/*,application/pdf">
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
+            </section>
 
-            <!-- N2.NC03 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2.NC03</span>
-                    <span class="title">TOTAL PTT ONLINE</span>
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL LINK IP</h2>
+                    <span class="id-badge">N2.NC02</span>
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
-
-            <!-- N2.NC08 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2.NC08</span>
-                    <span class="title">SLA DE DISPONIBILIDADE DE SERVIÇO DE INTERNET</span>
+                <div class="editor" contenteditable="true">Define threshold and monitoring source...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
+            </section>
 
-            <!-- N2.NC12 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2.NC12</span>
-                    <span class="title">SLA DE DISPONIBILIDADE DE HOSTS REDES</span>
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL PTT ONLINE</h2>
+                    <span class="id-badge">N2.NC03</span>
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
-
-            <!-- N2-NC13 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2-NC13</span>
-                    <span class="title">CONSUMO DE BANDA POR CLIENTE - CDN</span>
+                <div class="editor" contenteditable="true">Describe IX.br peering status tracking...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
+            </section>
 
-            <!-- N2-NC14 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2-NC14</span>
-                    <span class="title">CONSUMO DE BANDA POR CLIENTE - CGNAT</span>
+            <section class="card">
+                <div class="card-header">
+                    <h2>INTERNET SERVICE AVAILABILITY SLA</h2>
+                    <span class="id-badge">N2.NC08</span>
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
-
-            <!-- N2-NC15 -->
-            <div class="indicator-card">
-                <div class="indicator-header">
-                    <span class="tag">N2-NC15</span>
-                    <span class="title">CONSUMO DE BANDA POR CLIENTE - TOTAL</span>
+                <div class="editor" contenteditable="true">Enter availability targets and current MTTR metrics...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
                 </div>
-                <div class="summary-area" contenteditable="true">Clique para editar o resumo...</div>
-            </div>
-        </div>
+            </section>
 
-        <footer style="margin-top: 40px; text-align: center; font-size: 12px; color: #aaa;">
-            © 2026 NOC Automation Suite - Documentação Técnica
+            <section class="card">
+                <div class="card-header">
+                    <h2>NETWORK HOST AVAILABILITY SLA</h2>
+                    <span class="id-badge">N2.NC12</span>
+                </div>
+                <div class="editor" contenteditable="true">Core infrastructure ping/snmp availability summary...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>BANDWIDTH CONSUMPTION - CDN</h2>
+                    <span class="id-badge">N2.NC13</span>
+                </div>
+                <div class="editor" contenteditable="true">Analyzing traffic peaks for Netflix, Google, Akamai...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>BANDWIDTH CONSUMPTION - CGNAT</h2>
+                    <span class="id-badge">N2.NC14</span>
+                </div>
+                <div class="editor" contenteditable="true">CGNAT session logs and throughput analysis...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL BANDWIDTH CONSUMPTION</h2>
+                    <span class="id-badge">N2.NC15</span>
+                </div>
+                <div class="editor" contenteditable="true">Aggregated edge traffic summary...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            RUNNING ON NOC_AUTO_DOC // SYSTEM_TIME: 2026-05-12
         </footer>
     </div>
 
