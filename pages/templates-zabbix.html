@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Documentation | Zabbix Hierarchy v6.0</title>
+    <title>Zabbix NOC | Full Technical Documentation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0f172a; --surface: #1e293b; --border: #334155;
@@ -19,220 +19,236 @@
         }
         body { 
             font-family: 'Inter', sans-serif; background-color: var(--bg); 
-            color: var(--text); margin: 0; padding: 40px; transition: 0.3s;
+            color: var(--text); margin: 0; padding: 30px; transition: 0.3s;
         }
-        .top-nav {
+        .header {
             display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 25px; border-bottom: 2px solid var(--border); margin-bottom: 40px;
+            padding-bottom: 20px; border-bottom: 2px solid var(--border); margin-bottom: 30px;
         }
-        .btn {
-            padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; gap: 10px; border: none;
-            text-decoration: none; font-size: 0.85rem; transition: 0.2s;
+        .btn-zip {
+            padding: 12px 20px; border-radius: 8px; font-weight: 800; cursor: pointer;
+            display: flex; align-items: center; gap: 10px; background: var(--primary); 
+            color: #000; text-decoration: none; transition: 0.2s;
         }
-        .btn-download { background: var(--primary); color: #000; }
-        .btn-download:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(56,189,248,0.4); }
-        
-        .layer-title {
-            font-size: 1.4rem; font-weight: 900; text-transform: uppercase;
-            margin: 50px 0 25px; display: flex; align-items: center; gap: 12px;
-            letter-spacing: 1px;
+        .btn-zip:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(56,189,248,0.3); }
+
+        .section-title {
+            font-size: 1.5rem; font-weight: 900; text-transform: uppercase;
+            margin: 50px 0 20px; display: flex; align-items: center; gap: 12px;
         }
         .grid { 
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 25px; 
         }
         .card { 
             background: var(--surface); border: 1px solid var(--border);
-            border-radius: 16px; padding: 25px; position: relative;
-            transition: 0.3s;
+            border-radius: 12px; padding: 20px; position: relative;
         }
-        .card:hover { border-color: var(--primary); transform: translateY(-3px); }
-        .card::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
-            border-radius: 16px 16px 0 0;
-        }
-        .card-core::after { background: var(--core); }
-        .card-dist::after { background: var(--dist); }
-        .card-acesso::after { background: var(--acesso); }
-        .card-infra::after { background: var(--infra); }
+        .card-core { border-top: 4px solid var(--core); }
+        .card-dist { border-top: 4px solid var(--dist); }
+        .card-acesso { border-top: 4px solid var(--acesso); }
+        .card-infra { border-top: 4px solid var(--infra); }
 
-        .card h3 { margin: 0 0 15px 0; font-size: 1.1rem; display: flex; justify-content: space-between; }
-        .card .info-badge { font-size: 0.6rem; background: var(--bg); padding: 2px 8px; border-radius: 10px; color: var(--primary); }
-        
-        .section-label { 
-            font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; 
-            font-weight: 800; margin: 15px 0 8px 0; display: block; border-left: 2px solid var(--primary); padding-left: 8px;
+        .card h3 { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--primary); }
+        .spec-box { margin-bottom: 15px; }
+        .spec-label { 
+            font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; 
+            font-weight: 800; display: block; margin-bottom: 5px;
         }
-        .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag { background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; }
-        .trigger { border: 1px solid var(--danger); color: var(--danger); background: rgba(244,63,94,0.1); }
-        .dep { border: 1px solid var(--text-dim); font-style: italic; }
-
-        .summary-container {
-            margin-top: 80px; padding: 40px; background: #000; border-radius: 16px;
-            font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #88c0d0;
-            border: 1px solid var(--border); line-height: 1.6;
+        .tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .tag { 
+            background: var(--bg); border: 1px solid var(--border); 
+            padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; 
         }
+        .tag-trigger { color: var(--danger); border-color: var(--danger); font-weight: 600; }
+        .tag-dep { color: var(--primary); border-style: dashed; }
     </style>
 </head>
 <body data-theme="dark">
 
-<div class="top-nav">
+<div class="header">
     <div>
-        <h1 style="margin:0; letter-spacing: -1px;">ZABBIX NOC <span style="color:var(--primary)">H-MAP</span></h1>
-        <p style="color:var(--text-dim); margin: 5px 0 0;">Documentação Técnica de Templates e LLD</p>
+        <h1 style="margin:0">ZABBIX MONITORING <span style="color:var(--primary)">FULL DATA</span></h1>
+        <p style="color: var(--text-dim); margin: 5px 0 0;">Mapeamento Completo de Itens, LLD e Triggers</p>
     </div>
-    <div class="actions">
-        <a href="pages/OLTs.zip" class="btn btn-download" download>
-            <i class="fas fa-file-zipper"></i> BAIXAR OLTs.ZIP
-        </a>
-        <button class="btn" style="background: var(--surface); color: var(--text);" onclick="document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark')">
-            <i class="fas fa-circle-half-stroke"></i>
-        </button>
+    <a href="/pages/OLTs.zip" class="btn-zip" download>
+        <i class="fas fa-file-zipper"></i> DOWNLOAD OLTS.ZIP
+    </a>
+</div>
+
+<!-- CORE -->
+<div class="section-title" style="color:var(--core)"><i class="fas fa-server"></i> Core Network</div>
+<div class="grid">
+    <div class="card card-core">
+        <h3>Juniper MX & QFX Series</h3>
+        <div class="spec-box">
+            <span class="spec-label">Informações & Hardware</span>
+            <div class="tags">
+                <span class="tag">Model Name</span><span class="tag">Serial Number</span>
+                <span class="tag">FAN Status</span><span class="tag">PSU Status</span><span class="tag">Temperature</span>
+            </div>
+        </div>
+        <div class="spec-box">
+            <span class="spec-label">Performance & Assinantes</span>
+            <div class="tags">
+                <span class="tag">CPU Usage</span><span class="tag">Memory Usage</span>
+                <span class="tag">Total PPPoE Subscribers</span>
+            </div>
+        </div>
+        <div class="spec-box">
+            <span class="spec-label">Interfaces & Óptico</span>
+            <div class="tags">
+                <span class="tag">Bits (In/Out)</span><span class="tag">Admin/Oper State</span>
+                <span class="tag">Errors/Discards</span><span class="tag">Lanes (Bias/Tx/Rx/Temp/Volt)</span>
+            </div>
+        </div>
+        <span class="spec-label">Dependências</span>
+        <div class="tags">
+            <span class="tag tag-dep">Module ICMP Ping Checker</span><span class="tag tag-dep">Modulo SNMP Checker</span>
+        </div>
     </div>
 </div>
 
-<div id="main-content"></div>
+<!-- DISTRIBUTION -->
+<div class="section-title" style="color:var(--dist)"><i class="fas fa-project-diagram"></i> Distribution</div>
+<div class="grid">
+    <div class="card card-dist">
+        <h3>Huawei VRP Switch</h3>
+        <span class="spec-label">Hardware & Energia</span>
+        <div class="tags">
+            <span class="tag">Model Name</span><span class="tag">VRP Firmware/Patch</span>
+            <span class="tag">Power Used (Watts)</span><span class="tag">PW1/PW2 State</span>
+            <span class="tag">PSU Type/Presence</span><span class="tag">Uptime</span><span class="tag">FAN Status</span>
+        </div>
+        <span class="spec-label">Interfaces & Óptico</span>
+        <div class="tags">
+            <span class="tag">Bits In/Out</span><span class="tag">Errors/Discards</span>
+            <span class="tag">Single/Multi Lanes (Vendor/PN/Tx/Rx)</span>
+        </div>
+    </div>
 
-<div class="summary-container">
-    <h3 style="color:var(--primary); margin-top:0;"><i class="fas fa-code-branch"></i> RESUMO HIERÁRQUICO COMPLETO</h3>
-    <pre id="tree-view"></pre>
+    <div class="card card-dist">
+        <h3>Raisecom Switch</h3>
+        <span class="spec-label">Performance & Hardware</span>
+        <div class="tags">
+            <span class="tag">HW/SW Version</span><span class="tag">Mem (Total/Avail/%)</span>
+            <span class="tag">CPU Usage</span><span class="tag">Voltage</span>
+            <span class="tag">FAN Speed/Status</span><span class="tag">Temperature</span>
+        </div>
+        <span class="spec-label">Dependências</span>
+        <div class="tags">
+            <span class="tag tag-dep">FB-Interfaces</span><span class="tag tag-dep">SNMP Checker</span><span class="tag tag-dep">Generic by SNMP</span>
+        </div>
+    </div>
 </div>
 
-<script>
-const zabbixMap = [
-    {
-        layer: "Core",
-        icon: "fa-microchip",
-        class: "card-core",
-        items: [
-            { 
-                name: "Juniper MX/QFX", 
-                sections: [
-                    { label: "Performance", items: ["CPU", "Memória", "Assinantes PPPoE"] },
-                    { label: "Hardware", items: ["Hardware model/serial", "FAN Status", "PSU Status", "Temp"] },
-                    { label: "Interfaces/Óptico", items: ["Bits In/Out", "Erro/Descarte", "Lanes (Bias/Tx/Rx/Temp/V)"] }
-                ],
-                deps: ["Module ICMP Ping", "Modulo SNMP Checker"]
-            }
-        ]
-    },
-    {
-        layer: "Distribution",
-        icon: "fa-route",
-        class: "card-dist",
-        items: [
-            { 
-                name: "Huawei VRP Switch", 
-                sections: [
-                    { label: "Sistema", items: ["Hardware model", "Firmware/Patch", "Uptime", "FAN"] },
-                    { label: "Energia", items: ["Potência usada", "PW1/PW2", "Tipo Fonte"] }
-                ]
-            },
-            { 
-                name: "Raisecom Switch", 
-                sections: [
-                    { label: "Hardware", items: ["HW/SW Ver", "CPU/Mem", "Voltagem", "Temp"] },
-                    { label: "Monitoramento", items: ["Erros CRC", "Lanes Ópticas"] }
-                ],
-                deps: ["FB-Interfaces", "ICMP Ping", "SNMP Checker"]
-            }
-        ]
-    },
-    {
-        layer: "Acesso & OLTs",
-        icon: "fa-network-wired",
-        class: "card-acesso",
-        items: [
-            { 
-                name: "OLT Nokia (ISAM)", 
-                sections: [
-                    { label: "Gerência", items: ["Fan Mode/Speed", "Temp Controladoras (NT-B)"] },
-                    { label: "LLD: Placas (LT)", items: ["Status Hardware", "CPU/Mem por Slot"] },
-                    { label: "LLD: PON (Censo)", items: ["Total Provisionado", "Total Online", "Total Offline"] },
-                    { label: "Triggers", items: ["30% Mass Failure", "PON Down (Oper=Down/Admin=Up)"] }
-                ]
-            },
-            { 
-                name: "OLT ZTE C600", 
-                sections: [
-                    { label: "LLD: Cards", items: ["Temperaturas", "CPU", "Memória", "Health"] },
-                    { label: "LLD: PON", items: ["Status Portas", "Métricas ONU (Sinal/Status)"] }
-                ],
-                deps: ["FB - Interfaces OLT ZTE"]
-            },
-            { 
-                name: "OLT Fiberhome", 
-                sections: [
-                    { label: "Censo", items: ["Total ONUs", "Slots & Cards Status"] },
-                    { label: "Performance", items: ["TX/Temp/Voltagem Óptico", "Trigger 2Gbps Uplink"] }
-                ]
-            },
-            { 
-                name: "OLT V-Sol", 
-                sections: [
-                    { label: "Monitoramento", items: ["Chassis Temp", "CPU/RAM %", "Traffic per PON"] },
-                    { label: "Status", items: ["ONUs Online/Provisioned"] }
-                ]
-            }
-        ]
-    },
-    {
-        layer: "Retificadores",
-        icon: "fa-bolt",
-        class: "card-infra",
-        items: [
-            { 
-                name: "Delta Retificador", 
-                sections: [
-                    { label: "Bateria", items: ["dcSystemVoltage", "Battery Temp", "Charge State"] },
-                    { label: "Sistema", items: ["dcLoadCurrent", "UR Failure/Total", "Autonomia"] }
-                ],
-                deps: ["Module ICMP Ping"]
-            }
-        ]
-    }
-];
+<!-- ACESSO & OLTS -->
+<div class="section-title" style="color:var(--acesso)"><i class="fas fa-network-wired"></i> Access & OLTs</div>
+<div class="grid">
+    <div class="card card-acesso">
+        <h3>OLT Nokia (ISAM)</h3>
+        <span class="spec-label">System & Management</span>
+        <div class="tags">
+            <span class="tag">Fan Mode/Speed</span><span class="tag">NT-B Controller Temp</span>
+        </div>
+        <span class="spec-label">LLD: LT Cards (Placas de Serviço)</span>
+        <div class="tags">
+            <span class="tag">Hardware Status</span><span class="tag">CPU/Mem per Slot</span>
+        </div>
+        <span class="spec-label">LLD: PON Censo & Traffic</span>
+        <div class="tags">
+            <span class="tag">Total Provisioned</span><span class="tag">Total Online</span>
+            <span class="tag">Total Offline</span><span class="tag">bps Inbound/Outbound</span>
+            <span class="tag">Admin/Oper Status</span><span class="tag">Interface Alias</span>
+        </div>
+        <span class="spec-label">Gatilhos Críticos</span>
+        <div class="tags">
+            <span class="tag tag-trigger">Trigger: 30% Mass Failure</span>
+            <span class="tag tag-trigger">Trigger: PON Down (Oper=2 & Admin=1)</span>
+        </div>
+    </div>
 
-function render() {
-    const container = document.getElementById('main-content');
-    const tree = document.getElementById('tree-view');
-    let html = '';
-    let treeText = 'Zabbix_NOC_Root\n';
+    <div class="card card-acesso">
+        <h3>OLT ZTE C600</h3>
+        <span class="spec-label">LLD: Hardware & Health</span>
+        <div class="tags">
+            <span class="tag">System Uptime</span><span class="tag">Firmware</span>
+            <span class="tag">CPU/Mem per Card</span><span class="tag">Card Temperature</span>
+            <span class="tag">PSU/FAN Health</span>
+        </div>
+        <span class="spec-label">LLD: Monitoramento PON</span>
+        <div class="tags">
+            <span class="tag">Traffic In/Out</span><span class="tag">Port Status</span>
+            <span class="tag">ONU Metrics (Signal/Status)</span>
+        </div>
+        <span class="spec-label">Dependências</span>
+        <div class="tags"><span class="tag tag-dep">FB - Interfaces OLT ZTE</span></div>
+    </div>
 
-    zabbixMap.forEach(layer => {
-        html += `<div class="layer-title"><i class="fas ${layer.icon}"></i> ${layer.layer}</div><div class="grid">`;
-        treeText += `├── ${layer.layer}\n`;
+    <div class="card card-acesso">
+        <h3>OLT Fiberhome</h3>
+        <span class="spec-label">System & LLD Slots</span>
+        <div class="tags">
+            <span class="tag">Uptime</span><span class="tag">Global CPU</span>
+            <span class="tag">Card Status (Normal/Fault)</span><span class="tag">CPU/Mem % per Card</span>
+        </div>
+        <span class="spec-label">LLD: PON & Censo</span>
+        <div class="tags">
+            <span class="tag">Optical TX/Temp/Volt</span><span class="tag">Total ONU Count</span>
+            <span class="tag">Traffic per Interface</span>
+        </div>
+        <span class="spec-label">Gatilhos</span>
+        <div class="tags"><span class="tag tag-trigger">Trigger: Traffic > 2Gbps (Up/Down)</span></div>
+    </div>
 
-        layer.items.forEach((item, idx) => {
-            const isLast = idx === layer.items.length - 1;
-            html += `
-                <div class="card ${layer.class}">
-                    <h3>${item.name} <span class="info-badge">SNMP v2c</span></h3>
-                    ${item.sections.map(s => `
-                        <span class="section-label">${s.label}</span>
-                        <div class="tags">
-                            ${s.items.map(i => `<span class="tag ${i.includes('Trigger') || i.includes('%') ? 'trigger' : ''}">${i}</span>`).join('')}
-                        </div>
-                    `).join('')}
-                    ${item.deps ? `
-                        <span class="section-label">Dependências</span>
-                        <div class="tags">
-                            ${item.deps.map(d => `<span class="tag dep">${d}</span>`).join('')}
-                        </div>
-                    ` : ''}
-                </div>`;
-            treeText += `│   ${isLast ? '└──' : '├──'} ${item.name}\n`;
-        });
-        html += `</div>`;
-    });
+    <div class="card card-acesso">
+        <h3>Datacom DmOS (DM4370 & v2)</h3>
+        <span class="spec-label">Hardware & Performance</span>
+        <div class="tags">
+            <span class="tag">Serial</span><span class="tag">Bootloader/Firmware</span>
+            <span class="tag">CPU/Mem Usage</span><span class="tag">Power/FAN Status</span>
+            <span class="tag">Temperature</span><span class="tag">Alarm Status</span>
+        </div>
+        <span class="spec-label">Interfaces & Óptico</span>
+        <div class="tags">
+            <span class="tag">Admin/Oper Status</span><span class="tag">In/Out Bits</span>
+            <span class="tag">Errors/Discards</span><span class="tag">Lanes (Bias/Tx/Rx/Temp)</span>
+        </div>
+    </div>
+</div>
 
-    container.innerHTML = html;
-    tree.textContent = treeText;
-}
+<!-- INFRAESTRUTURA -->
+<div class="section-title" style="color:var(--infra)"><i class="fas fa-bolt"></i> Power & Rectifiers</div>
+<div class="grid">
+    <div class="card card-infra">
+        <h3>Delta Retificador</h3>
+        <span class="spec-label">Bateria & Carga</span>
+        <div class="tags">
+            <span class="tag">dcSystemVoltage</span><span class="tag">Battery Current/Temp</span>
+            <span class="tag">Charge State</span><span class="tag">dcLoadCurrent</span>
+            <span class="tag">dcSystemPower (Watts)</span>
+        </div>
+        <span class="spec-label">Retificadores (UR)</span>
+        <div class="tags">
+            <span class="tag">UR Failure Count</span><span class="tag">Total/Operacionais</span>
+        </div>
+        <span class="spec-label">Tempos & Autonomia</span>
+        <div class="tags">
+            <span class="tag">Tempo Restante Bateria</span><span class="tag">Uptime</span>
+        </div>
+    </div>
 
-render();
-</script>
+    <div class="card card-infra">
+        <h3>XPS SRX/SRWi Series</h3>
+        <span class="spec-label">Bateria & Alarmes</span>
+        <div class="tags">
+            <span class="tag">Status (Carga/Descarga)</span><span class="tag">Autonomia</span>
+            <span class="tag">Alarme: Falha AC</span><span class="tag">Alarme: Fusível Aberto</span>
+            <span class="tag">Alarme: Falha UR</span><span class="tag">Tensão Alta</span>
+        </div>
+        <span class="spec-label">Dependências</span>
+        <div class="tags"><span class="tag tag-dep">Module Autonomy Time</span><span class="tag tag-dep">ICMP (Jitter/Loss)</span></div>
+    </div>
+</div>
 
 </body>
 </html>
