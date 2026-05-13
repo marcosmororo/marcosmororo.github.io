@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zabbix Infrastructure Tree - Full</title>
+    <style>
+        :root {
+            --bg: #0f111a;
+            --card: #1a1c27;
+            --primary: #00d1b2;
+            --secondary: #5e81ac;
+            --text: #ffffff;
+            --text-dim: #b4becc;
+            --accent: #ebcb8b;
+            --border: #2e3440;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0; padding: 20px; line-height: 1.5;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { border-bottom: 2px solid var(--primary); margin-bottom: 40px; padding-bottom: 15px; }
+        h1 { margin: 0; font-size: 24px; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .section { margin-bottom: 35px; }
+        .section-title { font-size: 20px; font-weight: bold; color: var(--secondary); margin-bottom: 15px; display: flex; align-items: center; border-left: 4px solid var(--secondary); padding-left: 10px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
+        
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 20px; transition: transform 0.2s; }
+        .card:hover { border-color: var(--primary); }
+        .card-header { font-weight: bold; color: var(--primary); border-bottom: 1px solid var(--border); margin-bottom: 12px; padding-bottom: 8px; font-size: 16px; }
+        
+        .item-group { margin-bottom: 12px; }
+        .group-label { font-size: 11px; text-transform: uppercase; color: var(--accent); font-weight: 700; display: block; margin-bottom: 4px; }
+        
+        ul { list-style: none; padding: 0; margin: 0; font-size: 13px; color: var(--text-dim); }
+        li { margin-bottom: 3px; display: flex; align-items: flex-start; }
+        li::before { content: "›"; color: var(--primary); margin-right: 8px; font-weight: bold; }
+        
+        .deps { margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border); font-size: 11px; color: #88c0d0; }
+        .deps strong { color: var(--text); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Zabbix Monitoring Hierarchy</h1>
+        <div style="color: var(--text-dim); font-size: 14px;">Mapeamento Completo de Templates e Itens de Monitoramento</div>
+    </header>
+
+    <!-- CORE -->
+    <div class="section">
+        <div class="section-title">ROOT / CORE</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">Juniper MX & QFX Series</div>
+                <div class="item-group">
+                    <span class="group-label">Hardware & Performance</span>
+                    <ul>
+                        <li>Model name / Serial number</li>
+                        <li>Utilização CPU / Memória</li>
+                        <li>Status FAN / Fontes / Temperatura</li>
+                    </ul>
+                </div>
+                <div class="item-group">
+                    <span class="group-label">Network & PPPoE</span>
+                    <ul>
+                        <li>Total Assinantes PPPoE</li>
+                        <li>Interfaces: Bits, Erros, Descartes, Status, Velocidade</li>
+                        <li>Óptico: Lanes (Bias, Tx/Rx, Temp, Voltagem)</li>
+                    </ul>
+                </div>
+                <div class="deps"><strong>Dependências:</strong> Module ICMP Ping, Modulo SNMP Checker</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DISTRIBUTION -->
+    <div class="section">
+        <div class="section-title">DISTRIBUTION</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">Huawei VRP Switch</div>
+                <ul>
+                    <li>Model name / Versão Firmware & Patch</li>
+                    <li>Energia: Potência, Status PW1/PW2 (Tipo/Presença)</li>
+                    <li>Uptime / Status FAN</li>
+                    <li>Interfaces: Bits, Erros, Descartes, Status, Velocidade</li>
+                    <li>Óptico: Lanes (Vendor, Pn, Tx/Rx, Temperatura)</li>
+                </ul>
+            </div>
+            <div class="card">
+                <div class="card-header">Raisecom Switch</div>
+                <ul>
+                    <li>Versão Hardware/Software / Voltagem</li>
+                    <li>Memória (Total, Disponível, %) / CPU</li>
+                    <li>Status/Speed FAN / Temperatura</li>
+                    <li>Interfaces: Erros CRC / Óptico: Lanes (Bias, Tx/Rx, Temp)</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> FB - Interfaces, ICMP, SNMP Checker, Generic by SNMP</div>
+            </div>
+            <div class="card">
+                <div class="card-header">ZTE Switch</div>
+                <ul>
+                    <li>FB - Interface ótica ZTE (Status, Temperatura, TX/RX)</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> Network Generic, SNMP Location, Interface Discovery v2.0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACESSO -->
+    <div class="section">
+        <div class="section-title">ACESSO</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">DmOS DM4370</div>
+                <ul>
+                    <li>Serial number</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> DM Template (Uptime, CPU, FAN, Memory, Temp, Contact), ICMP, Discovery v1.0</div>
+            </div>
+            <div class="card">
+                <div class="card-header">DATACOM - v2</div>
+                <ul>
+                    <li>Model/Produto / Operação / Serial / Portas</li>
+                    <li>Firmware / Bootloader / CPU / Memória</li>
+                    <li>Status Energia / Power / FAN / Temperatura / Alarm</li>
+                    <li>Interfaces & Óptico: Lanes (Bias, Tx/Rx, Temp, Voltagem)</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> Module Hardware and software information</div>
+            </div>
+            <div class="card">
+                <div class="card-header">Mikrotik - RSW</div>
+                <div class="deps"><strong>Deps:</strong> ICMP, Checker Version/Firmware, Health Only Voltage, Interface Discovery, SNMP Checker</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RETIFICADORES -->
+    <div class="section">
+        <div class="section-title">RETIFICADORES (ENERGIA)</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">XPS SRWi 30A-48V USCC400</div>
+                <ul>
+                    <li>Bateria: Status (Carga/Desc/Desc), Amperagem, Voltagem, Autonomia</li>
+                    <li>Retificador: Voltagem, Amperagem UR / Saída</li>
+                    <li>Alarmes: Falha AC, Falha UR, Fusível Aberto / Temp Sensor</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> ICMP (Jitter/Lat/Perda), Autonomy Time</div>
+            </div>
+            <div class="card">
+                <div class="card-header">XPS SRX 30A-48V USCC Lite</div>
+                <ul>
+                    <li>Nome Identificação / Temp Sensor / Corrente Carga</li>
+                    <li>Alarmes: Urgente, Não Urgente, Tensão Alta, Falha AC/UR</li>
+                    <li>Fusíveis: Bateria/Consumidor Interrompido / Aberto</li>
+                </ul>
+                <div class="deps"><strong>Deps:</strong> ICMP, Autonomy Time</div>
+            </div>
+            <div class="card">
+                <div class="card-header">XPS SRX40/60A 48V USCC</div>
+                <ul>
+                    <li>Bateria: VBat, TBat, IBatC, IBatD, Autonomia</li>
+                    <li>Alarmes Bateria: Carga, Descarga, Desconexão, Fusível</li>
+                    <li>Consumidor: VCC, ICons, Alarme Fusível, Tensão Alta</li>
+                    <li>Sistema: Modo Operação / SNMP Traps / Falha UR</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- GENERICOS -->
+    <div class="section">
+        <div class="section-title">MÓDULOS GENÉRICOS & BASE</div>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">ICMP & SNMP Base</div>
+                <div class="item-group">
+                    <span class="group-label">Module ICMP Ping</span>
+                    <ul><li>Jitter, Latência, Perda, Status</li></ul>
+                </div>
+                <div class="item-group">
+                    <span class="group-label">Module SNMP Checker</span>
+                    <ul><li>Contato, Descrição, Disponibilidade, Object ID, Nome, Traps, Uptime (HW/Net)</li></ul>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">Generic & Discovery</div>
+                <div class="item-group">
+                    <span class="group-label">FB - Interfaces / Discovery v2.0</span>
+                    <ul><li>Bits In/Out, Erros, Descartes, Admin/Oper Status, Tipo, Velocidade</li></ul>
+                </div>
+                <div class="item-group">
+                    <span class="group-label">Generic by SNMP</span>
+                    <ul><li>Agent Availability, Traps, Contact, Description, Name, Object ID, Uptime</li></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
