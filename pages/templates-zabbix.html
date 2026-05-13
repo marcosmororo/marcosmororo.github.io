@@ -3,220 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Templates Zabbix - NOC</title>
+    <title>Zabbix NOC Hierarchy</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #f8fafc;
-            --text: #1e293b;
-            --core: #ef4444;
-            --dist: #3b82f6;
-            --acesso: #10b981;
-            --infra: #8b5cf6;
-            --card-bg: #ffffff;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent-core: #f43f5e;
+            --accent-dist: #38bdf8;
+            --accent-acesso: #10b981;
+            --accent-infra: #fbbf24;
         }
 
-        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 40px; margin: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text-primary); margin: 0; padding: 20px; }
         
-        .header { text-align: center; margin-bottom: 50px; }
-        .header h1 { font-size: 2rem; color: #0f172a; }
-
-        .layer-container { margin-bottom: 60px; }
+        .container { max-width: 1400px; margin: auto; }
+        .header { text-align: center; padding: 40px 0; border-bottom: 1px solid #334155; margin-bottom: 40px; }
         
-        /* Cabeçalho da Camada */
-        .layer-header { 
-            display: flex; align-items: center; gap: 15px;
-            font-size: 1.5rem; font-weight: 800; text-transform: uppercase;
-            margin-bottom: 25px; padding-bottom: 10px; border-bottom: 3px solid;
+        .layer-section { margin-bottom: 50px; }
+        .layer-title { 
+            font-size: 1.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 25px; display: flex; align-items: center; gap: 15px;
         }
 
-        /* Cores das Camadas */
-        .c-core { color: var(--core); border-color: var(--core); }
-        .c-distribution { color: var(--dist); border-color: var(--dist); }
-        .c-acesso { color: var(--acesso); border-color: var(--acesso); }
-        .c-infra { color: var(--infra); border-color: var(--infra); }
+        /* Cores Temáticas */
+        .layer-core { color: var(--accent-core); }
+        .layer-dist { color: var(--accent-dist); }
+        .layer-acesso { color: var(--accent-acesso); }
+        .layer-infra { color: var(--accent-infra); }
 
-        /* Grid de Cards */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 20px; }
 
         .card { 
-            background: var(--card-bg); border-radius: 12px; padding: 20px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s; border: 1px solid #e2e8f0;
+            background: var(--card-bg); border-radius: 12px; padding: 20px; 
+            border: 1px solid #334155; position: relative; overflow: hidden;
+            transition: all 0.3s ease;
         }
-        .card:hover { transform: translateY(-5px); }
+        .card:hover { border-color: #475569; transform: translateY(-3px); }
+        .card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; }
 
-        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        /* Cores laterais dos cards */
+        .card-core::before { background: var(--accent-core); }
+        .card-dist::before { background: var(--accent-dist); }
+        .card-acesso::before { background: var(--accent-acesso); }
+        .card-infra::before { background: var(--accent-infra); }
+
+        .card-header { font-size: 1.3rem; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
         
-        .category { margin-top: 15px; }
-        .category-label { 
-            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; 
-            color: #64748b; letter-spacing: 0.05em; display: block; margin-bottom: 8px;
+        .metric-group { margin-bottom: 15px; }
+        .group-label { 
+            display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); 
+            text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #334155;
         }
 
-        /* Lista de Itens/Métricas */
-        .items-flex { display: flex; flex-wrap: wrap; gap: 6px; }
-        .item { 
-            background: #f1f5f9; padding: 4px 10px; border-radius: 6px; 
-            font-size: 0.85rem; border: 1px solid #e2e8f0; font-weight: 500;
+        .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+        .tag { 
+            background: #334155; color: #e2e8f0; padding: 4px 10px; 
+            border-radius: 4px; font-size: 0.8rem; font-weight: 500;
         }
 
-        /* Dependências (Destaque) */
-        .dep { background: #fff7ed; color: #9a3412; border-color: #ffedd5; }
-        
-        /* Alertas e Status (Especial para Infra) */
-        .status-item { border-left: 3px solid var(--infra); background: #faf5ff; }
-
+        .tag-dep { background: rgba(244, 63, 94, 0.1); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.2); }
+        .tag-special { background: rgba(56, 189, 248, 0.1); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.2); }
     </style>
 </head>
 <body>
 
+<div class="container">
     <div class="header">
-        <h1><i class="fas fa-network-wired"></i> Hierarquia de Monitoramento Zabbix</h1>
+        <h1>NOC DASHBOARD | ESTRUTURA ZABBIX</h1>
+        <p style="color: var(--text-secondary)">Mapeamento completo de métricas por camada de rede</p>
     </div>
 
-    <div id="main-content"></div>
+    <div id="content-root"></div>
+</div>
 
-    <script>
-        // TODA A SUA ÁRVORE AQUI
-        const zabbixData = [
+<script>
+const data = [
+    {
+        layer: "Core",
+        icon: "fa-microchip",
+        class: "core",
+        templates: [
             {
-                layer: "Core",
-                icon: "fa-microchip",
-                class: "c-core",
-                templates: [
-                    {
-                        name: "Juniper MX / QFX",
-                        info: ["Model Name", "Serial Number"],
-                        perf: ["CPU", "Memória", "Assinantes PPPoE"],
-                        net: ["Bits In/Out", "Admin/Oper", "Erros/Descartes", "Velocidade"],
-                        opt: ["Bias", "Tx/Rx", "Temp", "Voltagem"],
-                        hw: ["FAN", "PSU", "Temperatura"],
-                        deps: ["Module ICMP Ping", "Module SNMP Checker"]
-                    }
-                ]
-            },
-            {
-                layer: "Distribution",
-                icon: "fa-project-diagram",
-                class: "c-distribution",
-                templates: [
-                    {
-                        name: "Huawei VRP Switch",
-                        info: ["Model Name", "VRP Version/Patch"],
-                        elec: ["Potência", "PW1/PW2 State", "Tipo/Presença"],
-                        net: ["Bits In/Out", "Admin/Oper", "Erros/Descartes"],
-                        opt: ["Vendor", "PN", "Tx/Rx", "Temp"],
-                        sys: ["Uptime", "FAN Status"]
-                    },
-                    {
-                        name: "Raisecom Switch",
-                        info: ["HW Version", "SW Version"],
-                        perf: ["Memória %", "CPU %"],
-                        hw: ["Voltagem", "FAN Speed", "Temp"],
-                        net: ["Erros CRC"],
-                        opt: ["Bias", "Tx/Rx", "Temp"],
-                        deps: ["FB-Interfaces", "ICMP Ping", "SNMP Checker"]
-                    },
-                    {
-                        name: "ZTE Switch",
-                        opt: ["Status", "Temp", "TX/RX"],
-                        deps: ["Generic Device", "SNMP Location", "Interface Discovery v2.0"]
-                    }
-                ]
-            },
-            {
-                layer: "Acesso",
-                icon: "fa-users",
-                class: "c-acesso",
-                templates: [
-                    {
-                        name: "DmOS DM4370",
-                        info: ["Serial Number"],
-                        deps: ["DmOS System", "ICMP Ping", "Interface Discovery v1.0", "DmOS Hardware (CPU/FAN/Mem/Temp)"]
-                    },
-                    {
-                        name: "DATACOM - v2",
-                        info: ["Model", "Serial", "Modo Operação", "Portas", "Firmware"],
-                        perf: ["CPU", "Memória"],
-                        hw: ["Power Status", "Temp", "Alarm Status", "FAN Status"],
-                        net: ["Admin Status", "In/Out", "Erros/Descartes"],
-                        opt: ["Bias", "Tx/Rx", "Temp", "Voltagem"],
-                        deps: ["Hardware/Software Information"]
-                    },
-                    {
-                        name: "Mikrotik - RSW",
-                        deps: ["ICMP Ping", "Module Checker", "Health Voltage", "Interface Discovery", "SNMP Checker"]
-                    }
-                ]
-            },
-            {
-                layer: "Infraestrutura (Retificadores)",
-                icon: "fa-bolt",
-                class: "c-infra",
-                templates: [
-                    {
-                        name: "Delta Retificador",
-                        bat: ["VDC", "Battery Current", "Temp", "ChargeState"],
-                        elec: ["Load Current", "System Power", "Limit"],
-                        hw: ["Rectifier Current", "UR Failures", "Total/Operacionais"],
-                        info: ["Nomenclatura", "MAC", "Version", "Data/Hora", "Autonomy Time"],
-                        deps: ["ICMP Ping"]
-                    },
-                    {
-                        name: "JFA 40A-48V",
-                        bat: ["Autonomia", "Corrente Saída/Carga", "Nível Carga"],
-                        info: ["Modelo", "Modo Operação", "Device Name"],
-                        elec: ["Temp Interna", "Tensão Rede VCA", "Tensão Saída"],
-                        deps: ["SNMP Availability", "Uptime"]
-                    },
-                    {
-                        name: "XPS SRWi / SRX",
-                        bat: ["Carga/Descarga", "Amperagem Saída", "Voltagem", "Autonomia"],
-                        hw: ["UR Amperagem", "Consumo Saída"],
-                        warn: ["Falha AC", "Falha UR", "Fusível Aberto", "Temp Sensor"],
-                        deps: ["ICMP (Jitter/Loss)", "Autonomy Time"]
-                    }
-                ]
+                name: "Juniper MX / QFX Router & Switch",
+                info: ["Hardware Model", "Serial Number"],
+                perf: ["CPU %", "Memória %", "Assinantes PPPoE (Total)"],
+                net: ["Bits In/Out", "Admin/Oper Status", "Erros", "Descartes", "Interface Type", "Velocidade"],
+                opt: ["Lanes (Bias, Tx/Rx, Temperatura, Voltagem)"],
+                hw: ["FAN Status", "PSU Status", "Temperatura"],
+                deps: ["Module ICMP Ping Checker", "Modulo SNMP Checker"]
             }
-        ];
+        ]
+    },
+    {
+        layer: "Distribution",
+        icon: "fa-project-diagram",
+        class: "dist",
+        templates: [
+            {
+                name: "Huawei VRP Switch",
+                info: ["Model Name", "Versão Firmware/Patch VRP"],
+                elec: ["Potência Usada", "Estado Fonte (PW1/PW2)", "Tipo Fonte", "Presença Fonte"],
+                net: ["Bits In/Out", "Admin/Oper Status", "Erros", "Descartes", "Tipo", "Velocidade"],
+                opt: ["Single/Multi Lanes (Vendor, Pn, Tx/Rx, Temperatura)"],
+                sys: ["Uptime do Sistema", "Status FAN"]
+            },
+            {
+                name: "Raisecom Switch",
+                info: ["Versão Hardware", "Versão Software"],
+                perf: ["Memória (Total, Disponível, %)", "Utilização CPU %"],
+                hw: ["Voltagem", "FAN Status/Speed", "Temperatura Equipamento"],
+                net: ["Erros CRC"],
+                opt: ["Lanes (Bias, Tx/Rx, Temperatura)"],
+                deps: ["FB - Interfaces", "ICMP Ping", "SNMP Checker", "Generic by SNMP"]
+            },
+            {
+                name: "ZTE Switch",
+                opt: ["FB - Interface Ótica ZTE (Status, Temp, TX/RX)"],
+                deps: ["Network Generic Device", "Template SNMP Location", "Module Interface Discovery v2.0"]
+            }
+        ]
+    },
+    {
+        layer: "Acesso",
+        icon: "fa-users",
+        class: "acesso",
+        templates: [
+            {
+                name: "DmOS DM4370",
+                info: ["Serial Number"],
+                deps: ["DmOS (Contact, Desc, Name, Uptime)", "ICMP Ping", "Interface Discovery v1.0", "DmOS (CPU, FAN, Memory, Temperatura)"]
+            },
+            {
+                name: "Datacom - v2",
+                info: ["Model Name", "Produto", "Modo Operação", "Serial", "Nº de Portas", "Bootloader/Firmware"],
+                perf: ["Uso de CPU", "Uso de Memória"],
+                hw: ["Status Energia", "Temperatura", "Alarm Status", "FAN Status"],
+                net: ["Admin Status", "In/Out", "Erros", "Descartes", "Status Interface"],
+                opt: ["Lanes (Bias, Tx/Rx, Temperatura, Voltagem)"],
+                deps: ["Module Hardware/Software Information"]
+            },
+            {
+                name: "Mikrotik - RSW",
+                deps: ["ICMP Ping", "Module Checker (Ver/Firm)", "Health Check Voltage", "Interface Discovery", "SNMP Checker"]
+            }
+        ]
+    },
+    {
+        layer: "Retificadores",
+        icon: "fa-bolt",
+        class: "infra",
+        templates: [
+            {
+                name: "Delta Retificador",
+                bat: ["dcSystemVoltage (Status AC)", "dcBatteryCurrent", "dcBattery Temperature", "doChargeState"],
+                elec: ["dcLoadCurrent", "dcSystemPower (W)", "dcCurrentLimit"],
+                hw: ["dcRectifierCurrent", "dcNumberRectifiers Failure", "URs Totais/Operacionais"],
+                time: ["Tempo Autonomia", "Duração Restante Bateria", "Uptime", "Tempo Transcorrido"],
+                info: ["Nomenclatura", "MAC", "Versão Retificador", "Hora/Data"],
+                deps: ["Module ICMP Ping Checker", "Module Autonomy Time"]
+            },
+            {
+                name: "JFA 40A-48V",
+                bat: ["Autonomia Bateria", "Corrente (Saída/Carregador)", "Nível de Carga"],
+                info: ["Modelo", "Modo Operação", "Nome Dispositivo", "Testado há"],
+                snmp: ["Contato", "Descrição", "Disponibilidade"],
+                sys: ["Fonte Alimentação", "Uptime Modo Operação", "Teste Autonomia"],
+                elec: ["Temperatura Interna", "Tensão (Saída/Rede VCA/Carregador)"]
+            },
+            {
+                name: "XPS SRWi / SRX",
+                bat: ["Status (Carga, Descarga, Desc)", "Amperagem Saída", "Voltagem", "Tempo Autonomia"],
+                hw: ["Voltagem Retificador", "UR Amperagem", "Consumo Saída Amperagem"],
+                warn: ["Falha de AC", "Falha em UR", "Fusível Aberto", "Temperatura Sensor"],
+                deps: ["ICMP (Jitter, Latência, Perda)", "Module Autonomy Time", "Nome do Sistema"]
+            }
+        ]
+    }
+];
 
-        function renderDashboard() {
-            const container = document.getElementById('main-content');
+function render() {
+    const root = document.getElementById('content-root');
+    data.forEach(layer => {
+        let html = `
+            <div class="layer-section">
+                <div class="layer-title layer-${layer.class}">
+                    <i class="fas ${layer.icon}"></i> ${layer.layer}
+                </div>
+                <div class="grid">
+        `;
+
+        layer.templates.forEach(tpl => {
+            html += `<div class="card card-${layer.class}">
+                <div class="card-header">${tpl.name}</div>`;
             
-            zabbixData.forEach(layer => {
-                let layerHtml = `
-                    <section class="layer-container">
-                        <div class="layer-header ${layer.class}">
-                            <i class="fas ${layer.icon}"></i> ${layer.layer}
-                        </div>
-                        <div class="grid">
-                `;
+            // Mapeamento Automático de Seções
+            const sections = {
+                info: "Identificação & Info",
+                perf: "Performance",
+                elec: "Elétrico & Energia",
+                bat: "Bateria",
+                time: "Tempos & Autonomia",
+                net: "Interfaces & Rede",
+                opt: "Óptico / DMI",
+                hw: "Hardware & FAN",
+                sys: "Status de Sistema",
+                snmp: "SNMP & Contato",
+                warn: "Alarmes Ativos",
+                deps: "Dependências de Template"
+            };
 
-                layer.templates.forEach(tpl => {
-                    layerHtml += `
-                        <div class="card">
-                            <div class="card-title">${tpl.name} <i class="fas fa-microchip" style="opacity:0.2"></i></div>
-                            
-                            ${tpl.info ? `<div class="category"><span class="category-label">Informações</span><div class="items-flex">${tpl.info.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.perf ? `<div class="category"><span class="category-label">Performance</span><div class="items-flex">${tpl.perf.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.elec ? `<div class="category"><span class="category-label">Elétrico / Energia</span><div class="items-flex">${tpl.elec.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.bat ? `<div class="category"><span class="category-label">Bateria / Autonomia</span><div class="items-flex">${tpl.bat.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.net ? `<div class="category"><span class="category-label">Interfaces / Rede</span><div class="items-flex">${tpl.net.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.opt ? `<div class="category"><span class="category-label">Óptico (DMI)</span><div class="items-flex">${tpl.opt.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.hw ? `<div class="category"><span class="category-label">Hardware / FAN</span><div class="items-flex">${tpl.hw.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.warn ? `<div class="category"><span class="category-label">Alarmes</span><div class="items-flex">${tpl.warn.map(i => `<span class="item status-item">${i}</span>`).join('')}</div></div>` : ''}
-                            ${tpl.deps ? `<div class="category"><span class="category-label">Dependências</span><div class="items-flex">${tpl.deps.map(i => `<span class="item dep">${i}</span>`).join('')}</div></div>` : ''}
+            for (const [key, label] of Object.entries(sections)) {
+                if (tpl[key]) {
+                    html += `
+                        <div class="metric-group">
+                            <span class="group-label">${label}</span>
+                            <div class="tag-list">
+                                ${tpl[key].map(val => `<span class="tag ${key === 'deps' ? 'tag-dep' : ''} ${key === 'warn' ? 'tag-special' : ''}">${val}</span>`).join('')}
+                            </div>
                         </div>
                     `;
-                });
-
-                layerHtml += `</div></section>`;
-                container.innerHTML += layerHtml;
-            });
-        }
-
-        renderDashboard();
-    </script>
+                }
+            }
+            html += `</div>`;
+        });
+        html += `</div></div>`;
+        root.innerHTML += html;
+    });
+}
+render();
+</script>
 </body>
 </html>
