@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Hierarchy | Zabbix Online Telecom</title>
+    <title>Zabbix NOC Hierarchy | Full Map</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg: #0b0f19; --surface: #161b2c; --border: #2d3748;
             --text: #e2e8f0; --text-dim: #94a3b8; --primary: #38bdf8;
-            --core: #f43f5e; --dist: #3b82f6; --acesso: #a855f7; --infra: #eab308;
+            --core: #f43f5e; --dist: #3b82f6; --acesso: #a855f7; --infra: #eab308; --generic: #10b981;
             --line: #334155; --danger: #f87171;
         }
 
@@ -22,7 +22,7 @@
 
         body { 
             font-family: 'Inter', sans-serif; background-color: var(--bg); 
-            color: var(--text); margin: 0; padding: 40px; transition: background 0.3s, color 0.3s;
+            color: var(--text); margin: 0; padding: 40px; transition: 0.3s ease;
         }
 
         .header {
@@ -31,17 +31,16 @@
         }
 
         .nav-actions { display: flex; align-items: center; gap: 15px; }
-
+        
         .theme-toggle {
             background: var(--surface); border: 1px solid var(--border);
-            color: var(--text); padding: 10px; border-radius: 10px; cursor: pointer;
-            transition: 0.3s;
+            color: var(--text); padding: 12px; border-radius: 10px; cursor: pointer;
         }
 
         .btn-zip {
             padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer;
             display: flex; align-items: center; gap: 10px; background: var(--primary); 
-            color: #fff; text-decoration: none; transition: 0.3s ease;
+            color: #fff; text-decoration: none; transition: 0.3s;
         }
         [data-theme="dark"] .btn-zip { color: #000; }
 
@@ -55,7 +54,7 @@
         .node-content {
             display: none; padding: 25px 0 25px 40px;
             border-left: 2px dashed var(--line); margin-left: 25px;
-            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 20px;
         }
         .node-content.active { display: grid; }
 
@@ -64,39 +63,37 @@
 
         .card {
             background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px; transition: 0.3s;
+            border-radius: 12px; padding: 20px;
         }
-        .card h4 { margin: 0 0 15px 0; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .card h4 { margin: 0 0 12px 0; color: var(--primary); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
 
-        .spec-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 900; display: block; margin: 15px 0 8px; }
-        .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .spec-label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 900; display: block; margin: 12px 0 6px; }
+        .tags { display: flex; flex-wrap: wrap; gap: 5px; }
         .tag { background: var(--bg); border: 1px solid var(--border); padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-family: 'Fira Code', monospace; }
         .tag-trig { color: var(--danger); border-color: var(--danger); font-weight: bold; }
         .tag-dep { color: var(--primary); border-style: dashed; }
+        .tag-temp { color: #fb923c; border-color: #fb923c; }
 
         .chevron { transition: 0.3s; }
-        .expanded .chevron { transform: rotate(90deg); }
+        .expanded .chevron { transform: rotate(90deg); color: var(--primary); }
 
         .bg-core { background: var(--core); }
         .bg-dist { background: var(--dist); }
         .bg-acesso { background: var(--acesso); }
         .bg-infra { background: var(--infra); }
+        .bg-generic { background: var(--generic); }
     </style>
 </head>
 <body data-theme="dark">
 
 <div class="header">
     <div>
-        <h1 style="margin:0; font-weight: 900;">NOC <span style="color:var(--primary)">TEMPLATES ZABBIX ONLINE TELECOM</span></h1>
-        <p style="color: var(--text-dim); margin: 5px 0 0;">Hierarquia Técnica e Monitoramento de Redes</p>
+        <h1 style="margin:0; font-weight: 900;">ZABBIX <span style="color:var(--primary)">STRUCTURE</span></h1>
+        <p style="color: var(--text-dim); margin: 5px 0 0;">Mapeamento Completo de Templates, LLD e Itens</p>
     </div>
     <div class="nav-actions">
-        <button class="theme-toggle" onclick="toggleTheme()" title="Alternar Tema">
-            <i class="fas fa-moon" id="theme-icon"></i>
-        </button>
-        <a href="/pages/OLTs.zip" class="btn-zip" download>
-            <i class="fas fa-file-zipper"></i> OLTS.ZIP
-        </a>
+        <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon" id="theme-icon"></i></button>
+        <a href="/page/OLTs.zip" class="btn-zip"><i class="fas fa-file-zipper"></i> DOWNLOAD .ZIP</a>
     </div>
 </div>
 
@@ -106,20 +103,22 @@
     <div class="tree-node">
         <div class="node-header" onclick="toggleNode(this)">
             <div class="label-group">
-                <div class="node-icon bg-core"><i class="fas fa-server"></i></div>
-                <span>01. CORE NETWORK</span>
+                <div class="node-icon bg-core"><i class="fas fa-microchip"></i></div>
+                <span>CORE NETWORK</span>
             </div>
             <i class="fas fa-chevron-right chevron"></i>
         </div>
         <div class="node-content">
             <div class="card">
-                <h4>Juniper MX / QFX / ACX</h4>
-                <span class="spec-label">Performance & Hardware</span>
-                <div class="tags"><span class="tag">CPU/Mem %</span><span class="tag">PPPoE Subs</span><span class="tag">FAN/PSU/Temp</span><span class="tag">Serial/Model</span></div>
-                <span class="spec-label">Interfaces LLD</span>
-                <div class="tags"><span class="tag">Bits In/Out</span><span class="tag">Optical Lanes (Bias/Tx/Rx)</span></div>
+                <h4>Juniper MX & QFX</h4>
+                <span class="spec-label">Info & Performance</span>
+                <div class="tags"><span class="tag">Hardware Model/Serial</span><span class="tag">CPU/Mem %</span><span class="tag">PPPoE Total Subs</span></div>
+                <span class="spec-label">Hardware & Térmico</span>
+                <div class="tags"><span class="tag">Status FAN</span><span class="tag">Status Fonte</span><span class="tag tag-temp">Temperatura Chassi</span></div>
+                <span class="spec-label">Interfaces & Óptico</span>
+                <div class="tags"><span class="tag">Bits/Status/Erros/Descartes</span><span class="tag">Lanes: Bias, Tx/Rx, Voltagem</span><span class="tag tag-temp">Lanes: Temperatura</span></div>
                 <span class="spec-label">Dependências</span>
-                <div class="tags"><span class="tag tag-dep">ICMP Ping</span><span class="tag tag-dep">SNMP Checker</span></div>
+                <div class="tags"><span class="tag tag-dep">Module ICMP Ping</span><span class="tag tag-dep">Modulo SNMP Checker</span></div>
             </div>
         </div>
     </div>
@@ -128,8 +127,8 @@
     <div class="tree-node">
         <div class="node-header" onclick="toggleNode(this)">
             <div class="label-group">
-                <div class="node-icon bg-dist"><i class="fas fa-project-diagram"></i></div>
-                <span>02. DISTRIBUTION</span>
+                <div class="node-icon bg-dist"><i class="fas fa-route"></i></div>
+                <span>DISTRIBUTION</span>
             </div>
             <i class="fas fa-chevron-right chevron"></i>
         </div>
@@ -137,89 +136,103 @@
             <div class="card">
                 <h4>Huawei VRP Switch</h4>
                 <span class="spec-label">Energia & Sistema</span>
-                <div class="tags"><span class="tag">VRP SO Ver</span><span class="tag">PW1/PW2 State</span><span class="tag">Power Watts</span><span class="tag">Uptime</span></div>
-                <span class="spec-label">Optical LLD</span>
-                <div class="tags"><span class="tag">Single/Multi Lane</span><span class="tag">Vendor/PN</span><span class="tag">TX/RX Power</span></div>
+                <div class="tags"><span class="tag">VRP Firmware/Patch</span><span class="tag">PW1/PW2 State</span><span class="tag">Tipo/Presença Fonte</span><span class="tag">Status FAN</span></div>
+                <span class="spec-label">Óptico & Térmico</span>
+                <div class="tags"><span class="tag">Single/Multi Lanes</span><span class="tag">Vendor/PN</span><span class="tag">Tx/Rx</span><span class="tag tag-temp">Temperatura</span></div>
             </div>
             <div class="card">
-                <h4>Raisecom Switch</h4>
-                <span class="spec-label">Hardware Monitoring</span>
-                <div class="tags"><span class="tag">CPU/Mem Usage</span><span class="tag">Voltage</span><span class="tag">CRC Errors</span><span class="tag">Lanes Bias/Tx</span></div>
-                <span class="spec-label">Dependências</span>
-                <div class="tags"><span class="tag tag-dep">FB-Interfaces</span><span class="tag tag-dep">ICMP Ping</span><span class="tag tag-dep">SNMP Checker</span></div>
+                <h4>Raisecom & ZTE Switch</h4>
+                <span class="spec-label">Raisecom Details</span>
+                <div class="tags"><span class="tag">CPU/Mem %</span><span class="tag">CRC Errors</span><span class="tag">Voltage</span><span class="tag">FAN Speed</span><span class="tag tag-temp">Temperatura Equip.</span></div>
+                <span class="spec-label">ZTE Optical</span>
+                <div class="tags"><span class="tag">FB-Interface ZTE</span><span class="tag">Status/TX/RX</span><span class="tag tag-temp">Temperatura</span></div>
             </div>
         </div>
     </div>
 
-    <!-- ACESSO & OLTS -->
+    <!-- ACESSO -->
     <div class="tree-node">
         <div class="node-header" onclick="toggleNode(this)">
             <div class="label-group">
                 <div class="node-icon bg-acesso"><i class="fas fa-network-wired"></i></div>
-                <span>03. ACCESS & OLTs</span>
+                <span>ACESSO & OLTs</span>
             </div>
             <i class="fas fa-chevron-right chevron"></i>
         </div>
         <div class="node-content">
-            <!-- V-SOL (ADICIONADA) -->
+            <div class="card">
+                <h4>OLT Nokia / Fiberhome / ZTE</h4>
+                <span class="spec-label">Nokia NT-B / LT</span>
+                <div class="tags"><span class="tag">Fan Mode/Speed</span><span class="tag">CPU/Mem per Slot</span><span class="tag tag-temp">Temperatura Controladoras (NT-B)</span></div>
+                <span class="spec-label">Fiberhome LLD</span>
+                <div class="tags"><span class="tag">Total ONUs</span><span class="tag">TX/Voltagem</span><span class="tag tag-temp">Diagnóstico Temp</span><span class="tag tag-trig">Trigger 2Gbps</span></div>
+                <span class="spec-label">ZTE C600</span>
+                <div class="tags"><span class="tag">Cards LLD</span><span class="tag">ONU Signal</span><span class="tag tag-temp">Temperaturas Cards</span></div>
+            </div>
             <div class="card">
                 <h4>OLT V-Sol</h4>
-                <span class="spec-label">System & Hardware</span>
-                <div class="tags"><span class="tag">Uptime</span><span class="tag">CPU/RAM %</span><span class="tag">Chassis Temperature</span></div>
-                <span class="spec-label">LLD: Uplinks</span>
-                <div class="tags"><span class="tag">Traffic In/Out</span><span class="tag">Port Status</span></div>
-                <span class="spec-label">LLD: PON Discovery</span>
-                <div class="tags"><span class="tag">Traffic per PON</span><span class="tag">ONUs Provisioned</span><span class="tag">ONUs Online</span></div>
-                <span class="spec-label">Dependências</span>
-                <div class="tags"><span class="tag tag-dep">ICMP Ping & Loss</span></div>
+                <span class="spec-label">System & LLD</span>
+                <div class="tags"><span class="tag">CPU/RAM %</span><span class="tag">Uptime</span><span class="tag">Traffic Uplinks/PON</span><span class="tag">ONUs Provisioned/Online</span><span class="tag tag-temp">Temperature (Chassis)</span></div>
             </div>
-            <!-- Nokia -->
             <div class="card">
-                <h4>OLT Nokia (ISAM)</h4>
-                <span class="spec-label">Management</span>
-                <div class="tags"><span class="tag">Fan Mode/Speed</span><span class="tag">NT-B Temp</span></div>
-                <span class="spec-label">LLD: Censo & Triggers</span>
-                <div class="tags">
-                    <span class="tag">Provisioned/Online</span>
-                    <span class="tag tag-trig">Trigger: 30% Mass Failure</span>
-                    <span class="tag tag-trig">Trigger: PON Down (Admin UP/Oper DOWN)</span>
-                </div>
-            </div>
-            <!-- Fiberhome -->
-            <div class="card">
-                <h4>OLT Fiberhome</h4>
-                <span class="spec-label">Performance & Censo</span>
-                <div class="tags"><span class="tag">Global CPU</span><span class="tag">Total ONUs</span><span class="tag">Slot Status</span></div>
-                <span class="spec-label">Triggers</span>
-                <div class="tags"><span class="tag tag-trig">Traffic > 2Gbps (Up/Down)</span></div>
-            </div>
-            <!-- ZTE -->
-            <div class="card">
-                <h4>OLT ZTE C600</h4>
-                <span class="spec-label">LLD Cards & PON</span>
-                <div class="tags"><span class="tag">Card Temp/CPU/Mem</span><span class="tag">ONU Metrics (Signal)</span><span class="tag">Status Portas</span></div>
-                <span class="spec-label">Dependências</span>
-                <div class="tags"><span class="tag tag-dep">FB - Interfaces OLT ZTE</span></div>
+                <h4>Datacom v2 & DmOS</h4>
+                <span class="spec-label">Metrics</span>
+                <div class="tags"><span class="tag">Serial/Model</span><span class="tag">CPU/Mem</span><span class="tag">Power/Alarm/FAN Status</span><span class="tag tag-temp">Temperatura</span><span class="tag">Lanes: Bias/Tx/Rx/Volt</span></div>
             </div>
         </div>
     </div>
 
-    <!-- INFRAESTRUTURA -->
+    <!-- RETIFICADORES -->
     <div class="tree-node">
         <div class="node-header" onclick="toggleNode(this)">
             <div class="label-group">
                 <div class="node-icon bg-infra"><i class="fas fa-bolt"></i></div>
-                <span>04. POWER / INFRA</span>
+                <span>RETIFICADORES</span>
             </div>
             <i class="fas fa-chevron-right chevron"></i>
         </div>
         <div class="node-content">
             <div class="card">
-                <h4>Delta / XPS / JFA</h4>
-                <span class="spec-label">Métricas Críticas</span>
-                <div class="tags"><span class="tag">System Voltage</span><span class="tag">Battery Current</span><span class="tag">Autonomia Minutos</span><span class="tag">UR Failure Count</span></div>
-                <span class="spec-label">Alarmes</span>
-                <div class="tags"><span class="tag tag-trig">Falha AC</span><span class="tag tag-trig">Fusível Aberto</span><span class="tag tag-trig">Baixa Tensão</span></div>
+                <h4>Delta Retificador</h4>
+                <span class="spec-label">Bateria & Tempos</span>
+                <div class="tags"><span class="tag">SystemVoltage</span><span class="tag">ChargeState</span><span class="tag">Autonomia</span><span class="tag tag-temp">dcBattery Temperature</span></div>
+                <span class="spec-label">Carga & URs</span>
+                <div class="tags"><span class="tag">dcLoadCurrent</span><span class="tag">dcSystemPower</span><span class="tag">URs Total/Oper/Falha</span><span class="tag">Nomenclatura/MAC/Versão</span></div>
+            </div>
+            <div class="card">
+                <h4>JFA Retificador</h4>
+                <span class="spec-label">Elétrico & Status</span>
+                <div class="tags"><span class="tag">Corrente Saída/Carregador</span><span class="tag">Tensão Rede/VCA</span><span class="tag">Nível Carga</span><span class="tag tag-temp">Temperatura Interna</span></div>
+            </div>
+            <div class="card">
+                <h4>XPS SRWi / SRX</h4>
+                <span class="spec-label">Bateria & Alarmes</span>
+                <div class="tags"><span class="tag">Status (Carga/Desc)</span><span class="tag">UR Amperagem</span><span class="tag tag-trig">Falha AC/UR</span><span class="tag tag-trig">Fusível Aberto</span><span class="tag tag-temp">Temperatura Sensor</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GENÉRICOS -->
+    <div class="tree-node">
+        <div class="node-header" onclick="toggleNode(this)">
+            <div class="label-group">
+                <div class="node-icon bg-generic"><i class="fas fa-box-archive"></i></div>
+                <span>GENÉRICOS</span>
+            </div>
+            <i class="fas fa-chevron-right chevron"></i>
+        </div>
+        <div class="node-content">
+            <div class="card">
+                <h4>Módulos Base</h4>
+                <span class="spec-label">ICMP Ping Checker</span>
+                <div class="tags"><span class="tag">Jitter</span><span class="tag">Latência</span><span class="tag">Perda</span><span class="tag">Status</span></div>
+                <span class="spec-label">SNMP Checker / Generic</span>
+                <div class="tags"><span class="tag">Disponibilidade</span><span class="tag">Traps</span><span class="tag">System Details</span><span class="tag">Uptime</span><span class="tag">Contato/Desc</span></div>
+            </div>
+            <div class="card">
+                <h4>Interface Modules</h4>
+                <span class="spec-label">FB - Interfaces / Discovery v2.0</span>
+                <div class="tags"><span class="tag">Bits In/Out</span><span class="tag">Estado (Admin/Oper)</span><span class="tag">Erros/Descartes</span><span class="tag">Tipo/Velocidade</span></div>
             </div>
         </div>
     </div>
@@ -237,20 +250,13 @@
     function toggleTheme() {
         const body = document.body;
         const icon = document.getElementById('theme-icon');
-        const currentTheme = body.getAttribute('data-theme');
-        
-        if (currentTheme === 'dark') {
-            body.setAttribute('data-theme', 'light');
-            icon.className = 'fas fa-sun';
-        } else {
-            body.setAttribute('data-theme', 'dark');
-            icon.className = 'fas fa-moon';
-        }
+        const isDark = body.getAttribute('data-theme') === 'dark';
+        body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
     }
 
-    window.onload = () => {
-        toggleNode(document.querySelector('.node-header'));
-    };
+    // Auto-expande o primeiro
+    window.onload = () => toggleNode(document.querySelector('.node-header'));
 </script>
 
 </body>
