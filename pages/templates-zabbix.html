@@ -3,284 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC OS v5.0 | Total Infrastructure Matrix</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&family=Fira+Code:wght@300;500&display=swap" rel="stylesheet">
+    <title>Zabbix Template Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #030508;
-            --glass: rgba(10, 15, 25, 0.85);
-            --glass-border: rgba(0, 242, 255, 0.15);
-            --cyan: #00f2ff;
-            --magenta: #ff00e5;
-            --green: #00ff9d;
-            --yellow: #f4ff4d;
-            --danger: #ff4d4d;
-            --text: #e0e6ed;
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #e67e22; /* Cor de destaque Zabbix */
+            --core-color: #e74c3c;
+            --dist-color: #3498db;
+            --access-color: #2ecc71;
+            --infra-color: #9b59b6;
+            --text-main: #333;
+            --text-muted: #666;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: 
-                linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-            background-size: 30px 30px;
-            color: var(--text);
-            font-family: 'Rajdhani', sans-serif;
-            margin: 0; padding: 25px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
         }
 
-        header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 25px; background: var(--glass); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 20px;
-            margin-bottom: 40px; box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        .container {
+            max-width: 1200px;
+            margin: auto;
         }
 
-        .system-title h1 {
-            font-family: 'Orbitron', sans-serif; margin: 0; font-size: 1.6rem;
-            letter-spacing: 5px; color: var(--cyan); text-shadow: 0 0 10px var(--cyan);
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            padding-bottom: 10px;
         }
 
-        .matrix-grid {
+        /* Camadas */
+        .layer-section {
+            margin-bottom: 40px;
+        }
+
+        .layer-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .layer-header i { margin-right: 15px; }
+
+        .core { background-color: var(--core-color); }
+        .distribution { background-color: var(--dist-color); }
+        .acesso { background-color: var(--access-color); }
+        .infra { background-color: var(--infra-color); }
+
+        /* Grid de Templates */
+        .template-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
         }
 
-        .node-card {
-            background: var(--glass); border: 1px solid var(--glass-border);
-            border-radius: 15px; position: relative; overflow: hidden;
-            transition: all 0.3s ease;
+        .template-card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-top: 4px solid rgba(0,0,0,0.1);
         }
 
-        .node-card:hover {
-            border-color: var(--cyan); transform: translateY(-5px);
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.15);
+        .template-card h3 {
+            margin: 0;
+            padding: 15px;
+            background: #f8f9fa;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .node-card::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--cyan); box-shadow: 0 0 15px var(--cyan);
+        .content {
+            padding: 15px;
         }
 
-        /* Cores de Categoria */
-        .cat-pwr::before { background: var(--green); box-shadow: 0 0 15px var(--green); }
-        .cat-net::before { background: var(--magenta); box-shadow: 0 0 15px var(--magenta); }
-
-        .node-header {
-            padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.02); display: flex; justify-content: space-between;
+        .topic {
+            margin-bottom: 12px;
         }
 
-        .node-header h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 0.85rem; margin: 0;
-            color: var(--text); letter-spacing: 1px;
+        .topic-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            display: block;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            border-left: 3px solid var(--accent);
+            padding-left: 8px;
         }
 
-        .node-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-        .data-group h4 {
-            font-size: 10px; text-transform: uppercase; color: var(--cyan);
-            margin: 0 0 10px 0; letter-spacing: 2px; opacity: 0.8;
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
         }
 
-        .data-list { list-style: none; padding: 0; margin: 0; }
-
-        .data-list li {
-            font-family: 'Fira Code', monospace; font-size: 10.5px;
-            margin-bottom: 5px; color: #a0aec0; display: flex; align-items: flex-start;
+        .tag {
+            background: #ebf0f5;
+            color: #475867;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid #d1dce5;
         }
 
-        .data-list li::before {
-            content: "»"; color: var(--cyan); margin-right: 8px; font-weight: bold;
+        .dependency-tag {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffe0b2;
+            font-style: italic;
         }
 
-        .alarm-item { color: var(--danger) !important; font-weight: 500; }
-        .alarm-item::before { color: var(--danger) !important; }
-
-        .node-footer {
-            padding: 12px 20px; background: rgba(0,0,0,0.3);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            font-size: 9px; color: var(--yellow); display: flex; flex-wrap: wrap; gap: 8px;
+        .metrics-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
-        .dep-tag {
-            background: rgba(244, 255, 77, 0.05); padding: 2px 6px;
-            border: 1px solid rgba(244, 255, 77, 0.2); border-radius: 4px;
+        .metrics-list li::before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            display: inline-block; 
+            width: 1em;
         }
-
-        @media (max-width: 600px) { .matrix-grid { grid-template-columns: 1fr; } .node-body { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="system-title">
-        <h1>NOC ASSET MATRIX</h1>
-        <div style="font-size: 10px; color: var(--green); letter-spacing: 3px;">AUTO-RECON: ACTIVE | ENCRYPTION: AES-256</div>
-    </div>
-    <div style="text-align: right">
-        <div id="clock" style="font-family: 'Orbitron'; color: var(--cyan); font-size: 14px;">00:00:00</div>
-        <div style="font-size: 9px; color: var(--magenta);">OPERATOR: ADMIN_MARCOS</div>
-    </div>
-</header>
+<div class="container">
+    <h1><i class="fas fa-network-wired"></i> Monitoramento Zabbix - NOC</h1>
 
-<div class="matrix-grid">
+    <!-- CORE -->
+    <section class="layer-section">
+        <div class="layer-header core">
+            <i class="fas fa-microchip"></i> CORE
+        </div>
+        <div class="template-grid">
+            <div class="template-card">
+                <h3>Juniper MX / QFX <i class="fas fa-server"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Performance & Hardware</span>
+                        <div class="tag-container">
+                            <span class="tag">CPU %</span>
+                            <span class="tag">Memória %</span>
+                            <span class="tag">FAN Status</span>
+                            <span class="tag">PSU Status</span>
+                            <span class="tag">Temp</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Network & Óptico</span>
+                        <ul class="metrics-list">
+                            <li>Assinantes PPPoE (Total)</li>
+                            <li>Interface Bits (In/Out), Erros, Descartes</li>
+                            <li>Lanes: Bias, Tx/Rx, Temp, Voltagem</li>
+                        </ul>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Dependências</span>
+                        <div class="tag-container">
+                            <span class="tag dependency-tag">ICMP Ping</span>
+                            <span class="tag dependency-tag">SNMP Checker</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <!-- ZTE RE783 -->
-    <div class="node-card cat-pwr">
-        <div class="node-header">
-            <h2>ZTE RE783 200A-48V</h2>
-            <span style="font-size: 9px; color: var(--green);">[RECT_SYS_01]</span>
+    <!-- DISTRIBUTION -->
+    <section class="layer-section">
+        <div class="layer-header distribution">
+            <i class="fas fa-project-diagram"></i> DISTRIBUTION
         </div>
-        <div class="node-body">
-            <div class="data-group">
-                <h4>Battery Management</h4>
-                <ul class="data-list">
-                    <li>VBat (Tensão)</li><li>IBat (Corrente)</li>
-                    <li>TBat (Temp)</li><li>Potência de Carga</li>
-                    <li>Uptime Bateria</li><li>Autonomia Bat</li>
-                </ul>
+        <div class="template-grid">
+            <!-- Huawei -->
+            <div class="template-card">
+                <h3>Huawei VRP <i class="fas fa-exchange-alt"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Energia & Sistema</span>
+                        <div class="tag-container">
+                            <span class="tag">Power Used</span>
+                            <span class="tag">PW1/PW2 State</span>
+                            <span class="tag">Uptime</span>
+                            <span class="tag">VRP Version</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Interfaces & SFP</span>
+                        <ul class="metrics-list">
+                            <li>Bits In/Out, Erros, Velocidade</li>
+                            <li>Óptico: Vendor, Pn, Tx/Rx, Temp</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="data-group">
-                <h4>System Ops</h4>
-                <ul class="data-list">
-                    <li>URs em Operação</li><li>SNMP Availability</li>
-                    <li>Tempo Hardware</li><li>MID Objeto</li>
-                    <li class="alarm-item">SNMP Traps</li>
-                </ul>
+            <!-- Raisecom -->
+            <div class="template-card">
+                <h3>Raisecom Switch <i class="fas fa-random"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Health</span>
+                        <div class="tag-container">
+                            <span class="tag">CPU/Mem</span>
+                            <span class="tag">Voltagem</span>
+                            <span class="tag">FAN Speed</span>
+                            <span class="tag">CRC Errors</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Dependências</span>
+                        <div class="tag-container">
+                            <span class="tag dependency-tag">FB - Interfaces</span>
+                            <span class="tag dependency-tag">Generic SNMP</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="node-footer">
-            <span class="dep-tag">Module ICMP Ping Checker</span>
-            <span class="dep-tag">Module Autonomy Time</span>
-        </div>
-    </div>
+    </section>
 
-    <!-- ZTE ZXDU68 -->
-    <div class="node-card cat-pwr">
-        <div class="node-header">
-            <h2>ZTE ZXDU68 B201 200A</h2>
-            <span style="font-size: 9px; color: var(--green);">[RECT_SYS_02]</span>
+    <!-- ACESSO -->
+    <section class="layer-section">
+        <div class="layer-header acesso">
+            <i class="fas fa-users"></i> ACESSO
         </div>
-        <div class="node-body">
-            <div class="data-group">
-                <h4>Battery Cluster</h4>
-                <ul class="data-list">
-                    <li>VBat (Tensão)</li><li>Corrente Carga</li>
-                    <li>Potência Carga</li><li>Temperatura Bat</li>
-                    <li>Tempo Autonomia</li><li>Duração Bat</li>
-                </ul>
+        <div class="template-grid">
+            <div class="template-card">
+                <h3>Datacom v2 <i class="fas fa-plug"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Info</span>
+                        <span class="tag">Serial</span> <span class="tag">Modo Operação</span> <span class="tag">Bootloader</span>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Hardware</span>
+                        <div class="tag-container">
+                            <span class="tag">CPU/Mem</span> <span class="tag">Power Status</span> <span class="tag">Alarms</span> <span class="tag">FAN</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="data-group">
-                <h4>Module Info</h4>
-                <ul class="data-list">
-                    <li>URs em Operação</li><li>Uptime System</li>
-                </ul>
+            <div class="template-card">
+                <h3>Mikrotik RSW <i class="fas fa-wifi"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Principais</span>
+                        <div class="tag-container">
+                            <span class="tag">Health Check Voltage</span>
+                            <span class="tag">Firmware Ver</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Dependências</span>
+                        <div class="tag-container">
+                            <span class="tag dependency-tag">ICMP Ping</span>
+                            <span class="tag dependency-tag">Interface Discovery</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="node-footer">
-            <span class="dep-tag">Module Autonomy Time</span>
-        </div>
-    </div>
+    </section>
 
-    <!-- XPS SRX40/60A -->
-    <div class="node-card cat-pwr">
-        <div class="node-header">
-            <h2>XPS SRX40/60A 48V USCC</h2>
-            <span style="font-size: 9px; color: var(--green);">[POWER_XPS_MAX]</span>
+    <!-- INFRAESTRUTURA (Retificadores) -->
+    <section class="layer-section">
+        <div class="layer-header infra">
+            <i class="fas fa-bolt"></i> INFRAESTRUTURA / RETIFICADORES
         </div>
-        <div class="node-body">
-            <div class="data-group">
-                <h4>Bateria (Full)</h4>
-                <ul class="data-list">
-                    <li>VBat (V) | TBat (°C)</li><li>IBatC | IBatD (A)</li>
-                    <li class="alarm-item">Alarme Carreg.</li><li class="alarm-item">Alarme Descarga</li>
-                    <li class="alarm-item">Alarme Desconex.</li><li class="alarm-item">Alarme Fusível</li>
-                </ul>
+        <div class="template-grid">
+            <!-- Delta -->
+            <div class="template-card">
+                <h3>Delta SNMP <i class="fas fa-battery-three-quarters"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Bateria & Autonomia</span>
+                        <div class="tag-container">
+                            <span class="tag">dcSystemVoltage</span>
+                            <span class="tag">ChargeState</span>
+                            <span class="tag">Remaning Time</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Carga & URs</span>
+                        <ul class="metrics-list">
+                            <li>dcLoadCurrent / dcSystemPower</li>
+                            <li>URs Totais vs Operacionais</li>
+                            <li>Falhas de UR</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="data-group">
-                <h4>Consumidor/Alerts</h4>
-                <ul class="data-list">
-                    <li>VCC (V) | ICons (A)</li><li>Modo Operação</li>
-                    <li class="alarm-item">Tensão DC Alta</li><li class="alarm-item">Falha Retificador</li>
-                    <li class="alarm-item">Falha na UR</li><li class="alarm-item">Falha AC</li>
-                </ul>
-            </div>
-        </div>
-        <div class="node-footer">
-            <span class="dep-tag">Module Autonomy Time</span>
-            <span class="dep-tag">SNMP Traps (Fallback)</span>
-        </div>
-    </div>
-
-    <!-- XPS SRWi 30A -->
-    <div class="node-card cat-pwr">
-        <div class="node-header">
-            <h2>XPS SRWi 30A-48V USCC400</h2>
-            <span style="font-size: 9px; color: var(--green);">[POWER_XPS_STD]</span>
-        </div>
-        <div class="node-body">
-            <div class="data-group">
-                <h4>Battery Health</h4>
-                <ul class="data-list">
-                    <li>Bateria Desconec.</li><li>Bat. em Carga</li>
-                    <li>Bat. em Descarga</li><li>Baterias Voltagem</li>
-                    <li>Baterias Saída Amp</li><li>Tempo Autonomia</li>
-                </ul>
-            </div>
-            <div class="data-group">
-                <h4>Rectifier Matrix</h4>
-                <ul class="data-list">
-                    <li>Retificador Voltag.</li><li>UR Amperagem</li>
-                    <li>Consumo Saída Amp</li><li>Sensor Temp.</li>
-                    <li class="alarm-item">Falha AC / UR</li><li class="alarm-item">Fusível Aberto</li>
-                </ul>
+            <!-- XPS -->
+            <div class="template-card">
+                <h3>XPS SRWi / SRX <i class="fas fa-car-battery"></i></h3>
+                <div class="content">
+                    <div class="topic">
+                        <span class="topic-title">Alarmes Críticos</span>
+                        <div class="tag-container">
+                            <span class="tag">Falha AC</span>
+                            <span class="tag">Fusível Aberto</span>
+                            <span class="tag">UR Failure</span>
+                        </div>
+                    </div>
+                    <div class="topic">
+                        <span class="topic-title">Métricas</span>
+                        <ul class="metrics-list">
+                            <li>Amperagem Saída</li>
+                            <li>Status (Carga/Descarga/Desc)</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="node-footer">
-            <span class="dep-tag">ICMP Jitter/Latência/Loss</span>
-            <span class="dep-tag">Module Autonomy Time</span>
-        </div>
-    </div>
-
-    <!-- JUNIPER MODULE -->
-    <div class="node-card cat-net">
-        <div class="node-header">
-            <h2>JUNIPER MX / QFX SERIES</h2>
-            <span style="font-size: 9px; color: var(--magenta);">[CORE_NET]</span>
-        </div>
-        <div class="node-body">
-            <div class="data-group">
-                <h4>System Performance</h4>
-                <ul class="data-list">
-                    <li>CPU/Memory Load</li><li>PPPoE Active</li>
-                    <li>Model/Serial Num</li><li>Temp / FAN Status</li>
-                </ul>
-            </div>
-            <div class="data-group">
-                <h4>Interfaces</h4>
-                <ul class="data-list">
-                    <li>Bits In/Out</li><li>Bias (Bias)</li>
-                    <li>Tx/Rx Power</li><li>Err/Discard In-Out</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
+    </section>
 </div>
-
-<script>
-    function updateClock() {
-        const now = new Date();
-        const time = now.getHours().toString().padStart(2, '0') + ":" + 
-                     now.getMinutes().toString().padStart(2, '0') + ":" + 
-                     now.getSeconds().toString().padStart(2, '0');
-        document.getElementById('clock').textContent = time;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
-</script>
 
 </body>
 </html>
