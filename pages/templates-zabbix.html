@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Documentation | Zabbix Hierarchy</title>
+    <title>NOC Documentation | Zabbix Full Hierarchy</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -16,6 +16,7 @@
             --text-main: #c9d1d9;
             --text-muted: #8b949e;
             --code-bg: #0d1117;
+            --pwr-color: #7ee787;
         }
 
         body {
@@ -24,13 +25,10 @@
             color: var(--text-main);
             margin: 0;
             padding: 40px 20px;
-            line-height: 1.6;
+            line-height: 1.4;
         }
 
-        .dashboard {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .dashboard { max-width: 1300px; margin: 0 auto; }
 
         header {
             display: flex;
@@ -38,30 +36,15 @@
             align-items: flex-end;
             border-bottom: 1px solid var(--border);
             padding-bottom: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        .logo-area h1 {
-            margin: 0;
-            font-size: 24px;
-            letter-spacing: -0.5px;
-            color: var(--primary);
-        }
-
-        .version-badge {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            background: var(--surface);
-            padding: 4px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-        }
+        .logo-area h1 { margin: 0; font-size: 22px; color: var(--primary); text-transform: uppercase; }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
         }
 
         .card {
@@ -70,49 +53,36 @@
             border-radius: 6px;
             display: flex;
             flex-direction: column;
+            border-top: 3px solid var(--primary);
         }
+
+        /* Cores de Categoria */
+        .cat-core { border-top-color: #f78166; }
+        .cat-dist { border-top-color: #d2a8ff; }
+        .cat-pwr { border-top-color: var(--pwr-color); }
+        .cat-gen { border-top-color: #8b949e; }
 
         .card-header {
-            padding: 16px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border);
             background: rgba(255,255,255,0.02);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tag {
-            font-size: 10px;
-            text-transform: uppercase;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 3px;
-            background: var(--primary);
-            color: #000;
-        }
-
-        .card-title {
             font-weight: 600;
-            font-size: 15px;
+            font-size: 14px;
             color: #f0f6fc;
         }
 
-        .card-body {
-            padding: 16px;
-            flex-grow: 1;
-        }
+        .card-body { padding: 16px; }
 
-        .data-section {
-            margin-bottom: 15px;
-        }
+        .data-section { margin-bottom: 15px; }
 
         .data-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--secondary);
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .data-list {
@@ -124,10 +94,8 @@
             gap: 4px;
         }
 
-        .data-list.full { grid-template-columns: 1fr; }
-
         .data-list li {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-main);
             display: flex;
             align-items: center;
@@ -135,37 +103,20 @@
         }
 
         .data-list li::before {
-            content: "";
-            width: 4px;
-            height: 4px;
-            background: var(--border);
-            border-radius: 50%;
+            content: "•";
+            color: var(--border);
         }
 
         .footer-card {
             margin-top: auto;
-            padding: 12px 16px;
+            padding: 10px 16px;
             background: var(--code-bg);
             border-top: 1px solid var(--border);
             font-size: 11px;
-        }
-
-        .dependency-tag {
             color: var(--accent);
-            display: inline-block;
-            margin-right: 8px;
         }
 
-        /* Cores por Categoria */
-        .cat-core { border-top: 3px solid #f78166; }
-        .cat-dist { border-top: 3px solid #d2a8ff; }
-        .cat-access { border-top: 3px solid #58a6ff; }
-        .cat-pwr { border-top: 3px solid #7ee787; }
-        .cat-gen { border-top: 3px solid #8b949e; }
-
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } .data-list { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -173,201 +124,144 @@
 <div class="dashboard">
     <header>
         <div class="logo-area">
-            <h1>NETWORK OPERATIONS CENTER</h1>
-            <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 14px;">Zabbix Template Documentation & Asset Hierarchy</p>
+            <h1>Zabbix Infrastructure Tree</h1>
+            <p style="margin: 5px 0 0; color: var(--text-muted); font-size: 13px;">Full Asset & Template Documentation</p>
         </div>
-        <div class="version-badge">2026.V2_STABLE</div>
+        <div style="font-family: monospace; font-size: 12px; color: var(--text-muted);">v3.0.2026</div>
     </header>
 
     <div class="grid">
-        <!-- CORE: JUNIPER -->
-        <article class="card cat-core">
-            <div class="card-header">
-                <span class="tag" style="background:#f78166">CORE</span>
-                <span class="card-title">Juniper MX / QFX Series</span>
-            </div>
-            <div class="card-body">
-                <div class="data-section">
-                    <span class="data-label">Identity & Health</span>
-                    <ul class="data-list">
-                        <li>Hardware Model</li><li>Serial Number</li>
-                        <li>CPU Usage</li><li>Memory Usage</li>
-                        <li>FAN Status</li><li>PSU Status</li>
-                        <li>Temperature</li><li>PPPoE Subscribers</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">Interface Monitoring</span>
-                    <ul class="data-list">
-                        <li>Bits In/Out</li><li>Admin/Oper State</li>
-                        <li>In/Out Errors</li><li>In/Out Discards</li>
-                        <li>Interface Type</li><li>Negotiation Speed</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">Optical Diagnostics (Lanes)</span>
-                    <ul class="data-list">
-                        <li>Bias Current</li><li>TX/RX Power</li>
-                        <li>Temperature</li><li>Voltage</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-card">
-                <span class="dependency-tag">Linked:</span> ICMP Ping Checker, SNMP Checker
-            </div>
-        </article>
 
-        <!-- DISTRIBUTION: HUAWEI -->
-        <article class="card cat-dist">
-            <div class="card-header">
-                <span class="tag" style="background:#d2a8ff">DIST</span>
-                <span class="card-title">Huawei VRP Stack</span>
-            </div>
-            <div class="card-body">
-                <div class="data-section">
-                    <span class="data-label">Power Management (PW1/PW2)</span>
-                    <ul class="data-list">
-                        <li>Power Usage</li><li>Up/Down State</li>
-                        <li>Source Type</li><li>Presence Check</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">System & OS</span>
-                    <ul class="data-list">
-                        <li>VRP Firmware</li><li>VRP Patch Ver.</li>
-                        <li>System Uptime</li><li>FAN Status</li>
-                        <li>Hardware Model</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">Interface / Optical</span>
-                    <ul class="data-list">
-                        <li>Bits In/Out</li><li>Admin/Oper State</li>
-                        <li>Vendor Name</li><li>Part Number (PN)</li>
-                        <li>TX/RX Power</li><li>Temperature</li>
-                    </ul>
-                </div>
-            </div>
-        </article>
-
-        <!-- DISTRIBUTION: RAISECOM -->
-        <article class="card cat-dist">
-            <div class="card-header">
-                <span class="tag" style="background:#d2a8ff">DIST</span>
-                <span class="card-title">Raisecom Switch</span>
-            </div>
-            <div class="card-body">
-                <div class="data-section">
-                    <span class="data-label">Performance & System</span>
-                    <ul class="data-list">
-                        <li>Memory (Total/Avail)</li><li>Memory Usage %</li>
-                        <li>CPU Utilization</li><li>HW/SW Version</li>
-                        <li>Device Voltage</li><li>FAN Status/Speed</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">Interfaces & Fiber</span>
-                    <ul class="data-list">
-                        <li>CRC Errors</li><li>Bias Current</li>
-                        <li>TX/RX Power</li><li>Temperature</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-card">
-                <span class="dependency-tag">Linked:</span> FB-Interfaces, ICMP, SNMP Checker, Generic
-            </div>
-        </article>
-
-        <!-- ACCESS: DATACOM -->
-        <article class="card cat-access">
-            <div class="card-header">
-                <span class="tag" style="background:#58a6ff">ACCESS</span>
-                <span class="card-title">Datacom v2 / DmOS</span>
-            </div>
-            <div class="card-body">
-                <div class="data-section">
-                    <span class="data-label">Datacom V2 Fleet</span>
-                    <ul class="data-list">
-                        <li>Model/Product Name</li><li>Serial Number</li>
-                        <li>Bootloader/Firmware</li><li>CPU/Mem Usage</li>
-                        <li>Power Status</li><li>Port Count</li>
-                        <li>FAN/Temp Status</li><li>Alarm Status</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">DmOS DM4370 Details</span>
-                    <ul class="data-list full">
-                        <li>Serial Number (Detailed Lookup)</li>
-                        <li>DmOS Templates (CPU, FAN, MEM, Temp)</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-card">
-                <span class="dependency-tag">Linked:</span> Module HW/SW Info, Interface Discovery v1.0
-            </div>
-        </article>
-
-        <!-- POWER: XPS SRWi/SRX -->
+        <!-- RETIFICADOR 1: SRWi 30A-48V -->
         <article class="card cat-pwr">
-            <div class="card-header">
-                <span class="tag" style="background:#7ee787">POWER</span>
-                <span class="card-title">XPS Retificadores (Full Stack)</span>
-            </div>
+            <div class="card-header">XPS Retificador SRWi 30A-48V USCC400</div>
             <div class="card-body">
                 <div class="data-section">
-                    <span class="data-label">Battery Management</span>
+                    <span class="data-label">Bateria & Autonomia</span>
                     <ul class="data-list">
-                        <li>VBat (Voltage)</li><li>IBatC / IBatD</li>
-                        <li>TBat (Temp)</li><li>Autonomy Remaining</li>
-                        <li>Charge/Disch. Status</li><li>Disconnect Alarm</li>
+                        <li>Bateria Desconectada</li><li>Bateria em Carga</li>
+                        <li>Bateria em Descarga</li><li>Baterias Saída Amp.</li>
+                        <li>Baterias Voltagem</li><li>Tempo de Autonomia</li>
                     </ul>
                 </div>
                 <div class="data-section">
-                    <span class="data-label">Alarms & Failure Modes</span>
+                    <span class="data-label">Operação & Alarmes</span>
                     <ul class="data-list">
-                        <li>AC Failure</li><li>UR Failure</li>
-                        <li>Open Fuse Alarm</li><li>High DC Voltage</li>
-                        <li>Urgente/Não Urgente</li><li>Battery Fuse Failure</li>
-                    </ul>
-                </div>
-                <div class="data-section">
-                    <span class="data-label">Output & Rectifier</span>
-                    <ul class="data-list">
-                        <li>VCC (DC Voltage)</li><li>ICons (Current)</li>
-                        <li>UR Amperage</li><li>Sensor Temp</li>
+                        <li>Consumo Saída Amp.</li><li>Falha de AC</li>
+                        <li>Falha em UR</li><li>Fusível Aberto</li>
+                        <li>Retificador Voltagem</li><li>UR Amperagem</li>
+                        <li>Temperatura Sensor</li>
                     </ul>
                 </div>
             </div>
             <div class="footer-card">
-                <span class="dependency-tag">Linked:</span> Module Autonomy Time, ICMP Jitter/Loss
+                Deps: ICMP (Jitter, Latência, Perda, Status), Autonomy (Remanescente, Transcorrido)
             </div>
         </article>
 
-        <!-- GENERIC: GLOBAL MODULES -->
-        <article class="card cat-gen">
-            <div class="card-header">
-                <span class="tag" style="background:#8b949e">GENERIC</span>
-                <span class="card-title">Zabbix Global Modules</span>
-            </div>
+        <!-- RETIFICADOR 2: SRX Lite -->
+        <article class="card cat-pwr">
+            <div class="card-header">XPS Retificador SRX 30A-48V USCC Lite</div>
             <div class="card-body">
                 <div class="data-section">
-                    <span class="data-label">ICMP Ping Checker</span>
+                    <span class="data-label">Alarmes Críticos</span>
                     <ul class="data-list">
-                        <li>Jitter</li><li>Latency</li>
-                        <li>Packet Loss</li><li>Availability Status</li>
+                        <li>Alarme Urgente</li><li>Alarme Não Urgente</li>
+                        <li>Alarme Tensão Alta</li><li>Alarme Bat. em Carga</li>
+                        <li>Falha de AC</li><li>Falha em UR</li>
+                        <li>Fusível Aberto</li><li>Falha Fusível Bateria</li>
                     </ul>
                 </div>
                 <div class="data-section">
-                    <span class="data-label">SNMP Base & Discovery</span>
-                    <ul class="data-list full">
-                        <li>System Name / Description / Contact</li>
-                        <li>Object ID / Uptime (HW & Net)</li>
-                        <li>SNMP Agent Availability / Traps</li>
-                        <li>Interface Discovery v2.0 (Errors/Discards/Speed)</li>
+                    <span class="data-label">Métricas de Energia</span>
+                    <ul class="data-list">
+                        <li>Baterias Voltagem</li><li>Corrente de Carga</li>
+                        <li>Consumo Saída Amp.</li><li>Retificador Voltagem</li>
+                        <li>UR Amperagem</li><li>Tempo de Autonomia</li>
+                        <li>Nome Identif. Sistema</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-card">
+                Deps: ICMP (Jitter, Latência, Perda, Status), Autonomy (Remanescente, Transcorrido)
+            </div>
+        </article>
+
+        <!-- RETIFICADOR 3: SRX40/60A -->
+        <article class="card cat-pwr">
+            <div class="card-header">XPS Retificador SRX40/60A 48V USCC</div>
+            <div class="card-body">
+                <div class="data-section">
+                    <span class="data-label">Métricas Bateria (IBat/VBat)</span>
+                    <ul class="data-list">
+                        <li>VBat (V)</li><li>TBat (°C)</li>
+                        <li>Corrente Carga IBatC</li><li>Corrente Desc. IBatD</li>
+                        <li>Alarme Carregamento</li><li>Alarme Descarga</li>
+                        <li>Alarme Desconexão</li><li>Alarme Fusível</li>
+                    </ul>
+                </div>
+                <div class="data-section">
+                    <span class="data-label">Consumidor & Sistema</span>
+                    <ul class="data-list">
+                        <li>VCC (V)</li><li>ICons (A)</li>
+                        <li>Alarme Fusível</li><li>Alarme Tensão DC Alta</li>
+                        <li>Modo de Operação</li><li>Falha Retificador</li>
+                        <li>Falha na UR</li><li>SNMP Traps / Disp.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-card">
+                Deps: Module Autonomy time (Tempo remanescente, Tempo transcorrido)
+            </div>
+        </article>
+
+        <!-- CORE / JUNIPER -->
+        <article class="card cat-core">
+            <div class="card-header">Juniper MX Router & QFX Switch</div>
+            <div class="card-body">
+                <div class="data-section">
+                    <span class="data-label">System & Interface</span>
+                    <ul class="data-list">
+                        <li>PPPoE Subscribers</li><li>CPU / Memória</li>
+                        <li>Bits In/Out</li><li>Admin/Oper Status</li>
+                        <li>Errors/Discards</li><li>Lanes (Bias, Tx/Rx)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-card">Deps: ICMP Checker, SNMP Checker</div>
+        </article>
+
+        <!-- ACESSO / DATACOM -->
+        <article class="card cat-access">
+            <div class="card-header">DATACOM - v2 / DmOS</div>
+            <div class="card-body">
+                <div class="data-section">
+                    <span class="data-label">Hardware Profile</span>
+                    <ul class="data-list">
+                        <li>Serial Number</li><li>Firmware/Bootloader</li>
+                        <li>Power Status</li><li>CPU/Memory Usage</li>
+                        <li>Lanes Ópticos</li><li>FAN/Temp Status</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-card">Deps: Module HW/SW Info, Discovery v1.0</div>
+        </article>
+
+        <!-- GENERICOS -->
+        <article class="card cat-gen">
+            <div class="card-header">Módulos Genéricos</div>
+            <div class="card-body">
+                <div class="data-section">
+                    <span class="data-label">ICMP / SNMP Base</span>
+                    <ul class="data-list">
+                        <li>Jitter / Latência</li><li>Packet Loss</li>
+                        <li>System Uptime</li><li>SNMP Availability</li>
+                        <li>Object ID / Traps</li><li>Discovery v2.0</li>
                     </ul>
                 </div>
             </div>
         </article>
+
     </div>
 </div>
 
