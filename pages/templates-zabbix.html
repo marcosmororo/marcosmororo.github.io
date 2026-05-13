@@ -3,212 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOC Monitoring Docs | v5.0</title>
+    <title>Zabbix NOC | Documentation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f8fafc;
-            --surface: #ffffff;
-            --panel: #f1f5f9;
-            --primary: #2563eb;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --accent-core: #ef4444;
-            --accent-dist: #3b82f6;
-            --accent-olt: #10b981;
-            --accent-rect: #f59e0b;
-        }
-
-        [data-theme="dark"] {
             --bg: #0f172a;
             --surface: #1e293b;
-            --panel: #334155;
-            --primary: #38bdf8;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
             --border: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --primary: #38bdf8;
+            --core: #ef4444;
+            --dist: #3b82f6;
+            --acesso: #8b5cf6;
+            --infra: #f59e0b;
+        }
+
+        [data-theme="light"] {
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --text-dim: #64748b;
         }
 
         body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+            font-family: 'Inter', sans-serif; 
             background-color: var(--bg); 
-            color: var(--text-main); 
-            margin: 0; padding: 40px;
-            line-height: 1.6;
+            color: var(--text); 
+            margin: 0; padding: 30px; 
+            transition: 0.3s ease;
         }
 
-        /* HEADER */
-        .header {
+        /* Toolbar Superior */
+        .top-nav {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 40px;
+            padding-bottom: 20px; border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
         }
-        .header h1 { font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; margin: 0; }
-        .header span { color: var(--primary); }
 
-        /* THEME TOGGLE */
-        .theme-btn {
+        .actions { display: flex; gap: 15px; align-items: center; }
+
+        .btn {
+            padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; border: 1px solid var(--border);
+            text-decoration: none; font-size: 0.85rem; transition: 0.2s;
+        }
+
+        .btn-download { background: var(--primary); color: #000; border: none; }
+        .btn-download:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-theme { background: var(--surface); color: var(--text); }
+
+        /* Categorias e Cards */
+        .layer-title {
+            font-size: 1.2rem; font-weight: 800; text-transform: uppercase;
+            margin: 40px 0 20px; display: flex; align-items: center; gap: 10px;
+        }
+
+        .grid { 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 20px; 
+        }
+
+        .card { 
             background: var(--surface); border: 1px solid var(--border);
-            padding: 8px 15px; border-radius: 20px; cursor: pointer;
-            color: var(--text-main); font-weight: 600; transition: 0.3s;
+            border-radius: 12px; padding: 20px; position: relative;
         }
-
-        /* GRID SYSTEM */
-        .section-title {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 1.1rem; font-weight: 800; text-transform: uppercase;
-            margin: 40px 0 20px 0; padding-left: 10px;
-            border-left: 4px solid var(--primary);
-        }
-
-        .grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 20px;
-        }
-
-        .card {
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-        }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        
         .card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--primary); opacity: 0.8;
+            content: ''; position: absolute; left: 0; top: 20px; bottom: 20px;
+            width: 4px; border-radius: 0 4px 4px 0;
         }
 
-        .card h3 { margin: 0 0 15px 0; font-size: 1rem; font-weight: 700; color: var(--text-main); }
+        .card-core::before { background: var(--core); }
+        .card-dist::before { background: var(--dist); }
+        .card-acesso::before { background: var(--acesso); }
+        .card-infra::before { background: var(--infra); }
+
+        .card h3 { margin: 0 0 15px 10px; font-size: 1rem; }
+        .label { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin: 10px 0 5px 10px; display: block; }
         
-        .metric-group { margin-bottom: 15px; }
-        .label { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px; }
-        
-        .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-        .tag { 
-            background: var(--panel); border: 1px solid var(--border);
-            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 500;
-        }
-        .tag-dep { color: var(--primary); border-color: var(--primary); font-size: 0.7rem; }
+        .tags { display: flex; flex-wrap: wrap; gap: 5px; padding-left: 10px; }
+        .tag { background: var(--bg); border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; }
+        .tag-dep { color: var(--primary); border-color: var(--primary); }
 
-        /* TREE SUMMARY */
-        .summary-wrapper {
-            margin-top: 80px; padding: 30px; background: var(--surface);
-            border-radius: 16px; border: 1px solid var(--border);
+        /* Tree Summary */
+        .summary-container {
+            margin-top: 60px; padding: 30px; background: var(--surface);
+            border-radius: 12px; border: 1px solid var(--border);
+            font-family: 'Fira Code', monospace; font-size: 0.85rem;
         }
-        .tree { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-muted); }
-        .tree-line { white-space: pre; display: block; margin: 4px 0; }
-        .tree-root { color: var(--primary); font-weight: 700; }
-        .tree-branch { color: var(--text-main); font-weight: 600; }
-
     </style>
 </head>
 <body data-theme="dark">
 
-    <div class="header">
-        <h1>NOC.<span>DOCS</span> <small style="font-size: 0.8rem; font-weight: 400; opacity: 0.6;">v5.2.0</small></h1>
-        <button class="theme-btn" onclick="toggleTheme()"><i class="fas fa-moon"></i> Alternar Tema</button>
+<div class="top-nav">
+    <div>
+        <h1 style="margin:0; font-size: 1.5rem;">ZABBIX MONITORING MAP</h1>
+        <small style="color: var(--text-dim)">Infraestrutura e Templates</small>
     </div>
-
-    <div id="content"></div>
-
-    <div class="summary-wrapper">
-        <h2 style="margin-top:0"><i class="fas fa-folder-tree"></i> Estrutura Hierárquica</h2>
-        <div id="tree-container" class="tree"></div>
+    <div class="actions">
+        <a href="pages/OLTs.zip" class="btn btn-download" download>
+            <i class="fas fa-file-archive"></i> BAIXAR OLTS.ZIP
+        </a>
+        <button class="btn btn-theme" onclick="toggleTheme()">
+            <i class="fas fa-adjust"></i> TEMA
+        </button>
     </div>
+</div>
+
+<div id="content"></div>
+
+<div class="summary-container">
+    <h3 style="margin-top:0"><i class="fas fa-sitemap"></i> ESTRUTURA COMPLETA (RESUMO)</h3>
+    <pre id="tree-view"></pre>
+</div>
 
 <script>
-    // Dados consolidados incluindo os arquivos de pages/OLTs.zip
-    const data = [
-        {
-            category: "Core",
-            accent: "var(--accent-core)",
-            items: [
-                { name: "Juniper MX/QFX Router", metrics: "Model, Serial, CPU, Mem, PPPoE, Interfaces, Optico, Hardware Status", deps: "ICMP Ping, SNMP Checker" }
-            ]
-        },
-        {
-            category: "Optical Line Terminal (OLT)",
-            accent: "var(--accent-olt)",
-            items: [
-                { name: "Nokia OLT (ISAM)", metrics: "ONT Info, CPU/Temp, Traffic per Port, Service Profiles", deps: "SNMP v2c, Custom MIBs" },
-                { name: "Datacom OLT (DmOS)", metrics: "Serial, Upstream/Downstream, ONU Status, Optical Power, Vlan Info", deps: "DmOS Info, ICMP" },
-                { name: "Fiberhome OLT", metrics: "Uplink Traffic, ONU Discovery, Card Status, Temp", deps: "Generic SNMP" }
-            ]
-        },
-        {
-            category: "Distribution",
-            accent: "var(--accent-dist)",
-            items: [
-                { name: "Huawei VRP Switch", metrics: "Model, SO, Energia, Interfaces, Óptico PN, Uptime, FAN" },
-                { name: "Raisecom Switch", metrics: "HW/SW Ver, Mem/CPU, Voltagem, Temp, CRC Erros, Óptico", deps: "FB-Interfaces, ICMP, Generic" },
-                { name: "ZTE Switch", metrics: "Status Óptico, Temperatura, TX/RX Power", deps: "Network Generic, SNMP Location" }
-            ]
-        },
-        {
-            category: "Retificadores & Energia",
-            accent: "var(--accent-rect)",
-            items: [
-                { name: "Delta Rectifier", metrics: "VDC, Battery Amp, Temp, Load, UR Fail, Autonomy", deps: "ICMP, Autonomy Module" },
-                { name: "ZTE ZXDU68/RE783", metrics: "Potência, Corrente Bateria, URs em Operação, Uptime HW", deps: "Module Autonomy time" },
-                { name: "XPS SRX/SRWi", metrics: "Status Carga, Fusível, Alarme AC, Consumo Saída", deps: "ICMP Jitter, Autonomy" }
-            ]
-        },
-        {
-            category: "Generics & Modules",
-            accent: "var(--text-muted)",
-            items: [
-                { name: "Module ICMP Checker", metrics: "Jitter, Latency, Loss, Status" },
-                { name: "FB - Interface Discovery", metrics: "Bits In/Out, Admin/Oper Status, Errors, Speed" }
-            ]
-        }
-    ];
+const data = [
+    {
+        layer: "Core",
+        class: "card-core",
+        icon: "fa-server",
+        items: [
+            { name: "Juniper MX/QFX Router", metrics: "Model, Serial, CPU, Mem, PPPoE, Interfaces, Óptico, FAN, PSU", deps: "ICMP Ping, SNMP Checker" }
+        ]
+    },
+    {
+        layer: "Distribution",
+        class: "card-dist",
+        icon: "fa-project-diagram",
+        items: [
+            { name: "Huawei VRP Switch", metrics: "Model, SO, Energia, Interfaces, Óptico PN, Uptime, FAN" },
+            { name: "Raisecom Switch", metrics: "HW/SW Ver, Mem/CPU, Voltagem, Temp, Erros CRC, Óptico", deps: "FB-Interfaces, ICMP, SNMP" },
+            { name: "ZTE Switch", metrics: "Status Óptico, Temp, TX/RX Power", deps: "Generic Device, SNMP Location" }
+        ]
+    },
+    {
+        layer: "Acesso & OLTs",
+        class: "card-acesso",
+        icon: "fa-network-wired",
+        items: [
+            { name: "DmOS DM4370", metrics: "Serial Number, CPU, FAN, Mem, Temp", deps: "DmOS Info, ICMP Ping, Discovery v1.0" },
+            { name: "DATACOM - v2", metrics: "Model, Serial, Firmware, CPU, Energia, Temp, Interfaces, Óptico", deps: "Hardware/Software Info" },
+            { name: "Mikrotik - RSW", metrics: "Health Check Voltage", deps: "ICMP, Checker, Interface Discovery, SNMP" },
+            { name: "OLT Nokia (ISAM)", metrics: "ONT Info, CPU/Temp, Traffic per Port, Service Profiles", deps: "SNMP v2c, Custom MIBs" },
+            { name: "OLT Datacom (DmOS)", metrics: "ONU Status, Optical Power, VLAN Info, Up/Downstream", deps: "DmOS Core, ICMP" },
+            { name: "OLT Fiberhome", metrics: "ONU Discovery, Card Status, Uplink Traffic, Temp", deps: "Generic SNMP" }
+        ]
+    },
+    {
+        layer: "Retificadores",
+        class: "card-infra",
+        icon: "fa-bolt",
+        items: [
+            { name: "Delta / JFA", metrics: "VDC, Battery Current, Autonomia, Carga, Temp, UR Failure", deps: "ICMP, Autonomy Time" },
+            { name: "XPS SRWi/SRX", metrics: "Status Carga, Fusível, Alarme AC, Consumo Saída", deps: "ICMP, Autonomy Time" },
+            { name: "ZTE ZXDU68", metrics: "Corrente Carga, Potência, URs Operação, Uptime", deps: "Module Autonomy" }
+        ]
+    },
+    {
+        layer: "Genericos",
+        class: "",
+        icon: "fa-layer-group",
+        items: [
+            { name: "Module ICMP / SNMP", metrics: "Jitter, Latency, Loss, Availability, Traps, OID" },
+            { name: "FB - Interfaces", metrics: "Bits In/Out, Admin/Oper, Errors, Speed" }
+        ]
+    }
+];
 
-    function render() {
-        const content = document.getElementById('content');
-        const tree = document.getElementById('tree-container');
-        let html = '';
-        let treeHtml = '<span class="tree-root">Zabbix_Templates/</span>';
+function render() {
+    const content = document.getElementById('content');
+    const tree = document.getElementById('tree-view');
+    let html = '';
+    let treeText = 'Zabbix_Project/\n';
 
-        data.forEach(cat => {
-            html += `<div class="section-title"><i class="fas fa-chevron-right"></i> ${cat.category}</div><div class="grid">`;
-            treeHtml += `<div class="tree-line"> ├── <span class="tree-branch">${cat.category}</span></div>`;
+    data.forEach(l => {
+        html += `<div class="layer-title"><i class="fas ${l.icon}"></i> ${l.layer}</div><div class="grid">`;
+        treeText += `├── ${l.layer}\n`;
 
-            cat.items.forEach((item, index) => {
-                const isLast = index === cat.items.length - 1;
-                html += `
-                    <div class="card" style="border-top-color: ${cat.accent}">
-                        <h3>${item.name}</h3>
-                        <div class="metric-group">
-                            <span class="label">Métricas Coletadas</span>
-                            <div class="tags">
-                                ${item.metrics.split(',').map(m => `<span class="tag">${m.trim()}</span>`).join('')}
-                            </div>
-                        </div>
-                        ${item.deps ? `
-                        <div class="metric-group">
-                            <span class="label">Dependências</span>
-                            <div class="tags">
-                                ${item.deps.split(',').map(d => `<span class="tag tag-dep">${d.trim()}</span>`).join('')}
-                            </div>
-                        </div>` : ''}
-                    </div>
-                `;
-                treeHtml += `<div class="tree-line"> │   ${isLast ? '└──' : '├──'} ${item.name}</div>`;
-            });
-            html += `</div>`;
+        l.items.forEach((i, idx) => {
+            const isLast = idx === l.items.length - 1;
+            html += `
+                <div class="card ${l.class}">
+                    <h3>${i.name}</h3>
+                    <span class="label">Métricas</span>
+                    <div class="tags">${i.metrics.split(',').map(m => `<span class="tag">${m.trim()}</span>`).join('')}</div>
+                    ${i.deps ? `<span class="label">Dependências</span><div class="tags">${i.deps.split(',').map(d => `<span class="tag tag-dep">${d.trim()}</span>`).join('')}</div>` : ''}
+                </div>`;
+            treeText += `│   ${isLast ? '└──' : '├──'} ${i.name}\n`;
         });
+        html += `</div>`;
+    });
 
-        content.innerHTML = html;
-        tree.innerHTML = treeHtml;
-    }
+    content.innerHTML = html;
+    tree.textContent = treeText;
+}
 
-    function toggleTheme() {
-        const body = document.body;
-        const current = body.getAttribute('data-theme');
-        body.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-    }
+function toggleTheme() {
+    const body = document.body;
+    body.setAttribute('data-theme', body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+}
 
-    render();
+render();
 </script>
+
 </body>
 </html>
