@@ -3,344 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zabbix Template Documentation</title>
+    <title>Mapa de Templates Zabbix - NOC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-body: #f4f7f6;
-            --bg-card: #ffffff;
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #e67e22; /* Cor de destaque Zabbix */
-            --core-color: #e74c3c;
-            --dist-color: #3498db;
-            --access-color: #2ecc71;
-            --infra-color: #9b59b6;
-            --text-main: #333;
-            --text-muted: #666;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --core: #ef4444;
+            --dist: #3b82f6;
+            --acesso: #10b981;
+            --infra: #8b5cf6;
+            --card-bg: #ffffff;
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 20px;
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 40px; margin: 0; }
+        
+        .header { text-align: center; margin-bottom: 50px; }
+        .header h1 { font-size: 2rem; color: #0f172a; }
+
+        .layer-container { margin-bottom: 60px; }
+        
+        /* Cabeçalho da Camada */
+        .layer-header { 
+            display: flex; align-items: center; gap: 15px;
+            font-size: 1.5rem; font-weight: 800; text-transform: uppercase;
+            margin-bottom: 25px; padding-bottom: 10px; border-bottom: 3px solid;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
+        /* Cores das Camadas */
+        .c-core { color: var(--core); border-color: var(--core); }
+        .c-distribution { color: var(--dist); border-color: var(--dist); }
+        .c-acesso { color: var(--acesso); border-color: var(--acesso); }
+        .c-infra { color: var(--infra); border-color: var(--infra); }
+
+        /* Grid de Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 25px; }
+
+        .card { 
+            background: var(--card-bg); border-radius: 12px; padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s; border: 1px solid #e2e8f0;
+        }
+        .card:hover { transform: translateY(-5px); }
+
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; }
+        
+        .category { margin-top: 15px; }
+        .category-label { 
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; 
+            color: #64748b; letter-spacing: 0.05em; display: block; margin-bottom: 8px;
         }
 
-        h1 {
-            text-align: center;
-            color: var(--primary);
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--accent);
-            display: inline-block;
-            padding-bottom: 10px;
+        /* Lista de Itens/Métricas */
+        .items-flex { display: flex; flex-wrap: wrap; gap: 6px; }
+        .item { 
+            background: #f1f5f9; padding: 4px 10px; border-radius: 6px; 
+            font-size: 0.85rem; border: 1px solid #e2e8f0; font-weight: 500;
         }
 
-        /* Camadas */
-        .layer-section {
-            margin-bottom: 40px;
-        }
+        /* Dependências (Destaque) */
+        .dep { background: #fff7ed; color: #9a3412; border-color: #ffedd5; }
+        
+        /* Alertas e Status (Especial para Infra) */
+        .status-item { border-left: 3px solid var(--infra); background: #faf5ff; }
 
-        .layer-header {
-            font-size: 1.5rem;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            color: white;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-
-        .layer-header i { margin-right: 15px; }
-
-        .core { background-color: var(--core-color); }
-        .distribution { background-color: var(--dist-color); }
-        .acesso { background-color: var(--access-color); }
-        .infra { background-color: var(--infra-color); }
-
-        /* Grid de Templates */
-        .template-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
-        }
-
-        .template-card {
-            background: var(--bg-card);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            overflow: hidden;
-            border-top: 4px solid rgba(0,0,0,0.1);
-        }
-
-        .template-card h3 {
-            margin: 0;
-            padding: 15px;
-            background: #f8f9fa;
-            font-size: 1.1rem;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .content {
-            padding: 15px;
-        }
-
-        .topic {
-            margin-bottom: 12px;
-        }
-
-        .topic-title {
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: var(--secondary);
-            display: block;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            border-left: 3px solid var(--accent);
-            padding-left: 8px;
-        }
-
-        .tag-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .tag {
-            background: #ebf0f5;
-            color: #475867;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            border: 1px solid #d1dce5;
-        }
-
-        .dependency-tag {
-            background: #fff3e0;
-            color: #e65100;
-            border: 1px solid #ffe0b2;
-            font-style: italic;
-        }
-
-        .metrics-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        .metrics-list li::before {
-            content: "•";
-            color: var(--accent);
-            font-weight: bold;
-            display: inline-block; 
-            width: 1em;
-        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1><i class="fas fa-network-wired"></i> Monitoramento Zabbix - NOC</h1>
+    <div class="header">
+        <h1><i class="fas fa-network-wired"></i> Hierarquia de Monitoramento Zabbix</h1>
+    </div>
 
-    <!-- CORE -->
-    <section class="layer-section">
-        <div class="layer-header core">
-            <i class="fas fa-microchip"></i> CORE
-        </div>
-        <div class="template-grid">
-            <div class="template-card">
-                <h3>Juniper MX / QFX <i class="fas fa-server"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Performance & Hardware</span>
-                        <div class="tag-container">
-                            <span class="tag">CPU %</span>
-                            <span class="tag">Memória %</span>
-                            <span class="tag">FAN Status</span>
-                            <span class="tag">PSU Status</span>
-                            <span class="tag">Temp</span>
-                        </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Network & Óptico</span>
-                        <ul class="metrics-list">
-                            <li>Assinantes PPPoE (Total)</li>
-                            <li>Interface Bits (In/Out), Erros, Descartes</li>
-                            <li>Lanes: Bias, Tx/Rx, Temp, Voltagem</li>
-                        </ul>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Dependências</span>
-                        <div class="tag-container">
-                            <span class="tag dependency-tag">ICMP Ping</span>
-                            <span class="tag dependency-tag">SNMP Checker</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div id="main-content"></div>
 
-    <!-- DISTRIBUTION -->
-    <section class="layer-section">
-        <div class="layer-header distribution">
-            <i class="fas fa-project-diagram"></i> DISTRIBUTION
-        </div>
-        <div class="template-grid">
-            <!-- Huawei -->
-            <div class="template-card">
-                <h3>Huawei VRP <i class="fas fa-exchange-alt"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Energia & Sistema</span>
-                        <div class="tag-container">
-                            <span class="tag">Power Used</span>
-                            <span class="tag">PW1/PW2 State</span>
-                            <span class="tag">Uptime</span>
-                            <span class="tag">VRP Version</span>
-                        </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Interfaces & SFP</span>
-                        <ul class="metrics-list">
-                            <li>Bits In/Out, Erros, Velocidade</li>
-                            <li>Óptico: Vendor, Pn, Tx/Rx, Temp</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- Raisecom -->
-            <div class="template-card">
-                <h3>Raisecom Switch <i class="fas fa-random"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Health</span>
-                        <div class="tag-container">
-                            <span class="tag">CPU/Mem</span>
-                            <span class="tag">Voltagem</span>
-                            <span class="tag">FAN Speed</span>
-                            <span class="tag">CRC Errors</span>
-                        </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Dependências</span>
-                        <div class="tag-container">
-                            <span class="tag dependency-tag">FB - Interfaces</span>
-                            <span class="tag dependency-tag">Generic SNMP</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script>
+        // TODA A SUA ÁRVORE AQUI
+        const zabbixData = [
+            {
+                layer: "Core",
+                icon: "fa-microchip",
+                class: "c-core",
+                templates: [
+                    {
+                        name: "Juniper MX / QFX",
+                        info: ["Model Name", "Serial Number"],
+                        perf: ["CPU", "Memória", "Assinantes PPPoE"],
+                        net: ["Bits In/Out", "Admin/Oper", "Erros/Descartes", "Velocidade"],
+                        opt: ["Bias", "Tx/Rx", "Temp", "Voltagem"],
+                        hw: ["FAN", "PSU", "Temperatura"],
+                        deps: ["Module ICMP Ping", "Module SNMP Checker"]
+                    }
+                ]
+            },
+            {
+                layer: "Distribution",
+                icon: "fa-project-diagram",
+                class: "c-distribution",
+                templates: [
+                    {
+                        name: "Huawei VRP Switch",
+                        info: ["Model Name", "VRP Version/Patch"],
+                        elec: ["Potência", "PW1/PW2 State", "Tipo/Presença"],
+                        net: ["Bits In/Out", "Admin/Oper", "Erros/Descartes"],
+                        opt: ["Vendor", "PN", "Tx/Rx", "Temp"],
+                        sys: ["Uptime", "FAN Status"]
+                    },
+                    {
+                        name: "Raisecom Switch",
+                        info: ["HW Version", "SW Version"],
+                        perf: ["Memória %", "CPU %"],
+                        hw: ["Voltagem", "FAN Speed", "Temp"],
+                        net: ["Erros CRC"],
+                        opt: ["Bias", "Tx/Rx", "Temp"],
+                        deps: ["FB-Interfaces", "ICMP Ping", "SNMP Checker"]
+                    },
+                    {
+                        name: "ZTE Switch",
+                        opt: ["Status", "Temp", "TX/RX"],
+                        deps: ["Generic Device", "SNMP Location", "Interface Discovery v2.0"]
+                    }
+                ]
+            },
+            {
+                layer: "Acesso",
+                icon: "fa-users",
+                class: "c-acesso",
+                templates: [
+                    {
+                        name: "DmOS DM4370",
+                        info: ["Serial Number"],
+                        deps: ["DmOS System", "ICMP Ping", "Interface Discovery v1.0", "DmOS Hardware (CPU/FAN/Mem/Temp)"]
+                    },
+                    {
+                        name: "DATACOM - v2",
+                        info: ["Model", "Serial", "Modo Operação", "Portas", "Firmware"],
+                        perf: ["CPU", "Memória"],
+                        hw: ["Power Status", "Temp", "Alarm Status", "FAN Status"],
+                        net: ["Admin Status", "In/Out", "Erros/Descartes"],
+                        opt: ["Bias", "Tx/Rx", "Temp", "Voltagem"],
+                        deps: ["Hardware/Software Information"]
+                    },
+                    {
+                        name: "Mikrotik - RSW",
+                        deps: ["ICMP Ping", "Module Checker", "Health Voltage", "Interface Discovery", "SNMP Checker"]
+                    }
+                ]
+            },
+            {
+                layer: "Infraestrutura (Retificadores)",
+                icon: "fa-bolt",
+                class: "c-infra",
+                templates: [
+                    {
+                        name: "Delta Retificador",
+                        bat: ["VDC", "Battery Current", "Temp", "ChargeState"],
+                        elec: ["Load Current", "System Power", "Limit"],
+                        hw: ["Rectifier Current", "UR Failures", "Total/Operacionais"],
+                        info: ["Nomenclatura", "MAC", "Version", "Data/Hora", "Autonomy Time"],
+                        deps: ["ICMP Ping"]
+                    },
+                    {
+                        name: "JFA 40A-48V",
+                        bat: ["Autonomia", "Corrente Saída/Carga", "Nível Carga"],
+                        info: ["Modelo", "Modo Operação", "Device Name"],
+                        elec: ["Temp Interna", "Tensão Rede VCA", "Tensão Saída"],
+                        deps: ["SNMP Availability", "Uptime"]
+                    },
+                    {
+                        name: "XPS SRWi / SRX",
+                        bat: ["Carga/Descarga", "Amperagem Saída", "Voltagem", "Autonomia"],
+                        hw: ["UR Amperagem", "Consumo Saída"],
+                        warn: ["Falha AC", "Falha UR", "Fusível Aberto", "Temp Sensor"],
+                        deps: ["ICMP (Jitter/Loss)", "Autonomy Time"]
+                    }
+                ]
+            }
+        ];
 
-    <!-- ACESSO -->
-    <section class="layer-section">
-        <div class="layer-header acesso">
-            <i class="fas fa-users"></i> ACESSO
-        </div>
-        <div class="template-grid">
-            <div class="template-card">
-                <h3>Datacom v2 <i class="fas fa-plug"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Info</span>
-                        <span class="tag">Serial</span> <span class="tag">Modo Operação</span> <span class="tag">Bootloader</span>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Hardware</span>
-                        <div class="tag-container">
-                            <span class="tag">CPU/Mem</span> <span class="tag">Power Status</span> <span class="tag">Alarms</span> <span class="tag">FAN</span>
+        function renderDashboard() {
+            const container = document.getElementById('main-content');
+            
+            zabbixData.forEach(layer => {
+                let layerHtml = `
+                    <section class="layer-container">
+                        <div class="layer-header ${layer.class}">
+                            <i class="fas ${layer.icon}"></i> ${layer.layer}
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="template-card">
-                <h3>Mikrotik RSW <i class="fas fa-wifi"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Principais</span>
-                        <div class="tag-container">
-                            <span class="tag">Health Check Voltage</span>
-                            <span class="tag">Firmware Ver</span>
-                        </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Dependências</span>
-                        <div class="tag-container">
-                            <span class="tag dependency-tag">ICMP Ping</span>
-                            <span class="tag dependency-tag">Interface Discovery</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                        <div class="grid">
+                `;
 
-    <!-- INFRAESTRUTURA (Retificadores) -->
-    <section class="layer-section">
-        <div class="layer-header infra">
-            <i class="fas fa-bolt"></i> INFRAESTRUTURA / RETIFICADORES
-        </div>
-        <div class="template-grid">
-            <!-- Delta -->
-            <div class="template-card">
-                <h3>Delta SNMP <i class="fas fa-battery-three-quarters"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Bateria & Autonomia</span>
-                        <div class="tag-container">
-                            <span class="tag">dcSystemVoltage</span>
-                            <span class="tag">ChargeState</span>
-                            <span class="tag">Remaning Time</span>
+                layer.templates.forEach(tpl => {
+                    layerHtml += `
+                        <div class="card">
+                            <div class="card-title">${tpl.name} <i class="fas fa-microchip" style="opacity:0.2"></i></div>
+                            
+                            ${tpl.info ? `<div class="category"><span class="category-label">Informações</span><div class="items-flex">${tpl.info.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.perf ? `<div class="category"><span class="category-label">Performance</span><div class="items-flex">${tpl.perf.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.elec ? `<div class="category"><span class="category-label">Elétrico / Energia</span><div class="items-flex">${tpl.elec.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.bat ? `<div class="category"><span class="category-label">Bateria / Autonomia</span><div class="items-flex">${tpl.bat.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.net ? `<div class="category"><span class="category-label">Interfaces / Rede</span><div class="items-flex">${tpl.net.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.opt ? `<div class="category"><span class="category-label">Óptico (DMI)</span><div class="items-flex">${tpl.opt.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.hw ? `<div class="category"><span class="category-label">Hardware / FAN</span><div class="items-flex">${tpl.hw.map(i => `<span class="item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.warn ? `<div class="category"><span class="category-label">Alarmes</span><div class="items-flex">${tpl.warn.map(i => `<span class="item status-item">${i}</span>`).join('')}</div></div>` : ''}
+                            ${tpl.deps ? `<div class="category"><span class="category-label">Dependências</span><div class="items-flex">${tpl.deps.map(i => `<span class="item dep">${i}</span>`).join('')}</div></div>` : ''}
                         </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Carga & URs</span>
-                        <ul class="metrics-list">
-                            <li>dcLoadCurrent / dcSystemPower</li>
-                            <li>URs Totais vs Operacionais</li>
-                            <li>Falhas de UR</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <!-- XPS -->
-            <div class="template-card">
-                <h3>XPS SRWi / SRX <i class="fas fa-car-battery"></i></h3>
-                <div class="content">
-                    <div class="topic">
-                        <span class="topic-title">Alarmes Críticos</span>
-                        <div class="tag-container">
-                            <span class="tag">Falha AC</span>
-                            <span class="tag">Fusível Aberto</span>
-                            <span class="tag">UR Failure</span>
-                        </div>
-                    </div>
-                    <div class="topic">
-                        <span class="topic-title">Métricas</span>
-                        <ul class="metrics-list">
-                            <li>Amperagem Saída</li>
-                            <li>Status (Carga/Descarga/Desc)</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-</div>
+                    `;
+                });
 
+                layerHtml += `</div></section>`;
+                container.innerHTML += layerHtml;
+            });
+        }
+
+        renderDashboard();
+    </script>
 </body>
 </html>
