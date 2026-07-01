@@ -24,6 +24,18 @@
         body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 10px; line-height: 1.4; transition: background 0.3s; }
         .container { max-width: 1400px; margin: auto; }
 
+        /* Tela de Login */
+        .login-screen {
+            display: flex; justify-content: center; align-items: center; min-height: 95vh;
+        }
+        .login-card {
+            background: var(--card); border: 1px solid var(--header); padding: 30px; border-radius: 20px;
+            width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;
+        }
+        .login-card h1 { color: var(--primary); font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 10px; font-weight: bold; }
+
+        /* Layout Geral */
         .page-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 15px; background: var(--card); border-radius: 12px;
@@ -36,6 +48,7 @@
             background: var(--primary); color: #000; border: none; padding: 8px 12px;
             border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.75rem;
         }
+        .logout-btn { background: var(--danger); color: white; }
 
         #page-clock { font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--primary); }
 
@@ -63,7 +76,7 @@
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 15px;
             padding-top: 15px; border-top: 1px solid var(--header);
         }
-        @media (min-width: 768px) { .stats-bar { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 768px) { .stats-bar { grid-template-columns: repeat(5, 1fr); } }
         .stat-item { background: var(--input-bg); padding: 8px; border-radius: 8px; text-align: center; border: 1px solid var(--header); }
         .stat-item div { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
         .stat-item span { font-family: 'JetBrains Mono'; font-size: 1.1rem; color: var(--primary); }
@@ -124,13 +137,32 @@
 <body>
 
 <div class="container">
-    <div id="main-view">
+    <div id="login-view" class="login-screen">
+        <div class="login-card">
+            <h1><i class="fa-solid fa-lock"></i> NOC ACCES</h1>
+            <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
+                <div class="form-group" style="text-align: left;">
+                    <label>Usuário</label>
+                    <input type="text" id="login-user" placeholder="Digite seu usuário">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Senha</label>
+                    <input type="password" id="login-pass" placeholder="Digite sua senha">
+                </div>
+                <button class="btn-add" style="margin-top: 5px;" onclick="handleLogin()">ENTRAR</button>
+            </div>
+            <div id="login-error-msg" class="login-error hidden">Usuário ou senha inválidos!</div>
+        </div>
+    </div>
+
+    <div id="main-view" class="hidden">
         <div class="page-header">
             <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC ESCALATION</h2></div>
             <div class="header-actions">
                 <button class="nav-btn" onclick="toggleView('partners')">OPERADORAS</button>
                 <div id="page-clock">00:00:00</div>
                 <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                <button class="nav-btn logout-btn" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
             </div>
         </div>
 
@@ -190,9 +222,15 @@
 </div>
 
 <script>
+    // --- CONFIGURAÇÃO DE USUÁRIOS ---
+    const USERS_DB = {
+        "admin": "noc@2026",
+        "operador": "noc123"
+    };
+
     // --- CONFIGURAÇÃO E DADOS INICIAIS ---
     const CONFIG_ESCALATION = {
-          noc: [
+         noc: [
             {h: 0, nome: "NOC", tel: "8836953095"},
             {h: 4, nome: "Augusto Lopes", tel: "5588996430008"},
             {h: 4, nome: "Luiz Fernando", tel: "5591981459871"},
@@ -232,7 +270,6 @@
         ]
     };
 
-    // --- BANCO DE DADOS LOCAL (LocalStorage) ---
     let db = {
         ativos: JSON.parse(localStorage.getItem('noc_ativos')) || {},
         resolvidos: JSON.parse(localStorage.getItem('noc_resolvidos')) || {}
@@ -243,6 +280,39 @@
         localStorage.setItem('noc_resolvidos', JSON.stringify(db.resolvidos));
         updateStats();
     }
+
+    // --- AUTENTICAÇÃO CONTROLADORES ---
+    function checkAuth() {
+        if (sessionStorage.getItem('noc_session') === 'true') {
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('main-view').classList.remove('hidden');
+            renderAll();
+        } else {
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('main-view').classList.add('hidden');
+        }
+    }
+
+    window.handleLogin = function() {
+        const u = document.getElementById('login-user').value;
+        const p = document.getElementById('login-pass').value;
+        const errMsg = document.getElementById('login-error-msg');
+
+        if (USERS_DB[u] && USERS_DB[u] === p) {
+            sessionStorage.setItem('noc_session', 'true');
+            errMsg.classList.add('hidden');
+            document.getElementById('login-user').value = "";
+            document.getElementById('login-pass').value = "";
+            checkAuth();
+        } else {
+            errMsg.classList.remove('hidden');
+        }
+    };
+
+    window.handleLogout = function() {
+        sessionStorage.removeItem('noc_session');
+        checkAuth();
+    };
 
     // --- UTILITÁRIOS ---
     const agora = new Date();
@@ -267,7 +337,18 @@
         });
     };
 
+    window.copyTextNotification = (id, nome) => {
+        const item = db.ativos[id] || db.resolvidos[id];
+        if(!item) return;
+        const textoAcionamento = `🚨 *NOTIFICAÇÃO DE ESCALONAMENTO - NOC*\n\n*Ocorrência:* ${item.titulo}\n*Falha Iniciada em:* ${item.dataStr}\n*Protocolo Pai:* ${item.pai}\n*Protocolo Filho:* ${item.filho}\n\nOlá ${nome}, este chamado está sob sua alçada no momento. Favor verificar.`;
+        
+        navigator.clipboard.writeText(textoAcionamento).then(() => {
+            alert(`Texto de acionamento para ${nome} copiado com sucesso!`);
+        });
+    };
+
     window.toggleView = (v) => {
+        if(sessionStorage.getItem('noc_session') !== 'true') return;
         document.getElementById('main-view').classList.toggle('hidden', v==='partners');
         document.getElementById('partners-view').classList.toggle('hidden', v==='main');
     };
@@ -347,6 +428,7 @@
             <div class="step ${isDone ? 'done' : ''}" data-h="${e.h}" onclick="${!isResolvido ? `window.toggleEscala('${id}', ${e.h})` : ''}">
                 <span><b>${e.h}h</b> - ${e.nome}</span>
                 <div class="actions-step">
+                    <i class="fa-solid fa-message copy-btn" title="Copiar Texto Pronto" style="color: var(--primary); margin-right: 4px;" onclick="event.stopPropagation(); window.copyTextNotification('${id}', '${e.nome}')"></i>
                     <i class="fa-solid fa-copy copy-btn" onclick="event.stopPropagation(); window.copyTel('${e.tel}', this)"></i>
                     <a href="https://wa.me/${e.tel}" target="_blank" class="wa-link" onclick="event.stopPropagation()"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
@@ -371,6 +453,7 @@
     }
 
     function renderAll() {
+        if(sessionStorage.getItem('noc_session') !== 'true') return;
         document.getElementById("ativos").innerHTML = "";
         document.getElementById("resolvidos").innerHTML = "";
         
@@ -380,7 +463,7 @@
     }
 
     function updateStats() {
-        const counts = { externa_ne: 0, externa_no: 0, interna_ne: 0, interna_no: 0 };
+        const counts = { noc: 0, externa_ne: 0, externa_no: 0, interna_ne: 0, interna_no: 0 };
         Object.values(db.ativos).forEach(item => { if(counts.hasOwnProperty(item.tipo)) counts[item.tipo]++; });
         Object.keys(counts).forEach(tipo => { document.getElementById(`count-${tipo}`).innerText = counts[tipo]; });
     }
@@ -394,6 +477,7 @@
 
     // --- LOOP DE ATUALIZAÇÃO DOS TIMERS ---
     setInterval(() => {
+        if(sessionStorage.getItem('noc_session') !== 'true') return;
         const now = Date.now();
         Object.keys(db.ativos).forEach(id => {
             const data = db.ativos[id];
@@ -418,8 +502,13 @@
         });
     }, 1000);
 
-    // Inicialização
-    renderAll();
+    // Suporte ao clique com o "Enter" no formulário de login
+    document.getElementById('login-pass').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') handleLogin();
+    });
+
+    // Inicialização protegida
+    checkAuth();
 </script>
 </body>
 </html>
