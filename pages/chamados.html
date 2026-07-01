@@ -1,3 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NOC ESCALATION</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #05070a; --card: #11141d; --header: #1a1f2e;
+            --primary: #00d2ff; --ok: #00ff95; --warn: #ffb800; --danger: #ff4d4d;
+            --text-main: #e2e8f0; --text-dim: #64748b; --input-bg: #080a0f; --whatsapp: #25d366;
+        }
+
+        body.light-mode {
+            --bg: #f0f2f5; --card: #ffffff; --header: #e4e6eb;
+            --primary: #007bff; --ok: #28a745; --warn: #fd7e14; --danger: #dc3545;
+            --text-main: #1c1e21; --text-dim: #606770; --input-bg: #f5f6f7;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding: 10px; line-height: 1.4; transition: background 0.3s; }
+        .container { max-width: 1400px; margin: auto; }
+
+        /* Tela de Login */
+        .login-screen {
+            display: flex; justify-content: center; align-items: center; min-height: 95vh;
+        }
+        .login-card {
+            background: var(--card); border: 1px solid var(--header); padding: 30px; border-radius: 20px;
+            width: 100%; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center;
+        }
+        .login-card h1 { color: var(--primary); font-size: 1.5rem; font-weight: 800; margin-bottom: 25px; }
+        .login-error { color: var(--danger); font-size: 0.8rem; margin-top: 10px; font-weight: bold; }
+
+        /* Layout Geral */
+        .page-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 15px; background: var(--card); border-radius: 12px;
+            border: 1px solid var(--header); margin-bottom: 15px;
+        }
+        .logo-area h2 { margin: 0; font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        
+        .nav-btn {
+            background: var(--primary); color: #000; border: none; padding: 8px 12px;
+            border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 0.75rem;
+        }
+        .logout-btn { background: var(--danger); color: white; }
+
+        #page-clock { font-family: 'JetBrains Mono'; font-size: 0.9rem; color: var(--primary); }
+
+        .admin-panel { background: var(--card); border: 1px solid var(--header); border-radius: 16px; padding: 15px; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: repeat(4, 1fr); }
+            .span-2-desktop { grid-column: span 2; }
+        }
+
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        label { font-size: 0.65rem; color: var(--primary); text-transform: uppercase; font-weight: 800; padding-left: 4px; }
+        input, select, textarea { 
+            background: var(--input-bg); border: 1px solid var(--header); color: var(--text-main); 
+            padding: 12px; border-radius: 10px; outline: none; font-size: 16px; width: 100%;
+        }
+        
+        .btn-add { 
+            background: var(--ok); color: #000; border: none; border-radius: 10px; 
+            cursor: pointer; font-weight: 800; height: 50px; font-size: 1rem; margin-top: 10px; width: 100%;
+        }
+
+        .stats-bar { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 15px;
+            padding-top: 15px; border-top: 1px solid var(--header);
+        }
+        @media (min-width: 768px) { .stats-bar { grid-template-columns: repeat(5, 1fr); } }
+        .stat-item { background: var(--input-bg); padding: 8px; border-radius: 8px; text-align: center; border: 1px solid var(--header); }
+        .stat-item div { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800; }
+        .stat-item span { font-family: 'JetBrains Mono'; font-size: 1.1rem; color: var(--primary); }
+
+        .tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .tabs button { 
+            flex: 1; background: var(--card); color: var(--text-dim); padding: 12px; 
+            border: 1px solid var(--header); border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 0.8rem;
+        }
+        .tabs button.active { border-color: var(--primary); color: var(--primary); background: rgba(0, 210, 255, 0.05); }
+
+        .grid-cards { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        @media (min-width: 768px) { .grid-cards { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); } }
+
+        .card { background: var(--card); border: 1px solid var(--header); border-radius: 18px; padding: 15px; border-top: 5px solid var(--ok); position: relative;}
+        .card.warn { border-top-color: var(--warn); }
+        .card.danger { border-top-color: var(--danger); }
+        
+        .timer-box { background: var(--input-bg); border-radius: 12px; padding: 12px; text-align: center; margin: 10px 0; border: 1px solid var(--header); }
+        .timer-val { font-family: 'JetBrains Mono'; font-size: 1.4rem; color: var(--primary); display: block; }
+
+        .step { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: var(--input-bg); padding: 12px; margin: 6px 0; border-radius: 10px; 
+            font-size: 0.85rem; border: 1px solid transparent; cursor: pointer;
+        }
+        .step.done { opacity: 0.3; border-style: dashed; background: transparent; }
+        .step.next-to-call { border-color: var(--warn); animation: pulse-border 1.5s infinite; }
+        
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0px rgba(255, 184, 0, 0.4); }
+            100% { box-shadow: 0 0 0 10px rgba(255, 184, 0, 0); }
+        }
+
+        .actions-step { display: flex; gap: 12px; align-items: center; }
+        .wa-link { color: var(--whatsapp); font-size: 1.4rem; text-decoration: none; }
+        .copy-btn { color: var(--text-dim); font-size: 1.2rem; cursor: pointer; transition: color 0.2s; }
+
+        .log-container { 
+            background: var(--input-bg); padding: 10px; border-radius: 8px; 
+            font-size: 0.75rem; max-height: 100px; overflow-y: auto; margin: 10px 0; border: 1px solid var(--header);
+        }
+        .log-item { margin-bottom: 6px; padding-bottom: 4px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .btn-encerrar { 
+            background: var(--ok); color: #000; width: 100%; border: none; 
+            border-radius: 10px; padding: 12px; margin-top: 10px; font-weight: 800; cursor: pointer; 
+        }
+
+        .btn-hist-group { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-reabrir { background: var(--warn); color: #000; flex: 2; border: none; border-radius: 10px; padding: 12px; font-weight: 800; cursor: pointer; }
+        .btn-excluir { background: var(--danger); color: #fff; flex: 1; border: none; border-radius: 10px; padding: 12px; font-weight: 800; cursor: pointer; }
+
+        .hidden { display: none !important; }
+        #theme-toggle { background: transparent; border: none; color: var(--primary); cursor: pointer; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-view" class="login-screen">
+        <div class="login-card">
+            <h1><i class="fa-solid fa-lock"></i> NOC ACCESS</h1>
+            <div class="form-grid" style="grid-template-columns: 1fr; gap: 15px;">
+                <div class="form-group" style="text-align: left;">
+                    <label>Usuário</label>
+                    <input type="text" id="login-user" placeholder="user">
+                </div>
+                <div class="form-group" style="text-align: left;">
+                    <label>Senha</label>
+                    <input type="password" id="login-pass" placeholder="password">
+                </div>
+                <button class="btn-add" style="margin-top: 5px;" onclick="handleLogin()">ENTRAR</button>
+            </div>
+            <div id="login-error-msg" class="login-error hidden">Usuário ou senha inválidos!</div>
+        </div>
+    </div>
+
+    <div id="main-view" class="hidden">
+        <div class="page-header">
+            <div class="logo-area"><h2><i class="fa-solid fa-tower-broadcast"></i> NOC ESCALATION</h2></div>
+            <div class="header-actions">
+                <button class="nav-btn" onclick="toggleView('partners')">OPERADORAS</button>
+                <div id="page-clock">00:00:00</div>
+                <button id="theme-toggle" onclick="toggleTheme()"><i class="fa-solid fa-moon"></i></button>
+                <button class="nav-btn logout-btn" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <div class="form-grid">
+                <div class="form-group span-2-desktop"><label>Título da Ocorrência</label><input id="titulo" placeholder="Ex: Rompimento Varjota x Fortaleza"></div>
+                <div class="form-group"><label>Prot. Pai</label><input id="pai" type="tel" placeholder="Nº Pai"></div>
+                <div class="form-group"><label>Prot. Filho</label><input id="filho" type="tel" placeholder="Nº Filho"></div>
+                <div class="form-group"><label>Data Início</label><input type="date" id="data_manual"></div>
+                <div class="form-group"><label>Hora Início</label><input type="time" id="hora_manual"></div>
+                <div class="form-group span-2-desktop">
+                    <label>Escopo / Tipo</label>
+                    <select id="tipo">
+                        <option value="noc">NOC</option>
+                        <option value="externa_ne">Externa (NE)</option>
+                        <option value="externa_no">Externa (NO)</option>
+                        <option value="interna_ne">Interna (NE)</option>
+                        <option value="interna_no">Interna (NO)</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-add" onclick="add()">ABRIR NOVO CHAMADO</button>
+
+            <div class="stats-bar">
+                <div class="stat-item"><div>NOC</div><span id="count-noc">0</span></div>
+                <div class="stat-item"><div>Ext. NE</div><span id="count-externa_ne">0</span></div>
+                <div class="stat-item"><div>Ext. NO</div><span id="count-externa_no">0</span></div>
+                <div class="stat-item"><div>Int. NE</div><span id="count-interna_ne">0</span></div>
+                <div class="stat-item"><div>Int. NO</div><span id="count-interna_no">0</span></div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button id="btn-tab-ativos" class="active" onclick="showTab('ativos')">ATIVOS</button>
+            <button id="btn-tab-resolvidos" onclick="showTab('resolvidos')">HISTÓRICO</button>
+        </div>
+
+        <div id="ativos" class="grid-cards"></div>
+        <div id="resolvidos" class="grid-cards hidden"></div>
+    </div>
+
+    <div id="partners-view" class="hidden">
+        <div class="page-header">
+            <div class="logo-area"><h2><i class="fa-solid fa-handshake"></i> OPERADORAS</h2></div>
+            <button class="nav-btn" onclick="toggleView('main')">VOLTAR</button>
+        </div>
+        <div class="admin-panel">
+            <div style="background:var(--input-bg); padding:15px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                <div><b>Operadora X</b><br><small style="color:var(--text-dim)">Suporte Link IP</small></div>
+                <div class="actions-step">
+                    <i class="fa-solid fa-copy copy-btn" onclick="copyTel('08005551234', this)"></i>
+                    <a href="#" class="wa-link"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // --- CONFIGURAÇÃO DE USUÁRIOS ---
     const USERS_DB = {
@@ -47,13 +270,15 @@
         ]
     };
 
-    // Fallback caso o localStorage esteja bloqueado pelo navegador
     let db = { ativos: {}, resolvidos: {} };
+    let BACKUP_SESSION = false; 
+
+    // Carregar Banco de Dados de forma segura
     try {
         db.ativos = JSON.parse(localStorage.getItem('noc_ativos')) || {};
         db.resolvidos = JSON.parse(localStorage.getItem('noc_resolvidos')) || {};
     } catch(e) {
-        console.warn("LocalStorage desativado. Dados não serão salvos permanentemente.");
+        console.log("Storage local inacessível.");
     }
 
     function saveDB() {
@@ -64,18 +289,16 @@
         updateStats();
     }
 
-    // --- AUTENTICAÇÃO COM FALLBACK INTEGRADO ---
-    let BACKUP_SESSION = false; // Garante o login se o sessionStorage falhar
-
+    // Gerenciador de Autenticação Completo
     function checkAuth() {
-        let isAuthenticated = false;
+        let logado = false;
         try {
-            isAuthenticated = sessionStorage.getItem('noc_session') === 'true';
+            logado = sessionStorage.getItem('noc_session') === 'true';
         } catch(e) {
-            isAuthenticated = BACKUP_SESSION;
+            logado = BACKUP_SESSION;
         }
 
-        if (isAuthenticated) {
+        if (logado) {
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('main-view').classList.remove('hidden');
             renderAll();
@@ -94,9 +317,7 @@
             BACKUP_SESSION = true;
             try {
                 sessionStorage.setItem('noc_session', 'true');
-            } catch(e) {
-                console.warn("SessionStorage desativado. Usando login em memória temporária.");
-            }
+            } catch(e) {}
             errMsg.classList.add('hidden');
             document.getElementById('login-user').value = "";
             document.getElementById('login-pass').value = "";
@@ -112,13 +333,22 @@
         checkAuth();
     };
 
-    // --- UTILITÁRIOS ---
-    const agora = new Date();
-    document.getElementById('data_manual').value = agora.toISOString().split('T')[0];
-    document.getElementById('hora_manual').value = agora.toTimeString().slice(0,5);
+    // Configuração Inicial de Data/Hora nos inputs
+    function initDateTimeFields() {
+        const agora = new Date();
+        const campoData = document.getElementById('data_manual');
+        const campoHora = document.getElementById('hora_manual');
+        if(campoData) campoData.value = agora.toISOString().split('T')[0];
+        if(campoHora) campoHora.value = agora.toTimeString().slice(0,5);
+    }
 
     window.toggleTheme = () => document.body.classList.toggle('light-mode');
-    setInterval(() => { document.getElementById('page-clock').innerText = new Date().toLocaleTimeString('pt-BR'); }, 1000);
+    
+    // Relógio do cabeçalho
+    setInterval(() => { 
+        const clockEl = document.getElementById('page-clock');
+        if(clockEl) clockEl.innerText = new Date().toLocaleTimeString('pt-BR'); 
+    }, 1000);
 
     function formatDuration(ms) {
         if (ms < 0) return "0h 0m 0s";
@@ -150,7 +380,7 @@
         document.getElementById('partners-view').classList.toggle('hidden', v==='main');
     };
 
-    // --- CORE LOGIC ---
+    // --- LOGICA DE CRIAÇÃO ---
     window.add = function(){
         const t = document.getElementById("titulo").value, p = document.getElementById("pai").value;
         if(!t || !p) return alert("Título e Pai são obrigatórios!");
@@ -173,6 +403,7 @@
     window.addComment = (id) => {
         const inp = document.getElementById(`in-${id}`); 
         if(!inp.value) return;
+        if(!db.ativos[id].comentarios) db.ativos[id].comentarios = [];
         db.ativos[id].comentarios.push({ 
             texto: inp.value, 
             hora: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}) 
@@ -246,12 +477,16 @@
                 <button class="btn-excluir" onclick="window.apagar('${id}')"><i class="fa-solid fa-trash"></i></button>
             </div>`}
         `;
-        document.getElementById(containerId).prepend(div);
+        
+        const container = document.getElementById(containerId);
+        if(container) container.prepend(div);
     }
 
     function renderAll() {
-        document.getElementById("ativos").innerHTML = "";
-        document.getElementById("resolvidos").innerHTML = "";
+        const ativosContainer = document.getElementById("ativos");
+        const resolvidosContainer = document.getElementById("resolvidos");
+        if(ativosContainer) ativosContainer.innerHTML = "";
+        if(resolvidosContainer) resolvidosContainer.innerHTML = "";
         
         Object.keys(db.ativos).forEach(id => renderCard(id, db.ativos[id], "ativos"));
         Object.keys(db.resolvidos).forEach(id => renderCard(id, db.resolvidos[id], "resolvidos"));
@@ -276,9 +511,9 @@
 
     // --- LOOP DE ATUALIZAÇÃO DOS TIMERS ---
     setInterval(() => {
-        let isAuthenticated = false;
-        try { isAuthenticated = sessionStorage.getItem('noc_session') === 'true'; } catch(e) { isAuthenticated = BACKUP_SESSION; }
-        if(!isAuthenticated) return;
+        let logado = false;
+        try { logado = sessionStorage.getItem('noc_session') === 'true'; } catch(e) { logado = BACKUP_SESSION; }
+        if(!logado) return;
 
         const now = Date.now();
         Object.keys(db.ativos).forEach(id => {
@@ -304,11 +539,18 @@
         });
     }, 1000);
 
-    // Inicialização protegida
-    checkAuth();
+    // --- INICIALIZAÇÃO DE SEGURANÇA ---
+    document.addEventListener("DOMContentLoaded", function() {
+        initDateTimeFields();
+        checkAuth();
 
-    // Suporte ao clique com o "Enter" no formulário de login
-    document.getElementById('login-pass').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') handleLogin();
+        const passInput = document.getElementById('login-pass');
+        if(passInput) {
+            passInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') handleLogin();
+            });
+        }
     });
 </script>
+</body>
+</html>
