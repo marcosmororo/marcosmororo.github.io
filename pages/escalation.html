@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Escalation NOC</title>
+    <title>Painel NOC - Escalation & Áudio via IA</title>
     <style>
         :root {
-            --bg-color: #f4f6f9;
-            --card-bg: #ffffff;
-            --primary: #0f172a;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
             --accent: #2563eb;
+            --accent-hover: #1d4ed8;
             --success: #16a34a;
-            --border: #cbd5e1;
-            --text: #334155;
+            --border: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text);
             margin: 0;
@@ -24,50 +25,50 @@
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
         }
 
-        @media (max-width: 850px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 900px) {
+            .container { grid-template-columns: 1fr; }
         }
 
         .card {
             background: var(--card-bg);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
         }
 
         h2 {
             margin-top: 0;
-            color: var(--primary);
+            color: var(--text);
             font-size: 1.25rem;
-            border-bottom: 2px solid #f1f5f9;
+            border-bottom: 1px solid var(--border);
             padding-bottom: 12px;
         }
 
-        .form-group {
-            margin-bottom: 16px;
-        }
+        .form-group { margin-bottom: 14px; }
 
         label {
             display: block;
             font-weight: 600;
             margin-bottom: 6px;
-            font-size: 0.875rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
         input, select, textarea {
             width: 100%;
             padding: 10px;
+            background: #0f172a;
             border: 1px solid var(--border);
             border-radius: 6px;
+            color: #fff;
             box-sizing: border-box;
             font-size: 0.9rem;
         }
@@ -75,35 +76,28 @@
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .preview-box {
-            background: #1e293b;
-            color: #f8fafc;
+            background: #090d16;
+            color: #e2e8f0;
             padding: 16px;
             border-radius: 6px;
             font-family: "Courier New", Courier, monospace;
             white-space: pre-wrap;
-            min-height: 250px;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            min-height: 240px;
+            font-size: 0.875rem;
+            border: 1px solid var(--border);
         }
 
         .actions {
             margin-top: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
         button {
-            flex: 1;
             background-color: var(--accent);
             color: white;
             border: none;
@@ -111,30 +105,31 @@
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: 0.2s;
         }
 
-        button:hover {
-            background-color: #1d4ed8;
-        }
+        button:hover { background-color: var(--accent-hover); }
 
-        button.btn-audio {
-            background-color: var(--success);
-        }
+        button.btn-ai { background-color: var(--success); }
+        button.btn-ai:hover { background-color: #15803d; }
 
-        button.btn-audio:hover {
-            background-color: #15803d;
-        }
-
-        .alert-success {
-            display: none;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #dcfce7;
-            color: #166534;
+        .api-config {
+            background: #090d16;
+            padding: 12px;
             border-radius: 6px;
-            font-size: 0.875rem;
-            text-align: center;
+            margin-bottom: 16px;
+            border: 1px dashed var(--border);
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .status-msg {
+            font-size: 0.85rem;
+            color: #38bdf8;
+            margin-top: 6px;
         }
     </style>
 </head>
@@ -143,15 +138,15 @@
 <div class="container">
     <!-- Formulário -->
     <div class="card">
-        <h2>Painel de Escalation NOC</h2>
+        <h2>⚡ Painel de Escalation NOC</h2>
         <form id="nocForm">
             <div class="form-group">
                 <label for="tipo">Tipo de Evento</label>
-                <select id="tipo" oninput="gerarMensagem()">
-                    <option value="ROMPIMENTO DE FIBRA">Rompimento de Fibra</option>
-                    <option value="ATENUAÇÃO DE SINAL">Atenuação de Sinal</option>
-                    <option value="FALHA DE ENERGIA">Falha de Energia</option>
-                    <option value="INCIDENTE GENÉRICO">Outro Incidente</option>
+                <select id="tipo" onchange="gerarMensagem()">
+                    <option value="ROMPIMENTO DE FIBRA">🔴 Rompimento de Fibra</option>
+                    <option value="ATENUAÇÃO DE SINAL">🟠 Atenuação de Sinal</option>
+                    <option value="FALHA DE ENERGIA">⚡ Falha de Energia</option>
+                    <option value="INCIDENTE CRÍTICO">⚠️ Incidente Crítico / Outro</option>
                 </select>
             </div>
 
@@ -187,26 +182,29 @@
         </form>
     </div>
 
-    <!-- Preview e Ações -->
+    <!-- Preview e Geração com IA -->
     <div class="card">
-        <h2>Mensagem Gerada</h2>
+        <h2>📄 Mensagem & Áudio via IA</h2>
+        
+        <!-- Configuração da Chave da OpenAI -->
+        <div class="api-config">
+            <label for="apiKey">🔑 Chave de API OpenAI (sk-...)</label>
+            <input type="password" id="apiKey" placeholder="Cole sua API Key aqui para gerar áudio realista">
+        </div>
+
         <div class="preview-box" id="previewText">Aguardando preenchimento...</div>
         
         <div class="actions">
-            <button onclick="copiarTexto()">Copiar para Área de Transferência</button>
-            <div class="btn-row">
-                <button class="btn-audio" onclick="playAudio()">▶️ Reproduzir Áudio</button>
-                <button class="btn-audio" style="background-color: #dc2626;" onclick="stopAudio()">⏹️ Parar</button>
-            </div>
+            <button onclick="copiarTexto()">📋 Copiar Mensagem de Texto</button>
+            <button class="btn-ai" onclick="gerarAudioIA()">🎙️ Gerar Áudio com IA (OpenAI TTS)</button>
         </div>
-        <div id="alertSuccess" class="alert-success">Copiado com sucesso!</div>
+
+        <div id="statusMsg" class="status-msg"></div>
+        <audio id="audioPlayer" controls style="display: none;"></audio>
     </div>
 </div>
 
 <script>
-    let speechSynthesizer = window.speechSynthesis;
-    let currentUtterance = null;
-
     function gerarMensagem() {
         const tipo = document.getElementById('tipo').value;
         const chamado = document.getElementById('chamado').value || 'N/A';
@@ -238,38 +236,67 @@ CC: @Supervisão NOC @Gestão de Redes`;
     function copiarTexto() {
         const texto = document.getElementById('previewText').innerText;
         navigator.clipboard.writeText(texto).then(() => {
-            const alert = document.getElementById('alertSuccess');
-            alert.style.display = 'block';
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 3000);
+            const status = document.getElementById('statusMsg');
+            status.innerText = '✅ Texto copiado para a área de transferência!';
+            setTimeout(() => status.innerText = '', 3000);
         });
     }
 
-    function playAudio() {
-        stopAudio(); // Para qualquer áudio em andamento
+    async function gerarAudioIA() {
+        const apiKey = document.getElementById('apiKey').value.trim();
+        const status = document.getElementById('statusMsg');
+        const audioPlayer = document.getElementById('audioPlayer');
+
+        if (!apiKey) {
+            alert('Por favor, insira sua chave de API OpenAI para gerar o áudio.');
+            return;
+        }
 
         const texto = document.getElementById('previewText').innerText;
         
-        // Trata o texto removendo emojis/caracteres especiais para o leitor de voz ler com fluidez
-        const textoLimpo = texto
+        // Limpa caracteres especiais do texto para uma leitura natural pela IA
+        const textoParaIa = texto
             .replace(/[🚨📌⚠️📍📉🔄👤⏱️---]/g, '')
-            .replace(/CC:/g, 'Com cópia para:');
+            .replace(/CC:/g, 'Atenção supervisores:');
 
-        currentUtterance = new SpeechSynthesisUtterance(textoLimpo);
-        currentUtterance.lang = 'pt-BR';
-        currentUtterance.rate = 1.0; // Velocidade da fala
+        status.innerText = '⏳ Solicitando áudio à IA... Aguarde.';
+        audioPlayer.style.display = 'none';
 
-        speechSynthesizer.speak(currentUtterance);
-    }
+        try {
+            const response = await fetch('https://api.openai.com/v1/audio/speech', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${apiKey}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'tts-1',
+                    input: textoParaIa,
+                    voice: 'onyx', // Opções de vozes profissionais: 'onyx', 'alloy', 'echo', 'fable'
+                    speed: 1.0
+                })
+            });
 
-    function stopAudio() {
-        if (speechSynthesizer.speaking) {
-            speechSynthesizer.cancel();
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.error?.message || 'Erro ao comunicar com a OpenAI.');
+            }
+
+            const blob = await response.blob();
+            const audioUrl = URL.createObjectURL(blob);
+
+            audioPlayer.src = audioUrl;
+            audioPlayer.style.display = 'block';
+            audioPlayer.play();
+            status.innerText = '✅ Áudio gerado com sucesso!';
+
+        } catch (error) {
+            console.error(error);
+            status.innerText = '❌ Erro ao gerar áudio: ' + error.message;
         }
     }
 
-    // Inicializa o preview padrão
+    // Inicialização
     gerarMensagem();
 </script>
 
