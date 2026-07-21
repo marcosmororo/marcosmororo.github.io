@@ -10,6 +10,7 @@
             --card-bg: #ffffff;
             --primary: #0f172a;
             --accent: #2563eb;
+            --success: #16a34a;
             --border: #cbd5e1;
             --text: #334155;
         }
@@ -92,7 +93,13 @@
         .actions {
             margin-top: 16px;
             display: flex;
-            gap: 12px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
         }
 
         button {
@@ -109,6 +116,14 @@
 
         button:hover {
             background-color: #1d4ed8;
+        }
+
+        button.btn-audio {
+            background-color: var(--success);
+        }
+
+        button.btn-audio:hover {
+            background-color: #15803d;
         }
 
         .alert-success {
@@ -128,15 +143,15 @@
 <div class="container">
     <!-- Formulário -->
     <div class="card">
-        <h2> Painel de Escalation NOC</h2>
+        <h2>Painel de Escalation NOC</h2>
         <form id="nocForm">
             <div class="form-group">
                 <label for="tipo">Tipo de Evento</label>
                 <select id="tipo" oninput="gerarMensagem()">
-                    <option value="🔴 ROMPIMENTO DE FIBRA">Rompimento de Fibra</option>
-                    <option value="🟠 ATENUAÇÃO DE SINAL">Atenuação de Sinal</option>
-                    <option value="⚡ FALHA DE ENERGIA">Falha de Energia</option>
-                    <option value="⚠️ INCIDENTE GENÉRICO">Outro Incidente</option>
+                    <option value="ROMPIMENTO DE FIBRA">Rompimento de Fibra</option>
+                    <option value="ATENUAÇÃO DE SINAL">Atenuação de Sinal</option>
+                    <option value="FALHA DE ENERGIA">Falha de Energia</option>
+                    <option value="INCIDENTE GENÉRICO">Outro Incidente</option>
                 </select>
             </div>
 
@@ -156,8 +171,8 @@
             </div>
 
             <div class="form-group">
-                <label for="tecnico">Técnico / Equipe de Campo</label>
-                <input type="text" id="tecnico" placeholder="Ex: Equipe Silva (Contato: 11 99999-9999)" oninput="gerarMensagem()">
+                <label for="pessoa">Pessoa Acionada Anteriormente</label>
+                <input type="text" id="pessoa" placeholder="Ex: João Silva (Supervisor de Campo / Plantonista)" oninput="gerarMensagem()">
             </div>
 
             <div class="form-group">
@@ -167,30 +182,37 @@
 
             <div class="form-group">
                 <label for="atualizacao">Última Atualização</label>
-                <textarea id="atualizacao" rows="3" placeholder="Ex: [14:15] Técnica localizou a falha no km 42 e iniciou o processo de fusão." oninput="gerarMensagem()"></textarea>
+                <textarea id="atualizacao" rows="3" placeholder="Ex: [14:15] O responsável informou que a equipe já está no local efetuando os testes de fusão." oninput="gerarMensagem()"></textarea>
             </div>
         </form>
     </div>
 
     <!-- Preview e Ações -->
     <div class="card">
-        <h2> Mensagem Gerada</h2>
+        <h2>Mensagem Gerada</h2>
         <div class="preview-box" id="previewText">Aguardando preenchimento...</div>
         
         <div class="actions">
             <button onclick="copiarTexto()">Copiar para Área de Transferência</button>
+            <div class="btn-row">
+                <button class="btn-audio" onclick="playAudio()">▶️ Reproduzir Áudio</button>
+                <button class="btn-audio" style="background-color: #dc2626;" onclick="stopAudio()">⏹️ Parar</button>
+            </div>
         </div>
         <div id="alertSuccess" class="alert-success">Copiado com sucesso!</div>
     </div>
 </div>
 
 <script>
+    let speechSynthesizer = window.speechSynthesis;
+    let currentUtterance = null;
+
     function gerarMensagem() {
         const tipo = document.getElementById('tipo').value;
         const chamado = document.getElementById('chamado').value || 'N/A';
         const trecho = document.getElementById('trecho').value || 'Não informado';
         const impacto = document.getElementById('impacto').value || 'Em mensuração';
-        const tecnico = document.getElementById('tecnico').value || 'Em acionamento';
+        const pessoa = document.getElementById('pessoa').value || 'Ninguém registrado';
         const etr = document.getElementById('etr').value || 'A definir';
         const atualizacao = document.getElementById('atualizacao').value || 'Monitoramento inicial pelo NOC.';
 
@@ -204,7 +226,7 @@
 🔄 Última Atualização:
 ${atualizacao}
 
-👤 Responsável em Campo: ${tecnico}
+👤 Pessoa Acionada Anteriormente: ${pessoa}
 ⏱️ ETR (Previsão): ${etr}
 
 ---
@@ -224,7 +246,30 @@ CC: @Supervisão NOC @Gestão de Redes`;
         });
     }
 
-    // Inicializa o preview vazio/padrão
+    function playAudio() {
+        stopAudio(); // Para qualquer áudio em andamento
+
+        const texto = document.getElementById('previewText').innerText;
+        
+        // Trata o texto removendo emojis/caracteres especiais para o leitor de voz ler com fluidez
+        const textoLimpo = texto
+            .replace(/[🚨📌⚠️📍📉🔄👤⏱️---]/g, '')
+            .replace(/CC:/g, 'Com cópia para:');
+
+        currentUtterance = new SpeechSynthesisUtterance(textoLimpo);
+        currentUtterance.lang = 'pt-BR';
+        currentUtterance.rate = 1.0; // Velocidade da fala
+
+        speechSynthesizer.speak(currentUtterance);
+    }
+
+    function stopAudio() {
+        if (speechSynthesizer.speaking) {
+            speechSynthesizer.cancel();
+        }
+    }
+
+    // Inicializa o preview padrão
     gerarMensagem();
 </script>
 
