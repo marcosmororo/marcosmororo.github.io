@@ -3,130 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel NOC - Escalation & Áudio</title>
+    <title>NOC - Central de Escalation</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --success: #16a34a;
-            --border: #334155;
-            --text: #f8fafc;
+            --bg-body: #0b0f19;
+            --bg-card: #161e2e;
+            --bg-input: #0f172a;
+            --bg-preview: #030712;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --border: #1e293b;
+            --border-focus: #3b82f6;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --accent-red: #ef4444;
+            --accent-green: #22c55e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text);
-            margin: 0;
-            padding: 24px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 32px 16px;
+            display: flex;
+            justify-content: center;
         }
 
         .container {
-            max-width: 1100px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 1200px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 24px;
         }
 
-        @media (max-width: 850px) {
-            .container { grid-template-columns: 1fr; }
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
         }
 
         .card {
-            background: var(--card-bg);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
             padding: 24px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
         }
 
-        h2 {
-            margin-top: 0;
-            color: var(--text);
-            font-size: 1.2rem;
+        .card-header {
             border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .form-group { margin-bottom: 14px; }
+        .card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
 
         label {
             display: block;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.85rem;
             color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
         }
 
         input, select, textarea {
             width: 100%;
-            padding: 10px;
-            background: #0f172a;
+            padding: 12px;
+            background-color: var(--bg-input);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            box-sizing: border-box;
+            border-radius: 8px;
+            color: var(--text-main);
             font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent);
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
         }
 
         .preview-box {
-            background: #090d16;
-            color: #e2e8f0;
-            padding: 16px;
-            border-radius: 6px;
-            font-family: "Courier New", Courier, monospace;
-            white-space: pre-wrap;
-            min-height: 260px;
-            font-size: 0.875rem;
+            background-color: var(--bg-preview);
             border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            flex-grow: 1;
+            min-height: 380px;
         }
 
         .actions {
-            margin-top: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 10px;
+            margin-top: 20px;
         }
 
         button {
-            flex: 1;
-            background-color: var(--accent);
+            width: 100%;
+            background-color: var(--primary);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 6px;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        button:hover { background-color: var(--accent-hover); }
+        button:hover {
+            background-color: var(--primary-hover);
+        }
 
-        button.btn-audio { background-color: var(--success); }
-        button.btn-audio:hover { background-color: #15803d; }
-
-        button.btn-stop { background-color: #dc2626; }
-        button.btn-stop:hover { background-color: #b91c1c; }
-
-        .status-msg {
+        .status-badge {
+            margin-top: 12px;
             font-size: 0.85rem;
-            color: #38bdf8;
-            margin-top: 8px;
-            min-height: 20px;
+            text-align: center;
+            height: 20px;
+            color: var(--accent-green);
+            font-weight: 500;
         }
     </style>
 </head>
@@ -135,159 +166,131 @@
 <div class="container">
     <!-- Formulário -->
     <div class="card">
-        <h2>🚨 Escalation de Incidente - NOC</h2>
-        <form id="nocForm">
-            <div class="form-group">
-                <label for="tipo">Tipo de Evento</label>
-                <select id="tipo">
-                    <option value="ROMPIMENTO DE FIBRA">🔴 Rompimento de Fibra</option>
-                    <option value="ATENUAÇÃO DE SINAL">🟠 Atenuação de Sinal</option>
-                    <option value="FALHA DE ENERGIA">⚡ Falha de Energia</option>
-                    <option value="INCIDENTE CRÍTICO">⚠️ Incidente Crítico / Outro</option>
-                </select>
-            </div>
+        <div class="card-header">
+            <h2>⚙️ Parâmetros do Incidente</h2>
+        </div>
+        
+        <div class="form-group">
+            <label for="tipo">Tipo de Evento Crítico</label>
+            <select id="tipo">
+                <option value="🔴 ROMPIMENTO DE FIBRA OPTICA">🔴 Rompimento de Fibra Óptica</option>
+                <option value="🟠 ATENUAÇÃO DE SINAL (DEGRADAÇÃO)">🟠 Atenuação de Sinal / Sinal Baixo</option>
+                <option value="⚡ FALHA DE ENERGIA (AC/DC)">⚡ Falha de Energia / PoP Off</option>
+                <option value="⚠️ INCIDENTE DE INFRAESTRUTURA">⚠️ Outra Falha Crítica</option>
+            </select>
+        </div>
 
-            <div class="form-group">
-                <label for="chamado">Número do Chamado / Ticket</label>
-                <input type="text" id="chamado" placeholder="Ex: INC-982341">
-            </div>
+        <div class="form-group">
+            <label for="chamado">Número do Chamado / Ticket</label>
+            <input type="text" id="chamado" placeholder="Ex: INC-2026-89412">
+        </div>
 
-            <div class="form-group">
-                <label for="trecho">Trecho / Localidade Afetada</label>
-                <input type="text" id="trecho" placeholder="Ex: Trecho SP-Rio (km 120 / PoP Centro)">
-            </div>
+        <div class="form-group">
+            <label for="trecho">Trecho / Localidade Afetada</label>
+            <input type="text" id="trecho" placeholder="Ex: Backbone SP-RJ | Trecho Km 142 (PoP Campinas)">
+        </div>
 
-            <div class="form-group">
-                <label for="impacto">Impacto Identificado</label>
-                <input type="text" id="impacto" placeholder="Ex: 15 PoPs indisponíveis / ~3.000 clientes afetados">
-            </div>
+        <div class="form-group">
+            <label for="impacto">Impacto Operational Identificado</label>
+            <input type="text" id="impacto" placeholder="Ex: Indisponibilidade de 12 PoPs / ~4.500 Clientes Afetados">
+        </div>
 
-            <div class="form-group">
-                <label for="pessoa">Pessoa Acionada Anteriormente</label>
-                <input type="text" id="pessoa" placeholder="Ex: João Silva (Supervisor de Campo / Plantonista)">
-            </div>
+        <div class="form-group">
+            <label for="pessoa">Pessoa Acionada Anteriormente</label>
+            <input type="text" id="pessoa" placeholder="Ex: Carlos Eduardo (Plantão de Infra / Campo)">
+        </div>
 
-            <div class="form-group">
-                <label for="etr">Previsão de Normalização (ETR)</label>
-                <input type="text" id="etr" placeholder="Ex: 16:30 ou A definir">
-            </div>
+        <div class="form-group">
+            <label for="etr">Previsão de Normalização (ETR)</label>
+            <input type="text" id="etr" placeholder="Ex: 17:30 BRT ou Em Diagnóstico">
+        </div>
 
-            <div class="form-group">
-                <label for="atualizacao">Última Atualização</label>
-                <textarea id="atualizacao" rows="3" placeholder="Ex: [14:15] O responsável informou que a equipe já está no local efetuando os testes de fusão."></textarea>
-            </div>
-        </form>
+        <div class="form-group">
+            <label for="atualizacao">Última Atualização Operacional</label>
+            <textarea id="atualizacao" placeholder="Ex: Téc. Carlos no local. Fibra de 72FO rompida por terceiros. Preparando caixa de fusão."></textarea>
+        </div>
     </div>
 
-    <!-- Preview e Ações -->
+    <!-- Preview e Cópia -->
     <div class="card">
-        <h2>📋 Mensagem Formatada</h2>
+        <div class="card-header">
+            <h2>📢 Comunicado Formatado</h2>
+        </div>
         
         <div class="preview-box" id="previewText"></div>
         
         <div class="actions">
-            <button onclick="copiarTexto()">📋 Copiar Texto para Envio</button>
-            <div class="btn-row">
-                <button class="btn-audio" onclick="ouvirAudio()">🔊 Ouvir Áudio (Voz)</button>
-                <button class="btn-stop" onclick="pararAudio()">⏹️ Parar</button>
-            </div>
+            <button id="btnCopiar">
+                📋 Copiar Mensagem de Escalation
+            </button>
         </div>
-
-        <div id="statusMsg" class="status-msg"></div>
+        
+        <div class="status-badge" id="statusMsg"></div>
     </div>
 </div>
 
 <script>
-    function gerarMensagem() {
-        const tipo = document.getElementById('tipo').value || 'INCIDENTE';
+    // Função principal que gera o texto formatado
+    function atualizarMensagem() {
+        const tipo = document.getElementById('tipo').value;
         const chamado = document.getElementById('chamado').value.trim() || 'N/A';
         const trecho = document.getElementById('trecho').value.trim() || 'Não informado';
-        const impacto = document.getElementById('impacto').value.trim() || 'Em mensuração';
-        const pessoa = document.getElementById('pessoa').value.trim() || 'Ninguém registrado';
+        const impacto = document.getElementById('impacto').value.trim() || 'Em dimensionamento';
+        const pessoa = document.getElementById('pessoa').value.trim() || 'Não registrado';
         const etr = document.getElementById('etr').value.trim() || 'A definir';
-        const atualizacao = document.getElementById('atualizacao').value.trim() || 'Monitoramento inicial pelo NOC.';
+        const atualizacao = document.getElementById('atualizacao').value.trim() || 'Acompanhamento inicial pelo NOC.';
 
-        const mensagem = `🚨 [NOC ALERTA] - ESCALATION DE INCIDENTE
+        const template = `🚨 [ESCALATION NOC] - ALERTA CRÍTICO
 
-📌 Chamado: #${chamado}
-⚠️ Tipo: ${tipo}
-📍 Trecho / Local: ${trecho}
-📉 Impacto: ${impacto}
+📌 TICKET: #${chamado}
+🚨 EVENTO: ${tipo}
+📍 TRECHO/LOCAL: ${trecho}
+📉 IMPACTO: ${impacto}
 
-🔄 Última Atualização:
-${atualizacao}
+📋 ÚLTIMA ATUALIZAÇÃO:
+└ ${atualizacao}
 
-👤 Pessoa Acionada Anteriormente: ${pessoa}
-⏱️ ETR (Previsão): ${etr}
+👤 ACIONADO ANTERIORMENTE: ${pessoa}
+⏱️ PREVISÃO (ETR): ${etr}
 
----
-CC: @Supervisão NOC @Gestão de Redes`;
+--------------------------------------------------
+⚠️ ATENÇÃO SUPERVISÃO & GESTÃO DE REDES`;
 
-        document.getElementById('previewText').innerText = mensagem;
+        document.getElementById('previewText').textContent = template;
     }
 
+    // Função de cópia para a área de transferência
     function copiarTexto() {
-        const texto = document.getElementById('previewText').innerText;
+        const texto = document.getElementById('previewText').textContent;
+        
         navigator.clipboard.writeText(texto).then(() => {
-            mostrarStatus('✅ Texto copiado com sucesso!');
+            const status = document.getElementById('statusMsg');
+            status.textContent = '✅ Mensagem copiada com sucesso!';
+            setTimeout(() => { status.textContent = ''; }, 3000);
         }).catch(() => {
-            mostrarStatus('❌ Erro ao copiar. Selecione o texto manualmente.');
+            alert('Não foi possível copiar automaticamente. Selecione o texto e copie manualmente.');
         });
     }
 
-    function ouvirAudio() {
-        pararAudio();
-
-        if (!('speechSynthesis' in window)) {
-            mostrarStatus('❌ Seu navegador não suporta leitura de voz nativa.');
-            return;
-        }
-
-        const texto = document.getElementById('previewText').innerText;
+    // Garante o carregamento dos eventos após a renderização da página
+    document.addEventListener('DOMContentLoaded', () => {
+        const ids = ['tipo', 'chamado', 'trecho', 'impacto', 'pessoa', 'etr', 'atualizacao'];
         
-        // Remove caracteres especiais/emojis para que a voz leia de forma fluida
-        const textoParaLeitura = texto
-            .replace(/[🚨📌⚠️📍📉🔄👤⏱️---]/g, '')
-            .replace(/CC:/g, 'Com cópia para:');
+        // Adiciona escuta em tempo real para todos os inputs
+        ids.forEach(id => {
+            const inputEl = document.getElementById(id);
+            if (inputEl) {
+                inputEl.addEventListener('input', atualizarMensagem);
+                inputEl.addEventListener('change', atualizarMensagem);
+            }
+        });
 
-        const utterance = new SpeechSynthesisUtterance(textoParaLeitura);
-        utterance.lang = 'pt-BR';
-        utterance.rate = 1.0;
+        // Configura o botão de cópia
+        document.getElementById('btnCopiar').addEventListener('click', copiarTexto);
 
-        utterance.onstart = () => mostrarStatus('🔊 Reproduzindo áudio do comunicado...');
-        utterance.onend = () => mostrarStatus('✅ Leitura finalizada.');
-        utterance.onerror = () => mostrarStatus('❌ Ocorreu um erro ao reproduzir o áudio.');
-
-        window.speechSynthesis.speak(utterance);
-    }
-
-    function pararAudio() {
-        if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel();
-            mostrarStatus('');
-        }
-    }
-
-    function mostrarStatus(msg) {
-        const statusEl = document.getElementById('statusMsg');
-        statusEl.innerText = msg;
-        if(msg.startsWith('✅')) {
-            setTimeout(() => { statusEl.innerText = ''; }, 4000);
-        }
-    }
-
-    // Event Listeners em todos os campos para atualização instantânea
-    const campos = ['tipo', 'chamado', 'trecho', 'impacto', 'pessoa', 'etr', 'atualizacao'];
-    campos.forEach(id => {
-        const el = document.getElementById(id);
-        el.addEventListener('input', gerarMensagem);
-        el.addEventListener('change', gerarMensagem);
+        // Gera a primeira versão com dados vazios/padrão
+        atualizarMensagem();
     });
-
-    // Executa no carregamento da página
-    window.onload = function() {
-        gerarMensagem();
-    };
 </script>
 
 </body>
