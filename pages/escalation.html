@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Escalation NOC</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --border: #cbd5e1;
+            --text: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.25rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.875rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .preview-box {
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 16px;
+            border-radius: 6px;
+            font-family: "Courier New", Courier, monospace;
+            white-space: pre-wrap;
+            min-height: 250px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            flex: 1;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .alert-success {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #dcfce7;
+            color: #166534;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Formulário -->
+    <div class="card">
+        <h2> Painel de Escalation NOC</h2>
+        <form id="nocForm">
+            <div class="form-group">
+                <label for="tipo">Tipo de Evento</label>
+                <select id="tipo" oninput="gerarMensagem()">
+                    <option value="🔴 ROMPIMENTO DE FIBRA">Rompimento de Fibra</option>
+                    <option value="🟠 ATENUAÇÃO DE SINAL">Atenuação de Sinal</option>
+                    <option value="⚡ FALHA DE ENERGIA">Falha de Energia</option>
+                    <option value="⚠️ INCIDENTE GENÉRICO">Outro Incidente</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="chamado">Número do Chamado / Ticket</label>
+                <input type="text" id="chamado" placeholder="Ex: INC-982341" oninput="gerarMensagem()">
+            </div>
+
+            <div class="form-group">
+                <label for="trecho">Trecho / Localidade Afetada</label>
+                <input type="text" id="trecho" placeholder="Ex: Trecho SP-Rio (km 120 / PoP Centro)" oninput="gerarMensagem()">
+            </div>
+
+            <div class="form-group">
+                <label for="impacto">Impacto Identificado</label>
+                <input type="text" id="impacto" placeholder="Ex: 15 PoPs indisponíveis / ~3.000 clientes afetados" oninput="gerarMensagem()">
+            </div>
+
+            <div class="form-group">
+                <label for="tecnico">Técnico / Equipe de Campo</label>
+                <input type="text" id="tecnico" placeholder="Ex: Equipe Silva (Contato: 11 99999-9999)" oninput="gerarMensagem()">
+            </div>
+
+            <div class="form-group">
+                <label for="etr">Previsão de Normalização (ETR)</label>
+                <input type="text" id="etr" placeholder="Ex: 16:30 ou A definir" oninput="gerarMensagem()">
+            </div>
+
+            <div class="form-group">
+                <label for="atualizacao">Última Atualização</label>
+                <textarea id="atualizacao" rows="3" placeholder="Ex: [14:15] Técnica localizou a falha no km 42 e iniciou o processo de fusão." oninput="gerarMensagem()"></textarea>
+            </div>
+        </form>
+    </div>
+
+    <!-- Preview e Ações -->
+    <div class="card">
+        <h2> Mensagem Gerada</h2>
+        <div class="preview-box" id="previewText">Aguardando preenchimento...</div>
+        
+        <div class="actions">
+            <button onclick="copiarTexto()">Copiar para Área de Transferência</button>
+        </div>
+        <div id="alertSuccess" class="alert-success">Copiado com sucesso!</div>
+    </div>
+</div>
+
+<script>
+    function gerarMensagem() {
+        const tipo = document.getElementById('tipo').value;
+        const chamado = document.getElementById('chamado').value || 'N/A';
+        const trecho = document.getElementById('trecho').value || 'Não informado';
+        const impacto = document.getElementById('impacto').value || 'Em mensuração';
+        const tecnico = document.getElementById('tecnico').value || 'Em acionamento';
+        const etr = document.getElementById('etr').value || 'A definir';
+        const atualizacao = document.getElementById('atualizacao').value || 'Monitoramento inicial pelo NOC.';
+
+        const mensagem = `🚨 [NOC ALERTA] - ESCALATION DE INCIDENTE
+
+📌 Chamado: #${chamado}
+⚠️ Tipo: ${tipo}
+📍 Trecho / Local: ${trecho}
+📉 Impacto: ${impacto}
+
+🔄 Última Atualização:
+${atualizacao}
+
+👤 Responsável em Campo: ${tecnico}
+⏱️ ETR (Previsão): ${etr}
+
+---
+CC: @Supervisão NOC @Gestão de Redes`;
+
+        document.getElementById('previewText').innerText = mensagem;
+    }
+
+    function copiarTexto() {
+        const texto = document.getElementById('previewText').innerText;
+        navigator.clipboard.writeText(texto).then(() => {
+            const alert = document.getElementById('alertSuccess');
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        });
+    }
+
+    // Inicializa o preview vazio/padrão
+    gerarMensagem();
+</script>
+
+</body>
+</html>
