@@ -1,33 +1,45 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Central de Diagnóstico - NOC</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    
-    <style>
-        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-        .tab-btn { padding: 8px 12px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; background: var(--card-dark); color: inherit; transition: 0.3s; }
-        
-        /* DARK MODE (DEFAULT) */
-        .tab-btn.active { background: #ffffff; color: #000; font-weight: bold; border: 2px solid #ffffff; }
+<meta charset="UTF-8">
+<title>NOC - Windows Diagnostics</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<script src="../assets/js/script.js"></script>
 
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+<style>
+.tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+.tab-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: var(--card-dark);
+  color: inherit;
+}
+body.light .tab-btn { background: var(--card-light); }
+.tab-btn.active { background: #ffffff; color: #000; font-weight: bold; border: 2px solid #ffffff; }
+body.light .tab-btn.active { background: var(--primary); color: #000; border: 2px solid #000; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.accordion { cursor: pointer; display: flex; justify-content: space-between; }
+.panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+pre { background: var(--card-dark); padding: 10px; border-radius: 8px; position: relative; }
+body.light pre { background: var(--card-light); }
 
-        .accordion { cursor: pointer; display: flex; justify-content: space-between; padding: 15px; margin-top: 10px; background: var(--card-dark); border-radius: 8px; font-weight: bold; }
-        .panel { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; background: rgba(255,255,255,0.05); border-radius: 0 0 8px 8px; }
-        
-        .panel-body { padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); }
-        
-        pre { background: #1e1e1e; padding: 12px; border-radius: 8px; overflow-x: auto; color: #00ff00; font-size: 0.9em; border: 1px solid #333; }
-        
-        .download-box { background: var(--primary); color: #000; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
-        .btn-main { background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 10px; }
-        
-        .step-list { margin-top: 10px; padding-left: 20px; }
-        .step-list li { margin-bottom: 8px; }
-    </style>
+/* Estilo para o botão de cópia rápido */
+.copy-badge {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background: var(--primary);
+    color: #000;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
 </head>
 
 <body>
@@ -35,121 +47,104 @@
 <button class="theme-btn" onclick="toggleTheme()">🌙</button>
 
 <nav>
-    <a href="index.html">Home</a>
-    <a href="metodos.html">Métodos</a>
-    <a href="ferramentas.html">Ferramentas</a>
-    <a href="sobre.html">Sobre</a>
+<a href="index.html">Home</a>
+<a href="metodos.html">Métodos</a>
+<a href="organizacao.html">Organização</a>
+<a href="ferramentas.html">Ferramentas</a>
+<a href="infra.html">Infraestrutura</a>
+<a href="sobre.html">Sobre</a>
 </nav>
 
 <section>
-    <h1>🛠️ Central de Diagnóstico</h1>
-    <p>Selecione o sistema operacional para baixar a ferramenta de coleta de evidências.</p>
 
-    <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event,'windows')">Windows</button>
-        <button class="tab-btn" onclick="openTab(event,'macos')">macOS</button>
-        <button class="tab-btn" onclick="openTab(event,'linux')">Linux</button>
-    </div>
+<h1>🪟 Windows NOC Tools</h1>
+<a href="infra.html" class="back-btn">← Voltar</a>
 
-    <div id="windows" class="tab-content active">
-        <div class="download-box">
-            <h3>Ferramenta de Diagnóstico v2.1 (Windows)</h3>
-            <p>Executa Ping, Tracert, MTU e coleta IPs Públicos automaticamente.</p>
-            <a href="ferramentas/diagnostico_noc.bat" class="btn-main">⬇️ Baixar .BAT</a>
-        </div>
+<div class="tabs" style="margin-bottom: 20px;">
+<button class="tab-btn active" onclick="openTab(event,'essencial')">Essencial</button>
+<button class="tab-btn" onclick="openTab(event,'l3_diag')">L3 & Rotas</button>
+<button class="tab-btn" onclick="openTab(event,'l2_infra')">L2 & Infra</button>
+<button class="tab-btn" onclick="openTab(event,'reparo')">Reparo Rápido</button>
+</div>
 
-        <div class="card accordion info">📖 Como utilizar</div>
-        <div class="panel">
-            <div class="panel-body">
-                <ol class="step-list">
-                    <li>Baixe o arquivo <code>.bat</code> acima.</li>
-                    <li>Clique com o botão direito e selecione <b>"Executar como Administrador"</b>.</li>
-                    <li>Aguarde o término (a janela fechará ou pedirá para pressionar uma tecla).</li>
-                    <li>Envie o arquivo <code>diag_NOME-DO-PC.txt</code> gerado na mesma pasta.</li>
-                </ol>
-            </div>
-        </div>
+<div id="essencial" class="tab-content active">
+<div class="card accordion info">IP Público (WAN)</div>
+<div class="panel"><pre>curl -4 ifconfig.me && curl -6 ifconfig.me</pre></div>
 
-        <div class="card accordion info">🖥️ Visualizar Código (Batch)</div>
-        <div class="panel">
-            <pre>
-@echo off
-setlocal enabledelayedexpansion
-title Diagnostico NOC Pro
-set "FILE=diag_%COMPUTERNAME%.txt"
-echo [1/4] Identificando IPs...
-curl -s -4 https://ifconfig.me > temp.txt
-set /p IP=<temp.txt
-echo IPv4: %IP% > %FILE%
-echo [2/4] Testando Gateway...
-ping 8.8.8.8 -n 10 >> %FILE%
-echo [3/4] Rastreando Rota...
-tracert -d -h 15 8.8.8.8 >> %FILE%
-echo [4/4] Teste MTU...
-ping 8.8.8.8 -f -l 1472 -n 1 >> %FILE%
-pause</pre>
-        </div>
-    </div>
+<div class="card accordion info">Configuração de IP e Gateway</div>
+<div class="panel"><pre>ipconfig /all | findstr /C:"IPv4" /C:"Gateway" /C:"DNS"</pre></div>
 
-    <div id="macos" class="tab-content">
-        <div class="download-box">
-            <h3>Ferramenta de Diagnóstico (macOS)</h3>
-            <p>Script Shell configurado para não fechar o terminal automaticamente.</p>
-            <a href="ferramentas/diagnostico_mac.command" class="btn-main">⬇️ Baixar .COMMAND</a>
-        </div>
+<div class="card accordion major">Teste de Latência (Ping Contínuo)</div>
+<div class="panel"><pre>ping 8.8.8.8 -t</pre></div>
 
-        <div class="card accordion critical">⚠️ Atenção: Permissão de Execução</div>
-        <div class="panel">
-            <div class="panel-body">
-                <p>Caso o arquivo não abra, execute no terminal:</p>
-                <pre>chmod +x ~/Downloads/diagnostico_mac.command</pre>
-            </div>
-        </div>
-    </div>
+<div class="card accordion major">Rastreio de Rota Rápido</div>
+<div class="panel"><pre>tracert -d 8.8.8.8</pre></div>
+</div>
 
-    <div id="linux" class="tab-content">
-        <div class="card accordion info">Execução via Terminal</div>
-        <div class="panel">
-            <div class="panel-body">
-                <p>Baixe o script e execute:</p>
-                <pre>bash diagnostico_linux.sh</pre>
-            </div>
-        </div>
-    </div>
+<div id="l3_diag" class="tab-content">
+<div class="card accordion critical">Mapear Conexões Ativas (Processos)</div>
+<div class="panel"><pre>netstat -ano | findstr ESTABLISHED</pre></div>
+
+<div class="card accordion major">Tabela de Roteamento Local</div>
+<div class="panel"><pre>route print</pre></div>
+
+<div class="card accordion info">Forçar Rota Estática</div>
+<div class="panel"><pre>route add 192.168.50.0 mask 255.255.255.0 192.168.1.254 -p</pre></div>
+
+<div class="card accordion major">Teste de MTU (Caminho)</div>
+<div class="panel"><pre># Testa se o pacote 1500 passa sem fragmentar
+ping 8.8.8.8 -f -l 1472</pre></div>
+</div>
+
+<div id="l2_infra" class="tab-content">
+<div class="card accordion critical">Tabela ARP (Conflitos de MAC/IP)</div>
+<div class="panel"><pre>arp -a</pre></div>
+
+<div class="card accordion info">Cache DNS Local</div>
+<div class="panel"><pre>ipconfig /displaydns</pre></div>
+
+<div class="card accordion major">Diagnóstico de DNS Externo</div>
+<div class="panel"><pre>nslookup google.com 1.1.1.1</pre></div>
+
+<div class="card accordion major">Captura de Pacotes (Nativa Windows)</div>
+<div class="panel"><pre>pktmon start --etw                      # Inicia captura
+pktmon stop                             # Para e gera log</pre></div>
+</div>
+
+<div id="reparo" class="tab-content">
+<div class="card accordion critical">Reset de Pilha TCP/IP e DNS</div>
+<div class="panel"><pre>ipconfig /flushdns && ipconfig /release && ipconfig /renew && netsh winsock reset && netsh int ip reset</pre></div>
+
+<div class="card accordion major">Limpeza de Cache ARP</div>
+<div class="panel"><pre>arp -d *</pre></div>
+
+<div class="card accordion info">Saúde do Sistema (SFC)</div>
+<div class="panel"><pre>sfc /scannow</pre></div>
+</div>
+
 
 </section>
 
 <footer>
-    <p>© 2026 - Marcos Renan | NOC Diagnostics</p>
+<p>© 2026 - Marcos Renan | Suporte NOC</p>
 </footer>
 
 <script>
-// Lógica das Tabs
 function openTab(evt, tabName) {
-    document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-    document.getElementById(tabName).classList.add("active");
-    evt.currentTarget.classList.add("active");
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
 }
 
-// Lógica dos Accordions
 document.querySelectorAll(".accordion").forEach(btn => {
-    btn.onclick = () => {
-        btn.classList.toggle("active");
-        let panel = btn.nextElementSibling;
-        if (panel.style.maxHeight) {
-            panel.style.maxHeight = null;
-        } else {
-            panel.style.maxHeight = panel.scrollHeight + "px";
-        }
-    };
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    let panel = btn.nextElementSibling;
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+  };
 });
-
-// Mock da função de tema (se não estiver no script.js externo)
-function toggleTheme() {
-    document.body.classList.toggle("light");
-}
 </script>
 
 </body>

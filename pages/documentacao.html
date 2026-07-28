@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventário de Rede | Exportação PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        :root { --primary: #005596; --secondary: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 20px; }
+        .container { max-width: 1100px; margin: auto; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        
+        /* Formulário */
+        .grid-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 15px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        
+        button { cursor: pointer; border: none; border-radius: 4px; padding: 12px 20px; font-weight: bold; transition: 0.3s; }
+        .btn-add { background: var(--secondary); color: white; }
+        .btn-pdf { background: var(--primary); color: white; float: right; }
+        button:hover { opacity: 0.8; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>➕ Adicionar Informação de Rede</h2>
+        <div class="grid-form">
+            <input type="text" id="equip" placeholder="Operadora">
+            <input type="text" id="ipv4-a" placeholder="IP Lado A">
+            <input type="text" id="ipv4-b" placeholder="IP Lado B ">
+            <input type="text" id="cap" placeholder="Capacidade (ex: 100G)">
+            <input type="text" id="desc" placeholder="Descrição">
+            <select id="ping">
+                <option value="OK">Ping: OK</option>
+                <option value="Falha">Ping: Sem coleta</option>
+            </select>
+        </div>
+        <button class="btn-add" onclick="adicionarLinha()">Adicionar à Tabela</button>
+    </div>
+
+    <div class="card">
+        <button class="btn-pdf" onclick="gerarPDF()">Gerar Relatório PDF</button>
+        <h2>📋 Dados de Infraestrutura</h2>
+        <table id="tabelaRede">
+            <thead>
+                <tr>
+                    <th>OPERADORA</th>
+                    <th>LADO A</th>
+                    <th>LADO B</th>
+                    <th>Capacidade</th>
+                    <th>Descrição</th>
+                    <th>Ping</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function adicionarLinha() {
+        const tabela = document.getElementById('tabelaRede').getElementsByTagName('tbody')[0];
+        const novaLinha = tabela.insertRow();
+
+        const campos = [
+            document.getElementById('equip').value,
+            document.getElementById('ipv4-a').value,
+            document.getElementById('ipv4-b').value,
+            document.getElementById('cap').value,
+            document.getElementById('desc').value,
+            document.getElementById('ping').value
+        ];
+
+        campos.forEach((texto, index) => {
+            let celula = novaLinha.insertCell(index);
+            celula.innerHTML = texto;
+        });
+
+        // Limpar campos após adicionar
+        document.querySelectorAll('.grid-form input').forEach(i => i.value = '');
+    }
+
+    async function gerarPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(18);
+        doc.text("Relatório de Inventário de Rede", 14, 20);
+        doc.setFontSize(10);
+        doc.text("Gerado em: " + new Date().toLocaleString(), 14, 28);
+
+        doc.autoTable({
+            html: '#tabelaRede',
+            startY: 35,
+            theme: 'grid',
+            headStyles: { fillColor: [0, 85, 150] }, // Azul padrão
+            styles: { fontSize: 8 }
+        });
+
+        doc.save("inventario-rede.pdf");
+    }
+</script>
+
+</body>
+</html>

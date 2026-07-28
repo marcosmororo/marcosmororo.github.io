@@ -8,67 +8,67 @@
 
 <style>
 .tabs {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .tab-btn {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  background: var(--card-dark);
-  color: inherit;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: var(--card-dark);
+  color: inherit;
 }
 
 body.light .tab-btn {
-  background: var(--card-light);
+  background: var(--card-light);
 }
 
 /* 🔥 DARK MODE (DEFAULT) */
 .tab-btn.active {
-  background: #ffffff;
-  color: #000;
-  font-weight: bold;
-  border: 2px solid #ffffff;
+  background: #ffffff;
+  color: #000;
+  font-weight: bold;
+  border: 2px solid #ffffff;
 }
 
 /* 🔥 LIGHT MODE */
 body.light .tab-btn.active {
-  background: var(--primary);
-  color: #000;
-  border: 2px solid #000;
+  background: var(--primary);
+  color: #000;
+  border: 2px solid #000;
 }
 
 .tab-content {
-  display: none;
+  display: none;
 }
 
 .tab-content.active {
-  display: block;
+  display: block;
 }
 
 .accordion {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
 }
 
 .panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
 }
 
 pre {
-  background: var(--card-dark);
-  padding: 10px;
-  border-radius: 8px;
+  background: var(--card-dark);
+  padding: 10px;
+  border-radius: 8px;
 }
 
 body.light pre {
-  background: var(--card-light);
+  background: var(--card-light);
 }
 </style>
 </head>
@@ -114,93 +114,94 @@ body.light pre {
 
 <div class="card accordion critical">Uplink Down</div>
 <div class="panel"><pre>
-show alarm query ihub-link all            # Verifica status do uplink (link-down = crítico)
+show alarm query ihub-link all            # Verifica status do uplink (link-down = crítico)
 </pre></div>
 
 <div class="card accordion major">Potência Óptica Fora</div>
 <div class="panel"><pre>
-show alarm query sfprssi all              # Diagnóstico de potência fora do padrão
-show pon optics                          # Verifica níveis ópticos gerais
-show pon optics 1/1/3/1                  # Verifica porta específica
+show alarm query sfprssi all              # Diagnóstico de potência fora do padrão
+show pon optics                          # Verifica níveis ópticos gerais
+show pon optics 1/1/3/1                  # Verifica porta específica
 </pre></div>
 
 <div class="card accordion major">Falha na PON</div>
 <div class="panel"><pre>
-show alarm query olt-gen all              # Diagnóstico da porta PON
+show alarm query olt-gen all              # Diagnóstico da porta PON
 show alarm query name olt-gen-pon-loss-sig # Perda de sinal (LoS)
 </pre></div>
 
 <div class="card accordion info">Ver ONTs</div>
 <div class="panel"><pre>
-show equipment ont                       # Lista ONTs
-show pon unprovision-onu                 # ONTs não provisionadas
+show equipment ont                       # Lista ONTs
+show pon unprovision-onu                 # ONTs não provisionadas
 </pre></div>
 
 <div class="card accordion info">Diagnóstico ONT</div>
 <div class="panel"><pre>
-show equipment ont status pon ont 1/1/1/1/1    # Status da ONT
-show equipment ont optics 1/1/1/1/1             # Potência RX/TX
-show equipment ont interface 1/1/1/1/1 detail   # Detalhamento completo
-show equipment ont index sn:                    # Coloque o serial para encontrar  
+show equipment ont status pon ont 1/1/1/1/1    # Status da ONT
+show equipment ont optics 1/1/1/1/1             # Potência RX/TX
+show equipment ont interface 1/1/1/1/1 detail   # Detalhamento completo
+show equipment ont index sn:                    # Coloque o serial para encontrar  
+show equipment ont status pon | match exact: # Encontrar ONU pela descrição
 </pre></div>
 
 <div class="card accordion major">Queda de Cliente</div>
 <div class="panel"><pre>
-show alarm query ont-ploam all           # Diagnóstico GPON
+show alarm query ont-ploam all           # Diagnóstico GPON
 show alarm query name ont-ploam-dying-gasp # Falta de energia
 show alarm query name ont-ploam-sig-degrade # Sinal degradado
 </pre></div>
 
 <div class="card accordion info">Hardware e Temperatura</div>
 <div class="panel"><pre>
-show equipment temperature               # Verifica temperatura geral
-show equipment temperature nt-a          # Controladora
-show equipment slot                     # Status das placas
+show equipment temperature               # Verifica temperatura geral
+show equipment temperature nt-a          # Controladora
+show equipment slot                     # Status das placas
 </pre></div>
 
 <div class="card accordion critical">Risco de Reboot</div>
 <div class="panel"><pre>
-show equipment temperature               # Diagnóstico de superaquecimento
-show equipment slot                     # Verifica falhas físicas
-show software-mngt version etsi          # Verifica versão/bugs
+show equipment temperature               # Diagnóstico de superaquecimento
+show equipment slot                     # Verifica falhas físicas
+show software-mngt version etsi          # Verifica versão/bugs
 </pre></div>
 
 <div class="card accordion info">CPU / Memória</div>
 <div class="panel"><pre>
-show system cpu-load                    # Uso de CPU
-show system memory-usage                # Uso de memória
-show core1-uptime                      # Tempo ativo
+show system cpu-load                    # Uso de CPU
+show system memory-usage                # Uso de memória
+show core1-uptime                      # Tempo ativo
 </pre></div>
 
 <div class="card accordion info">Portas e Uplink</div>
 <div class="panel"><pre>
-show port                              # Status geral
-show port nt-a:xfp:1                   # Porta uplink
+show port                              # Status geral
+show port nt-a:xfp:1                   # Porta uplink
 show equipment diagnostics sfp nt-a:xfp:1 detail # Diagnóstico SFP
 </pre></div>
 
 <div class="card accordion info">Alarmes Gerais</div>
 <div class="panel"><pre>
 show alarm query alarm-table all severity all servaff all # Todos alarmes
-show alarm current table                                 # Resumo
-show alarm query name all                                # Busca por erro
-admin alarm clr-logging                                  # Limpa buffer
+show alarm current table                                 # Resumo
+show alarm query name all                                # Busca por erro
+admin alarm clr-logging                                  # Limpa buffer
 </pre></div>
 
 <div class="card accordion info">Logs e Auditoria</div>
 <div class="panel"><pre>
-show alarm log mgmt-sec-access        # Log de acesso
-show alarm log ont-gen               # Histórico de ONTs
-show log log-id 99                  # Log geral
-show log log-id 100                 # Log segurança
+show alarm log mgmt-sec-access        # Log de acesso
+show alarm log ont-gen               # Histórico de ONTs
+show log log-id 99                  # Log geral
+show log log-id 100                 # Log segurança
 </pre></div>
 
 <div class="card accordion info">Ações Administrativas</div>
 <div class="panel"><pre>
-admin equipment reboot-isam hot-restart        # Reinicia OLT
+admin equipment reboot-isam hot-restart        # Reinicia OLT
 admin equipment slot lt:1/1/1 reboot with-selftest # Reinicia placa
 admin equipment ont interface 1/1/1/1/1 reboot # Reinicia ONT
-configure equipment slot lt:1/1/1 planned-type fglt-b unlock  
+configure equipment slot lt:1/1/1 planned-type fglt-b unlock  
 </pre></div>
 
 </div>
@@ -214,58 +215,58 @@ configure equipment slot lt:1/1/1 planned-type fglt-b unlock
 <div class="card accordion">Troubleshooting</div>
 <div class="panel"><pre>
 # ONUs descobertas
-show gpon onu unconfigured              # Lista ONUs não provisionadas
+show gpon onu unconfigured              # Lista ONUs não provisionadas
 
 # Buscar ONU por serial
-show gpon onu | include ZTEGC4B0BCE2    # Filtra ONU pelo serial
+show gpon onu | include ZTEGC4B0BCE2    # Filtra ONU pelo serial
 
 # Status geral da PON
-show gpon interface 1/1/6               # Status da porta GPON
+show gpon interface 1/1/6               # Status da porta GPON
 
 # Status das ONUs
-show gpon onu state                     # Estado das ONUs (online/offline)
-show gpon onu detail 1/1/6 1            # Detalhes de uma ONU
+show gpon onu state                     # Estado das ONUs (online/offline)
+show gpon onu detail 1/1/6 1            # Detalhes de uma ONU
 
 # Potência óptica
-show gpon onu optical-info 1/1/6 1      # RX/TX da ONU
-show gpon interface optics 1/1/6        # Potência da porta PON
+show gpon onu optical-info 1/1/6 1      # RX/TX da ONU
+show gpon interface optics 1/1/6        # Potência da porta PON
 
 # Interfaces
-show interface status                   # Status geral interfaces
-show interface utilization              # Uso das interfaces
+show interface status                   # Status geral interfaces
+show interface utilization              # Uso das interfaces
 
 # Transceivers
-show interface transceiver              # Status dos SFPs
-show interface transceiver detail       # Diagnóstico detalhado
+show interface transceiver              # Status dos SFPs
+show interface transceiver detail       # Diagnóstico detalhado
 
 # Sistema
-show system                             # Informações gerais
-show system uptime                      # Tempo ativo
-show system reboot-history              # Histórico de reboot
+show system                             # Informações gerais
+show system uptime                      # Tempo ativo
+show system reboot-history              # Histórico de reboot
 
 # Hardware
-show environment                        # Temperatura / fans / fonte
-show inventory                          # Inventário do equipamento
+show environment                        # Temperatura / fans / fonte
+show inventory                          # Inventário do equipamento
 
 # VLAN
-show vlan                               # Lista VLANs
-show vlan port                          # VLAN por porta
+show vlan                               # Lista VLANs
+show vlan port                          # VLAN por porta
 
 # Configuração GPON
-show running-config gpon                # Configuração GPON
+show running-config gpon                # Configuração GPON
 </pre></div>
 
 <div class="card accordion">Reboot ONU</div>
 <div class="panel"><pre>
 # Reiniciar ONU
-gpon onu reset 1/1/1 1                  # Reset ONU na porta/posição
+gpon onu reset 1/1/1 1                  # Reset ONU na porta/posição
 </pre></div>
 
 <div class="card accordion">Configuração VLAN</div>
 <div class="panel"><pre>
 # Criar VLAN
-vlan 4094 name GERENCIA                # VLAN de gerência
-vlan 2001 name PPPOE                   # VLAN de clientes
+vlan 4094 name GERENCIA                # VLAN de gerência
+vlan 2001 name PPPOE                   # VLAN de clientes
 
 # Associar VLAN à porta uplink
 interface ethernet 1/1/12
@@ -276,15 +277,15 @@ switchport trunk allowed vlan add 2001,4094
 <div class="card accordion">Serviço</div>
 <div class="panel"><pre>
 # Criar serviço (bridge)
-service 1 vlan 2001                    # Serviço para clientes
-service 2 vlan 4094                    # Serviço de gerência
+service 1 vlan 2001                    # Serviço para clientes
+service 2 vlan 4094                    # Serviço de gerência
 </pre></div>
 
 <div class="card accordion">Interface L3</div>
 <div class="panel"><pre>
 # Interface de gerência
 interface vlan 4094
-ip address 10.0.0.1/24                # IP da OLT
+ip address 10.0.0.1/24                # IP da OLT
 no shutdown
 </pre></div>
 
@@ -292,7 +293,7 @@ no shutdown
 <div class="panel"><pre>
 # Criar perfil de banda
 gpon profile bandwidth 1G
-max 1000000                           # Banda máxima (aprox 1Gb)
+max 1000000                           # Banda máxima (aprox 1Gb)
 </pre></div>
 
 <div class="card accordion">Line Profile</div>
@@ -301,7 +302,7 @@ max 1000000                           # Banda máxima (aprox 1Gb)
 gpon profile line CLIENTE_PADRAO
 tcont 1 bandwidth 1G
 gem 1
-mapping vlan 2001                     # Mapeamento VLAN
+mapping vlan 2001                     # Mapeamento VLAN
 </pre></div>
 
 <div class="card accordion">Adicionar ONU</div>
@@ -332,16 +333,16 @@ gpon service-port 1 interface 1/1/1 onu 1 gem 1 vlan 2001
 <div class="card accordion">Liberar IP</div>
 <div class="panel"><pre>
 # Liberação de tráfego IP
-ip anti-spoofing disable              # Desativa bloqueio (ou ajustar conforme política)
+ip anti-spoofing disable              # Desativa bloqueio (ou ajustar conforme política)
 </pre></div>
 
 <div class="card accordion">Isolamento ONU</div>
 <div class="panel"><pre>
 # Isolar ONU (anti-rogue)
-gpon onu isolate 1/1/X Y              # Isola ONU
+gpon onu isolate 1/1/X Y              # Isola ONU
 
 # Remover isolamento
-no gpon onu isolate 1/1/X Y           # Remove isolamento
+no gpon onu isolate 1/1/X Y           # Remove isolamento
 </pre></div>
 
 </div>
@@ -356,21 +357,22 @@ no gpon onu isolate 1/1/X Y           # Remove isolamento
 
 <script>
 function openTab(evt, tabName) {
-  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
 
-  document.getElementById(tabName).classList.add("active");
-  evt.currentTarget.classList.add("active");
+  document.getElementById(tabName).classList.add("active");
+  evt.currentTarget.classList.add("active");
 }
 
 document.querySelectorAll(".accordion").forEach(btn => {
-  btn.onclick = () => {
-    btn.classList.toggle("active");
-    let panel = btn.nextElementSibling;
-    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
-  };
+  btn.onclick = () => {
+    btn.classList.toggle("active");
+    let panel = btn.nextElementSibling;
+    panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
+  };
 });
 </script>
 
 </body>
 </html>
+

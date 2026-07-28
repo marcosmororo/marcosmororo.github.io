@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aberturas de Chamados Padronizadas</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #1e293b;
+            --primary: #38bdf8;
+            --danger: #f43f5e;
+            --warning: #fbbf24;
+            --success: #10b981;
+            --text: #f8fafc;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { max-width: 1400px; margin: auto; }
+
+        header {
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            gap: 25px;
+        }
+
+        .panel {
+            background: var(--surface);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .field { margin-bottom: 12px; }
+        .field label { display: block; font-size: 10px; font-weight: 800; color: var(--primary); margin-bottom: 4px; text-transform: uppercase; }
+        
+        input, select, textarea {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .preview-card {
+            background: #000;
+            border-radius: 12px;
+            border: 2px solid var(--primary);
+            padding: 25px;
+            position: sticky;
+            top: 20px;
+        }
+
+        #live-text {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: #f8fafc;
+            white-space: pre-wrap;
+        }
+
+        .btn-copy {
+            width: 100%;
+            background: var(--primary);
+            color: #020617;
+            border: none;
+            padding: 18px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .btn-copy.success { background: var(--success); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <div>
+            <h1 style="margin:0; font-size: 18px;">⚡ Aberturas de Chamados Padronizadas</h1>
+            <span style="font-size: 11px; opacity: 0.7;">Gestão de Incidentes e Hardware</span>
+        </div>
+        <div id="clock" style="font-family: monospace; font-size: 20px; color: var(--primary);">00:00:00</div>
+    </header>
+
+    <div class="main-layout">
+        <div class="panel">
+            <div class="field">
+                <label>Tipo de Ocorrência</label>
+                <select id="tipo_falha" onchange="adjustFields()">
+                    <option value="ROMPIMENTO">✂️ Rompimento de Fibra</option>
+                    <option value="SWAP">🔄 SWAP DE EQUIPAMENTO (PADRÃO)</option>
+                    <option value="DEVICE">🛠️ Falha de Dispositivo (Hardware)</option>
+                    <option value="ENERGIA">⚡ Falha de Energia</option>
+                    <option value="TEMPERATURA">🔥 Alta Temperatura</option>
+                    <option value="PERFORMANCE">📊 Latência / Perda de Pacotes</option>
+                    <option value="INDISPONIVEL">🚫 Indisponibilidade</option>
+                </select>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+            <div id="dynamic-fields"></div>
+
+            <div class="field">
+                <label>Técnico NOC Responsável</label>
+                <input type="text" id="tecnico" placeholder="Seu nome" oninput="updatePreview()">
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <div class="preview-card" id="preview-card">
+                <div id="live-text">Aguardando dados...</div>
+                <button class="btn-copy" id="copyBtn" onclick="copyToClipboard()">COPIAR CARIMBO PARA ABERTURA</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fieldConfig = {
+        DEVICE: [
+            { id: 'data_falha', label: 'Data/Hora do Alarme', type: 'datetime-local' },
+            { id: 'equipamento', label: 'Equipamento (Hostname/IP)', type: 'text' },
+            { id: 'componente', label: 'Componente Afetado', type: 'select', options: ['Fonte (PSU)', 'Fan/Ventoinha', 'Linecard/Placa', 'Módulo SFP', 'CPU/Memória', 'Chassis', 'Power', 'Outro'] },
+            { id: 'alarme_log', label: 'Log/Alarme Apresentado', type: 'text', placeholder: 'Ex: Minor alarm: PSU 1 Failure' },
+            { id: 'obs', label: 'Ações tomadas/Observação', type: 'textarea' }
+        ],
+        ROMPIMENTO: [
+            { id: 'trecho', label: 'Trecho (Ponta A - Ponta B)', type: 'text' },
+            { id: 'trecho_menor', label: 'Trecho Menor (Se for DWDM)', type: 'text', placeholder: 'Ex: POP01 - POP02' },
+            { id: 'tipo_rede', label: 'Tipo de Rede Afetada', type: 'select', options: ['Metro', 'Transporte', 'DWDM'] },
+            { id: 'data_ocorrencia', label: 'Data/Hora do Evento', type: 'datetime-local' },
+            { id: 'obs', label: 'Observações Adicionais', type: 'textarea' }
+        ],
+        SWAP: [
+            { id: 'nome_reclamante', label: 'Nome Reclamante', type: 'text' },
+            { id: 'operadora', label: 'Operadora Reclamante', type: 'text' },
+            { id: 'trecho', label: 'Trecho (Ponta A – Ponta B)', type: 'text' },
+            { id: 'end_a', label: 'Endereço Ponta A', type: 'text' },
+            { id: 'end_b', label: 'Endereço Ponta B', type: 'text' },
+            { id: 'data_hora_ext', label: 'Data/Hora Extração', type: 'datetime-local' },
+            { id: 'sentido', label: 'Sentido da Extração', type: 'select', options: ['A > B', 'B > A'] },
+            { id: 'falha', label: 'Falha', type: 'select', options: ['INTERROMPIDO', 'DEGRADADO'] },
+            { id: 'atuacao', label: 'Atuação', type: 'select', options: ['IMEDIATO', 'PROGRAMADO'] },
+            { id: 'tel_op', label: 'Telefone para Testes Operadora', type: 'text' },
+            { id: 'chamado_op', label: 'Nº Chamado Interno Operadora', type: 'text' },
+            { id: 'hora_alarme', label: 'Horário Alarme Equipamento', type: 'time' },
+            { id: 'tipo_fibra', label: 'Tipo de Fibra', type: 'select', options: ['Iluminada', 'Apagada'] },
+            { id: 'raman', label: 'Trecho possui RAMAN?', type: 'select', options: ['Não', 'Sim'] },
+            { id: 'raman_off', label: 'RAMAN Desligado?', type: 'select', options: ['Não', 'Sim'] }
+        ],
+        ENERGIA: [
+            { id: 'data_queda', label: 'Horário da Queda', type: 'datetime-local' },
+            { id: 'site', label: 'Site / POP', type: 'text' },
+            { id: 'autonomia', label: 'Autonomia Baterias', type: 'text' }
+        ],
+        TEMPERATURA: [
+            { id: 'data_alerta', label: 'Data/Hora Alerta', type: 'datetime-local' },
+            { id: 'pop_cidade', label: 'POP / Cidade', type: 'text' },
+            { id: 'temp_atual', label: 'Temperatura Atual (°C)', type: 'text' },
+            { id: 'temp_padrao', label: 'Temperatura Padrão (°C)', type: 'text' }
+        ],
+        PERFORMANCE: [
+            { id: 'data_teste', label: 'Data/Hora do Teste', type: 'datetime-local' },
+            { id: 'alvo', label: 'Alvo / Trecho', type: 'text' },
+            { id: 'latencia', label: 'Latência (ms)', type: 'text' },
+            { id: 'perda', label: 'Perda de Pacotes (%)', type: 'text' }
+        ],
+        INDISPONIVEL: [
+            { id: 'data_inicio', label: 'Início da Indisponibilidade', type: 'datetime-local' },
+            { id: 'equip', label: 'Equipamento / Serviço', type: 'text' },
+            { id: 'local', label: 'Localidade', type: 'text' }
+        ]
+    };
+
+    function adjustFields() {
+        const tipo = document.getElementById('tipo_falha').value;
+        const container = document.getElementById('dynamic-fields');
+        container.innerHTML = '';
+
+        fieldConfig[tipo].forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'field';
+            const label = document.createElement('label');
+            label.innerText = f.label;
+            
+            let input;
+            if (f.type === 'select') {
+                input = document.createElement('select');
+                f.options.forEach(opt => {
+                    const o = document.createElement('option');
+                    o.value = opt; o.innerText = opt;
+                    input.appendChild(o);
+                });
+            } else if (f.type === 'textarea') {
+                input = document.createElement('textarea');
+                input.rows = 3;
+            } else {
+                input = document.createElement('input');
+                input.type = f.type;
+            }
+            
+            input.id = f.id;
+            input.placeholder = f.placeholder || '';
+            input.oninput = updatePreview;
+            div.appendChild(label);
+            div.appendChild(input);
+            container.appendChild(div);
+        });
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const tipo = document.getElementById('tipo_falha').value;
+        const tecNoc = document.getElementById('tecnico').value || '...';
+        const card = document.getElementById('preview-card');
+        let template = "";
+
+        const getVal = (id) => {
+            const el = document.getElementById(id);
+            if (!el) return "";
+            if (el.type === 'datetime-local' || el.type === 'time') {
+                return el.value ? el.value.replace('T', ' ') : "...";
+            }
+            return el.value || "...";
+        };
+
+        if (tipo === 'DEVICE') {
+            card.style.borderColor = "#a855f7"; // Roxo para hardware
+            template = `🛠️ [FALHA DE DISPOSITIVO / HARDWARE]
+------------------------------------------
+EQUIPAMENTO: ${getVal('equipamento')}
+COMPONENTE: ${getVal('componente')}
+DATA/HORA: ${getVal('data_falha')}
+ALARME: ${getVal('alarme_log')}
+STATUS: NECESSITA ATUAÇÃO / TROCA
+OBSERVAÇÃO: ${getVal('obs')}
+------------------------------------------
+RESPONSÁVEL NOC: ${tecNoc}`;
+        }
+        else if (tipo === 'ROMPIMENTO') {
+            card.style.borderColor = "var(--danger)";
+            const tipoRede = getVal('tipo_rede');
+            
+            template = `[INCIDENTE: ROMPIMENTO DE FIBRA]
+------------------------------------------
+TRECHO AFETADO: ${getVal('trecho')}`;
+
+            if (tipoRede === 'DWDM') {
+                template += `\nSPAN AFETADO: ${getVal('trecho_menor')}`;
+            }
+
+            template += `\nTIPO DE REDE: ${tipoRede}
+DATA/HORA EVENTO: ${getVal('data_ocorrencia')}
+STATUS: INTERROMPIDO
+OBSERVAÇÕES: ${getVal('obs')}
+------------------------------------------
+RESPONSÁVEL NOC: ${tecNoc}`;
+        }
+        else if (tipo === 'SWAP') {
+            card.style.borderColor = "var(--primary)";
+            template = `Nome Reclamante: ${getVal('nome_reclamante')}
+Operadora Reclamante: ${getVal('operadora')}
+
+Trecho (Ponta A – Ponta B): ${getVal('trecho')}
+Endereço Ponta A: ${getVal('end_a')}
+Endereço Ponta B: ${getVal('end_b')}
+
+Data/Hora Extração: ${getVal('data_hora_ext')}
+Sentido da Extração: ${getVal('sentido')}
+
+Falha: ${getVal('falha')}
+Atuação: ${getVal('atuacao')}
+
+Telefone para Testes da Operadora: ${getVal('tel_op')}
+Nº do Chamado Interno da Operadora: ${getVal('chamado_op')}
+
+Horário do Alarme do Equipamento da Operadora: ${getVal('hora_alarme')}
+Tipo de Fibra: ${getVal('tipo_fibra')}
+Trecho possui RAMAN: ${getVal('raman')}
+RAMAN Desligado: ${getVal('raman_off')}
+
+Técnico Responsável: ${tecNoc}`;
+        } 
+        else if (tipo === 'TEMPERATURA') {
+            card.style.borderColor = "var(--warning)";
+            template = `[ALERTA DE TEMPERATURA]\nData/Hora: ${getVal('data_alerta')}\nPOP/Cidade: ${getVal('pop_cidade')}\nTemperatura Atual: ${getVal('temp_atual')}°C\nTemperatura Padrão: ${getVal('temp_padrao')}°C\nStatus: Acima do limite operacional.\nResponsável: ${tecNoc}`;
+        }
+        else if (tipo === 'ENERGIA') {
+            card.style.borderColor = "#eab308";
+            template = `⚡ [FALHA DE ENERGIA]\nHorário da Queda: ${getVal('data_queda')}\nSite/POP: ${getVal('site')}\nAutonomia Baterias: ${getVal('autonomia')}\nResponsável: ${tecNoc}`;
+        }
+        else if (tipo === 'PERFORMANCE') {
+            card.style.borderColor = "var(--warning)";
+            template = `[DEGRADAÇÃO DE PERFORMANCE]\nData/Hora: ${getVal('data_teste')}\nTrecho: ${getVal('alvo')}\nLatência: ${getVal('latencia')} ms\nPerda de Pacotes: ${getVal('perda')} %\nResponsável: ${tecNoc}`;
+        }
+        else if (tipo === 'INDISPONIVEL') {
+            card.style.borderColor = "var(--danger)";
+            template = `[INDISPONIBILIDADE GERAL]\nInício: ${getVal('data_inicio')}\nEquipamento/Serviço: ${getVal('equip')}\nLocalidade: ${getVal('local')}\nResponsável: ${tecNoc}`;
+        }
+
+        document.getElementById('live-text').innerText = template;
+    }
+
+    function copyToClipboard() {
+        const text = document.getElementById('live-text').innerText;
+        const btn = document.getElementById('copyBtn');
+        navigator.clipboard.writeText(text).then(() => {
+            btn.innerText = "✅ COPIADO!";
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.innerText = "COPIAR CARIMBO PARA ABERTURA";
+                btn.classList.remove('success');
+            }, 2000);
+        });
+    }
+
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR');
+    }, 1000);
+
+    adjustFields();
+</script>
+
+</body>
+</html>

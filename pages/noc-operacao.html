@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Latência PtP</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0f172a; color: #f8fafc; text-align: center; padding: 50px; }
+        .container { max-width: 900px; margin: auto; background: #1e293b; padding: 40px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
+        h1 { color: #38bdf8; margin-bottom: 10px; }
+        p { color: #94a3b8; margin-bottom: 30px; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
+        
+        /* Destaque para o arquivo principal */
+        .card-main { background: #0369a1; border: 2px solid #38bdf8; }
+        
+        .card { padding: 25px; border-radius: 15px; transition: 0.3s; cursor: pointer; text-decoration: none; color: white; display: block; position: relative; }
+        .card:not(.card-main) { background: #334155; border: 1px solid transparent; }
+        .card:hover { transform: translateY(-5px); filter: brightness(1.1); }
+        
+        .card span { font-weight: bold; font-size: 20px; display: block; }
+        .card small { display: block; color: #e2e8f0; margin-top: 5px; opacity: 0.8; }
+        
+        .setup-box { background: #020617; padding: 20px; border-radius: 10px; margin: 30px 0; text-align: left; border-left: 4px solid #f59e0b; }
+        .setup-box code { color: #fbbf24; font-family: monospace; background: #1e293b; padding: 2px 6px; border-radius: 4px; }
+        
+        .feature-list { text-align: left; background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 15px; margin-top: 20px; }
+        .feature-list ul { padding-left: 20px; color: #cbd5e1; }
+        .feature-list li { margin-bottom: 8px; }
+
+        .footer-note { margin-top: 40px; font-size: 13px; color: #64748b; border-top: 1px solid #334155; padding-top: 20px; }
+        .tag { position: absolute; top: -10px; right: 10px; background: #f59e0b; color: #0f172a; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Validação de Latência PtP</h1>
+    <p>Ferramenta de teste de login SSH e monitoramento de performance ponto-a-ponto.</p>
+
+    <div class="setup-box">
+        <strong>⚠️ Requisitos de Sistema:</strong>
+        <p style="font-size: 14px; margin: 10px 0 0 0;">
+            1. SSH habilitado no equipamento (Porta 22).<br>
+            2. Python 3.x instalado localmente.<br>
+            3. Dependência SSH: <code>pip install paramiko netmiko</code>
+        </p>
+    </div>
+
+    <div class="grid">
+        <a href="teste_latencia_ptp.py" download class="card card-main">
+            <div class="tag">ESTÁVEL</div>
+            <span>Script de Teste</span>
+            <small>teste_latencia_ptp.py</small>
+        </a>
+
+        <div class="card">
+            <span>Login Automático</span>
+            <small>Validação via Porta 22</small>
+        </div>
+    </div>
+
+    <div class="feature-list">
+        <strong style="color: #38bdf8;">O que este script executa:</strong>
+        <ul>
+            <li>Autenticação segura no equipamento via protocolo SSH.</li>
+            <li>Disparo de pacotes ICMP (Ping) para o destino PtP definido.</li>
+            <li>Captura de <b>Latência de Referência</b> (Benchmark).</li>
+            <li>Comparação em tempo real: Latência Atual vs. Referência.</li>
+            <li>Relatório de desvio (Jitter e variação de ms).</li>
+        </ul>
+    </div>
+
+    <div class="footer-note">
+        <b>Dica:</b> Utilize este script para identificar degradações de rota ou problemas físicos no enlace <br> 
+        comparando o estado atual com os parâmetros ideais salvos.
+    </div>
+</div>
+
+</body>
+</html>

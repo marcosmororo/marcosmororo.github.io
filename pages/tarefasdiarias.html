@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProdFlow Ultimate | Workspace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117; --card: #161b22; --border: #30363d;
+            --primary: #58a6ff; --success: #238636; --danger: #f85149; --warning: #d29922;
+            --text-main: #e6edf3; --text-secondary: #8b949e;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); padding: 20px; line-height: 1.5; }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        /* HEADER */
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px;
+        }
+        .brand h1 { font-size: 1.5rem; font-weight: 800; letter-spacing: -1px; }
+        .brand span { color: var(--primary); }
+        .clock-section { text-align: right; }
+        #clock { font-family: var(--font-mono); font-size: 1.6rem; color: var(--primary); font-weight: 700; }
+        #date { font-size: 0.85rem; color: var(--text-secondary); text-transform: capitalize; }
+
+        /* TOP BAR: STATS & POMODORO */
+        .top-grid { display: grid; grid-template-columns: 1fr 1fr 350px; gap: 20px; margin-bottom: 30px; }
+
+        .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: center; }
+        .stat-label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 10px; }
+        .stat-value { font-size: 1.8rem; font-weight: 700; font-family: var(--font-mono); }
+        
+        .progress-container { width: 100%; height: 8px; background: #010409; border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid var(--border); }
+        #progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); width: 0%; transition: 1s ease; }
+
+        .pomodoro-box { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; border-left: 4px solid var(--danger);
+        }
+        #pomo-timer { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 700; color: var(--danger); margin-bottom: 10px; }
+        .pomo-btns { display: flex; gap: 10px; }
+        .btn-pomo { background: transparent; border: 1px solid var(--border); color: var(--text-main); padding: 5px 15px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .btn-pomo:hover { background: var(--border); }
+        .btn-pomo.start { border-color: var(--danger); color: var(--danger); }
+
+        /* MAIN CONTENT */
+        .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 30px; }
+
+        /* TASKS */
+        .section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+        .section-header::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+        .task-card { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 12px; 
+            padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .task-card:hover { border-color: var(--text-secondary); transform: translateY(-2px); }
+        
+        .task-content { flex: 1; }
+        .task-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .task-meta { display: flex; gap: 20px; font-size: 0.8rem; color: var(--text-secondary); align-items: center; flex-wrap: wrap; }
+        
+        .badge { padding: 3px 10px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; border: 1px solid var(--border); }
+        .badge-reuniao { border-color: var(--warning); color: var(--warning); background: rgba(210, 153, 34, 0.1); }
+        
+        .btn-link { 
+            background: var(--primary); color: #0d1117; text-decoration: none; padding: 6px 14px; 
+            border-radius: 6px; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 6px;
+        }
+        .btn-link:hover { filter: brightness(1.2); }
+
+        .btn-done { 
+            background: var(--success); color: white; border: none; width: 45px; height: 45px; 
+            border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+            margin-left: 20px;
+        }
+        .btn-done:hover { transform: scale(1.1); }
+
+        /* SIDEBAR FORM */
+        .sidebar-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; position: sticky; top: 20px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; }
+        
+        input, select { 
+            width: 100%; background: #010409; border: 1px solid var(--border); color: #fff; 
+            padding: 12px; border-radius: 8px; font-size: 0.9rem; outline: none;
+        }
+        input:focus { border-color: var(--primary); }
+
+        .btn-add { 
+            width: 100%; background: var(--primary); color: #0d1117; border: none; 
+            padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; margin-top: 10px;
+        }
+        .btn-add:hover { filter: brightness(1.1); }
+
+        #meeting-info { display: none; background: rgba(210, 153, 34, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed var(--warning); margin-bottom: 18px; }
+
+        .history-card { opacity: 0.5; font-size: 0.9rem; padding: 12px 20px; }
+
+        @media (max-width: 1100px) {
+            .top-grid { grid-template-columns: 1fr 1fr; }
+            .main-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header class="app-header">
+        <div class="brand"><h1>PROD<span>FLOW</span> ULTIMATE</h1></div>
+        <div class="clock-section">
+            <div id="clock">00:00:00</div>
+            <div id="date">...</div>
+        </div>
+    </header>
+
+    <div class="top-grid">
+        <div class="stat-box">
+            <span class="stat-label">Progresso do Dia</span>
+            <div class="stat-value" id="val-percent">0%</div>
+            <div class="progress-container"><div id="progress-fill"></div></div>
+        </div>
+        <div class="stat-box">
+            <span class="stat-label">Tempo de Foco Total</span>
+            <div class="stat-value" id="val-focus">00:00:00</div>
+            <div style="margin-top: 15px; font-size: 0.75rem; color: var(--text-secondary);">
+                Ativas: <span id="count-active" style="color: var(--primary)">0</span> | 
+                Concluídas: <span id="count-done" style="color: var(--success)">0</span>
+            </div>
+        </div>
+        <div class="pomodoro-box">
+            <span class="stat-label">Pomodoro Timer</span>
+            <div id="pomo-timer">25:00</div>
+            <div class="pomo-btns">
+                <button class="btn-pomo start" id="pomo-btn" onclick="togglePomo()">INICIAR</button>
+                <button class="btn-pomo" onclick="resetPomo()">RESET</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <div class="content">
+            <div class="section-header">Tarefas Ativas</div>
+            <div id="active-list"></div>
+
+            <div class="section-header" style="margin-top: 40px;">Histórico Recente</div>
+            <div id="history-list"></div>
+        </div>
+
+        <aside>
+            <div class="sidebar-card">
+                <div class="section-header">Nova Atividade</div>
+                <div class="form-group">
+                    <label>Título</label>
+                    <input type="text" id="in-title" placeholder="Ex: Daily Meeting com Time">
+                </div>
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="in-cat" onchange="checkCat()">
+                        <option value="Trabalho">Trabalho</option>
+                        <option value="Reuniao">Reunião / Call</option>
+                        <option value="Estudo">Estudo</option>
+                        <option value="Pessoal">Pessoal</option>
+                    </select>
+                </div>
+                <div id="meeting-info">
+                    <div class="form-group">
+                        <label>Data e Hora</label>
+                        <input type="datetime-local" id="in-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Link da Reunião / Documento</label>
+                    <input type="text" id="in-link" placeholder="zoom.us/j/... ou link docs">
+                </div>
+                <button class="btn-add" onclick="addTask()">ADICIONAR TAREFA</button>
+            </div>
+        </aside>
+    </div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('proflow_ultimate_v3')) || { active: [], history: [] };
+    let pomoTime = 1500;
+    let pomoRunning = false;
+    let pomoInterval;
+
+    function save() { 
+        localStorage.setItem('proflow_ultimate_v3', JSON.stringify(db)); 
+        render(); 
+    }
+
+    function checkCat() {
+        document.getElementById('meeting-info').style.display = (document.getElementById('in-cat').value === 'Reuniao') ? 'block' : 'none';
+    }
+
+    function addTask() {
+        const title = document.getElementById('in-title').value;
+        if(!title) return alert("Título obrigatório");
+
+        const task = {
+            id: Date.now(),
+            title,
+            cat: document.getElementById('in-cat').value,
+            link: formatUrl(document.getElementById('in-link').value),
+            date: document.getElementById('in-date').value,
+            start: Date.now(),
+            startStr: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})
+        };
+
+        db.active.push(task);
+        clear();
+        save();
+    }
+
+    function formatUrl(url) {
+        if(!url) return '';
+        return url.startsWith('http') ? url : `https://${url}`;
+    }
+
+    function clear() {
+        document.getElementById('in-title').value = '';
+        document.getElementById('in-link').value = '';
+        document.getElementById('in-date').value = '';
+        checkCat();
+    }
+
+    function finishTask(id) {
+        const i = db.active.findIndex(t => t.id === id);
+        const task = db.active.splice(i, 1)[0];
+        task.duration = Math.floor((Date.now() - task.start) / 1000);
+        task.endStr = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        db.history.unshift(task);
+        save();
+    }
+
+    function deleteTask(id) {
+        db.history = db.history.filter(t => t.id !== id);
+        save();
+    }
+
+    // Pomodoro
+    function togglePomo() {
+        const btn = document.getElementById('pomo-btn');
+        if(!pomoRunning) {
+            pomoRunning = true;
+            btn.innerText = "PAUSAR";
+            pomoInterval = setInterval(() => {
+                pomoTime--;
+                updatePomoUI();
+                if(pomoTime <= 0) {
+                    clearInterval(pomoInterval);
+                    alert("Pomodoro finalizado!");
+                    resetPomo();
+                }
+            }, 1000);
+        } else {
+            pomoRunning = false;
+            btn.innerText = "RETOMAR";
+            clearInterval(pomoInterval);
+        }
+    }
+
+    function resetPomo() {
+        clearInterval(pomoInterval);
+        pomoRunning = false;
+        pomoTime = 1500;
+        document.getElementById('pomo-btn').innerText = "INICIAR";
+        updatePomoUI();
+    }
+
+    function updatePomoUI() {
+        const m = Math.floor(pomoTime / 60).toString().padStart(2, '0');
+        const s = (pomoTime % 60).toString().padStart(2, '0');
+        document.getElementById('pomo-timer').innerText = `${m}:${s}`;
+    }
+
+    function render() {
+        const activeContainer = document.getElementById('active-list');
+        const historyContainer = document.getElementById('history-list');
+        activeContainer.innerHTML = '';
+        historyContainer.innerHTML = '';
+
+        db.active.forEach(t => {
+            const isReuniao = t.cat === 'Reuniao';
+            activeContainer.innerHTML += `
+                <div class="task-card">
+                    <div class="task-content">
+                        <div class="task-title">
+                            <span class="badge ${isReuniao ? 'badge-reuniao' : ''}">${t.cat}</span>
+                            ${t.title}
+                        </div>
+                        <div class="task-meta">
+                            ${t.date ? `<span style="color:var(--warning); font-weight:700;"><i class="fa-regular fa-calendar"></i> ${new Date(t.date).toLocaleString('pt-BR', {day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit'})}</span>` : ''}
+                            ${t.link ? `<a href="${t.link}" target="_blank" class="btn-link"><i class="fa-solid fa-video"></i> ABRIR LINK</a>` : ''}
+                            <span><i class="fa-regular fa-clock"></i> Início: ${t.startStr}</span>
+                            <span style="font-family:var(--font-mono); color:var(--primary)" id="tm-${t.id}">00:00:00</span>
+                        </div>
+                    </div>
+                    <button class="btn-done" onclick="finishTask(${t.id})"><i class="fa-solid fa-check"></i></button>
+                </div>
+            `;
+        });
+
+        db.history.slice(0, 8).forEach(t => {
+            historyContainer.innerHTML += `
+                <div class="task-card history-card">
+                    <div class="task-content">
+                        <strong>${t.title}</strong>
+                        <div class="task-meta">Fim: ${t.endStr} | Duração: ${Math.floor(t.duration/60)} min</div>
+                    </div>
+                    <button onclick="deleteTask(${t.id})" style="background:none; border:none; color:var(--danger); cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+        });
+
+        updateStats();
+    }
+
+    function updateStats() {
+        const total = db.active.length + db.history.length;
+        const perc = total === 0 ? 0 : Math.round((db.history.length / total) * 100);
+        document.getElementById('progress-fill').style.width = perc + '%';
+        document.getElementById('val-percent').innerText = perc + '%';
+        document.getElementById('count-active').innerText = db.active.length;
+        document.getElementById('count-done').innerText = db.history.length;
+
+        const sec = db.history.reduce((a, b) => a + b.duration, 0);
+        const h = Math.floor(sec/3600).toString().padStart(2, '0');
+        const m = Math.floor((sec%3600)/60).toString().padStart(2, '0');
+        const s = (sec%60).toString().padStart(2, '0');
+        document.getElementById('val-focus').innerText = `${h}:${m}:${s}`;
+    }
+
+    setInterval(() => {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.toLocaleTimeString('pt-BR');
+        document.getElementById('date').innerText = now.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+        db.active.forEach(t => {
+            const diff = Math.floor((Date.now() - t.start) / 1000);
+            const h = Math.floor(diff/3600).toString().padStart(2, '0');
+            const m = Math.floor((diff%3600)/60).toString().padStart(2, '0');
+            const s = (diff%60).toString().padStart(2, '0');
+            const el = document.getElementById(`tm-${t.id}`);
+            if(el) el.innerText = `${h}:${m}:${s}`;
+        });
+    }, 1000);
+
+    render();
+</script>
+</body>
+</html>

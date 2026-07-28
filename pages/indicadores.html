@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOC: ICG Marcos Renan</title>
+    <style>
+        :root {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #38bdf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --accent: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        .brand-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            height: 45px;
+            filter: brightness(0) invert(1); /* Ajuste para logo branca se necessário */
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        button {
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+        }
+
+        button:hover {
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--bg-body);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent);
+        }
+
+        .doc-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 24px;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .id-badge {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .editor {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            min-height: 80px;
+            font-size: 14px;
+            color: var(--text-muted);
+            outline: none;
+        }
+
+        .editor:focus {
+            border-color: var(--primary);
+            color: var(--text-main);
+        }
+
+        .attachment-zone {
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        input[type="file"] {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        footer {
+            margin-top: 60px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .container { max-width: 100%; }
+            .actions, .attachment-zone, input[type="file"], footer { display: none; }
+            .card { border: 1px solid #ddd; background: white; margin-bottom: 20px; page-break-inside: avoid; }
+            .editor { border: none; background: white; color: black; padding: 0; }
+            .id-badge { border: 1px solid var(--primary); background: none; }
+            h2 { color: black; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="brand-section">
+                <img src="../assets/img/online.png" alt="NOC Logo" class="logo">
+                <div>
+                    <h1>NOC: ICG - MARCOS RENAN</h1>
+                    <p style="font-size: 12px; color: var(--text-muted); margin: 0;">DOCUMENTAÇÃO MENSAL</p>
+                </div>
+            </div>
+            <div class="actions">
+                <button onclick="window.print()" class="btn-primary">EXPORT_AS_PDF</button>
+            </div>
+        </header>
+
+        <main class="doc-grid">
+            <!-- Template Script for Dynamic generation or Manual -->
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL CDN ONLINE</h2>
+                    <span class="id-badge">N2.NC01</span>
+                </div>
+                <div class="editor" contenteditable="true">Write operational summary...</div>
+                <div class="attachment-zone">
+                    <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 5px;">ATTACH_EVIDENCE (IMG/PDF)</label>
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL LINK IP</h2>
+                    <span class="id-badge">N2.NC02</span>
+                </div>
+                <div class="editor" contenteditable="true">Define threshold and monitoring source...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL PTT ONLINE</h2>
+                    <span class="id-badge">N2.NC03</span>
+                </div>
+                <div class="editor" contenteditable="true">Describe IX.br peering status tracking...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>INTERNET SERVICE AVAILABILITY SLA</h2>
+                    <span class="id-badge">N2.NC08</span>
+                </div>
+                <div class="editor" contenteditable="true">Enter availability targets and current MTTR metrics...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>NETWORK HOST AVAILABILITY SLA</h2>
+                    <span class="id-badge">N2.NC12</span>
+                </div>
+                <div class="editor" contenteditable="true">Core infrastructure ping/snmp availability summary...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>BANDWIDTH CONSUMPTION - CDN</h2>
+                    <span class="id-badge">N2.NC13</span>
+                </div>
+                <div class="editor" contenteditable="true">Analyzing traffic peaks for Netflix, Google, Akamai...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>BANDWIDTH CONSUMPTION - CGNAT</h2>
+                    <span class="id-badge">N2.NC14</span>
+                </div>
+                <div class="editor" contenteditable="true">CGNAT session logs and throughput analysis...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>TOTAL BANDWIDTH CONSUMPTION</h2>
+                    <span class="id-badge">N2.NC15</span>
+                </div>
+                <div class="editor" contenteditable="true">Aggregated edge traffic summary...</div>
+                <div class="attachment-zone">
+                    <input type="file" accept="image/*,application/pdf">
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            RUNNING ON NOC_AUTO_DOC // SYSTEM_TIME: 2026-05-12
+        </footer>
+    </div>
+
+</body>
+</html>

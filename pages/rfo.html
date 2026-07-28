@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Report | RFO - Online Telecom</title>
+    <style>
+        :root {
+            --primary-color: #004085;
+            --border-color: #dee2e6;
+            --bg-gray: #f8f9fa;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #525659;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Estrutura Base das Páginas */
+        .report-page {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: 10mm 0;
+            page-break-after: always;
+        }
+
+        /* --- ESTILOS DA PÁGINA 1 (TÉCNICA) --- */
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .logo-container img {
+            max-height: 70px;
+            width: auto;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .brand h1 {
+            color: var(--primary-color);
+            margin: 5px 0;
+            font-size: 22px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .protocol-area {
+            margin-top: 10px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .field-protocol {
+            border-bottom: 1px solid var(--border-color);
+            padding: 5px;
+            width: 250px;
+        }
+
+        .field-protocol label {
+            display: block;
+            font-size: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .field-protocol input {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+            color: #d9534f;
+            border: none;
+            outline: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .field { border-bottom: 1px solid var(--border-color); padding: 5px 0; }
+        .field label {
+            display: block;
+            font-size: 10px;
+            color: var(--primary-color);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        input[type="datetime-local"], input[type="text"], input[type="date"] {
+            border: none;
+            width: 100%;
+            font-size: 14px;
+            outline: none;
+            background: transparent;
+        }
+
+        h2 {
+            font-size: 15px;
+            color: white;
+            background: var(--primary-color);
+            padding: 6px 12px;
+            margin-top: 15px;
+            border-radius: 2px;
+        }
+
+        .content-box {
+            border: 1px dashed #eee;
+            padding: 10px;
+            min-height: 50px;
+            line-height: 1.5;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .image-container {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .image-wrapper { position: relative; }
+        .image-wrapper img { max-width: 100%; max-height: 200px; border: 1px solid #ddd; }
+        
+        /* --- ESTILOS DA PÁGINA 2 (ENCERRAMENTO) --- */
+        .closing-content {
+            text-align: center;
+            padding-top: 30mm;
+        }
+
+        .department-tag {
+            color: var(--primary-color);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .report-title-end {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 50px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .message-container {
+            max-width: 600px;
+            margin: 0 auto 60px auto;
+        }
+
+        .message-container p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        .contact-card {
+            background: var(--bg-gray);
+            border-radius: 12px;
+            padding: 30px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .contact-item { display: flex; flex-direction: column; }
+        .contact-item strong { color: var(--primary-color); font-size: 11px; text-transform: uppercase; margin-bottom: 5px; }
+        .contact-item span { font-size: 18px; font-weight: bold; color: #333; }
+
+        /* Rodapés */
+        footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            font-size: 11px;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Toolbar */
+        .toolbar {
+            position: fixed; top: 20px; right: 20px; background: white;
+            padding: 20px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            width: 200px; z-index: 999;
+        }
+
+        .toolbar button {
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            font-weight: bold; cursor: pointer; border: none; border-radius: 4px;
+        }
+        .btn-print { background: #28a745; color: white; }
+        .btn-img { background: #007bff; color: white; }
+        .remove-btn { position: absolute; top: 0; right: 0; background: red; color: white; border: none; cursor: pointer; padding: 2px 6px; }
+
+        @media print {
+            body { background: none; }
+            .toolbar, .remove-btn { display: none !important; }
+            .report-page { box-shadow: none; margin: 0; border: none; }
+            .content-box { border: none; }
+            [contenteditable="true"]:empty:before { content: ""; }
+            .contact-card { background-color: #f8f9fa !important; -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <h3 style="margin:0 0 10px 0; font-size: 14px;">Controles</h3>
+        <button class="btn-img" onclick="document.getElementById('fileInput').click()">ANEXAR EVIDÊNCIA</button>
+        <button class="btn-print" onclick="generatePDF()">GERAR PDF</button>
+        <input type="file" id="fileInput" style="display:none" accept="image/*" onchange="handleImage(this)">
+        <p style="font-size: 10px; color: #d9534f;">Nota: O arquivo será salvo com o nome do protocolo.</p>
+    </div>
+
+    <div class="report-page">
+        <header>
+            <div class="logo-container">
+                <img src="../assets/img/online.png" alt="Online Telecom Logo">
+            </div>
+            <div class="brand">
+                <h1>Incident Report | RFO</h1>
+                <p>Reason For Outage</p>
+            </div>
+            <div class="protocol-area">
+                <div class="field-protocol">
+                    <label>ID DO PROTOCOLO</label>
+                    <input type="text" id="protocolo" placeholder="INC-000000">
+                </div>
+            </div>
+        </header>
+
+        <div class="info-grid">
+            <div class="field"><label>Data do Relatório</label><input type="date"></div>
+            <div class="field"><label>Prioridade</label><input type="text" placeholder="Alta / Crítica"></div>
+            <div class="field"><label>Início do Incidente</label><input type="datetime-local"></div>
+            <div class="field"><label>Fim do Incidente</label><input type="datetime-local"></div>
+            <div class="field"><label>Localização</label><input type="text" placeholder="Segmento / Cidade"></div>
+            <div class="field"><label>Causa Raiz</label><input type="text" placeholder="Causa da falha"></div>
+        </div>
+
+        <h2>Sumário do Incidente</h2>
+        <div class="content-box" contenteditable="true"></div>
+
+        <h2>Ações Realizadas e Mitigação</h2>
+        <div class="content-box" contenteditable="true"></div>
+
+        <h2>Anexos / Evidências</h2>
+        <div id="imageContainer" class="image-container"></div>
+
+        <h2>Conclusão</h2>
+        <div class="content-box" contenteditable="true">
+            Serviço normalizado. Monitoramento ativo sem novas falhas detectadas.
+        </div>
+
+        <footer>
+            <div>
+                <strong>Online Telecom</strong><br>
+                NOC: noc@online.net.br
+            </div>
+            <div style="text-align: right;">
+                www.onlinetelecom.com.br
+            </div>
+        </footer>
+    </div>
+
+    <div class="report-page closing-page">
+        <div class="closing-content">
+            <div class="department-tag">Supervision Department</div>
+            <div class="report-title-end">Report - NOC</div>
+
+            <div class="message-container">
+                <p><strong>Lamentamos esta ocorrência.</strong></p>
+                <p>
+                    Podemos garantir que estamos sempre dispostos a oferecer todos os esforços possíveis para contornar qualquer situação como esta.
+                </p>
+                <p>Agradecemos desde já a sua confiança.</p>
+                <p>Abaixo nossos contatos para quaisquer esclarecimentos:</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-item">
+                    <strong>Supervisão da rede</strong>
+                    <span>noc@online.net.br</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Contato Direto</strong>
+                    <span>88 3695-3095</span>
+                </div>
+                <div class="contact-item">
+                    <strong>Suporte Técnico</strong>
+                    <span>0800 088 1111</span>
+                </div>
+            </div>
+        </div>
+
+        <footer style="margin-top: auto;">
+            <div>
+                <strong>Online Telecom</strong><br>
+                Departamento de Redes
+            </div>
+            <div style="text-align: right;">
+                Documento Gerado pelo NOC
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function generatePDF() {
+            const idProtocolo = document.getElementById('protocolo').value;
+            // Define o título que o navegador usará como nome de arquivo
+            if (idProtocolo) {
+                document.title = "RFO_" + idProtocolo;
+            } else {
+                document.title = "Incident_Report_RFO";
+            }
+            window.print();
+        }
+
+        function handleImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = document.getElementById('imageContainer');
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'image-wrapper';
+                    wrapper.innerHTML = `
+                        <img src="${e.target.result}">
+                        <button class="remove-btn" onclick="this.parentElement.remove()">X</button>
+                    `;
+                    container.appendChild(wrapper);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>
