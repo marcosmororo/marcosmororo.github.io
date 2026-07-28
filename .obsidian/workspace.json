@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "57cc018479fc35f1",
+        "id": "803cdb02618e9ee5",
         "type": "tabs",
         "children": [
           {
-            "id": "62b25394162687cc",
+            "id": "ae16ba15a2b354fa",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "Visualização em gráfico"
+              "icon": "lucide-file",
+              "title": "Nova aba"
             }
           }
         ]
@@ -188,8 +188,9 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "62b25394162687cc",
+  "active": "ae16ba15a2b354fa",
   "lastOpenFiles": [
+    "pages/windows.html",
     "Sem título.base",
     "Sem título.canvas",
     "pages/testeinternet.html",
