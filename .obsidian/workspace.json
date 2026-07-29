@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "livros/O homem mais rico da Babilônia/O homem que deseja ouro.md",
+                "file": "livros/2026/O homem mais rico da Babilônia/1 - O homem que deseja ouro.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "O homem que deseja ouro"
+              "title": "1 - O homem que deseja ouro"
             }
           }
         ]
@@ -194,8 +194,9 @@
   },
   "active": "1bde274fb930fa57",
   "lastOpenFiles": [
-    "livros/O homem mais rico da Babilônia/O homem que deseja ouro.md",
-    "livros/O homem mais rico da Babilônia",
+    "livros/2026",
+    "livros/2026/O homem mais rico da Babilônia/1 - O homem que deseja ouro.md",
+    "livros/2026/O homem mais rico da Babilônia",
     "livros",
     "pages/vendors/zte/2.png",
     "pages/vendors/nokia/oltnokia.html",
