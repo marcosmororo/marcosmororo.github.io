@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "livros/2026/O homem mais rico da Babilônia/1 - O homem que deseja ouro.md",
+                "file": "livros/2026/O homem mais rico da Babilônia/2 - O homem mais rico da babilônia.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1 - O homem que deseja ouro"
+              "title": "2 - O homem mais rico da babilônia"
             }
           }
         ]
@@ -192,10 +192,12 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "1bde274fb930fa57",
+  "active": "ae16ba15a2b354fa",
   "lastOpenFiles": [
-    "livros/2026",
     "livros/2026/O homem mais rico da Babilônia/1 - O homem que deseja ouro.md",
+    "livros/2026/O homem mais rico da Babilônia/2 - O homem mais rico da babilônia.md",
+    "livros/Sem título",
+    "livros/2026",
     "livros/2026/O homem mais rico da Babilônia",
     "livros",
     "pages/vendors/zte/2.png",
@@ -207,8 +209,6 @@
     "pages/vendors/nokia",
     "pages/vendors/fiberhome",
     "pages/vendors/datacom",
-    "pages/vendors",
-    "pages/vendors.html",
     "assets/img/zaaz.png",
     "Sem título.canvas",
     "assets/img/online.png",
