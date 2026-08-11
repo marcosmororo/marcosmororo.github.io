@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NOC Avisos | Gerador de GMUD</title>
 
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
@@ -19,7 +19,7 @@
 
         body {
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg-dark);
             color: white;
             overflow: hidden;
@@ -49,6 +49,7 @@
             margin-top: 15px;
             display: block;
             color: var(--text-gray);
+            font-weight: 600;
         }
 
         input, select {
@@ -56,16 +57,22 @@
             padding: 12px;
             border-radius: 6px;
             border: 1px solid #334155;
-            background: #1e293b;
+            background: #0f172a;
             color: #ffffff;
             margin-top: 5px;
             box-sizing: border-box;
             color-scheme: dark; 
             font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
         }
 
         .preview-area {
-            background: #f1f5f9;
+            background: #cbd5e1;
             padding: 40px;
             overflow-y: auto;
             display: flex;
@@ -77,7 +84,7 @@
             width: 650px;
             background: #fff;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             overflow: hidden;
             position: relative;
             flex-shrink: 0;
@@ -94,18 +101,27 @@
             font-weight: 800;
             border-radius: 4px;
             display: none;
+            letter-spacing: 0.5px;
         }
 
-        .header { text-align: center; padding: 30px 25px; background: #fff; }
-        .header img { max-width: 180px; height: auto; }
+        .header { 
+            text-align: center; 
+            padding: 25px; 
+            background: #fff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .header img { max-width: 180px; height: auto; display: block; }
 
         .title {
             text-align: center;
             padding: 15px;
             color: #fff;
-            font-weight: bold;
+            font-weight: 700;
             background: #1e3a8a;
             font-size: 18px;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {
@@ -118,13 +134,13 @@
         }
 
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
+        td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
 
         .label-cell {
             background: #f8fafc;
             font-weight: 700;
             width: 30%;
-            color: #64748b;
+            color: #475569;
         }
 
         .copy-box {
@@ -132,16 +148,17 @@
             background: white;
             padding: 20px;
             border-radius: 8px;
-            border: 1px dashed #cbd5e1;
+            border: 1px dashed #94a3b8;
             margin-top: 25px;
             color: #1e293b;
+            box-sizing: border-box;
         }
 
         #email-preview-container, #sheet-preview {
-            font-size: 14px;
+            font-size: 13px;
             background: #f8fafc;
-            padding: 15px;
-            border-radius: 4px;
+            padding: 12px;
+            border-radius: 6px;
             border: 1px solid #e2e8f0;
             margin: 10px 0;
             color: #334155;
@@ -150,7 +167,7 @@
 
         #email-body { white-space: pre-wrap; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
         button {
             flex: 1;
             padding: 12px;
@@ -160,10 +177,19 @@
             font-weight: bold;
             transition: 0.2s;
         }
+        button:hover { opacity: 0.9; }
 
         .png { background: #2563eb; color: #fff; }
         .pdf { background: #16a34a; color: #fff; }
-        .copy-btn { background: #64748b; color: #fff; font-size: 11px; padding: 5px 10px; width: auto; flex: none; border-radius: 4px; }
+        .copy-btn { 
+            background: #475569; 
+            color: #fff; 
+            font-size: 12px; 
+            padding: 8px 12px; 
+            width: auto; 
+            flex: none; 
+            border-radius: 4px; 
+        }
     </style>
 </head>
 <body>
@@ -210,7 +236,10 @@
     <div class="preview-area">
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
-            <div class="header"><img src="https://github.com/marcosmororo/marcosmororo.github.io/blob/main/assets/img/zaaz.png?raw=true" alt="Logo"></div>
+            <div class="header">
+                <!-- Logotipo embutido em Base64 para garantir exportação sem erros de CORS -->
+                <img id="logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgODAiIHdpZHRoPSIzMDAiIGhlaWdodD0iODAiPjtextB4PSIxMCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjMjU2M2ViIj5aQUE8dHNwYW4gZmlsbD0iI2RjMjYyNiI+WjwvdHNwYW4+PC90ZXh0Pjx0ZXh0IHg9IjE3MCIgeT0iNTUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgSGVsdmV0aWNhLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjIwIiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzE2YTMyMCI+VEVMRUNPTTwvdGV4dD48L3N2Zz4=" alt="ZaaZ Telecom">
+            </div>
             <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
             <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
             <table>
@@ -225,7 +254,7 @@
         </div>
 
         <div class="copy-box">
-            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">CONTEÚDO PARA E-MAIL</div>
+            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px;">CONTEÚDO PARA E-MAIL</div>
             <div id="email-preview-container">
                 <strong>TÍTULO:</strong> <span id="mail_titulo"></span><br><br>
                 <div id="email-body"></div>
@@ -234,11 +263,11 @@
         </div>
 
         <div class="copy-box">
-            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px;">LANÇAMENTO EM PLANILHA</div>
+            <div style="font-weight:bold; font-size:12px; color:#64748b; border-bottom:1px solid #eee; padding-bottom:5px; margin-bottom:10px;">LANÇAMENTO EM PLANILHA</div>
             <div id="sheet-preview" style="font-family: monospace; white-space: nowrap; overflow-x: auto;"></div>
-            <div style="display:flex; gap:10px;">
-                <button class="copy-btn" onclick="copiarPlanilha()">Copiar link para planilha</button>
-                <a href="https://docs.google.com/spreadsheets/d/1_8o856lGWpcFnhwzinmiKIcDZGFzeWlSqtbSEQNzdHI/edit?gid=1877008006#gid=1877008006" target="_blank" style="font-size:11px; color:#16a34a; text-decoration:none; font-weight:bold; padding-top:5px;">Abrir Planilha</a>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+                <button class="copy-btn" onclick="copiarPlanilha()">Copiar dados (Tabular)</button>
+                <a href="https://docs.google.com/spreadsheets/d/1_8o856lGWpcFnhwzinmiKIcDZGFzeWlSqtbSEQNzdHI/edit?gid=1877008006#gid=1877008006" target="_blank" style="font-size:12px; color:#16a34a; text-decoration:none; font-weight:bold;">Abrir Planilha ↗</a>
             </div>
         </div>
     </div>
@@ -246,7 +275,7 @@
 
 <script>
     const campos = ["tipo","data","inicio","fim","local","descricao","impacto","setor","protocolo"];
-    let dadosPlanilhaRaw = ""; // Variável global para guardar os tabs reais
+    let dadosPlanilhaRaw = "";
 
     campos.forEach(id => document.getElementById(id).addEventListener("input", atualizar));
 
@@ -258,7 +287,7 @@
         let min1 = h1 * 60 + m1;
         let min2 = h2 * 60 + m2;
         
-        if (min2 <= min1) min2 += 1440; // Ajuste para virada de dia
+        if (min2 <= min1) min2 += 1440;
         
         const diff = min2 - min1;
         const h = Math.floor(diff / 60);
@@ -279,7 +308,7 @@
         const cor = ehC ? "#dc2626" : "#1e3a8a";
         const duracao = calcularDuracao(v.inicio, v.fim);
 
-        // Card
+        // Card Updates
         document.getElementById("badge").style.display = ehC ? "block" : "none";
         document.getElementById("titulo").style.background = cor;
         document.getElementById("subtitulo").style.background = cor;
@@ -292,7 +321,7 @@
         document.getElementById("p_setor").innerText = v.setor || "-";
         document.getElementById("p_protocolo").innerText = v.protocolo || "-";
 
-        // E-mail
+        // E-mail Updates
         document.getElementById("mail_titulo").innerText = `${v.protocolo ? '('+v.protocolo+') ' : ''}GMUD - NOC | AVISO DE MANUTENÇÃO ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
         document.getElementById("email-body").innerText = `Prezados,
 
@@ -301,7 +330,7 @@ Gostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no interval
 Atenciosamente,
 NOC - ZaaZ Telecom`;
 
-        // Planilha - Montagem com TAB real (\t)
+        // Planilha Updates (\t)
         const colunas = [
             v.protocolo || "",
             v.setor || "NOC",
@@ -318,13 +347,13 @@ NOC - ZaaZ Telecom`;
         ];
         
         dadosPlanilhaRaw = colunas.join('\t');
-        document.getElementById("sheet-preview").innerText = colunas.join(' | '); // Visual amigável na tela
+        document.getElementById("sheet-preview").innerText = colunas.join(' | ');
     }
 
     async function copiarPlanilha() {
         try {
             await navigator.clipboard.writeText(dadosPlanilhaRaw);
-            alert("Linha copiada com divisões de colunas!");
+            alert("Dados copiados! Cole diretamente no Google Sheets ou Excel.");
         } catch (err) {
             alert("Erro ao copiar.");
         }
@@ -336,29 +365,38 @@ NOC - ZaaZ Telecom`;
     }
 
     async function exportar(formato) {
-        const originalCard = document.getElementById("card");
-        const clone = originalCard.cloneNode(true);
-        clone.style.position = "absolute";
-        clone.style.top = "-9999px";
-        clone.style.width = "650px";
-        document.body.appendChild(clone);
+        const targetElement = document.getElementById("card");
 
         try {
-            const canvas = await html2canvas(clone, { scale: 3, backgroundColor: "#ffffff", useCORS: true });
+            // Renderiza o card original mantendo o SVG do logo intacto
+            const canvas = await html2canvas(targetElement, { 
+                scale: 3, 
+                backgroundColor: "#ffffff",
+                logging: false,
+                useCORS: true,
+                allowTaint: true
+            });
+
             const imgData = canvas.toDataURL("image/png");
+
             if (formato === 'png') {
                 const link = document.createElement("a");
-                link.download = `Aviso_NOC_${document.getElementById("protocolo").value || 'Atividade'}.png`;
+                link.download = `Aviso_NOC_${document.getElementById("protocolo").value || 'GMUD'}.png`;
                 link.href = imgData;
                 link.click();
             } else {
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF("p", "mm", "a4");
-                pdf.addImage(imgData, 'PNG', 10, 10, 190, (canvas.height * 190) / canvas.width);
-                pdf.save("Aviso_NOC.pdf");
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                
+                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
+                pdf.save(`Aviso_NOC_${document.getElementById("protocolo").value || 'GMUD'}.pdf`);
             }
-        } finally {
-            document.body.removeChild(clone);
+        } catch (error) {
+            console.error("Erro na exportação:", error);
+            alert("Ocorreu um erro ao gerar a imagem/PDF.");
         }
     }
 
