@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Alerta Zabbix</title>
+    <style>
+        body {font-family:"Segoe UI",Arial,sans-serif;background:#f8f9fa;color:#212529;margin:0;padding:0;}
+        .container {max-width:700px;margin:20px auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+        .header{text-align:center;padding:20px;background:#111;}
+        .header img{max-width:200px;height:auto;}
+        .title{text-align:center;font-size:20px;font-weight:bold;padding:16px;color:#fff;background:#dc3545;}
+        .content{padding:20px 30px;}
+        .section-title{font-weight:bold;margin-top:15px;margin-bottom:5px;color:#0d6efd;border-bottom:1px solid #eee;}
+        .info{margin-bottom:5px;line-height:1.5;}
+        .footer{background:#f8f9fa;text-align:center;font-size:12px;color:#6c757d;padding:15px;border-top:1px solid #dee2e6;}
+        a{color:#0d6efd;text-decoration:none;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://github.com/marcosmororo/marcosmororo.github.io/blob/main/assets/img/zaaz.png?raw=true" alt="Logo ZaaZ">
+        </div>
+        <div class="title">PROBLEMA DETECTADO: {TRIGGER.NAME}</div>
+        <div class="content">
+            <div class="section-title">Detalhes do Alerta</div>
+            <div class="info"><strong>Data/Hora:</strong> {EVENT.DATE} {EVENT.TIME}</div>
+            <div class="info"><strong>Host:</strong> {HOST.NAME}</div>
+            <div class="info"><strong>Mensagem:</strong> {ITEM.NAME}</div>
+            <div class="info"><strong>Severidade:</strong> {TRIGGER.SEVERITY}</div>
+        </div>
+        <div class="footer">Monitoramento ZaaZ</div>
+    </div>
+</body>
+</html>
