@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alerta Zabbix</title>
+    <title>Recuperação Zabbix — ZaaZ</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased;">
     
@@ -15,23 +15,23 @@
                 <!-- Card Principal -->
                 <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); border: 1px solid #e1e4e8;">
                     
-                    <!-- Cabeçalho Limpo (Sem Fundo Preto) -->
+                    <!-- Cabeçalho Limpo -->
                     <tr>
                         <td style="padding: 24px 30px; background-color: #ffffff; border-bottom: 1px solid #edf2f7;" align="center">
                             <img src="https://github.com/marcosmororo/marcosmororo.github.io/blob/main/assets/img/zaaz.png?raw=true" alt="ZaaZ" style="max-width: 160px; height: auto; display: block;">
                         </td>
                     </tr>
 
-                    <!-- Borda Indicadora de Severidade (Vermelho para Problema) -->
+                    <!-- Borda Indicadora de Recuperação (Verde) -->
                     <tr>
-                        <td style="background-color: #e53e3e; height: 4px; font-size: 0; line-height: 0;">&nbsp;</td>
+                        <td style="background-color: #38a169; height: 4px; font-size: 0; line-height: 0;">&nbsp;</td>
                     </tr>
 
-                    <!-- Título do Alerta -->
+                    <!-- Título da Recuperação -->
                     <tr>
                         <td style="padding: 24px 30px 10px 30px;">
-                            <span style="display: inline-block; background-color: #fff5f5; color: #c53030; border: 1px solid #feb2b2; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; border-radius: 4px; margin-bottom: 12px;">
-                                PROBLEMA DETECTADO
+                            <span style="display: inline-block; background-color: #f0fff4; color: #276749; border: 1px solid #9ae6b4; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 8px; border-radius: 4px; margin-bottom: 12px;">
+                                INCIDENTE RESOLVIDO
                             </span>
                             <h1 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a202c; line-height: 1.4;">
                                 {TRIGGER.NAME}
@@ -42,24 +42,35 @@
                     <!-- Conteúdo Principal -->
                     <tr>
                         <td style="padding: 10px 30px 24px 30px;">
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; padding: 16px;">
+                            
+                            <!-- Bloco de Métricas de Tempo (Recuperação e Duração) -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f0fff4; border-radius: 6px; border: 1px solid #c6f6d5; padding: 14px 16px; margin-bottom: 16px;">
                                 <tr>
-                                    <td style="padding: 6px 0; font-size: 13px; color: #64748b; width: 100px; font-weight: 600;">Data/Hora:</td>
-                                    <td style="padding: 6px 0; font-size: 14px; color: #334155;">{EVENT.DATE} às {EVENT.TIME}</td>
+                                    <td style="font-size: 13px; color: #276749; font-weight: 600; padding-bottom: 4px;">Duração do Incidente:</td>
+                                    <td align="right" style="font-size: 14px; color: #22543d; font-weight: 700; padding-bottom: 4px;">{EVENT.DURATION}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 0; font-size: 13px; color: #64748b; font-weight: 600;">Host:</td>
+                                    <td style="font-size: 12px; color: #4a5568;">Início: {EVENT.DATE} às {EVENT.TIME}</td>
+                                    <td align="right" style="font-size: 12px; color: #4a5568;">Fim: {EVENT.RECOVERY.DATE} às {EVENT.RECOVERY.TIME}</td>
+                                </tr>
+                            </table>
+
+                            <!-- Detalhes Tabela -->
+                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; padding: 16px;">
+                                <tr>
+                                    <td style="padding: 6px 0; font-size: 13px; color: #64748b; width: 100px; font-weight: 600;">Host:</td>
                                     <td style="padding: 6px 0; font-size: 14px; color: #0f172a; font-weight: 600;">{HOST.NAME}</td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 6px 0; font-size: 13px; color: #64748b; font-weight: 600;">Severidade:</td>
-                                    <td style="padding: 6px 0; font-size: 14px; color: #e53e3e; font-weight: 600;">{TRIGGER.SEVERITY}</td>
+                                    <td style="padding: 6px 0; font-size: 14px; color: #4a5568; font-weight: 600;">{TRIGGER.SEVERITY}</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 6px 0; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: top;">Detalhes:</td>
+                                    <td style="padding: 6px 0; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: top;">Item:</td>
                                     <td style="padding: 6px 0; font-size: 14px; color: #334155; line-height: 1.4;">{ITEM.NAME}</td>
                                 </tr>
                             </table>
+
                         </td>
                     </tr>
 
