@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NOC Avisos | Gerador de GMUD</title>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -55,7 +52,7 @@
         input, select {
             width: 100%;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 0; /* Bordas retas */
             border: 1px solid #334155;
             background: #0f172a;
             color: #ffffff;
@@ -83,8 +80,9 @@
         .card {
             width: 650px;
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-radius: 0; /* Bordas retas */
+            border: 1px solid #94a3b8; /* Borda visível para print */
+            box-shadow: none; /* Sem sombras para facilitador de corte/print */
             overflow: hidden;
             position: relative;
             flex-shrink: 0;
@@ -99,13 +97,13 @@
             padding: 4px 10px;
             font-size: 10px;
             font-weight: 800;
-            border-radius: 4px;
+            border-radius: 0; /* Bordas retas */
             display: none;
             letter-spacing: 0.5px;
             z-index: 10;
         }
 
-        /* Novo Cabeçalho Compacto */
+        /* Cabeçalho Compacto */
         .header-bar {
             background: #1e3a8a;
             padding: 16px 20px;
@@ -122,7 +120,7 @@
             object-fit: contain;
             background: #ffffff;
             padding: 4px 8px;
-            border-radius: 6px;
+            border-radius: 0; /* Bordas retas */
         }
 
         .header-text {
@@ -148,7 +146,7 @@
         }
 
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #1e293b; }
+        td { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #1e293b; border-radius: 0; }
 
         .label-cell {
             background: #f8fafc;
@@ -161,7 +159,7 @@
             width: 650px;
             background: white;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 0; /* Bordas retas */
             border: 1px dashed #94a3b8;
             margin-top: 25px;
             color: #1e293b;
@@ -172,7 +170,7 @@
             font-size: 13px;
             background: #f8fafc;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 0; /* Bordas retas */
             border: 1px solid #e2e8f0;
             margin: 10px 0;
             color: #334155;
@@ -181,20 +179,16 @@
 
         #email-body { white-space: pre-wrap; }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
         button {
-            flex: 1;
             padding: 12px;
             border: none;
-            border-radius: 6px;
+            border-radius: 0; /* Bordas retas */
             cursor: pointer;
             font-weight: bold;
             transition: 0.2s;
         }
         button:hover { opacity: 0.9; }
 
-        .png { background: #2563eb; color: #fff; }
-        .pdf { background: #16a34a; color: #fff; }
         .copy-btn { 
             background: #475569; 
             color: #fff; 
@@ -202,7 +196,7 @@
             padding: 8px 12px; 
             width: auto; 
             flex: none; 
-            border-radius: 4px; 
+            border-radius: 0; /* Bordas retas */
         }
     </style>
 </head>
@@ -240,11 +234,6 @@
 
         <label>Protocolo / Ticket</label>
         <input id="protocolo" placeholder="0426-003850">
-
-        <div class="btn-group">
-            <button class="png" onclick="exportar('png')">Salvar PNG</button>
-            <button class="pdf" onclick="exportar('pdf')">Salvar PDF</button>
-        </div>
     </div>
 
     <div class="preview-area">
@@ -374,41 +363,6 @@
     async function copiarEmail() {
         await navigator.clipboard.writeText(document.getElementById("email-body").innerText);
         alert("Corpo do e-mail copiado!");
-    }
-
-    async function exportar(formato) {
-        const targetElement = document.getElementById("card");
-
-        try {
-            const canvas = await html2canvas(targetElement, { 
-                scale: 3, 
-                backgroundColor: "#ffffff",
-                logging: false,
-                useCORS: true,
-                allowTaint: true
-            });
-
-            const imgData = canvas.toDataURL("image/png");
-
-            if (formato === 'png') {
-                const link = document.createElement("a");
-                link.download = `Aviso_NOC_${document.getElementById("protocolo").value || 'GMUD'}.png`;
-                link.href = imgData;
-                link.click();
-            } else {
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF("p", "mm", "a4");
-                const imgProps = pdf.getImageProperties(imgData);
-                const pdfWidth = pdf.internal.pageSize.getWidth() - 20;
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-                
-                pdf.addImage(imgData, 'PNG', 10, 10, pdfWidth, pdfHeight);
-                pdf.save(`Aviso_NOC_${document.getElementById("protocolo").value || 'GMUD'}.pdf`);
-            }
-        } catch (error) {
-            console.error("Erro na exportação:", error);
-            alert("Ocorreu um erro ao gerar a imagem/PDF.");
-        }
     }
 
     atualizar();
