@@ -92,54 +92,68 @@
 
         .badge {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px;
+            right: 15px;
             background: var(--accent-red);
             color: #fff;
-            padding: 6px 12px;
-            font-size: 11px;
+            padding: 4px 10px;
+            font-size: 10px;
             font-weight: 800;
             border-radius: 4px;
             display: none;
             letter-spacing: 0.5px;
+            z-index: 10;
         }
 
-        .header { 
-            text-align: center; 
-            padding: 25px; 
-            background: #fff; 
+        /* Novo Cabeçalho Compacto */
+        .header-bar {
+            background: #1e3a8a;
+            padding: 16px 20px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: background 0.3s;
         }
-        .header img { max-width: 180px; height: auto; display: block; }
+
+        .header-bar img {
+            height: 38px;
+            width: auto;
+            object-fit: contain;
+            background: #ffffff;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .header-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
 
         .title {
-            text-align: center;
-            padding: 15px;
             color: #fff;
-            font-weight: 700;
-            background: #1e3a8a;
-            font-size: 18px;
+            font-weight: 800;
+            font-size: 16px;
             letter-spacing: 0.5px;
+            line-height: 1.2;
         }
 
         .subtitle {
-            text-align: center;
-            padding: 10px;
-            color: #fff;
-            background: #2563eb;
-            font-size: 13px;
+            color: #cbd5e1;
+            font-size: 11px;
             font-weight: 500;
+            margin-top: 3px;
+            letter-spacing: 0.3px;
         }
 
         table { width: 100%; border-collapse: collapse; }
-        td { padding: 14px 20px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; }
+        td { padding: 12px 20px; border-bottom: 1px solid #f1f5f9; font-size: 13.5px; color: #1e293b; }
 
         .label-cell {
             background: #f8fafc;
             font-weight: 700;
-            width: 30%;
+            width: 28%;
             color: #475569;
         }
 
@@ -236,12 +250,16 @@
     <div class="preview-area">
         <div id="card" class="card">
             <div id="badge" class="badge">EMERGENCIAL</div>
-            <div class="header">
-                <!-- Logotipo embutido em Base64 para garantir exportação sem erros de CORS -->
+            
+            <!-- Cabeçalho Integrado -->
+            <div id="header-bar" class="header-bar">
                 <img id="logo-img" src="https://github.com/marcosmororo/marcosmororo.github.io/blob/main/assets/img/zaaz.png?raw=true" alt="ZaaZ Telecom">
+                <div class="header-text">
+                    <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
+                    <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+                </div>
             </div>
-            <div id="titulo" class="title">INFORME DE ATIVIDADE PROGRAMADA</div>
-            <div id="subtitulo" class="subtitle">ATIVIDADE PROGRAMADA CONFORME AS INFORMAÇÕES ABAIXO</div>
+
             <table>
                 <tr><td class="label-cell">Data</td><td id="p_data">-</td></tr>
                 <tr><td class="label-cell">Período</td><td id="p_periodo">-</td></tr>
@@ -310,8 +328,7 @@
 
         // Card Updates
         document.getElementById("badge").style.display = ehC ? "block" : "none";
-        document.getElementById("titulo").style.background = cor;
-        document.getElementById("subtitulo").style.background = cor;
+        document.getElementById("header-bar").style.background = cor;
         document.getElementById("titulo").innerText = `INFORME DE ATIVIDADE ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
         document.getElementById("p_data").innerText = v.data ? `${dataObj.toLocaleDateString('pt-BR')} (${diaS})` : "-";
         document.getElementById("p_periodo").innerText = `${v.inicio || '00:00'} até ${v.fim || '00:00'} horas`;
@@ -323,12 +340,7 @@
 
         // E-mail Updates
         document.getElementById("mail_titulo").innerText = `${v.protocolo ? '('+v.protocolo+') ' : ''}GMUD - NOC | AVISO DE MANUTENÇÃO ${ehC ? 'EMERGENCIAL' : 'PROGRAMADA'}`;
-        document.getElementById("email-body").innerText = `Prezados,
-
-Gostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${ehC ? 'emergencial' : 'normal'} na qual afetará os serviços, conforme aviso em anexo.
-
-Atenciosamente,
-NOC - ZaaZ Telecom`;
+        document.getElementById("email-body").innerText = `Prezados,\n\nGostaríamos de informar que na madrugada do dia ${dataF} (${diaS}), no intervalo entre ${v.inicio || '00:00'} até ${v.fim || '00:00'} horas, ocorrerá uma manutenção ${ehC ? 'emergencial' : 'normal'} na qual afetará os serviços, conforme aviso em anexo.\n\nAtenciosamente,\nNOC - ZaaZ Telecom`;
 
         // Planilha Updates (\t)
         const colunas = [
@@ -368,7 +380,6 @@ NOC - ZaaZ Telecom`;
         const targetElement = document.getElementById("card");
 
         try {
-            // Renderiza o card original mantendo o SVG do logo intacto
             const canvas = await html2canvas(targetElement, { 
                 scale: 3, 
                 backgroundColor: "#ffffff",
